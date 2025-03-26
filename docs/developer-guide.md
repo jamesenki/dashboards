@@ -268,6 +268,106 @@ describe('updateInventoryDisplay function', () => {
 });
 ```
 
+## Water Heater Dashboard Development
+
+The IoTSphere project uses Test-Driven Development (TDD) for implementing device dashboards, especially the water heater operations and history dashboards. This section provides guidance on extending or modifying these features.
+
+### Dashboard Architecture
+
+The water heater dashboard consists of three main components:
+
+1. **Details Tab**: Basic information and controls
+2. **Operations Tab**: Real-time operational monitoring
+3. **History Tab**: Historical data analysis
+
+Each component follows a layered architecture:
+- **Backend Service**: Processes and prepares data
+- **API Endpoint**: Exposes data to frontend
+- **Frontend Component**: Renders visualizations and UI
+
+### Test-Driven Development Workflow
+
+When implementing or modifying dashboard features, follow this TDD process:
+
+1. **Red**: Write failing tests first
+   ```python
+   def test_water_heater_history_service_get_temperature():
+       # Arrange
+       history_service = WaterHeaterHistoryService()
+       heater_id = "test-heater-123"
+       days = 7
+       
+       # Act
+       result = await history_service.get_temperature_history(heater_id, days)
+       
+       # Assert
+       assert "labels" in result
+       assert "datasets" in result
+       assert len(result["labels"]) > 0
+   ```
+
+2. **Green**: Implement minimal code to make tests pass
+   ```python
+   async def get_temperature_history(self, heater_id: str, days: int = 7) -> Dict[str, Any]:
+       # Get water heater
+       heater = await self.water_heater_service.get_water_heater(heater_id)
+       if not heater:
+           raise Exception(f"Water heater with ID {heater_id} not found")
+            
+       # Process readings to create chart data
+       # ...implementation code here...
+       
+       return {
+           "labels": timestamp_labels,
+           "datasets": [{
+               "label": "Temperature (°C)",
+               "data": temperature_data,
+               # ...other chart configuration...
+           }]
+       }
+   ```
+
+3. **Refactor**: Improve code while maintaining passing tests
+   - Enhance error handling
+   - Optimize performance
+   - Improve code organization
+
+### End-to-End Testing
+
+Always create end-to-end tests to verify consistency across all views:
+
+```python
+def test_end_to_end_consistency():
+    # Get a water heater ID from the system
+    water_heaters = client.get("/api/water-heaters/").json()
+    heater_id = water_heaters[0]["id"]
+    
+    # Test details endpoint
+    details = client.get(f"/api/water-heaters/{heater_id}").json()
+    
+    # Test operations endpoint
+    operations = client.get(f"/api/water-heaters/{heater_id}/operations").json()
+    
+    # Test history endpoint
+    history = client.get(f"/api/water-heaters/{heater_id}/history").json()
+    
+    # Verify consistency across all three views
+    assert details["id"] == heater_id
+    # Additional assertions...
+```
+
+### Real-time vs. Historical Focus
+
+Our dashboard implementation follows these principles:
+
+- **Operations Tab**: Focuses on real-time operational monitoring with status cards, gauges, and asset health metrics
+- **History Tab**: Provides historical analysis through time-series charts for temperature, energy usage, and pressure/flow metrics
+
+When extending either tab, maintain this separation of concerns:
+
+1. Operations tab should answer: "What is happening right now?"
+2. History tab should answer: "What has happened over time?"
+
 ## Debugging Tips
 
 ### Backend Debugging

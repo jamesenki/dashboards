@@ -1,0 +1,75 @@
+<!-- Lifespan Estimation Prediction Component -->
+<div class="lifespan-prediction-container">
+    <div class="prediction-header">
+        <h3>Water Heater Lifespan Estimation</h3>
+        <div class="prediction-controls">
+            <button id="refresh-lifespan-prediction" class="btn btn-sm btn-primary">
+                <i class="fas fa-sync-alt"></i> Refresh
+            </button>
+        </div>
+    </div>
+    
+    <div class="prediction-list">
+        <div id="lifespan-loading" class="text-center py-4">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2">Analyzing water heater lifespan...</p>
+        </div>
+        
+        <div id="lifespan-error" class="alert alert-warning" style="display: none;">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span id="lifespan-error-message">Unable to generate lifespan prediction at this time.</span>
+        </div>
+        
+        <!-- Lifespan Prediction Card -->
+        <div id="lifespan-prediction-card" class="prediction-card" style="display: none;">
+            <div class="prediction-card-header">
+                <h4>Remaining Lifespan</h4>
+                <div class="prediction-score">
+                    <div class="prediction-gauge" id="lifespan-gauge">
+                        <div class="gauge-value"></div>
+                    </div>
+                    <span class="prediction-percentage" id="lifespan-percentage">--</span>
+                </div>
+            </div>
+            <div class="prediction-details">
+                <p class="prediction-summary" id="lifespan-summary">Analyzing remaining lifespan...</p>
+                <div class="lifespan-details">
+                    <div class="detail-row">
+                        <span class="detail-label">Current Age:</span>
+                        <span class="detail-value" id="current-age">--</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Expected Total Lifespan:</span>
+                        <span class="detail-value" id="total-lifespan">--</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Estimated Remaining Years:</span>
+                        <span class="detail-value" id="remaining-years">--</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Prediction Confidence:</span>
+                        <span class="detail-value" id="prediction-confidence">--</span>
+                    </div>
+                </div>
+                
+                <!-- Contributing Factors -->
+                <div class="factors-container">
+                    <h5>Contributing Factors</h5>
+                    <ul id="contributing-factors-list" class="factors-list">
+                        <!-- Will be populated by JavaScript -->
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Recommended Actions -->
+            <div class="prediction-actions" id="lifespan-actions">
+                <h5>Recommended Actions</h5>
+                <div id="lifespan-actions-list" class="action-list">
+                    <!-- Will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

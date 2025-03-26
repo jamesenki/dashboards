@@ -8,7 +8,8 @@ from sqlalchemy.orm import selectinload
 
 from src.db.connection import get_db_session
 from src.db.models import DeviceModel, ReadingModel
-from src.models.device import Device, DeviceReading, DeviceStatus, DeviceType
+from src.models.device import Device, DeviceStatus, DeviceType
+from src.models.device_reading import DeviceReading
 
 
 class SQLDeviceRepository:

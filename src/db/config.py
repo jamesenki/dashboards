@@ -6,12 +6,15 @@ from pydantic_settings import BaseSettings
 
 class DBSettings(BaseSettings):
     # Main database settings
-    DB_TYPE: str = "postgres"  # postgres, sqlite, or memory
+    DB_TYPE: str = "memory"  # postgres, sqlite, or memory
     DB_HOST: str = "localhost"
     DB_PORT: int = 5432
     DB_USER: str = "iotsphere"
     DB_PASSWORD: str = "iotsphere"
     DB_NAME: str = "iotsphere"
+    
+    # Control whether to show database connection errors
+    SUPPRESS_DB_CONNECTION_ERRORS: bool = True
     
     # Redis cache settings
     REDIS_ENABLED: bool = True

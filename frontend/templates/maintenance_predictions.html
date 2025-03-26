@@ -1,0 +1,89 @@
+<!-- Maintenance Predictions Component -->
+<div class="maintenance-predictions-container">
+    <div class="prediction-header">
+        <h3>Maintenance Predictions</h3>
+        <div class="prediction-controls">
+            <button id="refresh-predictions" class="btn btn-sm btn-primary">
+                <i class="fas fa-sync-alt"></i> Refresh
+            </button>
+        </div>
+    </div>
+    
+    <div class="prediction-list">
+        <div id="prediction-loading" class="text-center py-4">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2">Analyzing maintenance needs...</p>
+        </div>
+        
+        <div id="prediction-error" class="alert alert-warning" style="display: none;">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span id="prediction-error-message">Unable to generate predictions at this time.</span>
+        </div>
+        
+        <div id="prediction-empty" class="text-center py-4" style="display: none;">
+            <i class="fas fa-check-circle text-success fa-3x"></i>
+            <p class="mt-2">No maintenance actions required at this time.</p>
+        </div>
+        
+        <div id="prediction-results" style="display: none;">
+            <!-- Component Failure Prediction Card -->
+            <div class="prediction-card" id="component-failure-card">
+                <div class="prediction-card-header">
+                    <h4>Component Health</h4>
+                    <div class="prediction-score">
+                        <div class="prediction-gauge" id="component-failure-gauge">
+                            <div class="gauge-value"></div>
+                        </div>
+                        <span class="prediction-percentage" id="component-failure-percentage">--</span>
+                    </div>
+                </div>
+                <div class="prediction-details">
+                    <p class="prediction-summary" id="component-failure-summary">Analyzing component health...</p>
+                    <div class="component-health-breakdown" id="component-health-breakdown"></div>
+                </div>
+                <div class="prediction-actions" id="component-failure-actions"></div>
+            </div>
+            
+            <!-- Descaling Requirement Prediction Card -->
+            <div class="prediction-card" id="descaling-requirement-card">
+                <div class="prediction-card-header">
+                    <h4>Descaling Status</h4>
+                    <div class="prediction-score">
+                        <div class="prediction-gauge" id="descaling-requirement-gauge">
+                            <div class="gauge-value"></div>
+                        </div>
+                        <span class="prediction-percentage" id="descaling-requirement-percentage">--</span>
+                    </div>
+                </div>
+                <div class="prediction-details">
+                    <p class="prediction-summary" id="descaling-requirement-summary">Analyzing scale buildup...</p>
+                    <div class="scale-details" id="scale-details">
+                        <div class="scale-metric">
+                            <span class="scale-label">Estimated Scale:</span>
+                            <span class="scale-value" id="scale-thickness">--</span>
+                        </div>
+                        <div class="scale-metric">
+                            <span class="scale-label">Last Descaling:</span>
+                            <span class="scale-value" id="last-descaling">--</span>
+                        </div>
+                        <div class="scale-metric">
+                            <span class="scale-label">Water Hardness:</span>
+                            <span class="scale-value" id="water-hardness">--</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="prediction-actions" id="descaling-requirement-actions"></div>
+            </div>
+            
+            <!-- Action Timeline -->
+            <div class="prediction-card" id="action-timeline-card">
+                <div class="prediction-card-header">
+                    <h4>Recommended Maintenance Timeline</h4>
+                </div>
+                <div class="timeline-container" id="maintenance-timeline"></div>
+            </div>
+        </div>
+    </div>
+</div>

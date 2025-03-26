@@ -94,6 +94,10 @@ class VendingMachine(Device):
     sub_location: Optional[SubLocation] = Field(None, description="Specific area within the location (hallway, lobby, etc.)")
     use_type: Optional[UseType] = Field(None, description="Type of usage (serviced, self-serve, etc.)")
     
+    # Data generation properties
+    usage_pattern: Optional[str] = Field(None, description="Usage pattern for data generation (e.g., high_traffic, business_hours)")
+    stock_level: Optional[str] = Field(None, description="Stock level for data generation (e.g., full, low)")
+    
     # Maintenance information
     maintenance_partner: Optional[str] = Field(None, description="Service provider for maintenance")
     last_maintenance_date: Optional[datetime] = Field(None, description="Date of last maintenance")

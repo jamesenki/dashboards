@@ -37,9 +37,19 @@ async def get_new_water_heater_form(request: Request):
 @router.get("/water-heaters/{heater_id}", response_class=HTMLResponse)
 async def get_water_heater_detail(request: Request, heater_id: str = Path(...)):
     """Render the water heater detail page"""
+    from datetime import datetime
+    from fastapi.responses import RedirectResponse
+    from src.utils.dummy_data import dummy_data
+    
+    # Check if the water heater with the given ID exists
+    if heater_id not in dummy_data.water_heaters:
+        # If not, redirect to the water heater list page
+        return RedirectResponse(url="/water-heaters", status_code=302)
+    
     return templates.TemplateResponse("water-heater/detail.html", {
         "request": request,
-        "heater_id": heater_id
+        "heater_id": heater_id,
+        "now": datetime.now()
     })
 
 @router.get("/water-heaters/{heater_id}/edit", response_class=HTMLResponse)

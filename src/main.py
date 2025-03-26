@@ -1,6 +1,7 @@
 import sys
 import os
 import sys
+import asyncio
 import uvicorn
 import socket
 from fastapi import FastAPI, APIRouter, Request, Response
@@ -17,14 +18,24 @@ if parent_dir not in sys.path:
 # Now imports will work both when running from project root or from src/
 # Water heater API endpoints
 from src.api.water_heater import router as water_heater_api_router
+# Water heater operations API
+from src.api.water_heater_operations import router as water_heater_operations_api_router
+# Water heater history API
+from src.api.water_heater_history import router as water_heater_history_api_router
+# Predictions API
+from src.api.predictions import router as predictions_api_router
 # Basic vending machine management API
 from src.api.vending_machine import router as vending_machine_api_router
 # Polar Delight Ice Cream Machine operations API
 from src.api.vending_machine_operations import router as ice_cream_machine_operations_api_router
 # Realtime operations API
 from src.api.vending_machine_realtime_operations import router as vending_machine_realtime_operations_api_router
+# Database-backed operations API
+from src.api.operations_router_db import router as operations_db_router
 # Web UI routes
 from src.web.routes import router as web_router
+# Database initialization
+from src.db.migration import initialize_db
 
 # Create FastAPI app
 app = FastAPI(title="IoTSphere API", description="API for IoT device management")
@@ -68,13 +79,45 @@ api_router = APIRouter(prefix="/api")
 
 # Include routers under the API prefix
 api_router.include_router(water_heater_api_router)
+api_router.include_router(water_heater_operations_api_router)
+api_router.include_router(water_heater_history_api_router)
+api_router.include_router(predictions_api_router)
 api_router.include_router(vending_machine_api_router)
 api_router.include_router(ice_cream_machine_operations_api_router)
 api_router.include_router(vending_machine_realtime_operations_api_router)
+# Include database-backed operations router
+api_router.include_router(operations_db_router)
 
 # Include API router and web router
 app.include_router(api_router)
 app.include_router(web_router)
+
+@app.on_event("startup")
+async def startup_event():
+    """Initialize database and connections on startup."""
+    from src.db.config import db_settings
+    import logging
+    
+    # Initialize database schema
+    try:
+        await initialize_db()
+        logging.info("Database initialized successfully")
+    except Exception as e:
+        if not db_settings.SUPPRESS_DB_CONNECTION_ERRORS:
+            logging.error(f"Error initializing database: {e}")
+        else:
+            logging.debug(f"Non-critical: Database connection not available: {e}")
+    
+    # Load data from dummy repository to database
+    try:
+        from src.scripts.load_data_to_postgres import load_devices
+        await load_devices()
+        logging.info("Data loaded to PostgreSQL successfully")
+    except Exception as e:
+        if not db_settings.SUPPRESS_DB_CONNECTION_ERRORS:
+            logging.error(f"Error loading data to PostgreSQL: {e}")
+        else:
+            logging.debug(f"Non-critical: Using in-memory storage with JSON persistence instead of PostgreSQL")
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=8006, reload=True)

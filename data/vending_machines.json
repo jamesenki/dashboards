@@ -1,0 +1,7136 @@
+{
+  "vm-61b08570": {
+    "id": "vm-61b08570",
+    "name": "PolarDelight - EcoVend 61b0",
+    "type": "vending_machine",
+    "status": "ONLINE",
+    "location": "West Tower - Suite 101",
+    "last_seen": "2025-03-26 16:42:48.741767",
+    "model_number": "EcoVend-609",
+    "serial_number": "SN-c0d81e1c-c",
+    "machine_status": "OPERATIONAL",
+    "mode": "NORMAL",
+    "temperature": 4.0,
+    "total_capacity": 61,
+    "cash_capacity": 1019.0,
+    "current_cash": 540.3,
+    "location_business_name": "Trader Joe's",
+    "location_type": "SPECIALTY_SHOP",
+    "sub_location": "LOBBY",
+    "use_type": "SELF_SERVE",
+    "usage_pattern": null,
+    "stock_level": null,
+    "maintenance_partner": "IceTech Maintenance Co.",
+    "last_maintenance_date": null,
+    "next_maintenance_date": null,
+    "products": [
+      {
+        "product_id": "prod-f4fd4d90",
+        "name": "Licorice",
+        "price": 4.3,
+        "quantity": 4,
+        "category": "Candy",
+        "location": "A6"
+      },
+      {
+        "product_id": "prod-6a383350",
+        "name": "Mints",
+        "price": 3.73,
+        "quantity": 9,
+        "category": "Candy",
+        "location": "D6"
+      },
+      {
+        "product_id": "prod-eaf4d356",
+        "name": "Mixed Nuts",
+        "price": 3.77,
+        "quantity": 2,
+        "category": "Healthy Options",
+        "location": "E8"
+      },
+      {
+        "product_id": "prod-0d707b20",
+        "name": "Gummy Bears",
+        "price": 1.57,
+        "quantity": 7,
+        "category": "Candy",
+        "location": "D7"
+      },
+      {
+        "product_id": "prod-20f9ae96",
+        "name": "Popcorn",
+        "price": 2.59,
+        "quantity": 6,
+        "category": "Snacks",
+        "location": "A8"
+      },
+      {
+        "product_id": "prod-5bb085e7",
+        "name": "Sparkling Water",
+        "price": 3.5,
+        "quantity": 0,
+        "category": "Beverages",
+        "location": "C7"
+      },
+      {
+        "product_id": "prod-dd3dd24e",
+        "name": "Crunchy Chips",
+        "price": 4.79,
+        "quantity": 9,
+        "category": "Snacks",
+        "location": "B6"
+      },
+      {
+        "product_id": "prod-d8ab11be",
+        "name": "Arctic Blast Soda",
+        "price": 2.94,
+        "quantity": 14,
+        "category": "Beverages",
+        "location": "B5"
+      },
+      {
+        "product_id": "prod-ef388249",
+        "name": "Dried Fruit",
+        "price": 1.99,
+        "quantity": 11,
+        "category": "Healthy Options",
+        "location": "E1"
+      },
+      {
+        "product_id": "prod-d301f21f",
+        "name": "Cheese Crackers",
+        "price": 3.25,
+        "quantity": 2,
+        "category": "Snacks",
+        "location": "A7"
+      },
+      {
+        "product_id": "prod-48763c97",
+        "name": "Hard Candy",
+        "price": 1.37,
+        "quantity": 10,
+        "category": "Candy",
+        "location": "C7"
+      }
+    ],
+    "readings": [
+      {
+        "timestamp": "2025-03-25 16:42:48.741462",
+        "temperature": 4.7,
+        "power_consumption": 185.5,
+        "door_status": "CLOSED",
+        "cash_level": 86.57,
+        "sales_count": 0
+      },
+      {
+        "timestamp": "2025-03-25 17:51:23.027176",
+        "temperature": 4.2,
+        "power_consumption": 237.7,
+        "door_status": "CLOSED",
+        "cash_level": 183.56,
+        "sales_count": 1
+      },
+      {
+        "timestamp": "2025-03-25 18:59:57.312891",
+        "temperature": 4.5,
+        "power_consumption": 133.5,
+        "door_status": "CLOSED",
+        "cash_level": 443.29,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-25 20:08:31.598605",
+        "temperature": 4.3,
+        "power_consumption": 338.6,
+        "door_status": "CLOSED",
+        "cash_level": 274.04,
+        "sales_count": 1
+      },
+      {
+        "timestamp": "2025-03-25 21:17:05.884319",
+        "temperature": 4.1,
+        "power_consumption": 361.2,
+        "door_status": "CLOSED",
+        "cash_level": 339.64,
+        "sales_count": 1
+      },
+      {
+        "timestamp": "2025-03-25 22:25:40.170033",
+        "temperature": 3.9,
+        "power_consumption": 333.7,
+        "door_status": "CLOSED",
+        "cash_level": 61.44,
+        "sales_count": 0
+      },
+      {
+        "timestamp": "2025-03-25 23:34:14.455748",
+        "temperature": 3.8,
+        "power_consumption": 293.7,
+        "door_status": "CLOSED",
+        "cash_level": 407.87,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-26 00:42:48.741462",
+        "temperature": 4.4,
+        "power_consumption": 206.8,
+        "door_status": "CLOSED",
+        "cash_level": 390.24,
+        "sales_count": 2
+      },
+      {
+        "timestamp": "2025-03-26 01:51:23.027176",
+        "temperature": 4.4,
+        "power_consumption": 187.6,
+        "door_status": "CLOSED",
+        "cash_level": 463.99,
+        "sales_count": 2
+      },
+      {
+        "timestamp": "2025-03-26 02:59:57.312891",
+        "temperature": 3.8,
+        "power_consumption": 135.4,
+        "door_status": "OPEN",
+        "cash_level": 470.76,
+        "sales_count": 2
+      },
+      {
+        "timestamp": "2025-03-26 04:08:31.598605",
+        "temperature": 4.1,
+        "power_consumption": 242.6,
+        "door_status": "CLOSED",
+        "cash_level": 364.83,
+        "sales_count": 5
+      },
+      {
+        "timestamp": "2025-03-26 05:17:05.884319",
+        "temperature": 3.7,
+        "power_consumption": 368.6,
+        "door_status": "CLOSED",
+        "cash_level": 489.43,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-26 06:25:40.170033",
+        "temperature": 4.3,
+        "power_consumption": 108.6,
+        "door_status": "CLOSED",
+        "cash_level": 212.59,
+        "sales_count": 0
+      },
+      {
+        "timestamp": "2025-03-26 07:34:14.455748",
+        "temperature": 3.5,
+        "power_consumption": 333.1,
+        "door_status": "CLOSED",
+        "cash_level": 76.88,
+        "sales_count": 2
+      },
+      {
+        "timestamp": "2025-03-26 08:42:48.741462",
+        "temperature": 4.9,
+        "power_consumption": 200.1,
+        "door_status": "CLOSED",
+        "cash_level": 426.52,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-26 09:51:23.027176",
+        "temperature": 4.8,
+        "power_consumption": 334.0,
+        "door_status": "CLOSED",
+        "cash_level": 478.65,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-26 10:59:57.312891",
+        "temperature": 4.2,
+        "power_consumption": 275.3,
+        "door_status": "CLOSED",
+        "cash_level": 43.87,
+        "sales_count": 0
+      },
+      {
+        "timestamp": "2025-03-26 12:08:31.598605",
+        "temperature": 4.8,
+        "power_consumption": 135.0,
+        "door_status": "CLOSED",
+        "cash_level": 88.83,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-26 13:17:05.884319",
+        "temperature": 4.7,
+        "power_consumption": 233.8,
+        "door_status": "CLOSED",
+        "cash_level": 151.18,
+        "sales_count": 5
+      },
+      {
+        "timestamp": "2025-03-26 14:25:40.170033",
+        "temperature": 5.0,
+        "power_consumption": 345.1,
+        "door_status": "CLOSED",
+        "cash_level": 211.87,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-26 15:34:14.455748",
+        "temperature": 4.3,
+        "power_consumption": 331.2,
+        "door_status": "CLOSED",
+        "cash_level": 292.28,
+        "sales_count": 0
+      }
+    ]
+  },
+  "vm-1f358d18": {
+    "id": "vm-1f358d18",
+    "name": "PolarDelight - MaxCapacity 1f35",
+    "type": "vending_machine",
+    "status": "ONLINE",
+    "location": "Factory Floor - Suite 101",
+    "last_seen": "2025-03-26 16:42:48.742048",
+    "model_number": "MaxCapacity-312",
+    "serial_number": "SN-2f484560-8",
+    "machine_status": "OPERATIONAL",
+    "mode": "CLEANING",
+    "temperature": 2.9,
+    "total_capacity": 51,
+    "cash_capacity": 1721.0,
+    "current_cash": 816.97,
+    "location_business_name": "Lincoln Center",
+    "location_type": "OTHER",
+    "sub_location": "LOBBY",
+    "use_type": "SELF_SERVE",
+    "usage_pattern": null,
+    "stock_level": null,
+    "maintenance_partner": "MachineHealth Experts",
+    "last_maintenance_date": null,
+    "next_maintenance_date": null,
+    "products": [
+      {
+        "product_id": "prod-2d65890f",
+        "name": "Caramel Chews",
+        "price": 4.76,
+        "quantity": 15,
+        "category": "Candy",
+        "location": "C4"
+      },
+      {
+        "product_id": "prod-a45a5cec",
+        "name": "Fruit Cup",
+        "price": 1.07,
+        "quantity": 15,
+        "category": "Healthy Options",
+        "location": "B6"
+      },
+      {
+        "product_id": "prod-9c99a6dd",
+        "name": "Veggie Chips",
+        "price": 4.33,
+        "quantity": 15,
+        "category": "Healthy Options",
+        "location": "A7"
+      },
+      {
+        "product_id": "prod-45ade1dd",
+        "name": "Licorice",
+        "price": 2.16,
+        "quantity": 15,
+        "category": "Candy",
+        "location": "B3"
+      },
+      {
+        "product_id": "prod-c48f5df2",
+        "name": "Salad Bowl",
+        "price": 2.9,
+        "quantity": 13,
+        "category": "Meals",
+        "location": "D6"
+      },
+      {
+        "product_id": "prod-ee6c4061",
+        "name": "Nuts Mix",
+        "price": 1.64,
+        "quantity": 7,
+        "category": "Snacks",
+        "location": "D2"
+      },
+      {
+        "product_id": "prod-7b587230",
+        "name": "Pretzel Twists",
+        "price": 2.77,
+        "quantity": 3,
+        "category": "Snacks",
+        "location": "A3"
+      }
+    ],
+    "readings": [
+      {
+        "timestamp": "2025-03-25 16:42:48.741923",
+        "temperature": 2.9,
+        "power_consumption": 365.5,
+        "door_status": "CLOSED",
+        "cash_level": 374.82,
+        "sales_count": 2
+      },
+      {
+        "timestamp": "2025-03-25 19:42:48.741923",
+        "temperature": 2.7,
+        "power_consumption": 223.1,
+        "door_status": "CLOSED",
+        "cash_level": 54.19,
+        "sales_count": 2
+      },
+      {
+        "timestamp": "2025-03-25 22:42:48.741923",
+        "temperature": 3.4,
+        "power_consumption": 161.3,
+        "door_status": "CLOSED",
+        "cash_level": 344.35,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-26 01:42:48.741923",
+        "temperature": 2.5,
+        "power_consumption": 376.2,
+        "door_status": "CLOSED",
+        "cash_level": 60.12,
+        "sales_count": 2
+      },
+      {
+        "timestamp": "2025-03-26 04:42:48.741923",
+        "temperature": 3.1,
+        "power_consumption": 291.5,
+        "door_status": "CLOSED",
+        "cash_level": 402.62,
+        "sales_count": 1
+      },
+      {
+        "timestamp": "2025-03-26 07:42:48.741923",
+        "temperature": 2.9,
+        "power_consumption": 192.0,
+        "door_status": "CLOSED",
+        "cash_level": 31.79,
+        "sales_count": 1
+      },
+      {
+        "timestamp": "2025-03-26 10:42:48.741923",
+        "temperature": 3.0,
+        "power_consumption": 104.0,
+        "door_status": "CLOSED",
+        "cash_level": 243.32,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-26 13:42:48.741923",
+        "temperature": 3.6,
+        "power_consumption": 228.0,
+        "door_status": "CLOSED",
+        "cash_level": 173.25,
+        "sales_count": 1
+      }
+    ]
+  },
+  "vm-24cf3a1d": {
+    "id": "vm-24cf3a1d",
+    "name": "PolarDelight - MaxCapacity 24cf",
+    "type": "vending_machine",
+    "status": "ONLINE",
+    "location": "South Wing - Boiler Room",
+    "last_seen": "2025-03-26 16:42:48.742533",
+    "model_number": "MaxCapacity-130",
+    "serial_number": "SN-73eadee3-6",
+    "machine_status": "OPERATIONAL",
+    "mode": "CLEANING",
+    "temperature": 4.4,
+    "total_capacity": 63,
+    "cash_capacity": 985.0,
+    "current_cash": 680.14,
+    "location_business_name": "Oracle Tower",
+    "location_type": "OFFICE",
+    "sub_location": "HALLWAY",
+    "use_type": "SERVICED",
+    "usage_pattern": null,
+    "stock_level": null,
+    "maintenance_partner": "VendingFix Professionals",
+    "last_maintenance_date": null,
+    "next_maintenance_date": null,
+    "products": [
+      {
+        "product_id": "prod-69b96b61",
+        "name": "Pasta Cup",
+        "price": 1.48,
+        "quantity": 4,
+        "category": "Meals",
+        "location": "E8"
+      },
+      {
+        "product_id": "prod-765a8fd8",
+        "name": "Soup Cup",
+        "price": 1.81,
+        "quantity": 10,
+        "category": "Meals",
+        "location": "B6"
+      },
+      {
+        "product_id": "prod-2ce1ef43",
+        "name": "Soup Cup",
+        "price": 1.18,
+        "quantity": 11,
+        "category": "Meals",
+        "location": "D2"
+      },
+      {
+        "product_id": "prod-bf63b64e",
+        "name": "Iced Coffee",
+        "price": 3.67,
+        "quantity": 1,
+        "category": "Beverages",
+        "location": "A5"
+      },
+      {
+        "product_id": "prod-ee46e61f",
+        "name": "Caramel Chews",
+        "price": 2.12,
+        "quantity": 12,
+        "category": "Candy",
+        "location": "D4"
+      },
+      {
+        "product_id": "prod-00daf1a4",
+        "name": "Iced Coffee",
+        "price": 1.03,
+        "quantity": 15,
+        "category": "Beverages",
+        "location": "E6"
+      }
+    ],
+    "readings": [
+      {
+        "timestamp": "2025-03-25 16:42:48.742261",
+        "temperature": 4.9,
+        "power_consumption": 137.0,
+        "door_status": "CLOSED",
+        "cash_level": 357.95,
+        "sales_count": 1
+      },
+      {
+        "timestamp": "2025-03-25 17:54:48.742261",
+        "temperature": 5.0,
+        "power_consumption": 218.0,
+        "door_status": "CLOSED",
+        "cash_level": 477.12,
+        "sales_count": 0
+      },
+      {
+        "timestamp": "2025-03-25 19:06:48.742261",
+        "temperature": 4.5,
+        "power_consumption": 391.8,
+        "door_status": "CLOSED",
+        "cash_level": 105.18,
+        "sales_count": 1
+      },
+      {
+        "timestamp": "2025-03-25 20:18:48.742261",
+        "temperature": 4.0,
+        "power_consumption": 169.0,
+        "door_status": "CLOSED",
+        "cash_level": 297.18,
+        "sales_count": 1
+      },
+      {
+        "timestamp": "2025-03-25 21:30:48.742261",
+        "temperature": 4.2,
+        "power_consumption": 366.8,
+        "door_status": "CLOSED",
+        "cash_level": 350.51,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-25 22:42:48.742261",
+        "temperature": 4.2,
+        "power_consumption": 364.7,
+        "door_status": "CLOSED",
+        "cash_level": 102.82,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-25 23:54:48.742261",
+        "temperature": 4.3,
+        "power_consumption": 118.3,
+        "door_status": "CLOSED",
+        "cash_level": 248.21,
+        "sales_count": 1
+      },
+      {
+        "timestamp": "2025-03-26 01:06:48.742261",
+        "temperature": 4.0,
+        "power_consumption": 148.8,
+        "door_status": "OPEN",
+        "cash_level": 421.63,
+        "sales_count": 2
+      },
+      {
+        "timestamp": "2025-03-26 02:18:48.742261",
+        "temperature": 4.2,
+        "power_consumption": 372.5,
+        "door_status": "OPEN",
+        "cash_level": 424.94,
+        "sales_count": 5
+      },
+      {
+        "timestamp": "2025-03-26 03:30:48.742261",
+        "temperature": 4.0,
+        "power_consumption": 167.5,
+        "door_status": "CLOSED",
+        "cash_level": 327.75,
+        "sales_count": 0
+      },
+      {
+        "timestamp": "2025-03-26 04:42:48.742261",
+        "temperature": 4.1,
+        "power_consumption": 313.5,
+        "door_status": "CLOSED",
+        "cash_level": 62.49,
+        "sales_count": 2
+      },
+      {
+        "timestamp": "2025-03-26 05:54:48.742261",
+        "temperature": 4.2,
+        "power_consumption": 162.8,
+        "door_status": "OPEN",
+        "cash_level": 351.15,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-26 07:06:48.742261",
+        "temperature": 4.6,
+        "power_consumption": 343.1,
+        "door_status": "CLOSED",
+        "cash_level": 193.21,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-26 08:18:48.742261",
+        "temperature": 5.0,
+        "power_consumption": 195.6,
+        "door_status": "CLOSED",
+        "cash_level": 248.64,
+        "sales_count": 0
+      },
+      {
+        "timestamp": "2025-03-26 09:30:48.742261",
+        "temperature": 5.2,
+        "power_consumption": 273.0,
+        "door_status": "CLOSED",
+        "cash_level": 141.03,
+        "sales_count": 5
+      },
+      {
+        "timestamp": "2025-03-26 10:42:48.742261",
+        "temperature": 4.7,
+        "power_consumption": 172.6,
+        "door_status": "CLOSED",
+        "cash_level": 327.42,
+        "sales_count": 0
+      },
+      {
+        "timestamp": "2025-03-26 11:54:48.742261",
+        "temperature": 4.7,
+        "power_consumption": 360.0,
+        "door_status": "CLOSED",
+        "cash_level": 165.54,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-26 13:06:48.742261",
+        "temperature": 4.8,
+        "power_consumption": 142.6,
+        "door_status": "CLOSED",
+        "cash_level": 129.85,
+        "sales_count": 0
+      },
+      {
+        "timestamp": "2025-03-26 14:18:48.742261",
+        "temperature": 5.0,
+        "power_consumption": 258.2,
+        "door_status": "CLOSED",
+        "cash_level": 359.89,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-26 15:30:48.742261",
+        "temperature": 4.6,
+        "power_consumption": 278.5,
+        "door_status": "CLOSED",
+        "cash_level": 273.91,
+        "sales_count": 4
+      }
+    ]
+  },
+  "vm-77f2b4c4": {
+    "id": "vm-77f2b4c4",
+    "name": "PolarDelight - FrostyPlus 77f2",
+    "type": "vending_machine",
+    "status": "ONLINE",
+    "location": "Apartment 303 - Break Room",
+    "last_seen": "2025-03-26 16:42:48.742918",
+    "model_number": "FrostyPlus-224",
+    "serial_number": "SN-13991d10-4",
+    "machine_status": "OPERATIONAL",
+    "mode": "NORMAL",
+    "temperature": 3.6,
+    "total_capacity": 67,
+    "cash_capacity": 1420.0,
+    "current_cash": 601.79,
+    "location_business_name": "Best Buy",
+    "location_type": "SPECIALTY_SHOP",
+    "sub_location": "HALLWAY",
+    "use_type": "SERVICED",
+    "usage_pattern": null,
+    "stock_level": null,
+    "maintenance_partner": "VendingCare Partners",
+    "last_maintenance_date": null,
+    "next_maintenance_date": null,
+    "products": [
+      {
+        "product_id": "prod-7492714b",
+        "name": "Hard Candy",
+        "price": 4.7,
+        "quantity": 13,
+        "category": "Candy",
+        "location": "E6"
+      },
+      {
+        "product_id": "prod-02435e1e",
+        "name": "Mints",
+        "price": 3.11,
+        "quantity": 3,
+        "category": "Candy",
+        "location": "B1"
+      },
+      {
+        "product_id": "prod-28ec2d31",
+        "name": "Fruit Cup",
+        "price": 3.8,
+        "quantity": 10,
+        "category": "Healthy Options",
+        "location": "B2"
+      },
+      {
+        "product_id": "prod-c6840bd8",
+        "name": "Hummus & Crackers",
+        "price": 2.4,
+        "quantity": 15,
+        "category": "Healthy Options",
+        "location": "E5"
+      },
+      {
+        "product_id": "prod-c726a8a0",
+        "name": "Sandwich",
+        "price": 1.26,
+        "quantity": 0,
+        "category": "Meals",
+        "location": "E8"
+      },
+      {
+        "product_id": "prod-061f3170",
+        "name": "Greek Yogurt",
+        "price": 1.58,
+        "quantity": 8,
+        "category": "Healthy Options",
+        "location": "D1"
+      },
+      {
+        "product_id": "prod-845631c7",
+        "name": "Granola Bar",
+        "price": 3.73,
+        "quantity": 3,
+        "category": "Healthy Options",
+        "location": "B6"
+      },
+      {
+        "product_id": "prod-17933e48",
+        "name": "Nuts Mix",
+        "price": 2.99,
+        "quantity": 5,
+        "category": "Snacks",
+        "location": "E6"
+      },
+      {
+        "product_id": "prod-c2492190",
+        "name": "Veggie Chips",
+        "price": 4.87,
+        "quantity": 5,
+        "category": "Healthy Options",
+        "location": "B7"
+      },
+      {
+        "product_id": "prod-461e511c",
+        "name": "Pasta Cup",
+        "price": 3.82,
+        "quantity": 7,
+        "category": "Meals",
+        "location": "C2"
+      }
+    ],
+    "readings": [
+      {
+        "timestamp": "2025-03-25 16:42:48.742815",
+        "temperature": 4.3,
+        "power_consumption": 390.4,
+        "door_status": "CLOSED",
+        "cash_level": 400.14,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-25 19:42:48.742815",
+        "temperature": 3.4,
+        "power_consumption": 290.1,
+        "door_status": "CLOSED",
+        "cash_level": 467.05,
+        "sales_count": 0
+      },
+      {
+        "timestamp": "2025-03-25 22:42:48.742815",
+        "temperature": 3.7,
+        "power_consumption": 281.4,
+        "door_status": "CLOSED",
+        "cash_level": 208.56,
+        "sales_count": 1
+      },
+      {
+        "timestamp": "2025-03-26 01:42:48.742815",
+        "temperature": 3.3,
+        "power_consumption": 289.2,
+        "door_status": "CLOSED",
+        "cash_level": 300.34,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-26 04:42:48.742815",
+        "temperature": 3.8,
+        "power_consumption": 121.2,
+        "door_status": "CLOSED",
+        "cash_level": 137.72,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-26 07:42:48.742815",
+        "temperature": 4.1,
+        "power_consumption": 306.4,
+        "door_status": "CLOSED",
+        "cash_level": 453.73,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-26 10:42:48.742815",
+        "temperature": 4.5,
+        "power_consumption": 173.9,
+        "door_status": "CLOSED",
+        "cash_level": 165.85,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-26 13:42:48.742815",
+        "temperature": 4.3,
+        "power_consumption": 304.3,
+        "door_status": "CLOSED",
+        "cash_level": 24.59,
+        "sales_count": 0
+      }
+    ]
+  },
+  "vm-6dd6dcbd": {
+    "id": "vm-6dd6dcbd",
+    "name": "PolarDelight - QuickServe 6dd6",
+    "type": "vending_machine",
+    "status": "ONLINE",
+    "location": "West Tower - Garage",
+    "last_seen": "2025-03-26 16:42:48.743397",
+    "model_number": "QuickServe-741",
+    "serial_number": "SN-4dbf1111-3",
+    "machine_status": "NEEDS_RESTOCK",
+    "mode": "NORMAL",
+    "temperature": 3.0,
+    "total_capacity": 41,
+    "cash_capacity": 1606.0,
+    "current_cash": 293.5,
+    "location_business_name": "IBM Building",
+    "location_type": "OFFICE",
+    "sub_location": "WAITING_AREA",
+    "use_type": "SERVICED",
+    "usage_pattern": null,
+    "stock_level": null,
+    "maintenance_partner": "PolarCare Services Inc.",
+    "last_maintenance_date": null,
+    "next_maintenance_date": null,
+    "products": [
+      {
+        "product_id": "prod-06d5db3d",
+        "name": "Soup Cup",
+        "price": 3.72,
+        "quantity": 15,
+        "category": "Meals",
+        "location": "A8"
+      },
+      {
+        "product_id": "prod-e3cd0c65",
+        "name": "Hummus & Crackers",
+        "price": 4.29,
+        "quantity": 6,
+        "category": "Healthy Options",
+        "location": "B7"
+      },
+      {
+        "product_id": "prod-3ff2c31c",
+        "name": "Pasta Cup",
+        "price": 1.03,
+        "quantity": 10,
+        "category": "Meals",
+        "location": "B7"
+      },
+      {
+        "product_id": "prod-360a6d06",
+        "name": "Dried Fruit",
+        "price": 4.16,
+        "quantity": 3,
+        "category": "Healthy Options",
+        "location": "D6"
+      },
+      {
+        "product_id": "prod-8a84c764",
+        "name": "Dried Fruit",
+        "price": 2.26,
+        "quantity": 3,
+        "category": "Healthy Options",
+        "location": "C1"
+      },
+      {
+        "product_id": "prod-6aaf9538",
+        "name": "Granola Bar",
+        "price": 1.45,
+        "quantity": 0,
+        "category": "Healthy Options",
+        "location": "B8"
+      },
+      {
+        "product_id": "prod-c1f404d2",
+        "name": "Rice Bowl",
+        "price": 2.24,
+        "quantity": 5,
+        "category": "Meals",
+        "location": "A1"
+      },
+      {
+        "product_id": "prod-ec933a54",
+        "name": "Rice Crisps",
+        "price": 4.61,
+        "quantity": 5,
+        "category": "Snacks",
+        "location": "B7"
+      },
+      {
+        "product_id": "prod-d0a177be",
+        "name": "Rice Crisps",
+        "price": 1.44,
+        "quantity": 14,
+        "category": "Snacks",
+        "location": "D6"
+      },
+      {
+        "product_id": "prod-f91313e4",
+        "name": "Fruit Cup",
+        "price": 3.88,
+        "quantity": 3,
+        "category": "Healthy Options",
+        "location": "E7"
+      },
+      {
+        "product_id": "prod-78133a72",
+        "name": "Chocolate Bar",
+        "price": 1.68,
+        "quantity": 14,
+        "category": "Candy",
+        "location": "C5"
+      },
+      {
+        "product_id": "prod-288852df",
+        "name": "Burrito",
+        "price": 3.8,
+        "quantity": 6,
+        "category": "Meals",
+        "location": "B1"
+      },
+      {
+        "product_id": "prod-6e666323",
+        "name": "Arctic Blast Soda",
+        "price": 4.67,
+        "quantity": 5,
+        "category": "Beverages",
+        "location": "E8"
+      },
+      {
+        "product_id": "prod-69445f90",
+        "name": "Soup Cup",
+        "price": 2.66,
+        "quantity": 13,
+        "category": "Meals",
+        "location": "B3"
+      }
+    ],
+    "readings": [
+      {
+        "timestamp": "2025-03-25 16:42:48.743263",
+        "temperature": 3.7,
+        "power_consumption": 112.1,
+        "door_status": "CLOSED",
+        "cash_level": 185.41,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-25 18:53:43.288718",
+        "temperature": 3.4,
+        "power_consumption": 361.7,
+        "door_status": "CLOSED",
+        "cash_level": 447.58,
+        "sales_count": 2
+      },
+      {
+        "timestamp": "2025-03-25 21:04:37.834172",
+        "temperature": 2.5,
+        "power_consumption": 246.2,
+        "door_status": "CLOSED",
+        "cash_level": 305.34,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-25 23:15:32.379627",
+        "temperature": 2.5,
+        "power_consumption": 354.1,
+        "door_status": "CLOSED",
+        "cash_level": 215.56,
+        "sales_count": 0
+      },
+      {
+        "timestamp": "2025-03-26 01:26:26.925081",
+        "temperature": 2.7,
+        "power_consumption": 230.4,
+        "door_status": "CLOSED",
+        "cash_level": 497.06,
+        "sales_count": 5
+      },
+      {
+        "timestamp": "2025-03-26 03:37:21.470536",
+        "temperature": 3.3,
+        "power_consumption": 237.5,
+        "door_status": "CLOSED",
+        "cash_level": 84.69,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-26 05:48:16.015990",
+        "temperature": 2.9,
+        "power_consumption": 382.9,
+        "door_status": "CLOSED",
+        "cash_level": 352.43,
+        "sales_count": 1
+      },
+      {
+        "timestamp": "2025-03-26 07:59:10.561445",
+        "temperature": 2.8,
+        "power_consumption": 374.1,
+        "door_status": "CLOSED",
+        "cash_level": 350.58,
+        "sales_count": 5
+      },
+      {
+        "timestamp": "2025-03-26 10:10:05.106899",
+        "temperature": 3.3,
+        "power_consumption": 199.3,
+        "door_status": "OPEN",
+        "cash_level": 122.42,
+        "sales_count": 0
+      },
+      {
+        "timestamp": "2025-03-26 12:20:59.652354",
+        "temperature": 3.1,
+        "power_consumption": 274.1,
+        "door_status": "CLOSED",
+        "cash_level": 209.02,
+        "sales_count": 5
+      },
+      {
+        "timestamp": "2025-03-26 14:31:54.197808",
+        "temperature": 3.7,
+        "power_consumption": 142.7,
+        "door_status": "CLOSED",
+        "cash_level": 248.86,
+        "sales_count": 3
+      }
+    ]
+  },
+  "vm-29979e66": {
+    "id": "vm-29979e66",
+    "name": "PolarDelight - FrostyPlus 2997",
+    "type": "vending_machine",
+    "status": "ONLINE",
+    "location": "Apartment 101 - Janitor Closet",
+    "last_seen": "2025-03-26 16:42:48.743933",
+    "model_number": "FrostyPlus-882",
+    "serial_number": "SN-0f9df027-e",
+    "machine_status": "OPERATIONAL",
+    "mode": "NORMAL",
+    "temperature": 4.8,
+    "total_capacity": 49,
+    "cash_capacity": 713.0,
+    "current_cash": 663.33,
+    "location_business_name": "Intel Campus",
+    "location_type": "OFFICE",
+    "sub_location": "CAFETERIA",
+    "use_type": "SELF_SERVE",
+    "usage_pattern": null,
+    "stock_level": null,
+    "maintenance_partner": "VendingFix Professionals",
+    "last_maintenance_date": null,
+    "next_maintenance_date": null,
+    "products": [
+      {
+        "product_id": "prod-4bcdd2d9",
+        "name": "Caramel Chews",
+        "price": 1.27,
+        "quantity": 7,
+        "category": "Candy",
+        "location": "A3"
+      },
+      {
+        "product_id": "prod-cb837c66",
+        "name": "Gummy Bears",
+        "price": 3.28,
+        "quantity": 1,
+        "category": "Candy",
+        "location": "E8"
+      },
+      {
+        "product_id": "prod-8dca8cf7",
+        "name": "Burrito",
+        "price": 4.94,
+        "quantity": 15,
+        "category": "Meals",
+        "location": "A6"
+      },
+      {
+        "product_id": "prod-a714b8dd",
+        "name": "Sparkling Water",
+        "price": 2.12,
+        "quantity": 11,
+        "category": "Beverages",
+        "location": "B6"
+      },
+      {
+        "product_id": "prod-58a5ef4b",
+        "name": "Rice Crisps",
+        "price": 1.34,
+        "quantity": 5,
+        "category": "Snacks",
+        "location": "D1"
+      },
+      {
+        "product_id": "prod-fd27ef55",
+        "name": "Trail Mix",
+        "price": 2.43,
+        "quantity": 15,
+        "category": "Snacks",
+        "location": "D4"
+      },
+      {
+        "product_id": "prod-621b828b",
+        "name": "Greek Yogurt",
+        "price": 3.33,
+        "quantity": 8,
+        "category": "Healthy Options",
+        "location": "E6"
+      },
+      {
+        "product_id": "prod-ef2c91eb",
+        "name": "Fruit Cup",
+        "price": 2.33,
+        "quantity": 11,
+        "category": "Healthy Options",
+        "location": "E6"
+      },
+      {
+        "product_id": "prod-1d2a9998",
+        "name": "Sour Candy",
+        "price": 3.94,
+        "quantity": 2,
+        "category": "Candy",
+        "location": "A1"
+      },
+      {
+        "product_id": "prod-4ff90a50",
+        "name": "Protein Bar",
+        "price": 3.86,
+        "quantity": 13,
+        "category": "Snacks",
+        "location": "D6"
+      }
+    ],
+    "readings": [
+      {
+        "timestamp": "2025-03-25 16:42:48.743654",
+        "temperature": 5.0,
+        "power_consumption": 192.9,
+        "door_status": "CLOSED",
+        "cash_level": 452.95,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-25 17:42:48.743654",
+        "temperature": 5.6,
+        "power_consumption": 179.9,
+        "door_status": "CLOSED",
+        "cash_level": 336.36,
+        "sales_count": 0
+      },
+      {
+        "timestamp": "2025-03-25 18:42:48.743654",
+        "temperature": 5.4,
+        "power_consumption": 247.4,
+        "door_status": "CLOSED",
+        "cash_level": 460.49,
+        "sales_count": 0
+      },
+      {
+        "timestamp": "2025-03-25 19:42:48.743654",
+        "temperature": 4.4,
+        "power_consumption": 279.2,
+        "door_status": "CLOSED",
+        "cash_level": 67.76,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-25 20:42:48.743654",
+        "temperature": 5.2,
+        "power_consumption": 142.6,
+        "door_status": "CLOSED",
+        "cash_level": 342.76,
+        "sales_count": 0
+      },
+      {
+        "timestamp": "2025-03-25 21:42:48.743654",
+        "temperature": 5.0,
+        "power_consumption": 230.5,
+        "door_status": "CLOSED",
+        "cash_level": 432.06,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-25 22:42:48.743654",
+        "temperature": 5.2,
+        "power_consumption": 243.2,
+        "door_status": "CLOSED",
+        "cash_level": 331.18,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-25 23:42:48.743654",
+        "temperature": 5.1,
+        "power_consumption": 362.1,
+        "door_status": "CLOSED",
+        "cash_level": 328.72,
+        "sales_count": 0
+      },
+      {
+        "timestamp": "2025-03-26 00:42:48.743654",
+        "temperature": 4.4,
+        "power_consumption": 392.4,
+        "door_status": "CLOSED",
+        "cash_level": 187.76,
+        "sales_count": 1
+      },
+      {
+        "timestamp": "2025-03-26 01:42:48.743654",
+        "temperature": 4.4,
+        "power_consumption": 288.1,
+        "door_status": "CLOSED",
+        "cash_level": 245.83,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-26 02:42:48.743654",
+        "temperature": 4.7,
+        "power_consumption": 319.8,
+        "door_status": "CLOSED",
+        "cash_level": 207.04,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-26 03:42:48.743654",
+        "temperature": 5.0,
+        "power_consumption": 208.0,
+        "door_status": "CLOSED",
+        "cash_level": 134.71,
+        "sales_count": 2
+      },
+      {
+        "timestamp": "2025-03-26 04:42:48.743654",
+        "temperature": 5.0,
+        "power_consumption": 296.2,
+        "door_status": "CLOSED",
+        "cash_level": 150.43,
+        "sales_count": 5
+      },
+      {
+        "timestamp": "2025-03-26 05:42:48.743654",
+        "temperature": 4.6,
+        "power_consumption": 252.8,
+        "door_status": "CLOSED",
+        "cash_level": 458.93,
+        "sales_count": 1
+      },
+      {
+        "timestamp": "2025-03-26 06:42:48.743654",
+        "temperature": 4.8,
+        "power_consumption": 390.5,
+        "door_status": "CLOSED",
+        "cash_level": 460.02,
+        "sales_count": 2
+      },
+      {
+        "timestamp": "2025-03-26 07:42:48.743654",
+        "temperature": 4.8,
+        "power_consumption": 147.1,
+        "door_status": "CLOSED",
+        "cash_level": 276.36,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-26 08:42:48.743654",
+        "temperature": 5.0,
+        "power_consumption": 136.4,
+        "door_status": "CLOSED",
+        "cash_level": 21.09,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-26 09:42:48.743654",
+        "temperature": 5.6,
+        "power_consumption": 217.6,
+        "door_status": "CLOSED",
+        "cash_level": 361.36,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-26 10:42:48.743654",
+        "temperature": 5.4,
+        "power_consumption": 357.3,
+        "door_status": "CLOSED",
+        "cash_level": 387.37,
+        "sales_count": 2
+      },
+      {
+        "timestamp": "2025-03-26 11:42:48.743654",
+        "temperature": 4.9,
+        "power_consumption": 118.6,
+        "door_status": "CLOSED",
+        "cash_level": 303.48,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-26 12:42:48.743654",
+        "temperature": 5.4,
+        "power_consumption": 154.4,
+        "door_status": "CLOSED",
+        "cash_level": 474.24,
+        "sales_count": 5
+      },
+      {
+        "timestamp": "2025-03-26 13:42:48.743654",
+        "temperature": 5.6,
+        "power_consumption": 297.7,
+        "door_status": "CLOSED",
+        "cash_level": 399.41,
+        "sales_count": 0
+      },
+      {
+        "timestamp": "2025-03-26 14:42:48.743654",
+        "temperature": 5.5,
+        "power_consumption": 136.0,
+        "door_status": "CLOSED",
+        "cash_level": 93.33,
+        "sales_count": 0
+      },
+      {
+        "timestamp": "2025-03-26 15:42:48.743654",
+        "temperature": 5.4,
+        "power_consumption": 296.5,
+        "door_status": "OPEN",
+        "cash_level": 486.3,
+        "sales_count": 4
+      }
+    ]
+  },
+  "vm-339a1bbe": {
+    "id": "vm-339a1bbe",
+    "name": "PolarDelight - AutoSell 339a",
+    "type": "vending_machine",
+    "status": "ONLINE",
+    "location": "West Tower - Bathroom",
+    "last_seen": "2025-03-26 16:42:48.744484",
+    "model_number": "AutoSell-754",
+    "serial_number": "SN-3a2de3cc-a",
+    "machine_status": "OPERATIONAL",
+    "mode": "NORMAL",
+    "temperature": 4.4,
+    "total_capacity": 77,
+    "cash_capacity": 1907.0,
+    "current_cash": 979.12,
+    "location_business_name": "Central Park",
+    "location_type": "OTHER",
+    "sub_location": "WAITING_AREA",
+    "use_type": "SERVICED",
+    "usage_pattern": null,
+    "stock_level": null,
+    "maintenance_partner": "FrostyFix Solutions",
+    "last_maintenance_date": null,
+    "next_maintenance_date": null,
+    "products": [
+      {
+        "product_id": "prod-ea6e6173",
+        "name": "Mixed Nuts",
+        "price": 4.76,
+        "quantity": 0,
+        "category": "Healthy Options",
+        "location": "A6"
+      },
+      {
+        "product_id": "prod-7d929122",
+        "name": "Dried Fruit",
+        "price": 3.56,
+        "quantity": 8,
+        "category": "Healthy Options",
+        "location": "B1"
+      },
+      {
+        "product_id": "prod-b6eb9d64",
+        "name": "Dried Fruit",
+        "price": 3.4,
+        "quantity": 15,
+        "category": "Healthy Options",
+        "location": "C4"
+      },
+      {
+        "product_id": "prod-a74fc9d5",
+        "name": "Rice Crisps",
+        "price": 2.58,
+        "quantity": 3,
+        "category": "Snacks",
+        "location": "C6"
+      },
+      {
+        "product_id": "prod-f612e4db",
+        "name": "Popcorn",
+        "price": 3.6,
+        "quantity": 12,
+        "category": "Snacks",
+        "location": "E6"
+      },
+      {
+        "product_id": "prod-51bde6bb",
+        "name": "Protein Bar",
+        "price": 4.88,
+        "quantity": 3,
+        "category": "Snacks",
+        "location": "C7"
+      },
+      {
+        "product_id": "prod-bd009e45",
+        "name": "Licorice",
+        "price": 4.39,
+        "quantity": 6,
+        "category": "Candy",
+        "location": "C6"
+      },
+      {
+        "product_id": "prod-d8570a66",
+        "name": "Granola Bar",
+        "price": 4.26,
+        "quantity": 10,
+        "category": "Healthy Options",
+        "location": "C3"
+      },
+      {
+        "product_id": "prod-486df9db",
+        "name": "Fruit Cup",
+        "price": 3.1,
+        "quantity": 8,
+        "category": "Healthy Options",
+        "location": "E6"
+      },
+      {
+        "product_id": "prod-d49ea44d",
+        "name": "Polar Chill Water",
+        "price": 4.8,
+        "quantity": 14,
+        "category": "Beverages",
+        "location": "B2"
+      },
+      {
+        "product_id": "prod-1ee832a2",
+        "name": "Pasta Cup",
+        "price": 3.9,
+        "quantity": 10,
+        "category": "Meals",
+        "location": "A1"
+      },
+      {
+        "product_id": "prod-84d7d685",
+        "name": "Sandwich",
+        "price": 3.2,
+        "quantity": 13,
+        "category": "Meals",
+        "location": "B6"
+      },
+      {
+        "product_id": "prod-7ce398cd",
+        "name": "Fruit Cup",
+        "price": 1.71,
+        "quantity": 6,
+        "category": "Healthy Options",
+        "location": "B6"
+      },
+      {
+        "product_id": "prod-20c75e68",
+        "name": "Crunchy Chips",
+        "price": 1.66,
+        "quantity": 8,
+        "category": "Snacks",
+        "location": "C1"
+      }
+    ],
+    "readings": [
+      {
+        "timestamp": "2025-03-25 16:42:48.744368",
+        "temperature": 5.2,
+        "power_consumption": 343.0,
+        "door_status": "CLOSED",
+        "cash_level": 83.52,
+        "sales_count": 0
+      },
+      {
+        "timestamp": "2025-03-25 19:22:48.744368",
+        "temperature": 3.9,
+        "power_consumption": 133.3,
+        "door_status": "CLOSED",
+        "cash_level": 421.73,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-25 22:02:48.744368",
+        "temperature": 4.2,
+        "power_consumption": 217.6,
+        "door_status": "CLOSED",
+        "cash_level": 469.76,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-26 00:42:48.744368",
+        "temperature": 4.5,
+        "power_consumption": 360.9,
+        "door_status": "CLOSED",
+        "cash_level": 213.23,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-26 03:22:48.744368",
+        "temperature": 4.9,
+        "power_consumption": 331.9,
+        "door_status": "CLOSED",
+        "cash_level": 250.05,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-26 06:02:48.744368",
+        "temperature": 4.3,
+        "power_consumption": 171.1,
+        "door_status": "CLOSED",
+        "cash_level": 343.51,
+        "sales_count": 5
+      },
+      {
+        "timestamp": "2025-03-26 08:42:48.744368",
+        "temperature": 5.2,
+        "power_consumption": 254.8,
+        "door_status": "CLOSED",
+        "cash_level": 86.26,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-26 11:22:48.744368",
+        "temperature": 5.2,
+        "power_consumption": 133.9,
+        "door_status": "CLOSED",
+        "cash_level": 333.88,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-26 14:02:48.744368",
+        "temperature": 5.1,
+        "power_consumption": 244.0,
+        "door_status": "CLOSED",
+        "cash_level": 153.31,
+        "sales_count": 2
+      }
+    ]
+  },
+  "vm-7daff9e0": {
+    "id": "vm-7daff9e0",
+    "name": "PolarDelight - MaxCapacity 7daf",
+    "type": "vending_machine",
+    "status": "ONLINE",
+    "location": "Building A - Laundry Room",
+    "last_seen": "2025-03-26 16:42:48.744844",
+    "model_number": "MaxCapacity-304",
+    "serial_number": "SN-14b7aee3-0",
+    "machine_status": "OUT_OF_STOCK",
+    "mode": "NORMAL",
+    "temperature": 2.9,
+    "total_capacity": 39,
+    "cash_capacity": 1312.0,
+    "current_cash": 464.53,
+    "location_business_name": "Kennedy High",
+    "location_type": "SCHOOL",
+    "sub_location": "DINING_AREA",
+    "use_type": "SELF_SERVE",
+    "usage_pattern": null,
+    "stock_level": null,
+    "maintenance_partner": "VendingCare Partners",
+    "last_maintenance_date": null,
+    "next_maintenance_date": null,
+    "products": [
+      {
+        "product_id": "prod-2d24ec8c",
+        "name": "Instant Noodles",
+        "price": 2.13,
+        "quantity": 0,
+        "category": "Meals",
+        "location": "E3"
+      },
+      {
+        "product_id": "prod-2da05691",
+        "name": "Pretzel Twists",
+        "price": 1.71,
+        "quantity": 10,
+        "category": "Snacks",
+        "location": "D8"
+      },
+      {
+        "product_id": "prod-2f34cd1a",
+        "name": "Hard Candy",
+        "price": 4.09,
+        "quantity": 4,
+        "category": "Candy",
+        "location": "A3"
+      },
+      {
+        "product_id": "prod-2e545421",
+        "name": "Greek Yogurt",
+        "price": 1.32,
+        "quantity": 11,
+        "category": "Healthy Options",
+        "location": "B6"
+      },
+      {
+        "product_id": "prod-115a2222",
+        "name": "Licorice",
+        "price": 3.65,
+        "quantity": 12,
+        "category": "Candy",
+        "location": "B8"
+      },
+      {
+        "product_id": "prod-effc72cb",
+        "name": "Iced Coffee",
+        "price": 4.75,
+        "quantity": 8,
+        "category": "Beverages",
+        "location": "D1"
+      },
+      {
+        "product_id": "prod-178b02e9",
+        "name": "Polar Chill Water",
+        "price": 2.95,
+        "quantity": 13,
+        "category": "Beverages",
+        "location": "D7"
+      },
+      {
+        "product_id": "prod-f9417646",
+        "name": "Hummus & Crackers",
+        "price": 4.48,
+        "quantity": 8,
+        "category": "Healthy Options",
+        "location": "E4"
+      },
+      {
+        "product_id": "prod-caa7c442",
+        "name": "Greek Yogurt",
+        "price": 2.13,
+        "quantity": 1,
+        "category": "Healthy Options",
+        "location": "D1"
+      },
+      {
+        "product_id": "prod-e4559978",
+        "name": "Sandwich",
+        "price": 4.36,
+        "quantity": 1,
+        "category": "Meals",
+        "location": "C8"
+      }
+    ],
+    "readings": [
+      {
+        "timestamp": "2025-03-25 16:42:48.744746",
+        "temperature": 3.3,
+        "power_consumption": 145.1,
+        "door_status": "CLOSED",
+        "cash_level": 465.7,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-25 19:42:48.744746",
+        "temperature": 2.8,
+        "power_consumption": 296.2,
+        "door_status": "CLOSED",
+        "cash_level": 317.67,
+        "sales_count": 2
+      },
+      {
+        "timestamp": "2025-03-25 22:42:48.744746",
+        "temperature": 2.5,
+        "power_consumption": 147.9,
+        "door_status": "CLOSED",
+        "cash_level": 278.37,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-26 01:42:48.744746",
+        "temperature": 2.5,
+        "power_consumption": 340.4,
+        "door_status": "CLOSED",
+        "cash_level": 382.21,
+        "sales_count": 0
+      },
+      {
+        "timestamp": "2025-03-26 04:42:48.744746",
+        "temperature": 2.8,
+        "power_consumption": 124.8,
+        "door_status": "CLOSED",
+        "cash_level": 46.48,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-26 07:42:48.744746",
+        "temperature": 2.8,
+        "power_consumption": 103.2,
+        "door_status": "CLOSED",
+        "cash_level": 79.29,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-26 10:42:48.744746",
+        "temperature": 3.1,
+        "power_consumption": 330.6,
+        "door_status": "CLOSED",
+        "cash_level": 22.99,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-26 13:42:48.744746",
+        "temperature": 3.0,
+        "power_consumption": 258.3,
+        "door_status": "CLOSED",
+        "cash_level": 145.1,
+        "sales_count": 1
+      }
+    ]
+  },
+  "vm-12ec191f": {
+    "id": "vm-12ec191f",
+    "name": "PolarDelight - MK-500 12ec",
+    "type": "vending_machine",
+    "status": "ONLINE",
+    "location": "South Wing - Bathroom",
+    "last_seen": "2025-03-26 16:42:48.745541",
+    "model_number": "MK-500-743",
+    "serial_number": "SN-ed93bd73-e",
+    "machine_status": "OPERATIONAL",
+    "mode": "NORMAL",
+    "temperature": 3.1,
+    "total_capacity": 41,
+    "cash_capacity": 1797.0,
+    "current_cash": 525.91,
+    "location_business_name": "Atlanta Airport",
+    "location_type": "TRANSPORTATION",
+    "sub_location": "CAFETERIA",
+    "use_type": "SERVICED",
+    "usage_pattern": null,
+    "stock_level": null,
+    "maintenance_partner": "PolarCare Services Inc.",
+    "last_maintenance_date": null,
+    "next_maintenance_date": null,
+    "products": [
+      {
+        "product_id": "prod-62d1864b",
+        "name": "Hard Candy",
+        "price": 2.75,
+        "quantity": 10,
+        "category": "Candy",
+        "location": "D6"
+      },
+      {
+        "product_id": "prod-8be80d59",
+        "name": "Chocolate Cookies",
+        "price": 4.4,
+        "quantity": 7,
+        "category": "Candy",
+        "location": "E6"
+      },
+      {
+        "product_id": "prod-2c02d03c",
+        "name": "Mints",
+        "price": 1.68,
+        "quantity": 8,
+        "category": "Candy",
+        "location": "A2"
+      },
+      {
+        "product_id": "prod-2288e968",
+        "name": "Licorice",
+        "price": 4.99,
+        "quantity": 7,
+        "category": "Candy",
+        "location": "B7"
+      },
+      {
+        "product_id": "prod-8e02301c",
+        "name": "Nuts Mix",
+        "price": 1.54,
+        "quantity": 14,
+        "category": "Snacks",
+        "location": "A5"
+      },
+      {
+        "product_id": "prod-43d472e5",
+        "name": "Iced Coffee",
+        "price": 4.05,
+        "quantity": 14,
+        "category": "Beverages",
+        "location": "A5"
+      },
+      {
+        "product_id": "prod-03f40d32",
+        "name": "Trail Mix",
+        "price": 1.76,
+        "quantity": 9,
+        "category": "Snacks",
+        "location": "E2"
+      },
+      {
+        "product_id": "prod-3b354577",
+        "name": "Sparkling Water",
+        "price": 2.0,
+        "quantity": 4,
+        "category": "Beverages",
+        "location": "C8"
+      },
+      {
+        "product_id": "prod-e9c5b669",
+        "name": "Chocolate Cookies",
+        "price": 1.38,
+        "quantity": 12,
+        "category": "Candy",
+        "location": "D4"
+      },
+      {
+        "product_id": "prod-5a38ab6c",
+        "name": "Pasta Cup",
+        "price": 4.12,
+        "quantity": 1,
+        "category": "Meals",
+        "location": "D3"
+      },
+      {
+        "product_id": "prod-d11c23d9",
+        "name": "Rice Crisps",
+        "price": 1.25,
+        "quantity": 10,
+        "category": "Snacks",
+        "location": "E1"
+      },
+      {
+        "product_id": "prod-e6865812",
+        "name": "Iced Tea",
+        "price": 3.74,
+        "quantity": 10,
+        "category": "Beverages",
+        "location": "A8"
+      },
+      {
+        "product_id": "prod-665eabac",
+        "name": "Chocolate Cookies",
+        "price": 2.75,
+        "quantity": 4,
+        "category": "Candy",
+        "location": "B3"
+      }
+    ],
+    "readings": [
+      {
+        "timestamp": "2025-03-25 16:42:48.745192",
+        "temperature": 3.3,
+        "power_consumption": 146.4,
+        "door_status": "CLOSED",
+        "cash_level": 136.76,
+        "sales_count": 0
+      },
+      {
+        "timestamp": "2025-03-25 17:42:48.745192",
+        "temperature": 3.9,
+        "power_consumption": 169.0,
+        "door_status": "CLOSED",
+        "cash_level": 173.19,
+        "sales_count": 2
+      },
+      {
+        "timestamp": "2025-03-25 18:42:48.745192",
+        "temperature": 3.1,
+        "power_consumption": 321.6,
+        "door_status": "CLOSED",
+        "cash_level": 452.03,
+        "sales_count": 0
+      },
+      {
+        "timestamp": "2025-03-25 19:42:48.745192",
+        "temperature": 3.0,
+        "power_consumption": 147.8,
+        "door_status": "CLOSED",
+        "cash_level": 424.66,
+        "sales_count": 2
+      },
+      {
+        "timestamp": "2025-03-25 20:42:48.745192",
+        "temperature": 2.9,
+        "power_consumption": 251.3,
+        "door_status": "OPEN",
+        "cash_level": 88.03,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-25 21:42:48.745192",
+        "temperature": 3.6,
+        "power_consumption": 399.8,
+        "door_status": "CLOSED",
+        "cash_level": 69.0,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-25 22:42:48.745192",
+        "temperature": 3.0,
+        "power_consumption": 359.3,
+        "door_status": "CLOSED",
+        "cash_level": 318.64,
+        "sales_count": 0
+      },
+      {
+        "timestamp": "2025-03-25 23:42:48.745192",
+        "temperature": 3.3,
+        "power_consumption": 337.5,
+        "door_status": "CLOSED",
+        "cash_level": 311.92,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-26 00:42:48.745192",
+        "temperature": 3.4,
+        "power_consumption": 114.7,
+        "door_status": "CLOSED",
+        "cash_level": 314.63,
+        "sales_count": 5
+      },
+      {
+        "timestamp": "2025-03-26 01:42:48.745192",
+        "temperature": 2.7,
+        "power_consumption": 195.0,
+        "door_status": "CLOSED",
+        "cash_level": 469.3,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-26 02:42:48.745192",
+        "temperature": 2.6,
+        "power_consumption": 250.4,
+        "door_status": "CLOSED",
+        "cash_level": 128.86,
+        "sales_count": 2
+      },
+      {
+        "timestamp": "2025-03-26 03:42:48.745192",
+        "temperature": 3.6,
+        "power_consumption": 266.5,
+        "door_status": "CLOSED",
+        "cash_level": 115.65,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-26 04:42:48.745192",
+        "temperature": 3.5,
+        "power_consumption": 184.8,
+        "door_status": "CLOSED",
+        "cash_level": 285.46,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-26 05:42:48.745192",
+        "temperature": 2.8,
+        "power_consumption": 136.4,
+        "door_status": "CLOSED",
+        "cash_level": 431.74,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-26 06:42:48.745192",
+        "temperature": 3.4,
+        "power_consumption": 112.0,
+        "door_status": "CLOSED",
+        "cash_level": 173.37,
+        "sales_count": 2
+      },
+      {
+        "timestamp": "2025-03-26 07:42:48.745192",
+        "temperature": 2.8,
+        "power_consumption": 342.6,
+        "door_status": "CLOSED",
+        "cash_level": 110.15,
+        "sales_count": 1
+      },
+      {
+        "timestamp": "2025-03-26 08:42:48.745192",
+        "temperature": 4.0,
+        "power_consumption": 150.0,
+        "door_status": "CLOSED",
+        "cash_level": 23.72,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-26 09:42:48.745192",
+        "temperature": 3.3,
+        "power_consumption": 335.8,
+        "door_status": "CLOSED",
+        "cash_level": 280.72,
+        "sales_count": 0
+      },
+      {
+        "timestamp": "2025-03-26 10:42:48.745192",
+        "temperature": 3.5,
+        "power_consumption": 232.5,
+        "door_status": "CLOSED",
+        "cash_level": 454.02,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-26 11:42:48.745192",
+        "temperature": 3.4,
+        "power_consumption": 353.7,
+        "door_status": "CLOSED",
+        "cash_level": 366.98,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-26 12:42:48.745192",
+        "temperature": 4.1,
+        "power_consumption": 144.6,
+        "door_status": "CLOSED",
+        "cash_level": 478.27,
+        "sales_count": 2
+      },
+      {
+        "timestamp": "2025-03-26 13:42:48.745192",
+        "temperature": 3.7,
+        "power_consumption": 338.7,
+        "door_status": "CLOSED",
+        "cash_level": 238.66,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-26 14:42:48.745192",
+        "temperature": 4.1,
+        "power_consumption": 134.0,
+        "door_status": "CLOSED",
+        "cash_level": 239.39,
+        "sales_count": 0
+      },
+      {
+        "timestamp": "2025-03-26 15:42:48.745192",
+        "temperature": 3.9,
+        "power_consumption": 299.9,
+        "door_status": "CLOSED",
+        "cash_level": 281.99,
+        "sales_count": 2
+      }
+    ]
+  },
+  "vm-3e189e59": {
+    "id": "vm-3e189e59",
+    "name": "PolarDelight - MK-500 3e18",
+    "type": "vending_machine",
+    "status": "ONLINE",
+    "location": "South Wing - Garage",
+    "last_seen": "2025-03-26 16:42:48.746130",
+    "model_number": "MK-500-717",
+    "serial_number": "SN-a7ef7222-c",
+    "machine_status": "OPERATIONAL",
+    "mode": "NORMAL",
+    "temperature": 2.6,
+    "total_capacity": 74,
+    "cash_capacity": 1074.0,
+    "current_cash": 919.6,
+    "location_business_name": "Apple Park",
+    "location_type": "OFFICE",
+    "sub_location": "LOBBY",
+    "use_type": "SERVICED",
+    "usage_pattern": null,
+    "stock_level": null,
+    "maintenance_partner": "CoolServe Technicians",
+    "last_maintenance_date": null,
+    "next_maintenance_date": null,
+    "products": [
+      {
+        "product_id": "prod-a983465c",
+        "name": "Fruit Cup",
+        "price": 1.47,
+        "quantity": 15,
+        "category": "Healthy Options",
+        "location": "A3"
+      },
+      {
+        "product_id": "prod-bc2eab3b",
+        "name": "Crunchy Chips",
+        "price": 3.58,
+        "quantity": 7,
+        "category": "Snacks",
+        "location": "B2"
+      },
+      {
+        "product_id": "prod-212b22e9",
+        "name": "Protein Bar",
+        "price": 3.82,
+        "quantity": 0,
+        "category": "Snacks",
+        "location": "C7"
+      },
+      {
+        "product_id": "prod-1db81549",
+        "name": "Salad Bowl",
+        "price": 1.69,
+        "quantity": 5,
+        "category": "Meals",
+        "location": "C4"
+      },
+      {
+        "product_id": "prod-bc3aba39",
+        "name": "Mountain Fresh Juice",
+        "price": 3.97,
+        "quantity": 9,
+        "category": "Beverages",
+        "location": "E2"
+      },
+      {
+        "product_id": "prod-22243005",
+        "name": "Licorice",
+        "price": 4.24,
+        "quantity": 9,
+        "category": "Candy",
+        "location": "D6"
+      },
+      {
+        "product_id": "prod-43f18765",
+        "name": "Licorice",
+        "price": 4.61,
+        "quantity": 12,
+        "category": "Candy",
+        "location": "C6"
+      },
+      {
+        "product_id": "prod-787ca146",
+        "name": "Energy Shot",
+        "price": 1.13,
+        "quantity": 5,
+        "category": "Beverages",
+        "location": "E7"
+      },
+      {
+        "product_id": "prod-b96f43e1",
+        "name": "Rice Bowl",
+        "price": 1.21,
+        "quantity": 13,
+        "category": "Meals",
+        "location": "E4"
+      },
+      {
+        "product_id": "prod-00da6dc6",
+        "name": "Soup Cup",
+        "price": 3.37,
+        "quantity": 9,
+        "category": "Meals",
+        "location": "A8"
+      },
+      {
+        "product_id": "prod-7844c44c",
+        "name": "Mountain Fresh Juice",
+        "price": 3.56,
+        "quantity": 2,
+        "category": "Beverages",
+        "location": "C2"
+      },
+      {
+        "product_id": "prod-52d134f2",
+        "name": "Crunchy Chips",
+        "price": 4.42,
+        "quantity": 9,
+        "category": "Snacks",
+        "location": "D2"
+      },
+      {
+        "product_id": "prod-6523859d",
+        "name": "Fruit Smoothie",
+        "price": 3.12,
+        "quantity": 4,
+        "category": "Beverages",
+        "location": "B2"
+      }
+    ],
+    "readings": [
+      {
+        "timestamp": "2025-03-25 16:42:48.745949",
+        "temperature": 3.5,
+        "power_consumption": 344.4,
+        "door_status": "CLOSED",
+        "cash_level": 493.18,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-25 18:25:40.174520",
+        "temperature": 3.4,
+        "power_consumption": 333.7,
+        "door_status": "CLOSED",
+        "cash_level": 324.79,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-25 20:08:31.603092",
+        "temperature": 3.1,
+        "power_consumption": 354.6,
+        "door_status": "CLOSED",
+        "cash_level": 171.31,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-25 21:51:23.031663",
+        "temperature": 2.2,
+        "power_consumption": 195.9,
+        "door_status": "CLOSED",
+        "cash_level": 202.55,
+        "sales_count": 1
+      },
+      {
+        "timestamp": "2025-03-25 23:34:14.460235",
+        "temperature": 2.7,
+        "power_consumption": 149.8,
+        "door_status": "OPEN",
+        "cash_level": 38.86,
+        "sales_count": 5
+      },
+      {
+        "timestamp": "2025-03-26 01:17:05.888806",
+        "temperature": 2.3,
+        "power_consumption": 230.2,
+        "door_status": "CLOSED",
+        "cash_level": 358.37,
+        "sales_count": 0
+      },
+      {
+        "timestamp": "2025-03-26 02:59:57.317378",
+        "temperature": 2.7,
+        "power_consumption": 379.1,
+        "door_status": "CLOSED",
+        "cash_level": 363.39,
+        "sales_count": 1
+      },
+      {
+        "timestamp": "2025-03-26 04:42:48.745949",
+        "temperature": 2.4,
+        "power_consumption": 227.8,
+        "door_status": "CLOSED",
+        "cash_level": 236.61,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-26 06:25:40.174520",
+        "temperature": 2.8,
+        "power_consumption": 166.0,
+        "door_status": "CLOSED",
+        "cash_level": 455.4,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-26 08:08:31.603092",
+        "temperature": 2.8,
+        "power_consumption": 371.8,
+        "door_status": "CLOSED",
+        "cash_level": 388.75,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-26 09:51:23.031663",
+        "temperature": 3.4,
+        "power_consumption": 225.4,
+        "door_status": "CLOSED",
+        "cash_level": 448.56,
+        "sales_count": 1
+      },
+      {
+        "timestamp": "2025-03-26 11:34:14.460235",
+        "temperature": 2.9,
+        "power_consumption": 115.7,
+        "door_status": "CLOSED",
+        "cash_level": 195.47,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-26 13:17:05.888806",
+        "temperature": 3.3,
+        "power_consumption": 222.7,
+        "door_status": "CLOSED",
+        "cash_level": 186.33,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-26 14:59:57.317378",
+        "temperature": 2.7,
+        "power_consumption": 116.3,
+        "door_status": "OPEN",
+        "cash_level": 301.5,
+        "sales_count": 2
+      }
+    ]
+  },
+  "vm-3e074082": {
+    "id": "vm-3e074082",
+    "name": "PolarDelight - FrostyPlus 3e07",
+    "type": "vending_machine",
+    "status": "ONLINE",
+    "location": "Apartment 303 - Master Bathroom",
+    "last_seen": "2025-03-26 16:42:48.746532",
+    "model_number": "FrostyPlus-545",
+    "serial_number": "SN-ce900281-d",
+    "machine_status": "NEEDS_RESTOCK",
+    "mode": "NORMAL",
+    "temperature": 3.2,
+    "total_capacity": 38,
+    "cash_capacity": 1260.0,
+    "current_cash": 872.24,
+    "location_business_name": "Mercy Hospital",
+    "location_type": "HOSPITAL",
+    "sub_location": "BREAK_ROOM",
+    "use_type": "SELF_SERVE",
+    "usage_pattern": null,
+    "stock_level": null,
+    "maintenance_partner": "FrostyFix Solutions",
+    "last_maintenance_date": null,
+    "next_maintenance_date": null,
+    "products": [
+      {
+        "product_id": "prod-922b55b8",
+        "name": "Mints",
+        "price": 1.62,
+        "quantity": 5,
+        "category": "Candy",
+        "location": "A5"
+      },
+      {
+        "product_id": "prod-d8d66e41",
+        "name": "Instant Noodles",
+        "price": 3.85,
+        "quantity": 15,
+        "category": "Meals",
+        "location": "A5"
+      },
+      {
+        "product_id": "prod-1812b8b9",
+        "name": "Pasta Cup",
+        "price": 1.87,
+        "quantity": 5,
+        "category": "Meals",
+        "location": "C2"
+      },
+      {
+        "product_id": "prod-e78bf127",
+        "name": "Caramel Chews",
+        "price": 3.84,
+        "quantity": 14,
+        "category": "Candy",
+        "location": "B4"
+      },
+      {
+        "product_id": "prod-083b594a",
+        "name": "Hummus & Crackers",
+        "price": 4.14,
+        "quantity": 0,
+        "category": "Healthy Options",
+        "location": "A8"
+      },
+      {
+        "product_id": "prod-8dee709d",
+        "name": "Rice Crisps",
+        "price": 2.79,
+        "quantity": 12,
+        "category": "Snacks",
+        "location": "B4"
+      },
+      {
+        "product_id": "prod-a4a9f825",
+        "name": "Sparkling Water",
+        "price": 1.56,
+        "quantity": 7,
+        "category": "Beverages",
+        "location": "A8"
+      },
+      {
+        "product_id": "prod-a0aff71e",
+        "name": "Pretzel Twists",
+        "price": 1.71,
+        "quantity": 12,
+        "category": "Snacks",
+        "location": "E1"
+      },
+      {
+        "product_id": "prod-cf32adf3",
+        "name": "Mints",
+        "price": 2.13,
+        "quantity": 1,
+        "category": "Candy",
+        "location": "D6"
+      }
+    ],
+    "readings": [
+      {
+        "timestamp": "2025-03-25 16:42:48.746415",
+        "temperature": 3.6,
+        "power_consumption": 165.4,
+        "door_status": "CLOSED",
+        "cash_level": 106.81,
+        "sales_count": 1
+      },
+      {
+        "timestamp": "2025-03-25 19:22:48.746415",
+        "temperature": 3.2,
+        "power_consumption": 125.5,
+        "door_status": "OPEN",
+        "cash_level": 287.64,
+        "sales_count": 1
+      },
+      {
+        "timestamp": "2025-03-25 22:02:48.746415",
+        "temperature": 3.6,
+        "power_consumption": 298.6,
+        "door_status": "CLOSED",
+        "cash_level": 471.26,
+        "sales_count": 0
+      },
+      {
+        "timestamp": "2025-03-26 00:42:48.746415",
+        "temperature": 2.9,
+        "power_consumption": 388.0,
+        "door_status": "CLOSED",
+        "cash_level": 415.72,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-26 03:22:48.746415",
+        "temperature": 3.5,
+        "power_consumption": 219.9,
+        "door_status": "CLOSED",
+        "cash_level": 482.58,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-26 06:02:48.746415",
+        "temperature": 2.8,
+        "power_consumption": 389.7,
+        "door_status": "CLOSED",
+        "cash_level": 184.14,
+        "sales_count": 5
+      },
+      {
+        "timestamp": "2025-03-26 08:42:48.746415",
+        "temperature": 4.2,
+        "power_consumption": 357.7,
+        "door_status": "CLOSED",
+        "cash_level": 239.28,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-26 11:22:48.746415",
+        "temperature": 3.8,
+        "power_consumption": 143.4,
+        "door_status": "OPEN",
+        "cash_level": 112.51,
+        "sales_count": 0
+      },
+      {
+        "timestamp": "2025-03-26 14:02:48.746415",
+        "temperature": 3.4,
+        "power_consumption": 227.6,
+        "door_status": "CLOSED",
+        "cash_level": 469.65,
+        "sales_count": 2
+      }
+    ]
+  },
+  "vm-999e76bc": {
+    "id": "vm-999e76bc",
+    "name": "PolarDelight - FrostyPlus 999e",
+    "type": "vending_machine",
+    "status": "ONLINE",
+    "location": "Apartment 303 - Maintenance Area",
+    "last_seen": "2025-03-26 16:42:48.747144",
+    "model_number": "FrostyPlus-148",
+    "serial_number": "SN-d4acabf9-8",
+    "machine_status": "NEEDS_RESTOCK",
+    "mode": "NORMAL",
+    "temperature": 3.7,
+    "total_capacity": 65,
+    "cash_capacity": 775.0,
+    "current_cash": 477.87,
+    "location_business_name": "Tysons Corner Center",
+    "location_type": "RETAIL",
+    "sub_location": "BREAK_ROOM",
+    "use_type": "SERVICED",
+    "usage_pattern": null,
+    "stock_level": null,
+    "maintenance_partner": "ChillMasters Repair",
+    "last_maintenance_date": null,
+    "next_maintenance_date": null,
+    "products": [
+      {
+        "product_id": "prod-d2d4cf5d",
+        "name": "Popcorn",
+        "price": 1.08,
+        "quantity": 11,
+        "category": "Snacks",
+        "location": "D8"
+      },
+      {
+        "product_id": "prod-4f980fe1",
+        "name": "Caramel Chews",
+        "price": 2.89,
+        "quantity": 10,
+        "category": "Candy",
+        "location": "B4"
+      },
+      {
+        "product_id": "prod-6bf9101a",
+        "name": "Caramel Chews",
+        "price": 2.12,
+        "quantity": 5,
+        "category": "Candy",
+        "location": "D2"
+      },
+      {
+        "product_id": "prod-9dde25b0",
+        "name": "Iced Coffee",
+        "price": 2.79,
+        "quantity": 10,
+        "category": "Beverages",
+        "location": "C8"
+      },
+      {
+        "product_id": "prod-0f4b1f69",
+        "name": "Arctic Blast Soda",
+        "price": 1.5,
+        "quantity": 9,
+        "category": "Beverages",
+        "location": "E6"
+      },
+      {
+        "product_id": "prod-d9e8bda3",
+        "name": "Popcorn",
+        "price": 4.85,
+        "quantity": 1,
+        "category": "Snacks",
+        "location": "C3"
+      },
+      {
+        "product_id": "prod-e579f9ab",
+        "name": "Nuts Mix",
+        "price": 4.69,
+        "quantity": 14,
+        "category": "Snacks",
+        "location": "C1"
+      },
+      {
+        "product_id": "prod-8d150693",
+        "name": "Rice Bowl",
+        "price": 4.19,
+        "quantity": 10,
+        "category": "Meals",
+        "location": "A5"
+      },
+      {
+        "product_id": "prod-d7403227",
+        "name": "Fruit Smoothie",
+        "price": 3.89,
+        "quantity": 1,
+        "category": "Beverages",
+        "location": "E7"
+      },
+      {
+        "product_id": "prod-c80ff87b",
+        "name": "Mints",
+        "price": 1.53,
+        "quantity": 1,
+        "category": "Candy",
+        "location": "C2"
+      },
+      {
+        "product_id": "prod-e68c9374",
+        "name": "Gummy Bears",
+        "price": 4.92,
+        "quantity": 2,
+        "category": "Candy",
+        "location": "A3"
+      },
+      {
+        "product_id": "prod-63a189b7",
+        "name": "Arctic Blast Soda",
+        "price": 2.46,
+        "quantity": 12,
+        "category": "Beverages",
+        "location": "A1"
+      },
+      {
+        "product_id": "prod-aee2e3f2",
+        "name": "Instant Noodles",
+        "price": 4.59,
+        "quantity": 14,
+        "category": "Meals",
+        "location": "B5"
+      }
+    ],
+    "readings": [
+      {
+        "timestamp": "2025-03-25 16:42:48.746905",
+        "temperature": 4.7,
+        "power_consumption": 246.2,
+        "door_status": "CLOSED",
+        "cash_level": 443.49,
+        "sales_count": 5
+      },
+      {
+        "timestamp": "2025-03-25 18:02:48.746905",
+        "temperature": 4.7,
+        "power_consumption": 114.4,
+        "door_status": "CLOSED",
+        "cash_level": 393.25,
+        "sales_count": 2
+      },
+      {
+        "timestamp": "2025-03-25 19:22:48.746905",
+        "temperature": 3.7,
+        "power_consumption": 194.3,
+        "door_status": "CLOSED",
+        "cash_level": 197.37,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-25 20:42:48.746905",
+        "temperature": 3.3,
+        "power_consumption": 225.3,
+        "door_status": "CLOSED",
+        "cash_level": 259.12,
+        "sales_count": 5
+      },
+      {
+        "timestamp": "2025-03-25 22:02:48.746905",
+        "temperature": 3.5,
+        "power_consumption": 180.8,
+        "door_status": "OPEN",
+        "cash_level": 495.08,
+        "sales_count": 2
+      },
+      {
+        "timestamp": "2025-03-25 23:22:48.746905",
+        "temperature": 3.2,
+        "power_consumption": 319.4,
+        "door_status": "CLOSED",
+        "cash_level": 47.34,
+        "sales_count": 5
+      },
+      {
+        "timestamp": "2025-03-26 00:42:48.746905",
+        "temperature": 3.3,
+        "power_consumption": 232.6,
+        "door_status": "CLOSED",
+        "cash_level": 284.16,
+        "sales_count": 0
+      },
+      {
+        "timestamp": "2025-03-26 02:02:48.746905",
+        "temperature": 3.4,
+        "power_consumption": 228.6,
+        "door_status": "CLOSED",
+        "cash_level": 182.34,
+        "sales_count": 1
+      },
+      {
+        "timestamp": "2025-03-26 03:22:48.746905",
+        "temperature": 3.7,
+        "power_consumption": 168.7,
+        "door_status": "CLOSED",
+        "cash_level": 30.09,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-26 04:42:48.746905",
+        "temperature": 3.4,
+        "power_consumption": 215.4,
+        "door_status": "CLOSED",
+        "cash_level": 340.69,
+        "sales_count": 5
+      },
+      {
+        "timestamp": "2025-03-26 06:02:48.746905",
+        "temperature": 4.2,
+        "power_consumption": 387.6,
+        "door_status": "CLOSED",
+        "cash_level": 228.76,
+        "sales_count": 1
+      },
+      {
+        "timestamp": "2025-03-26 07:22:48.746905",
+        "temperature": 3.4,
+        "power_consumption": 365.6,
+        "door_status": "OPEN",
+        "cash_level": 213.37,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-26 08:42:48.746905",
+        "temperature": 3.8,
+        "power_consumption": 354.2,
+        "door_status": "CLOSED",
+        "cash_level": 347.92,
+        "sales_count": 2
+      },
+      {
+        "timestamp": "2025-03-26 10:02:48.746905",
+        "temperature": 4.5,
+        "power_consumption": 355.7,
+        "door_status": "CLOSED",
+        "cash_level": 490.45,
+        "sales_count": 0
+      },
+      {
+        "timestamp": "2025-03-26 11:22:48.746905",
+        "temperature": 4.4,
+        "power_consumption": 353.7,
+        "door_status": "CLOSED",
+        "cash_level": 470.38,
+        "sales_count": 1
+      },
+      {
+        "timestamp": "2025-03-26 12:42:48.746905",
+        "temperature": 4.2,
+        "power_consumption": 123.1,
+        "door_status": "CLOSED",
+        "cash_level": 241.06,
+        "sales_count": 2
+      },
+      {
+        "timestamp": "2025-03-26 14:02:48.746905",
+        "temperature": 4.3,
+        "power_consumption": 217.5,
+        "door_status": "CLOSED",
+        "cash_level": 282.6,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-26 15:22:48.746905",
+        "temperature": 4.5,
+        "power_consumption": 285.4,
+        "door_status": "CLOSED",
+        "cash_level": 55.69,
+        "sales_count": 0
+      }
+    ]
+  },
+  "vm-2a46e09c": {
+    "id": "vm-2a46e09c",
+    "name": "PolarDelight - SuperVend 2a46",
+    "type": "vending_machine",
+    "status": "ONLINE",
+    "location": "Apartment 303 - Basement",
+    "last_seen": "2025-03-26 16:42:48.747696",
+    "model_number": "SuperVend-788",
+    "serial_number": "SN-d082a4f9-1",
+    "machine_status": "OPERATIONAL",
+    "mode": "NORMAL",
+    "temperature": 2.9,
+    "total_capacity": 54,
+    "cash_capacity": 1760.0,
+    "current_cash": 69.06,
+    "location_business_name": "Red Rocks Amphitheater",
+    "location_type": "OTHER",
+    "sub_location": "LOBBY",
+    "use_type": "SERVICED",
+    "usage_pattern": null,
+    "stock_level": null,
+    "maintenance_partner": "ColdStream Maintenance",
+    "last_maintenance_date": null,
+    "next_maintenance_date": null,
+    "products": [
+      {
+        "product_id": "prod-be5e69ee",
+        "name": "Licorice",
+        "price": 1.21,
+        "quantity": 12,
+        "category": "Candy",
+        "location": "A2"
+      },
+      {
+        "product_id": "prod-e0df0aee",
+        "name": "Chocolate Bar",
+        "price": 2.03,
+        "quantity": 9,
+        "category": "Candy",
+        "location": "E6"
+      },
+      {
+        "product_id": "prod-0cf66f6b",
+        "name": "Burrito",
+        "price": 3.89,
+        "quantity": 13,
+        "category": "Meals",
+        "location": "D6"
+      },
+      {
+        "product_id": "prod-4ec890b5",
+        "name": "Greek Yogurt",
+        "price": 3.71,
+        "quantity": 9,
+        "category": "Healthy Options",
+        "location": "C1"
+      },
+      {
+        "product_id": "prod-e7edd6e4",
+        "name": "Energy Shot",
+        "price": 2.81,
+        "quantity": 10,
+        "category": "Beverages",
+        "location": "A7"
+      },
+      {
+        "product_id": "prod-8e6e8d92",
+        "name": "Sparkling Water",
+        "price": 2.51,
+        "quantity": 8,
+        "category": "Beverages",
+        "location": "D8"
+      },
+      {
+        "product_id": "prod-546d4c04",
+        "name": "Fruit Smoothie",
+        "price": 2.44,
+        "quantity": 10,
+        "category": "Beverages",
+        "location": "A2"
+      },
+      {
+        "product_id": "prod-b5435647",
+        "name": "Soup Cup",
+        "price": 3.41,
+        "quantity": 3,
+        "category": "Meals",
+        "location": "B7"
+      },
+      {
+        "product_id": "prod-6fdb6eda",
+        "name": "Mints",
+        "price": 1.73,
+        "quantity": 8,
+        "category": "Candy",
+        "location": "D5"
+      },
+      {
+        "product_id": "prod-3e43d619",
+        "name": "Rice Bowl",
+        "price": 3.78,
+        "quantity": 3,
+        "category": "Meals",
+        "location": "B5"
+      }
+    ],
+    "readings": [
+      {
+        "timestamp": "2025-03-25 16:42:48.747417",
+        "temperature": 3.9,
+        "power_consumption": 397.3,
+        "door_status": "CLOSED",
+        "cash_level": 499.81,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-25 17:42:48.747417",
+        "temperature": 3.3,
+        "power_consumption": 121.6,
+        "door_status": "CLOSED",
+        "cash_level": 105.28,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-25 18:42:48.747417",
+        "temperature": 3.7,
+        "power_consumption": 200.1,
+        "door_status": "CLOSED",
+        "cash_level": 41.96,
+        "sales_count": 2
+      },
+      {
+        "timestamp": "2025-03-25 19:42:48.747417",
+        "temperature": 3.2,
+        "power_consumption": 149.6,
+        "door_status": "CLOSED",
+        "cash_level": 338.86,
+        "sales_count": 1
+      },
+      {
+        "timestamp": "2025-03-25 20:42:48.747417",
+        "temperature": 2.5,
+        "power_consumption": 373.8,
+        "door_status": "CLOSED",
+        "cash_level": 101.6,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-25 21:42:48.747417",
+        "temperature": 3.1,
+        "power_consumption": 310.8,
+        "door_status": "CLOSED",
+        "cash_level": 497.03,
+        "sales_count": 2
+      },
+      {
+        "timestamp": "2025-03-25 22:42:48.747417",
+        "temperature": 3.0,
+        "power_consumption": 147.1,
+        "door_status": "CLOSED",
+        "cash_level": 234.45,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-25 23:42:48.747417",
+        "temperature": 2.9,
+        "power_consumption": 172.3,
+        "door_status": "CLOSED",
+        "cash_level": 98.62,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-26 00:42:48.747417",
+        "temperature": 3.3,
+        "power_consumption": 293.3,
+        "door_status": "CLOSED",
+        "cash_level": 236.26,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-26 01:42:48.747417",
+        "temperature": 3.3,
+        "power_consumption": 234.0,
+        "door_status": "CLOSED",
+        "cash_level": 296.5,
+        "sales_count": 1
+      },
+      {
+        "timestamp": "2025-03-26 02:42:48.747417",
+        "temperature": 2.9,
+        "power_consumption": 347.8,
+        "door_status": "CLOSED",
+        "cash_level": 300.42,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-26 03:42:48.747417",
+        "temperature": 3.2,
+        "power_consumption": 142.0,
+        "door_status": "CLOSED",
+        "cash_level": 381.76,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-26 04:42:48.747417",
+        "temperature": 3.4,
+        "power_consumption": 178.7,
+        "door_status": "CLOSED",
+        "cash_level": 248.54,
+        "sales_count": 0
+      },
+      {
+        "timestamp": "2025-03-26 05:42:48.747417",
+        "temperature": 2.6,
+        "power_consumption": 316.0,
+        "door_status": "CLOSED",
+        "cash_level": 329.92,
+        "sales_count": 1
+      },
+      {
+        "timestamp": "2025-03-26 06:42:48.747417",
+        "temperature": 2.5,
+        "power_consumption": 223.5,
+        "door_status": "CLOSED",
+        "cash_level": 35.82,
+        "sales_count": 1
+      },
+      {
+        "timestamp": "2025-03-26 07:42:48.747417",
+        "temperature": 2.5,
+        "power_consumption": 307.2,
+        "door_status": "CLOSED",
+        "cash_level": 213.16,
+        "sales_count": 1
+      },
+      {
+        "timestamp": "2025-03-26 08:42:48.747417",
+        "temperature": 2.9,
+        "power_consumption": 372.9,
+        "door_status": "CLOSED",
+        "cash_level": 352.1,
+        "sales_count": 2
+      },
+      {
+        "timestamp": "2025-03-26 09:42:48.747417",
+        "temperature": 3.2,
+        "power_consumption": 317.2,
+        "door_status": "CLOSED",
+        "cash_level": 384.68,
+        "sales_count": 5
+      },
+      {
+        "timestamp": "2025-03-26 10:42:48.747417",
+        "temperature": 3.5,
+        "power_consumption": 379.1,
+        "door_status": "CLOSED",
+        "cash_level": 372.55,
+        "sales_count": 0
+      },
+      {
+        "timestamp": "2025-03-26 11:42:48.747417",
+        "temperature": 3.8,
+        "power_consumption": 367.6,
+        "door_status": "CLOSED",
+        "cash_level": 55.15,
+        "sales_count": 5
+      },
+      {
+        "timestamp": "2025-03-26 12:42:48.747417",
+        "temperature": 3.5,
+        "power_consumption": 394.2,
+        "door_status": "CLOSED",
+        "cash_level": 27.22,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-26 13:42:48.747417",
+        "temperature": 3.5,
+        "power_consumption": 242.8,
+        "door_status": "CLOSED",
+        "cash_level": 177.46,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-26 14:42:48.747417",
+        "temperature": 3.3,
+        "power_consumption": 289.1,
+        "door_status": "CLOSED",
+        "cash_level": 470.48,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-26 15:42:48.747417",
+        "temperature": 3.2,
+        "power_consumption": 143.2,
+        "door_status": "CLOSED",
+        "cash_level": 226.92,
+        "sales_count": 1
+      }
+    ]
+  },
+  "vm-8df40d6c": {
+    "id": "vm-8df40d6c",
+    "name": "PolarDelight - QuickServe 8df4",
+    "type": "vending_machine",
+    "status": "ONLINE",
+    "location": "Building A - Manufacturing Floor",
+    "last_seen": "2025-03-26 16:42:48.748190",
+    "model_number": "QuickServe-905",
+    "serial_number": "SN-02fe7cd8-5",
+    "machine_status": "OPERATIONAL",
+    "mode": "POWER_SAVE",
+    "temperature": 2.9,
+    "total_capacity": 63,
+    "cash_capacity": 672.0,
+    "current_cash": 225.52,
+    "location_business_name": "Madison Elementary",
+    "location_type": "SCHOOL",
+    "sub_location": "CAFETERIA",
+    "use_type": "SERVICED",
+    "usage_pattern": null,
+    "stock_level": null,
+    "maintenance_partner": "ChillMasters Repair",
+    "last_maintenance_date": null,
+    "next_maintenance_date": null,
+    "products": [
+      {
+        "product_id": "prod-52eb4ae3",
+        "name": "Rice Bowl",
+        "price": 3.9,
+        "quantity": 13,
+        "category": "Meals",
+        "location": "A2"
+      },
+      {
+        "product_id": "prod-d29f4ed9",
+        "name": "Protein Bar",
+        "price": 3.24,
+        "quantity": 8,
+        "category": "Snacks",
+        "location": "B5"
+      },
+      {
+        "product_id": "prod-417ebc21",
+        "name": "Mountain Fresh Juice",
+        "price": 1.88,
+        "quantity": 7,
+        "category": "Beverages",
+        "location": "D6"
+      },
+      {
+        "product_id": "prod-77928dac",
+        "name": "Chocolate Bar",
+        "price": 4.69,
+        "quantity": 9,
+        "category": "Candy",
+        "location": "A7"
+      },
+      {
+        "product_id": "prod-872352f6",
+        "name": "Chocolate Bar",
+        "price": 3.48,
+        "quantity": 12,
+        "category": "Candy",
+        "location": "C4"
+      },
+      {
+        "product_id": "prod-242b07d0",
+        "name": "Mints",
+        "price": 2.13,
+        "quantity": 4,
+        "category": "Candy",
+        "location": "E2"
+      },
+      {
+        "product_id": "prod-9681b344",
+        "name": "Salad Bowl",
+        "price": 2.53,
+        "quantity": 5,
+        "category": "Meals",
+        "location": "E3"
+      },
+      {
+        "product_id": "prod-b7129405",
+        "name": "Licorice",
+        "price": 1.84,
+        "quantity": 4,
+        "category": "Candy",
+        "location": "B3"
+      },
+      {
+        "product_id": "prod-9cff0ace",
+        "name": "Burrito",
+        "price": 2.74,
+        "quantity": 15,
+        "category": "Meals",
+        "location": "B3"
+      },
+      {
+        "product_id": "prod-1cbf8fa7",
+        "name": "Burrito",
+        "price": 1.4,
+        "quantity": 5,
+        "category": "Meals",
+        "location": "A5"
+      },
+      {
+        "product_id": "prod-a558f27c",
+        "name": "Soup Cup",
+        "price": 3.95,
+        "quantity": 9,
+        "category": "Meals",
+        "location": "B3"
+      },
+      {
+        "product_id": "prod-b8621e4a",
+        "name": "Crunchy Chips",
+        "price": 2.4,
+        "quantity": 2,
+        "category": "Snacks",
+        "location": "C8"
+      },
+      {
+        "product_id": "prod-aa9e6b2e",
+        "name": "Protein Snack",
+        "price": 2.03,
+        "quantity": 1,
+        "category": "Healthy Options",
+        "location": "C2"
+      },
+      {
+        "product_id": "prod-4134013c",
+        "name": "Rice Crisps",
+        "price": 3.45,
+        "quantity": 3,
+        "category": "Snacks",
+        "location": "A8"
+      }
+    ],
+    "readings": [
+      {
+        "timestamp": "2025-03-25 16:42:48.748036",
+        "temperature": 3.3,
+        "power_consumption": 171.8,
+        "door_status": "CLOSED",
+        "cash_level": 81.06,
+        "sales_count": 1
+      },
+      {
+        "timestamp": "2025-03-25 18:25:40.176607",
+        "temperature": 3.8,
+        "power_consumption": 367.8,
+        "door_status": "CLOSED",
+        "cash_level": 333.8,
+        "sales_count": 2
+      },
+      {
+        "timestamp": "2025-03-25 20:08:31.605179",
+        "temperature": 3.3,
+        "power_consumption": 325.1,
+        "door_status": "CLOSED",
+        "cash_level": 58.26,
+        "sales_count": 0
+      },
+      {
+        "timestamp": "2025-03-25 21:51:23.033750",
+        "temperature": 3.1,
+        "power_consumption": 317.0,
+        "door_status": "CLOSED",
+        "cash_level": 427.11,
+        "sales_count": 5
+      },
+      {
+        "timestamp": "2025-03-25 23:34:14.462322",
+        "temperature": 2.5,
+        "power_consumption": 372.7,
+        "door_status": "CLOSED",
+        "cash_level": 294.12,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-26 01:17:05.890893",
+        "temperature": 2.4,
+        "power_consumption": 307.4,
+        "door_status": "CLOSED",
+        "cash_level": 137.25,
+        "sales_count": 2
+      },
+      {
+        "timestamp": "2025-03-26 02:59:57.319465",
+        "temperature": 2.5,
+        "power_consumption": 396.5,
+        "door_status": "CLOSED",
+        "cash_level": 240.76,
+        "sales_count": 0
+      },
+      {
+        "timestamp": "2025-03-26 04:42:48.748036",
+        "temperature": 2.7,
+        "power_consumption": 325.7,
+        "door_status": "CLOSED",
+        "cash_level": 350.28,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-26 06:25:40.176607",
+        "temperature": 2.7,
+        "power_consumption": 244.4,
+        "door_status": "OPEN",
+        "cash_level": 239.61,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-26 08:08:31.605179",
+        "temperature": 3.8,
+        "power_consumption": 398.5,
+        "door_status": "CLOSED",
+        "cash_level": 404.72,
+        "sales_count": 5
+      },
+      {
+        "timestamp": "2025-03-26 09:51:23.033750",
+        "temperature": 3.2,
+        "power_consumption": 320.2,
+        "door_status": "CLOSED",
+        "cash_level": 168.4,
+        "sales_count": 0
+      },
+      {
+        "timestamp": "2025-03-26 11:34:14.462322",
+        "temperature": 3.6,
+        "power_consumption": 221.8,
+        "door_status": "CLOSED",
+        "cash_level": 359.62,
+        "sales_count": 0
+      },
+      {
+        "timestamp": "2025-03-26 13:17:05.890893",
+        "temperature": 3.7,
+        "power_consumption": 390.3,
+        "door_status": "CLOSED",
+        "cash_level": 398.74,
+        "sales_count": 0
+      },
+      {
+        "timestamp": "2025-03-26 14:59:57.319465",
+        "temperature": 3.5,
+        "power_consumption": 207.6,
+        "door_status": "CLOSED",
+        "cash_level": 120.99,
+        "sales_count": 1
+      }
+    ]
+  },
+  "vm-cfb9fb51": {
+    "id": "vm-cfb9fb51",
+    "name": "PolarDelight - EcoVend cfb9",
+    "type": "vending_machine",
+    "status": "ONLINE",
+    "location": "Apartment 202 - Suite 202",
+    "last_seen": "2025-03-26 16:42:48.749306",
+    "model_number": "EcoVend-557",
+    "serial_number": "SN-3ca0230a-f",
+    "machine_status": "OPERATIONAL",
+    "mode": "NORMAL",
+    "temperature": 3.8,
+    "total_capacity": 32,
+    "cash_capacity": 1899.0,
+    "current_cash": 1008.53,
+    "location_business_name": "Hollywood Bowl",
+    "location_type": "OTHER",
+    "sub_location": "BREAK_ROOM",
+    "use_type": "SERVICED",
+    "usage_pattern": null,
+    "stock_level": null,
+    "maintenance_partner": "IceTech Maintenance Co.",
+    "last_maintenance_date": null,
+    "next_maintenance_date": null,
+    "products": [
+      {
+        "product_id": "prod-cb0a3425",
+        "name": "Sandwich",
+        "price": 2.19,
+        "quantity": 2,
+        "category": "Meals",
+        "location": "A7"
+      },
+      {
+        "product_id": "prod-8605bc58",
+        "name": "Dried Fruit",
+        "price": 1.28,
+        "quantity": 8,
+        "category": "Healthy Options",
+        "location": "B7"
+      },
+      {
+        "product_id": "prod-5dc27b6e",
+        "name": "Pretzel Twists",
+        "price": 4.14,
+        "quantity": 5,
+        "category": "Snacks",
+        "location": "C2"
+      },
+      {
+        "product_id": "prod-e4390566",
+        "name": "Sour Candy",
+        "price": 1.71,
+        "quantity": 11,
+        "category": "Candy",
+        "location": "D2"
+      },
+      {
+        "product_id": "prod-4c2b92f2",
+        "name": "Soup Cup",
+        "price": 4.39,
+        "quantity": 3,
+        "category": "Meals",
+        "location": "D3"
+      },
+      {
+        "product_id": "prod-870534c7",
+        "name": "Rice Crisps",
+        "price": 3.38,
+        "quantity": 1,
+        "category": "Snacks",
+        "location": "E4"
+      },
+      {
+        "product_id": "prod-79dbaa74",
+        "name": "Gummy Bears",
+        "price": 1.58,
+        "quantity": 8,
+        "category": "Candy",
+        "location": "B5"
+      },
+      {
+        "product_id": "prod-9098c0bc",
+        "name": "Sparkling Water",
+        "price": 4.09,
+        "quantity": 4,
+        "category": "Beverages",
+        "location": "B7"
+      },
+      {
+        "product_id": "prod-eafbff42",
+        "name": "Nuts Mix",
+        "price": 3.99,
+        "quantity": 3,
+        "category": "Snacks",
+        "location": "A3"
+      },
+      {
+        "product_id": "prod-8e3d6990",
+        "name": "Pretzel Twists",
+        "price": 3.15,
+        "quantity": 9,
+        "category": "Snacks",
+        "location": "D7"
+      },
+      {
+        "product_id": "prod-989da944",
+        "name": "Hard Candy",
+        "price": 3.8,
+        "quantity": 8,
+        "category": "Candy",
+        "location": "A5"
+      },
+      {
+        "product_id": "prod-8696207a",
+        "name": "Fruit Cup",
+        "price": 2.39,
+        "quantity": 2,
+        "category": "Healthy Options",
+        "location": "A3"
+      },
+      {
+        "product_id": "prod-767ec848",
+        "name": "Pretzel Twists",
+        "price": 2.91,
+        "quantity": 12,
+        "category": "Snacks",
+        "location": "C1"
+      },
+      {
+        "product_id": "prod-fb5ceaa9",
+        "name": "Greek Yogurt",
+        "price": 4.89,
+        "quantity": 8,
+        "category": "Healthy Options",
+        "location": "A5"
+      }
+    ],
+    "readings": [
+      {
+        "timestamp": "2025-03-25 16:42:48.748663",
+        "temperature": 4.7,
+        "power_consumption": 355.2,
+        "door_status": "CLOSED",
+        "cash_level": 335.79,
+        "sales_count": 0
+      },
+      {
+        "timestamp": "2025-03-25 19:22:48.748663",
+        "temperature": 4.1,
+        "power_consumption": 173.0,
+        "door_status": "CLOSED",
+        "cash_level": 55.02,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-25 22:02:48.748663",
+        "temperature": 3.7,
+        "power_consumption": 111.4,
+        "door_status": "OPEN",
+        "cash_level": 228.98,
+        "sales_count": 5
+      },
+      {
+        "timestamp": "2025-03-26 00:42:48.748663",
+        "temperature": 4.2,
+        "power_consumption": 386.8,
+        "door_status": "CLOSED",
+        "cash_level": 334.57,
+        "sales_count": 0
+      },
+      {
+        "timestamp": "2025-03-26 03:22:48.748663",
+        "temperature": 3.7,
+        "power_consumption": 345.7,
+        "door_status": "CLOSED",
+        "cash_level": 177.73,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-26 06:02:48.748663",
+        "temperature": 3.8,
+        "power_consumption": 157.7,
+        "door_status": "CLOSED",
+        "cash_level": 249.92,
+        "sales_count": 5
+      },
+      {
+        "timestamp": "2025-03-26 08:42:48.748663",
+        "temperature": 4.1,
+        "power_consumption": 196.3,
+        "door_status": "CLOSED",
+        "cash_level": 139.79,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-26 11:22:48.748663",
+        "temperature": 4.4,
+        "power_consumption": 218.9,
+        "door_status": "OPEN",
+        "cash_level": 361.4,
+        "sales_count": 5
+      },
+      {
+        "timestamp": "2025-03-26 14:02:48.748663",
+        "temperature": 4.4,
+        "power_consumption": 179.5,
+        "door_status": "CLOSED",
+        "cash_level": 76.92,
+        "sales_count": 0
+      }
+    ]
+  },
+  "vm-6a4cd125": {
+    "id": "vm-6a4cd125",
+    "name": "PolarDelight - AutoSell 6a4c",
+    "type": "vending_machine",
+    "status": "ONLINE",
+    "location": "Warehouse - Suite 202",
+    "last_seen": "2025-03-26 16:42:48.749623",
+    "model_number": "AutoSell-603",
+    "serial_number": "SN-249bf23c-6",
+    "machine_status": "NEEDS_RESTOCK",
+    "mode": "POWER_SAVE",
+    "temperature": 3.3,
+    "total_capacity": 42,
+    "cash_capacity": 1435.0,
+    "current_cash": 661.38,
+    "location_business_name": "Barnes & Noble",
+    "location_type": "SPECIALTY_SHOP",
+    "sub_location": "WAITING_AREA",
+    "use_type": "SERVICED",
+    "usage_pattern": null,
+    "stock_level": null,
+    "maintenance_partner": "TechnoChill Services",
+    "last_maintenance_date": null,
+    "next_maintenance_date": null,
+    "products": [
+      {
+        "product_id": "prod-b991e395",
+        "name": "Caramel Chews",
+        "price": 4.16,
+        "quantity": 15,
+        "category": "Candy",
+        "location": "D1"
+      },
+      {
+        "product_id": "prod-33344365",
+        "name": "Cheese Crackers",
+        "price": 3.72,
+        "quantity": 5,
+        "category": "Snacks",
+        "location": "C1"
+      },
+      {
+        "product_id": "prod-e70d849f",
+        "name": "Burrito",
+        "price": 1.84,
+        "quantity": 3,
+        "category": "Meals",
+        "location": "A5"
+      },
+      {
+        "product_id": "prod-2247ae1d",
+        "name": "Trail Mix",
+        "price": 2.86,
+        "quantity": 13,
+        "category": "Snacks",
+        "location": "B1"
+      },
+      {
+        "product_id": "prod-852c6b0f",
+        "name": "Pasta Cup",
+        "price": 1.81,
+        "quantity": 6,
+        "category": "Meals",
+        "location": "E6"
+      },
+      {
+        "product_id": "prod-81d22ff1",
+        "name": "Soup Cup",
+        "price": 4.78,
+        "quantity": 13,
+        "category": "Meals",
+        "location": "D6"
+      },
+      {
+        "product_id": "prod-0205e1f0",
+        "name": "Mints",
+        "price": 3.14,
+        "quantity": 11,
+        "category": "Candy",
+        "location": "A1"
+      }
+    ],
+    "readings": [
+      {
+        "timestamp": "2025-03-25 16:42:48.749523",
+        "temperature": 4.3,
+        "power_consumption": 230.4,
+        "door_status": "CLOSED",
+        "cash_level": 339.09,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-25 19:42:48.749523",
+        "temperature": 2.9,
+        "power_consumption": 168.1,
+        "door_status": "CLOSED",
+        "cash_level": 389.85,
+        "sales_count": 2
+      },
+      {
+        "timestamp": "2025-03-25 22:42:48.749523",
+        "temperature": 3.7,
+        "power_consumption": 189.4,
+        "door_status": "CLOSED",
+        "cash_level": 48.1,
+        "sales_count": 1
+      },
+      {
+        "timestamp": "2025-03-26 01:42:48.749523",
+        "temperature": 2.9,
+        "power_consumption": 198.4,
+        "door_status": "CLOSED",
+        "cash_level": 238.58,
+        "sales_count": 1
+      },
+      {
+        "timestamp": "2025-03-26 04:42:48.749523",
+        "temperature": 3.6,
+        "power_consumption": 379.2,
+        "door_status": "OPEN",
+        "cash_level": 333.44,
+        "sales_count": 5
+      },
+      {
+        "timestamp": "2025-03-26 07:42:48.749523",
+        "temperature": 3.2,
+        "power_consumption": 144.1,
+        "door_status": "CLOSED",
+        "cash_level": 442.21,
+        "sales_count": 0
+      },
+      {
+        "timestamp": "2025-03-26 10:42:48.749523",
+        "temperature": 4.0,
+        "power_consumption": 340.4,
+        "door_status": "CLOSED",
+        "cash_level": 21.35,
+        "sales_count": 2
+      },
+      {
+        "timestamp": "2025-03-26 13:42:48.749523",
+        "temperature": 3.5,
+        "power_consumption": 102.7,
+        "door_status": "CLOSED",
+        "cash_level": 427.83,
+        "sales_count": 1
+      }
+    ]
+  },
+  "vm-088effdc": {
+    "id": "vm-088effdc",
+    "name": "PolarDelight - SuperVend 088e",
+    "type": "vending_machine",
+    "status": "ONLINE",
+    "location": "North Wing - Suite 101",
+    "last_seen": "2025-03-26 16:42:48.750011",
+    "model_number": "SuperVend-861",
+    "serial_number": "SN-c4c4037f-f",
+    "machine_status": "OPERATIONAL",
+    "mode": "NORMAL",
+    "temperature": 3.6,
+    "total_capacity": 66,
+    "cash_capacity": 1709.0,
+    "current_cash": 453.33,
+    "location_business_name": "SeaWorld",
+    "location_type": "OTHER",
+    "sub_location": "BREAK_ROOM",
+    "use_type": "SERVICED",
+    "usage_pattern": null,
+    "stock_level": null,
+    "maintenance_partner": "VendingFix Professionals",
+    "last_maintenance_date": null,
+    "next_maintenance_date": null,
+    "products": [
+      {
+        "product_id": "prod-61e4877a",
+        "name": "Greek Yogurt",
+        "price": 3.43,
+        "quantity": 3,
+        "category": "Healthy Options",
+        "location": "D4"
+      },
+      {
+        "product_id": "prod-899f8960",
+        "name": "Mixed Nuts",
+        "price": 2.59,
+        "quantity": 7,
+        "category": "Healthy Options",
+        "location": "A8"
+      },
+      {
+        "product_id": "prod-90b18586",
+        "name": "Popcorn",
+        "price": 4.35,
+        "quantity": 13,
+        "category": "Snacks",
+        "location": "A8"
+      },
+      {
+        "product_id": "prod-59fe3789",
+        "name": "Polar Chill Water",
+        "price": 4.86,
+        "quantity": 11,
+        "category": "Beverages",
+        "location": "A3"
+      },
+      {
+        "product_id": "prod-3876b0b0",
+        "name": "Iced Coffee",
+        "price": 1.4,
+        "quantity": 2,
+        "category": "Beverages",
+        "location": "A5"
+      }
+    ],
+    "readings": [
+      {
+        "timestamp": "2025-03-25 16:42:48.749792",
+        "temperature": 4.5,
+        "power_consumption": 245.2,
+        "door_status": "CLOSED",
+        "cash_level": 412.33,
+        "sales_count": 1
+      },
+      {
+        "timestamp": "2025-03-25 18:02:48.749792",
+        "temperature": 4.0,
+        "power_consumption": 271.1,
+        "door_status": "OPEN",
+        "cash_level": 307.22,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-25 19:22:48.749792",
+        "temperature": 4.0,
+        "power_consumption": 150.4,
+        "door_status": "CLOSED",
+        "cash_level": 342.18,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-25 20:42:48.749792",
+        "temperature": 4.0,
+        "power_consumption": 278.3,
+        "door_status": "CLOSED",
+        "cash_level": 142.81,
+        "sales_count": 5
+      },
+      {
+        "timestamp": "2025-03-25 22:02:48.749792",
+        "temperature": 4.1,
+        "power_consumption": 386.3,
+        "door_status": "OPEN",
+        "cash_level": 287.01,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-25 23:22:48.749792",
+        "temperature": 3.3,
+        "power_consumption": 241.5,
+        "door_status": "CLOSED",
+        "cash_level": 124.89,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-26 00:42:48.749792",
+        "temperature": 3.3,
+        "power_consumption": 321.2,
+        "door_status": "CLOSED",
+        "cash_level": 206.4,
+        "sales_count": 0
+      },
+      {
+        "timestamp": "2025-03-26 02:02:48.749792",
+        "temperature": 3.7,
+        "power_consumption": 279.2,
+        "door_status": "CLOSED",
+        "cash_level": 112.74,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-26 03:22:48.749792",
+        "temperature": 3.4,
+        "power_consumption": 112.9,
+        "door_status": "OPEN",
+        "cash_level": 221.02,
+        "sales_count": 2
+      },
+      {
+        "timestamp": "2025-03-26 04:42:48.749792",
+        "temperature": 3.7,
+        "power_consumption": 383.3,
+        "door_status": "CLOSED",
+        "cash_level": 154.96,
+        "sales_count": 1
+      },
+      {
+        "timestamp": "2025-03-26 06:02:48.749792",
+        "temperature": 3.9,
+        "power_consumption": 370.2,
+        "door_status": "CLOSED",
+        "cash_level": 171.54,
+        "sales_count": 2
+      },
+      {
+        "timestamp": "2025-03-26 07:22:48.749792",
+        "temperature": 3.4,
+        "power_consumption": 281.8,
+        "door_status": "CLOSED",
+        "cash_level": 256.26,
+        "sales_count": 2
+      },
+      {
+        "timestamp": "2025-03-26 08:42:48.749792",
+        "temperature": 4.4,
+        "power_consumption": 124.8,
+        "door_status": "CLOSED",
+        "cash_level": 109.41,
+        "sales_count": 5
+      },
+      {
+        "timestamp": "2025-03-26 10:02:48.749792",
+        "temperature": 3.6,
+        "power_consumption": 383.6,
+        "door_status": "CLOSED",
+        "cash_level": 328.01,
+        "sales_count": 2
+      },
+      {
+        "timestamp": "2025-03-26 11:22:48.749792",
+        "temperature": 3.8,
+        "power_consumption": 315.6,
+        "door_status": "OPEN",
+        "cash_level": 100.36,
+        "sales_count": 1
+      },
+      {
+        "timestamp": "2025-03-26 12:42:48.749792",
+        "temperature": 3.9,
+        "power_consumption": 214.6,
+        "door_status": "CLOSED",
+        "cash_level": 370.52,
+        "sales_count": 2
+      },
+      {
+        "timestamp": "2025-03-26 14:02:48.749792",
+        "temperature": 4.5,
+        "power_consumption": 280.9,
+        "door_status": "CLOSED",
+        "cash_level": 84.69,
+        "sales_count": 2
+      },
+      {
+        "timestamp": "2025-03-26 15:22:48.749792",
+        "temperature": 3.8,
+        "power_consumption": 338.7,
+        "door_status": "CLOSED",
+        "cash_level": 252.9,
+        "sales_count": 5
+      }
+    ]
+  },
+  "vm-52ba3168": {
+    "id": "vm-52ba3168",
+    "name": "PolarDelight - AutoSell 52ba",
+    "type": "vending_machine",
+    "status": "ONLINE",
+    "location": "Main Office - Bathroom",
+    "last_seen": "2025-03-26 16:42:48.750566",
+    "model_number": "AutoSell-855",
+    "serial_number": "SN-0d0a179c-a",
+    "machine_status": "OPERATIONAL",
+    "mode": "NORMAL",
+    "temperature": 4.4,
+    "total_capacity": 48,
+    "cash_capacity": 1895.0,
+    "current_cash": 1410.22,
+    "location_business_name": "Subway",
+    "location_type": "FAST_FOOD",
+    "sub_location": "LOBBY",
+    "use_type": "SELF_SERVE",
+    "usage_pattern": null,
+    "stock_level": null,
+    "maintenance_partner": "ChillMasters Repair",
+    "last_maintenance_date": null,
+    "next_maintenance_date": null,
+    "products": [
+      {
+        "product_id": "prod-e89b1075",
+        "name": "Mixed Nuts",
+        "price": 3.53,
+        "quantity": 7,
+        "category": "Healthy Options",
+        "location": "C8"
+      },
+      {
+        "product_id": "prod-2f6ceddf",
+        "name": "Soup Cup",
+        "price": 4.89,
+        "quantity": 14,
+        "category": "Meals",
+        "location": "A7"
+      },
+      {
+        "product_id": "prod-9df9c01f",
+        "name": "Veggie Chips",
+        "price": 4.17,
+        "quantity": 8,
+        "category": "Healthy Options",
+        "location": "A4"
+      },
+      {
+        "product_id": "prod-86fecb9c",
+        "name": "Fruit Smoothie",
+        "price": 2.68,
+        "quantity": 5,
+        "category": "Beverages",
+        "location": "D1"
+      },
+      {
+        "product_id": "prod-9dc91d5a",
+        "name": "Gummy Bears",
+        "price": 3.16,
+        "quantity": 8,
+        "category": "Candy",
+        "location": "C7"
+      },
+      {
+        "product_id": "prod-ad98fc4a",
+        "name": "Burrito",
+        "price": 1.55,
+        "quantity": 6,
+        "category": "Meals",
+        "location": "E7"
+      },
+      {
+        "product_id": "prod-5f5fb82e",
+        "name": "Fruit Smoothie",
+        "price": 3.42,
+        "quantity": 11,
+        "category": "Beverages",
+        "location": "A6"
+      },
+      {
+        "product_id": "prod-b5c3f2aa",
+        "name": "Protein Snack",
+        "price": 2.91,
+        "quantity": 2,
+        "category": "Healthy Options",
+        "location": "D1"
+      },
+      {
+        "product_id": "prod-fa35055e",
+        "name": "Polar Chill Water",
+        "price": 1.7,
+        "quantity": 14,
+        "category": "Beverages",
+        "location": "D4"
+      },
+      {
+        "product_id": "prod-889fbd0b",
+        "name": "Sour Candy",
+        "price": 2.78,
+        "quantity": 0,
+        "category": "Candy",
+        "location": "B3"
+      },
+      {
+        "product_id": "prod-c39e3378",
+        "name": "Rice Bowl",
+        "price": 3.62,
+        "quantity": 4,
+        "category": "Meals",
+        "location": "C1"
+      },
+      {
+        "product_id": "prod-3aba8877",
+        "name": "Gummy Bears",
+        "price": 1.47,
+        "quantity": 6,
+        "category": "Candy",
+        "location": "D1"
+      },
+      {
+        "product_id": "prod-1d960d79",
+        "name": "Nuts Mix",
+        "price": 3.83,
+        "quantity": 12,
+        "category": "Snacks",
+        "location": "E7"
+      },
+      {
+        "product_id": "prod-2314c8e2",
+        "name": "Sandwich",
+        "price": 2.53,
+        "quantity": 15,
+        "category": "Meals",
+        "location": "B5"
+      },
+      {
+        "product_id": "prod-8b6e391e",
+        "name": "Crunchy Chips",
+        "price": 2.67,
+        "quantity": 4,
+        "category": "Snacks",
+        "location": "A2"
+      }
+    ],
+    "readings": [
+      {
+        "timestamp": "2025-03-25 16:42:48.750373",
+        "temperature": 4.7,
+        "power_consumption": 124.7,
+        "door_status": "CLOSED",
+        "cash_level": 350.25,
+        "sales_count": 2
+      },
+      {
+        "timestamp": "2025-03-25 18:12:48.750373",
+        "temperature": 5.0,
+        "power_consumption": 290.0,
+        "door_status": "CLOSED",
+        "cash_level": 289.12,
+        "sales_count": 5
+      },
+      {
+        "timestamp": "2025-03-25 19:42:48.750373",
+        "temperature": 3.9,
+        "power_consumption": 252.5,
+        "door_status": "CLOSED",
+        "cash_level": 267.89,
+        "sales_count": 5
+      },
+      {
+        "timestamp": "2025-03-25 21:12:48.750373",
+        "temperature": 3.9,
+        "power_consumption": 206.3,
+        "door_status": "CLOSED",
+        "cash_level": 180.03,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-25 22:42:48.750373",
+        "temperature": 4.9,
+        "power_consumption": 168.2,
+        "door_status": "CLOSED",
+        "cash_level": 57.82,
+        "sales_count": 1
+      },
+      {
+        "timestamp": "2025-03-26 00:12:48.750373",
+        "temperature": 4.2,
+        "power_consumption": 226.7,
+        "door_status": "CLOSED",
+        "cash_level": 46.02,
+        "sales_count": 1
+      },
+      {
+        "timestamp": "2025-03-26 01:42:48.750373",
+        "temperature": 4.6,
+        "power_consumption": 163.6,
+        "door_status": "CLOSED",
+        "cash_level": 85.05,
+        "sales_count": 5
+      },
+      {
+        "timestamp": "2025-03-26 03:12:48.750373",
+        "temperature": 4.5,
+        "power_consumption": 132.0,
+        "door_status": "CLOSED",
+        "cash_level": 186.9,
+        "sales_count": 0
+      },
+      {
+        "timestamp": "2025-03-26 04:42:48.750373",
+        "temperature": 4.5,
+        "power_consumption": 114.5,
+        "door_status": "CLOSED",
+        "cash_level": 111.01,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-26 06:12:48.750373",
+        "temperature": 4.4,
+        "power_consumption": 221.3,
+        "door_status": "CLOSED",
+        "cash_level": 266.27,
+        "sales_count": 2
+      },
+      {
+        "timestamp": "2025-03-26 07:42:48.750373",
+        "temperature": 4.4,
+        "power_consumption": 304.7,
+        "door_status": "CLOSED",
+        "cash_level": 278.94,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-26 09:12:48.750373",
+        "temperature": 4.7,
+        "power_consumption": 247.7,
+        "door_status": "OPEN",
+        "cash_level": 248.78,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-26 10:42:48.750373",
+        "temperature": 5.1,
+        "power_consumption": 320.7,
+        "door_status": "CLOSED",
+        "cash_level": 257.46,
+        "sales_count": 2
+      },
+      {
+        "timestamp": "2025-03-26 12:12:48.750373",
+        "temperature": 5.0,
+        "power_consumption": 336.4,
+        "door_status": "CLOSED",
+        "cash_level": 178.69,
+        "sales_count": 2
+      },
+      {
+        "timestamp": "2025-03-26 13:42:48.750373",
+        "temperature": 5.1,
+        "power_consumption": 181.4,
+        "door_status": "CLOSED",
+        "cash_level": 362.08,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-26 15:12:48.750373",
+        "temperature": 5.2,
+        "power_consumption": 208.0,
+        "door_status": "CLOSED",
+        "cash_level": 483.0,
+        "sales_count": 1
+      }
+    ]
+  },
+  "vm-6b5f26ad": {
+    "id": "vm-6b5f26ad",
+    "name": "PolarDelight - FrostyPlus 6b5f",
+    "type": "vending_machine",
+    "status": "ONLINE",
+    "location": "East Tower - Bathroom",
+    "last_seen": "2025-03-26 16:42:48.751006",
+    "model_number": "FrostyPlus-887",
+    "serial_number": "SN-ca0f50e5-2",
+    "machine_status": "OPERATIONAL",
+    "mode": "NORMAL",
+    "temperature": 3.3,
+    "total_capacity": 67,
+    "cash_capacity": 860.0,
+    "current_cash": 198.4,
+    "location_business_name": "O'Hare Airport",
+    "location_type": "TRANSPORTATION",
+    "sub_location": "LOBBY",
+    "use_type": "SERVICED",
+    "usage_pattern": null,
+    "stock_level": null,
+    "maintenance_partner": "CoolServe Technicians",
+    "last_maintenance_date": null,
+    "next_maintenance_date": null,
+    "products": [
+      {
+        "product_id": "prod-54119fc0",
+        "name": "Mints",
+        "price": 4.93,
+        "quantity": 3,
+        "category": "Candy",
+        "location": "B3"
+      },
+      {
+        "product_id": "prod-9bd80cf6",
+        "name": "Salad Bowl",
+        "price": 3.58,
+        "quantity": 10,
+        "category": "Meals",
+        "location": "B4"
+      },
+      {
+        "product_id": "prod-902a74c3",
+        "name": "Veggie Chips",
+        "price": 4.14,
+        "quantity": 10,
+        "category": "Healthy Options",
+        "location": "A3"
+      },
+      {
+        "product_id": "prod-5c395c70",
+        "name": "Gummy Bears",
+        "price": 4.72,
+        "quantity": 9,
+        "category": "Candy",
+        "location": "D2"
+      },
+      {
+        "product_id": "prod-019a04e4",
+        "name": "Instant Noodles",
+        "price": 3.83,
+        "quantity": 12,
+        "category": "Meals",
+        "location": "C8"
+      },
+      {
+        "product_id": "prod-38c722f6",
+        "name": "Sparkling Water",
+        "price": 4.6,
+        "quantity": 1,
+        "category": "Beverages",
+        "location": "D6"
+      },
+      {
+        "product_id": "prod-cbbed048",
+        "name": "Hummus & Crackers",
+        "price": 4.08,
+        "quantity": 11,
+        "category": "Healthy Options",
+        "location": "A2"
+      },
+      {
+        "product_id": "prod-926cf78e",
+        "name": "Greek Yogurt",
+        "price": 1.82,
+        "quantity": 4,
+        "category": "Healthy Options",
+        "location": "B7"
+      },
+      {
+        "product_id": "prod-a0a3d9b2",
+        "name": "Cheese Crackers",
+        "price": 2.17,
+        "quantity": 2,
+        "category": "Snacks",
+        "location": "E5"
+      }
+    ],
+    "readings": [
+      {
+        "timestamp": "2025-03-25 16:42:48.750794",
+        "temperature": 3.5,
+        "power_consumption": 231.0,
+        "door_status": "CLOSED",
+        "cash_level": 363.98,
+        "sales_count": 2
+      },
+      {
+        "timestamp": "2025-03-25 17:51:23.036508",
+        "temperature": 3.6,
+        "power_consumption": 160.0,
+        "door_status": "CLOSED",
+        "cash_level": 161.93,
+        "sales_count": 2
+      },
+      {
+        "timestamp": "2025-03-25 18:59:57.322223",
+        "temperature": 3.9,
+        "power_consumption": 140.0,
+        "door_status": "OPEN",
+        "cash_level": 439.89,
+        "sales_count": 0
+      },
+      {
+        "timestamp": "2025-03-25 20:08:31.607937",
+        "temperature": 3.1,
+        "power_consumption": 210.8,
+        "door_status": "CLOSED",
+        "cash_level": 218.17,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-25 21:17:05.893651",
+        "temperature": 3.8,
+        "power_consumption": 127.8,
+        "door_status": "CLOSED",
+        "cash_level": 339.05,
+        "sales_count": 5
+      },
+      {
+        "timestamp": "2025-03-25 22:25:40.179365",
+        "temperature": 2.8,
+        "power_consumption": 268.4,
+        "door_status": "CLOSED",
+        "cash_level": 102.74,
+        "sales_count": 0
+      },
+      {
+        "timestamp": "2025-03-25 23:34:14.465080",
+        "temperature": 2.9,
+        "power_consumption": 235.0,
+        "door_status": "CLOSED",
+        "cash_level": 299.29,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-26 00:42:48.750794",
+        "temperature": 3.6,
+        "power_consumption": 380.1,
+        "door_status": "CLOSED",
+        "cash_level": 281.64,
+        "sales_count": 1
+      },
+      {
+        "timestamp": "2025-03-26 01:51:23.036508",
+        "temperature": 3.2,
+        "power_consumption": 309.4,
+        "door_status": "OPEN",
+        "cash_level": 220.69,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-26 02:59:57.322223",
+        "temperature": 3.1,
+        "power_consumption": 323.1,
+        "door_status": "CLOSED",
+        "cash_level": 303.29,
+        "sales_count": 0
+      },
+      {
+        "timestamp": "2025-03-26 04:08:31.607937",
+        "temperature": 2.8,
+        "power_consumption": 219.8,
+        "door_status": "CLOSED",
+        "cash_level": 282.97,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-26 05:17:05.893651",
+        "temperature": 2.8,
+        "power_consumption": 328.2,
+        "door_status": "CLOSED",
+        "cash_level": 344.3,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-26 06:25:40.179365",
+        "temperature": 3.7,
+        "power_consumption": 354.9,
+        "door_status": "OPEN",
+        "cash_level": 87.05,
+        "sales_count": 1
+      },
+      {
+        "timestamp": "2025-03-26 07:34:14.465080",
+        "temperature": 3.4,
+        "power_consumption": 142.5,
+        "door_status": "CLOSED",
+        "cash_level": 191.99,
+        "sales_count": 5
+      },
+      {
+        "timestamp": "2025-03-26 08:42:48.750794",
+        "temperature": 3.4,
+        "power_consumption": 353.1,
+        "door_status": "CLOSED",
+        "cash_level": 125.17,
+        "sales_count": 5
+      },
+      {
+        "timestamp": "2025-03-26 09:51:23.036508",
+        "temperature": 3.8,
+        "power_consumption": 245.9,
+        "door_status": "CLOSED",
+        "cash_level": 483.92,
+        "sales_count": 1
+      },
+      {
+        "timestamp": "2025-03-26 10:59:57.322223",
+        "temperature": 3.6,
+        "power_consumption": 108.7,
+        "door_status": "CLOSED",
+        "cash_level": 153.83,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-26 12:08:31.607937",
+        "temperature": 3.6,
+        "power_consumption": 310.5,
+        "door_status": "CLOSED",
+        "cash_level": 395.41,
+        "sales_count": 1
+      },
+      {
+        "timestamp": "2025-03-26 13:17:05.893651",
+        "temperature": 3.8,
+        "power_consumption": 301.1,
+        "door_status": "CLOSED",
+        "cash_level": 459.9,
+        "sales_count": 5
+      },
+      {
+        "timestamp": "2025-03-26 14:25:40.179365",
+        "temperature": 4.2,
+        "power_consumption": 216.6,
+        "door_status": "CLOSED",
+        "cash_level": 351.49,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-26 15:34:14.465080",
+        "temperature": 4.1,
+        "power_consumption": 221.4,
+        "door_status": "CLOSED",
+        "cash_level": 303.72,
+        "sales_count": 1
+      }
+    ]
+  },
+  "vm-ce8d67d0": {
+    "id": "vm-ce8d67d0",
+    "name": "PolarDelight - MaxCapacity ce8d",
+    "type": "vending_machine",
+    "status": "ONLINE",
+    "location": "West Tower - Suite 101",
+    "last_seen": "2025-03-26 16:42:48.751235",
+    "model_number": "MaxCapacity-912",
+    "serial_number": "SN-f061337b-f",
+    "machine_status": "NEEDS_RESTOCK",
+    "mode": "NORMAL",
+    "temperature": 3.1,
+    "total_capacity": 43,
+    "cash_capacity": 1956.0,
+    "current_cash": 1192.23,
+    "location_business_name": "Apple Park",
+    "location_type": "OFFICE",
+    "sub_location": "LOBBY",
+    "use_type": "SERVICED",
+    "usage_pattern": null,
+    "stock_level": null,
+    "maintenance_partner": "MachineHealth Experts",
+    "last_maintenance_date": null,
+    "next_maintenance_date": null,
+    "products": [
+      {
+        "product_id": "prod-914cb2a3",
+        "name": "Chocolate Cookies",
+        "price": 3.1,
+        "quantity": 11,
+        "category": "Candy",
+        "location": "C2"
+      },
+      {
+        "product_id": "prod-f6f8823d",
+        "name": "Mixed Nuts",
+        "price": 4.94,
+        "quantity": 8,
+        "category": "Healthy Options",
+        "location": "B6"
+      },
+      {
+        "product_id": "prod-a061edf8",
+        "name": "Soup Cup",
+        "price": 2.62,
+        "quantity": 15,
+        "category": "Meals",
+        "location": "E1"
+      },
+      {
+        "product_id": "prod-c82b3012",
+        "name": "Iced Tea",
+        "price": 2.3,
+        "quantity": 10,
+        "category": "Beverages",
+        "location": "E5"
+      },
+      {
+        "product_id": "prod-2648b14c",
+        "name": "Sparkling Water",
+        "price": 4.38,
+        "quantity": 9,
+        "category": "Beverages",
+        "location": "B3"
+      },
+      {
+        "product_id": "prod-d06488fb",
+        "name": "Veggie Chips",
+        "price": 2.63,
+        "quantity": 3,
+        "category": "Healthy Options",
+        "location": "C6"
+      },
+      {
+        "product_id": "prod-7ca47ddc",
+        "name": "Crunchy Chips",
+        "price": 3.23,
+        "quantity": 7,
+        "category": "Snacks",
+        "location": "A3"
+      },
+      {
+        "product_id": "prod-5d9f00fd",
+        "name": "Crunchy Chips",
+        "price": 4.59,
+        "quantity": 2,
+        "category": "Snacks",
+        "location": "A2"
+      },
+      {
+        "product_id": "prod-24af6155",
+        "name": "Caramel Chews",
+        "price": 2.32,
+        "quantity": 0,
+        "category": "Candy",
+        "location": "C4"
+      },
+      {
+        "product_id": "prod-e11826f0",
+        "name": "Chocolate Bar",
+        "price": 2.05,
+        "quantity": 12,
+        "category": "Candy",
+        "location": "C8"
+      },
+      {
+        "product_id": "prod-0bc778e7",
+        "name": "Pasta Cup",
+        "price": 4.43,
+        "quantity": 10,
+        "category": "Meals",
+        "location": "C5"
+      },
+      {
+        "product_id": "prod-7bbd1f19",
+        "name": "Protein Snack",
+        "price": 1.13,
+        "quantity": 9,
+        "category": "Healthy Options",
+        "location": "A6"
+      },
+      {
+        "product_id": "prod-d91efdc5",
+        "name": "Chocolate Cookies",
+        "price": 4.35,
+        "quantity": 8,
+        "category": "Candy",
+        "location": "D7"
+      }
+    ],
+    "readings": [
+      {
+        "timestamp": "2025-03-25 16:42:48.751149",
+        "temperature": 3.9,
+        "power_consumption": 333.5,
+        "door_status": "CLOSED",
+        "cash_level": 428.23,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-25 17:54:48.751149",
+        "temperature": 4.1,
+        "power_consumption": 204.7,
+        "door_status": "OPEN",
+        "cash_level": 330.01,
+        "sales_count": 5
+      },
+      {
+        "timestamp": "2025-03-25 19:06:48.751149",
+        "temperature": 2.9,
+        "power_consumption": 395.4,
+        "door_status": "CLOSED",
+        "cash_level": 125.16,
+        "sales_count": 1
+      },
+      {
+        "timestamp": "2025-03-25 20:18:48.751149",
+        "temperature": 3.1,
+        "power_consumption": 259.7,
+        "door_status": "CLOSED",
+        "cash_level": 124.08,
+        "sales_count": 2
+      },
+      {
+        "timestamp": "2025-03-25 21:30:48.751149",
+        "temperature": 2.8,
+        "power_consumption": 205.5,
+        "door_status": "CLOSED",
+        "cash_level": 457.92,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-25 22:42:48.751149",
+        "temperature": 3.5,
+        "power_consumption": 138.1,
+        "door_status": "CLOSED",
+        "cash_level": 459.77,
+        "sales_count": 2
+      },
+      {
+        "timestamp": "2025-03-25 23:54:48.751149",
+        "temperature": 3.0,
+        "power_consumption": 254.8,
+        "door_status": "CLOSED",
+        "cash_level": 331.31,
+        "sales_count": 5
+      },
+      {
+        "timestamp": "2025-03-26 01:06:48.751149",
+        "temperature": 3.2,
+        "power_consumption": 365.7,
+        "door_status": "CLOSED",
+        "cash_level": 272.14,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-26 02:18:48.751149",
+        "temperature": 3.4,
+        "power_consumption": 252.6,
+        "door_status": "OPEN",
+        "cash_level": 170.32,
+        "sales_count": 2
+      },
+      {
+        "timestamp": "2025-03-26 03:30:48.751149",
+        "temperature": 2.7,
+        "power_consumption": 138.7,
+        "door_status": "CLOSED",
+        "cash_level": 465.04,
+        "sales_count": 0
+      },
+      {
+        "timestamp": "2025-03-26 04:42:48.751149",
+        "temperature": 3.4,
+        "power_consumption": 187.2,
+        "door_status": "CLOSED",
+        "cash_level": 97.16,
+        "sales_count": 2
+      },
+      {
+        "timestamp": "2025-03-26 05:54:48.751149",
+        "temperature": 2.9,
+        "power_consumption": 282.0,
+        "door_status": "CLOSED",
+        "cash_level": 127.6,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-26 07:06:48.751149",
+        "temperature": 2.9,
+        "power_consumption": 240.1,
+        "door_status": "CLOSED",
+        "cash_level": 481.27,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-26 08:18:48.751149",
+        "temperature": 4.1,
+        "power_consumption": 332.2,
+        "door_status": "OPEN",
+        "cash_level": 171.61,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-26 09:30:48.751149",
+        "temperature": 4.0,
+        "power_consumption": 207.9,
+        "door_status": "CLOSED",
+        "cash_level": 396.57,
+        "sales_count": 5
+      },
+      {
+        "timestamp": "2025-03-26 10:42:48.751149",
+        "temperature": 4.1,
+        "power_consumption": 117.8,
+        "door_status": "CLOSED",
+        "cash_level": 91.07,
+        "sales_count": 5
+      },
+      {
+        "timestamp": "2025-03-26 11:54:48.751149",
+        "temperature": 4.0,
+        "power_consumption": 174.5,
+        "door_status": "CLOSED",
+        "cash_level": 465.78,
+        "sales_count": 1
+      },
+      {
+        "timestamp": "2025-03-26 13:06:48.751149",
+        "temperature": 3.5,
+        "power_consumption": 184.7,
+        "door_status": "CLOSED",
+        "cash_level": 494.45,
+        "sales_count": 0
+      },
+      {
+        "timestamp": "2025-03-26 14:18:48.751149",
+        "temperature": 3.6,
+        "power_consumption": 350.1,
+        "door_status": "CLOSED",
+        "cash_level": 138.11,
+        "sales_count": 2
+      },
+      {
+        "timestamp": "2025-03-26 15:30:48.751149",
+        "temperature": 3.7,
+        "power_consumption": 133.2,
+        "door_status": "CLOSED",
+        "cash_level": 395.2,
+        "sales_count": 3
+      }
+    ]
+  },
+  "vm-c5ba267e": {
+    "id": "vm-c5ba267e",
+    "name": "PolarDelight - MK-500 c5ba",
+    "type": "vending_machine",
+    "status": "ONLINE",
+    "location": "R&D Lab - Suite 202",
+    "last_seen": "2025-03-26 16:42:48.751382",
+    "model_number": "MK-500-921",
+    "serial_number": "SN-e6eee6ca-6",
+    "machine_status": "OPERATIONAL",
+    "mode": "POWER_SAVE",
+    "temperature": 4.8,
+    "total_capacity": 41,
+    "cash_capacity": 1046.0,
+    "current_cash": 315.24,
+    "location_business_name": "Grand Central Terminal",
+    "location_type": "TRANSPORTATION",
+    "sub_location": "DINING_AREA",
+    "use_type": "SELF_SERVE",
+    "usage_pattern": null,
+    "stock_level": null,
+    "maintenance_partner": "ColdStream Maintenance",
+    "last_maintenance_date": null,
+    "next_maintenance_date": null,
+    "products": [
+      {
+        "product_id": "prod-b9a825c6",
+        "name": "Dried Fruit",
+        "price": 3.63,
+        "quantity": 0,
+        "category": "Healthy Options",
+        "location": "B6"
+      },
+      {
+        "product_id": "prod-d9a382fc",
+        "name": "Burrito",
+        "price": 2.96,
+        "quantity": 5,
+        "category": "Meals",
+        "location": "D7"
+      },
+      {
+        "product_id": "prod-dde85e9c",
+        "name": "Veggie Chips",
+        "price": 1.3,
+        "quantity": 2,
+        "category": "Healthy Options",
+        "location": "D1"
+      },
+      {
+        "product_id": "prod-5c0687f7",
+        "name": "Fruit Cup",
+        "price": 4.23,
+        "quantity": 10,
+        "category": "Healthy Options",
+        "location": "D3"
+      },
+      {
+        "product_id": "prod-ccd2a750",
+        "name": "Rice Crisps",
+        "price": 3.99,
+        "quantity": 6,
+        "category": "Snacks",
+        "location": "E6"
+      },
+      {
+        "product_id": "prod-77cc2827",
+        "name": "Instant Noodles",
+        "price": 2.45,
+        "quantity": 11,
+        "category": "Meals",
+        "location": "D3"
+      },
+      {
+        "product_id": "prod-75f9fb09",
+        "name": "Fruit Cup",
+        "price": 2.04,
+        "quantity": 12,
+        "category": "Healthy Options",
+        "location": "C3"
+      },
+      {
+        "product_id": "prod-b3bb8e3b",
+        "name": "Iced Tea",
+        "price": 4.63,
+        "quantity": 1,
+        "category": "Beverages",
+        "location": "A4"
+      },
+      {
+        "product_id": "prod-b7d25391",
+        "name": "Licorice",
+        "price": 2.56,
+        "quantity": 13,
+        "category": "Candy",
+        "location": "E5"
+      }
+    ],
+    "readings": [
+      {
+        "timestamp": "2025-03-25 16:42:48.751318",
+        "temperature": 5.8,
+        "power_consumption": 234.1,
+        "door_status": "CLOSED",
+        "cash_level": 228.89,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-25 18:12:48.751318",
+        "temperature": 5.0,
+        "power_consumption": 292.6,
+        "door_status": "CLOSED",
+        "cash_level": 330.08,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-25 19:42:48.751318",
+        "temperature": 4.4,
+        "power_consumption": 268.0,
+        "door_status": "CLOSED",
+        "cash_level": 88.45,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-25 21:12:48.751318",
+        "temperature": 5.2,
+        "power_consumption": 238.7,
+        "door_status": "CLOSED",
+        "cash_level": 219.84,
+        "sales_count": 1
+      },
+      {
+        "timestamp": "2025-03-25 22:42:48.751318",
+        "temperature": 4.6,
+        "power_consumption": 242.9,
+        "door_status": "CLOSED",
+        "cash_level": 245.89,
+        "sales_count": 0
+      },
+      {
+        "timestamp": "2025-03-26 00:12:48.751318",
+        "temperature": 4.6,
+        "power_consumption": 151.2,
+        "door_status": "CLOSED",
+        "cash_level": 200.66,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-26 01:42:48.751318",
+        "temperature": 4.6,
+        "power_consumption": 153.4,
+        "door_status": "CLOSED",
+        "cash_level": 151.71,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-26 03:12:48.751318",
+        "temperature": 5.2,
+        "power_consumption": 207.4,
+        "door_status": "CLOSED",
+        "cash_level": 302.48,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-26 04:42:48.751318",
+        "temperature": 4.6,
+        "power_consumption": 119.2,
+        "door_status": "CLOSED",
+        "cash_level": 372.54,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-26 06:12:48.751318",
+        "temperature": 4.5,
+        "power_consumption": 335.4,
+        "door_status": "CLOSED",
+        "cash_level": 30.75,
+        "sales_count": 2
+      },
+      {
+        "timestamp": "2025-03-26 07:42:48.751318",
+        "temperature": 5.2,
+        "power_consumption": 384.0,
+        "door_status": "CLOSED",
+        "cash_level": 230.58,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-26 09:12:48.751318",
+        "temperature": 5.7,
+        "power_consumption": 221.5,
+        "door_status": "CLOSED",
+        "cash_level": 410.69,
+        "sales_count": 2
+      },
+      {
+        "timestamp": "2025-03-26 10:42:48.751318",
+        "temperature": 4.9,
+        "power_consumption": 327.6,
+        "door_status": "CLOSED",
+        "cash_level": 209.03,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-26 12:12:48.751318",
+        "temperature": 5.5,
+        "power_consumption": 182.7,
+        "door_status": "CLOSED",
+        "cash_level": 74.86,
+        "sales_count": 5
+      },
+      {
+        "timestamp": "2025-03-26 13:42:48.751318",
+        "temperature": 5.7,
+        "power_consumption": 198.7,
+        "door_status": "CLOSED",
+        "cash_level": 404.6,
+        "sales_count": 2
+      },
+      {
+        "timestamp": "2025-03-26 15:12:48.751318",
+        "temperature": 4.9,
+        "power_consumption": 239.1,
+        "door_status": "OPEN",
+        "cash_level": 412.55,
+        "sales_count": 0
+      }
+    ]
+  },
+  "vm-a70229c0": {
+    "id": "vm-a70229c0",
+    "name": "PolarDelight - SmartDispense a702",
+    "type": "vending_machine",
+    "status": "ONLINE",
+    "location": "South Wing - Boiler Room",
+    "last_seen": "2025-03-26 16:42:48.751534",
+    "model_number": "SmartDispense-231",
+    "serial_number": "SN-3607541a-8",
+    "machine_status": "NEEDS_RESTOCK",
+    "mode": "POWER_SAVE",
+    "temperature": 3.0,
+    "total_capacity": 56,
+    "cash_capacity": 1778.0,
+    "current_cash": 525.02,
+    "location_business_name": "O'Hare Airport",
+    "location_type": "TRANSPORTATION",
+    "sub_location": "HALLWAY",
+    "use_type": "SERVICED",
+    "usage_pattern": null,
+    "stock_level": null,
+    "maintenance_partner": "TechnoChill Services",
+    "last_maintenance_date": null,
+    "next_maintenance_date": null,
+    "products": [
+      {
+        "product_id": "prod-2ede1916",
+        "name": "Pretzel Twists",
+        "price": 3.58,
+        "quantity": 14,
+        "category": "Snacks",
+        "location": "B2"
+      },
+      {
+        "product_id": "prod-b4188187",
+        "name": "Soup Cup",
+        "price": 4.38,
+        "quantity": 14,
+        "category": "Meals",
+        "location": "B8"
+      },
+      {
+        "product_id": "prod-c9b06bdc",
+        "name": "Fruit Smoothie",
+        "price": 3.92,
+        "quantity": 15,
+        "category": "Beverages",
+        "location": "C4"
+      },
+      {
+        "product_id": "prod-2dbf3d9d",
+        "name": "Sandwich",
+        "price": 1.7,
+        "quantity": 15,
+        "category": "Meals",
+        "location": "E5"
+      },
+      {
+        "product_id": "prod-0a06ca67",
+        "name": "Cheese Crackers",
+        "price": 3.12,
+        "quantity": 2,
+        "category": "Snacks",
+        "location": "C3"
+      },
+      {
+        "product_id": "prod-3c62b21d",
+        "name": "Protein Bar",
+        "price": 2.89,
+        "quantity": 0,
+        "category": "Snacks",
+        "location": "D8"
+      },
+      {
+        "product_id": "prod-e027d45c",
+        "name": "Sandwich",
+        "price": 2.89,
+        "quantity": 0,
+        "category": "Meals",
+        "location": "B6"
+      },
+      {
+        "product_id": "prod-23f1e570",
+        "name": "Salad Bowl",
+        "price": 2.06,
+        "quantity": 9,
+        "category": "Meals",
+        "location": "D4"
+      },
+      {
+        "product_id": "prod-ea9a028c",
+        "name": "Fruit Cup",
+        "price": 2.84,
+        "quantity": 15,
+        "category": "Healthy Options",
+        "location": "A3"
+      },
+      {
+        "product_id": "prod-c4983b33",
+        "name": "Hummus & Crackers",
+        "price": 1.96,
+        "quantity": 4,
+        "category": "Healthy Options",
+        "location": "E3"
+      },
+      {
+        "product_id": "prod-335f8c29",
+        "name": "Veggie Chips",
+        "price": 4.12,
+        "quantity": 4,
+        "category": "Healthy Options",
+        "location": "D3"
+      },
+      {
+        "product_id": "prod-e64a71b8",
+        "name": "Mixed Nuts",
+        "price": 3.13,
+        "quantity": 15,
+        "category": "Healthy Options",
+        "location": "A3"
+      },
+      {
+        "product_id": "prod-cab8c274",
+        "name": "Soup Cup",
+        "price": 2.75,
+        "quantity": 9,
+        "category": "Meals",
+        "location": "A1"
+      }
+    ],
+    "readings": [
+      {
+        "timestamp": "2025-03-25 16:42:48.751487",
+        "temperature": 3.0,
+        "power_consumption": 108.5,
+        "door_status": "CLOSED",
+        "cash_level": 326.69,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-25 18:53:43.296942",
+        "temperature": 3.4,
+        "power_consumption": 236.7,
+        "door_status": "CLOSED",
+        "cash_level": 91.78,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-25 21:04:37.842396",
+        "temperature": 2.9,
+        "power_consumption": 363.8,
+        "door_status": "OPEN",
+        "cash_level": 115.56,
+        "sales_count": 0
+      },
+      {
+        "timestamp": "2025-03-25 23:15:32.387851",
+        "temperature": 3.2,
+        "power_consumption": 119.7,
+        "door_status": "CLOSED",
+        "cash_level": 111.97,
+        "sales_count": 2
+      },
+      {
+        "timestamp": "2025-03-26 01:26:26.933305",
+        "temperature": 3.0,
+        "power_consumption": 322.7,
+        "door_status": "CLOSED",
+        "cash_level": 425.82,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-26 03:37:21.478760",
+        "temperature": 3.4,
+        "power_consumption": 135.8,
+        "door_status": "CLOSED",
+        "cash_level": 197.04,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-26 05:48:16.024214",
+        "temperature": 3.0,
+        "power_consumption": 252.5,
+        "door_status": "CLOSED",
+        "cash_level": 340.23,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-26 07:59:10.569669",
+        "temperature": 3.4,
+        "power_consumption": 371.2,
+        "door_status": "CLOSED",
+        "cash_level": 218.74,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-26 10:10:05.115123",
+        "temperature": 3.4,
+        "power_consumption": 267.2,
+        "door_status": "CLOSED",
+        "cash_level": 469.54,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-26 12:20:59.660578",
+        "temperature": 3.3,
+        "power_consumption": 200.5,
+        "door_status": "CLOSED",
+        "cash_level": 479.18,
+        "sales_count": 1
+      },
+      {
+        "timestamp": "2025-03-26 14:31:54.206032",
+        "temperature": 3.1,
+        "power_consumption": 295.8,
+        "door_status": "CLOSED",
+        "cash_level": 105.39,
+        "sales_count": 5
+      }
+    ]
+  },
+  "vm-f42ab462": {
+    "id": "vm-f42ab462",
+    "name": "PolarDelight - SuperVend f42a",
+    "type": "vending_machine",
+    "status": "ONLINE",
+    "location": "Main Office - Manufacturing Floor",
+    "last_seen": "2025-03-26 16:42:48.751682",
+    "model_number": "SuperVend-148",
+    "serial_number": "SN-c76ce7e1-b",
+    "machine_status": "OPERATIONAL",
+    "mode": "NORMAL",
+    "temperature": 3.1,
+    "total_capacity": 55,
+    "cash_capacity": 1539.0,
+    "current_cash": 1459.4,
+    "location_business_name": "Burger King",
+    "location_type": "FAST_FOOD",
+    "sub_location": "WAITING_AREA",
+    "use_type": "SERVICED",
+    "usage_pattern": null,
+    "stock_level": null,
+    "maintenance_partner": "CoolServe Technicians",
+    "last_maintenance_date": null,
+    "next_maintenance_date": null,
+    "products": [
+      {
+        "product_id": "prod-4bf909b8",
+        "name": "Mixed Nuts",
+        "price": 1.45,
+        "quantity": 3,
+        "category": "Healthy Options",
+        "location": "C7"
+      },
+      {
+        "product_id": "prod-7cfc0f4e",
+        "name": "Cheese Crackers",
+        "price": 2.21,
+        "quantity": 11,
+        "category": "Snacks",
+        "location": "E3"
+      },
+      {
+        "product_id": "prod-6785c7d8",
+        "name": "Mixed Nuts",
+        "price": 4.12,
+        "quantity": 0,
+        "category": "Healthy Options",
+        "location": "A5"
+      },
+      {
+        "product_id": "prod-df44cf6a",
+        "name": "Caramel Chews",
+        "price": 1.74,
+        "quantity": 2,
+        "category": "Candy",
+        "location": "C2"
+      },
+      {
+        "product_id": "prod-9881b1b6",
+        "name": "Granola Bar",
+        "price": 4.2,
+        "quantity": 5,
+        "category": "Healthy Options",
+        "location": "A2"
+      },
+      {
+        "product_id": "prod-0a240df2",
+        "name": "Hummus & Crackers",
+        "price": 2.91,
+        "quantity": 6,
+        "category": "Healthy Options",
+        "location": "A4"
+      },
+      {
+        "product_id": "prod-5fb16bee",
+        "name": "Licorice",
+        "price": 1.88,
+        "quantity": 7,
+        "category": "Candy",
+        "location": "D5"
+      },
+      {
+        "product_id": "prod-03523a5c",
+        "name": "Cheese Crackers",
+        "price": 4.63,
+        "quantity": 6,
+        "category": "Snacks",
+        "location": "E3"
+      },
+      {
+        "product_id": "prod-6d97b58a",
+        "name": "Wrap",
+        "price": 4.02,
+        "quantity": 9,
+        "category": "Meals",
+        "location": "B7"
+      },
+      {
+        "product_id": "prod-ef445842",
+        "name": "Granola Bar",
+        "price": 3.45,
+        "quantity": 6,
+        "category": "Healthy Options",
+        "location": "A3"
+      },
+      {
+        "product_id": "prod-70bb66f5",
+        "name": "Chocolate Cookies",
+        "price": 2.1,
+        "quantity": 11,
+        "category": "Candy",
+        "location": "B7"
+      },
+      {
+        "product_id": "prod-e5c64592",
+        "name": "Chocolate Cookies",
+        "price": 2.98,
+        "quantity": 8,
+        "category": "Candy",
+        "location": "D6"
+      },
+      {
+        "product_id": "prod-355b18b6",
+        "name": "Iced Coffee",
+        "price": 2.77,
+        "quantity": 14,
+        "category": "Beverages",
+        "location": "C3"
+      }
+    ],
+    "readings": [
+      {
+        "timestamp": "2025-03-25 16:42:48.751642",
+        "temperature": 3.8,
+        "power_consumption": 192.2,
+        "door_status": "OPEN",
+        "cash_level": 289.0,
+        "sales_count": 1
+      },
+      {
+        "timestamp": "2025-03-25 19:06:48.751642",
+        "temperature": 3.5,
+        "power_consumption": 262.9,
+        "door_status": "CLOSED",
+        "cash_level": 497.63,
+        "sales_count": 5
+      },
+      {
+        "timestamp": "2025-03-25 21:30:48.751642",
+        "temperature": 3.5,
+        "power_consumption": 178.6,
+        "door_status": "CLOSED",
+        "cash_level": 302.64,
+        "sales_count": 0
+      },
+      {
+        "timestamp": "2025-03-25 23:54:48.751642",
+        "temperature": 2.8,
+        "power_consumption": 232.8,
+        "door_status": "CLOSED",
+        "cash_level": 238.53,
+        "sales_count": 0
+      },
+      {
+        "timestamp": "2025-03-26 02:18:48.751642",
+        "temperature": 3.2,
+        "power_consumption": 182.6,
+        "door_status": "CLOSED",
+        "cash_level": 93.8,
+        "sales_count": 0
+      },
+      {
+        "timestamp": "2025-03-26 04:42:48.751642",
+        "temperature": 2.7,
+        "power_consumption": 249.5,
+        "door_status": "CLOSED",
+        "cash_level": 169.71,
+        "sales_count": 1
+      },
+      {
+        "timestamp": "2025-03-26 07:06:48.751642",
+        "temperature": 3.3,
+        "power_consumption": 391.3,
+        "door_status": "CLOSED",
+        "cash_level": 317.94,
+        "sales_count": 2
+      },
+      {
+        "timestamp": "2025-03-26 09:30:48.751642",
+        "temperature": 3.4,
+        "power_consumption": 280.8,
+        "door_status": "CLOSED",
+        "cash_level": 413.73,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-26 11:54:48.751642",
+        "temperature": 3.7,
+        "power_consumption": 388.7,
+        "door_status": "CLOSED",
+        "cash_level": 211.42,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-26 14:18:48.751642",
+        "temperature": 3.6,
+        "power_consumption": 315.7,
+        "door_status": "CLOSED",
+        "cash_level": 456.8,
+        "sales_count": 5
+      }
+    ]
+  },
+  "vm-b5088fa3": {
+    "id": "vm-b5088fa3",
+    "name": "PolarDelight - AutoSell b508",
+    "type": "vending_machine",
+    "status": "ONLINE",
+    "location": "Warehouse - Master Bathroom",
+    "last_seen": "2025-03-26 16:42:48.751868",
+    "model_number": "AutoSell-746",
+    "serial_number": "SN-da74e591-a",
+    "machine_status": "OPERATIONAL",
+    "mode": "CLEANING",
+    "temperature": 3.2,
+    "total_capacity": 68,
+    "cash_capacity": 753.0,
+    "current_cash": 513.56,
+    "location_business_name": "Taco Bell",
+    "location_type": "FAST_FOOD",
+    "sub_location": "DINING_AREA",
+    "use_type": "SERVICED",
+    "usage_pattern": null,
+    "stock_level": null,
+    "maintenance_partner": "MachineHealth Experts",
+    "last_maintenance_date": null,
+    "next_maintenance_date": null,
+    "products": [
+      {
+        "product_id": "prod-e5b66f3e",
+        "name": "Protein Snack",
+        "price": 4.13,
+        "quantity": 2,
+        "category": "Healthy Options",
+        "location": "B3"
+      },
+      {
+        "product_id": "prod-41c674d5",
+        "name": "Soup Cup",
+        "price": 1.38,
+        "quantity": 15,
+        "category": "Meals",
+        "location": "C4"
+      },
+      {
+        "product_id": "prod-2abb2569",
+        "name": "Arctic Blast Soda",
+        "price": 1.49,
+        "quantity": 1,
+        "category": "Beverages",
+        "location": "C4"
+      },
+      {
+        "product_id": "prod-05b5ac10",
+        "name": "Chocolate Cookies",
+        "price": 3.37,
+        "quantity": 4,
+        "category": "Candy",
+        "location": "B3"
+      },
+      {
+        "product_id": "prod-7213e4ba",
+        "name": "Mountain Fresh Juice",
+        "price": 3.32,
+        "quantity": 10,
+        "category": "Beverages",
+        "location": "B5"
+      },
+      {
+        "product_id": "prod-9f771c10",
+        "name": "Arctic Blast Soda",
+        "price": 3.97,
+        "quantity": 2,
+        "category": "Beverages",
+        "location": "A7"
+      },
+      {
+        "product_id": "prod-b590a6f3",
+        "name": "Iced Tea",
+        "price": 3.32,
+        "quantity": 12,
+        "category": "Beverages",
+        "location": "E6"
+      },
+      {
+        "product_id": "prod-ae87a448",
+        "name": "Mints",
+        "price": 2.26,
+        "quantity": 10,
+        "category": "Candy",
+        "location": "B4"
+      },
+      {
+        "product_id": "prod-30594e36",
+        "name": "Veggie Chips",
+        "price": 2.27,
+        "quantity": 8,
+        "category": "Healthy Options",
+        "location": "A1"
+      },
+      {
+        "product_id": "prod-a46c204e",
+        "name": "Hummus & Crackers",
+        "price": 4.14,
+        "quantity": 13,
+        "category": "Healthy Options",
+        "location": "E6"
+      },
+      {
+        "product_id": "prod-34a03a50",
+        "name": "Sparkling Water",
+        "price": 4.38,
+        "quantity": 2,
+        "category": "Beverages",
+        "location": "C3"
+      },
+      {
+        "product_id": "prod-df84d335",
+        "name": "Nuts Mix",
+        "price": 3.96,
+        "quantity": 5,
+        "category": "Snacks",
+        "location": "C8"
+      }
+    ],
+    "readings": [
+      {
+        "timestamp": "2025-03-25 16:42:48.751824",
+        "temperature": 3.5,
+        "power_consumption": 111.9,
+        "door_status": "CLOSED",
+        "cash_level": 431.82,
+        "sales_count": 2
+      },
+      {
+        "timestamp": "2025-03-25 18:53:43.297279",
+        "temperature": 3.8,
+        "power_consumption": 109.9,
+        "door_status": "CLOSED",
+        "cash_level": 299.18,
+        "sales_count": 1
+      },
+      {
+        "timestamp": "2025-03-25 21:04:37.842733",
+        "temperature": 3.0,
+        "power_consumption": 152.1,
+        "door_status": "OPEN",
+        "cash_level": 302.75,
+        "sales_count": 5
+      },
+      {
+        "timestamp": "2025-03-25 23:15:32.388188",
+        "temperature": 3.5,
+        "power_consumption": 172.8,
+        "door_status": "CLOSED",
+        "cash_level": 103.21,
+        "sales_count": 2
+      },
+      {
+        "timestamp": "2025-03-26 01:26:26.933642",
+        "temperature": 3.1,
+        "power_consumption": 356.4,
+        "door_status": "CLOSED",
+        "cash_level": 247.93,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-26 03:37:21.479097",
+        "temperature": 3.3,
+        "power_consumption": 179.6,
+        "door_status": "CLOSED",
+        "cash_level": 444.72,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-26 05:48:16.024551",
+        "temperature": 3.2,
+        "power_consumption": 295.6,
+        "door_status": "CLOSED",
+        "cash_level": 340.18,
+        "sales_count": 5
+      },
+      {
+        "timestamp": "2025-03-26 07:59:10.570006",
+        "temperature": 3.4,
+        "power_consumption": 226.9,
+        "door_status": "CLOSED",
+        "cash_level": 451.03,
+        "sales_count": 5
+      },
+      {
+        "timestamp": "2025-03-26 10:10:05.115460",
+        "temperature": 3.7,
+        "power_consumption": 172.2,
+        "door_status": "CLOSED",
+        "cash_level": 450.94,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-26 12:20:59.660915",
+        "temperature": 3.7,
+        "power_consumption": 282.8,
+        "door_status": "CLOSED",
+        "cash_level": 241.44,
+        "sales_count": 2
+      },
+      {
+        "timestamp": "2025-03-26 14:31:54.206369",
+        "temperature": 3.4,
+        "power_consumption": 203.7,
+        "door_status": "CLOSED",
+        "cash_level": 333.75,
+        "sales_count": 2
+      }
+    ]
+  },
+  "vm-143cce0b": {
+    "id": "vm-143cce0b",
+    "name": "PolarDelight - SuperVend 143c",
+    "type": "vending_machine",
+    "status": "ONLINE",
+    "location": "Building A - Maintenance Area",
+    "last_seen": "2025-03-26 16:42:48.752166",
+    "model_number": "SuperVend-925",
+    "serial_number": "SN-9be65655-5",
+    "machine_status": "OPERATIONAL",
+    "mode": "POWER_SAVE",
+    "temperature": 2.9,
+    "total_capacity": 36,
+    "cash_capacity": 1124.0,
+    "current_cash": 688.87,
+    "location_business_name": "IBM Building",
+    "location_type": "OFFICE",
+    "sub_location": "DINING_AREA",
+    "use_type": "SELF_SERVE",
+    "usage_pattern": null,
+    "stock_level": null,
+    "maintenance_partner": "ChillMasters Repair",
+    "last_maintenance_date": null,
+    "next_maintenance_date": null,
+    "products": [
+      {
+        "product_id": "prod-1ed91a22",
+        "name": "Dried Fruit",
+        "price": 2.58,
+        "quantity": 10,
+        "category": "Healthy Options",
+        "location": "C6"
+      },
+      {
+        "product_id": "prod-17f05225",
+        "name": "Chocolate Cookies",
+        "price": 2.13,
+        "quantity": 9,
+        "category": "Candy",
+        "location": "E7"
+      },
+      {
+        "product_id": "prod-15667631",
+        "name": "Nuts Mix",
+        "price": 1.87,
+        "quantity": 15,
+        "category": "Snacks",
+        "location": "C6"
+      },
+      {
+        "product_id": "prod-cd6e635d",
+        "name": "Caramel Chews",
+        "price": 3.15,
+        "quantity": 10,
+        "category": "Candy",
+        "location": "D6"
+      },
+      {
+        "product_id": "prod-9fb7574c",
+        "name": "Veggie Chips",
+        "price": 4.45,
+        "quantity": 1,
+        "category": "Healthy Options",
+        "location": "D8"
+      },
+      {
+        "product_id": "prod-2ac7f0dd",
+        "name": "Dried Fruit",
+        "price": 1.01,
+        "quantity": 3,
+        "category": "Healthy Options",
+        "location": "C6"
+      }
+    ],
+    "readings": [
+      {
+        "timestamp": "2025-03-25 16:42:48.752078",
+        "temperature": 3.0,
+        "power_consumption": 144.4,
+        "door_status": "CLOSED",
+        "cash_level": 158.87,
+        "sales_count": 1
+      },
+      {
+        "timestamp": "2025-03-25 17:54:48.752078",
+        "temperature": 3.4,
+        "power_consumption": 220.3,
+        "door_status": "CLOSED",
+        "cash_level": 321.09,
+        "sales_count": 0
+      },
+      {
+        "timestamp": "2025-03-25 19:06:48.752078",
+        "temperature": 3.3,
+        "power_consumption": 304.0,
+        "door_status": "CLOSED",
+        "cash_level": 355.28,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-25 20:18:48.752078",
+        "temperature": 3.2,
+        "power_consumption": 290.9,
+        "door_status": "CLOSED",
+        "cash_level": 187.96,
+        "sales_count": 0
+      },
+      {
+        "timestamp": "2025-03-25 21:30:48.752078",
+        "temperature": 2.5,
+        "power_consumption": 119.4,
+        "door_status": "CLOSED",
+        "cash_level": 133.08,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-25 22:42:48.752078",
+        "temperature": 3.3,
+        "power_consumption": 191.3,
+        "door_status": "CLOSED",
+        "cash_level": 304.19,
+        "sales_count": 1
+      },
+      {
+        "timestamp": "2025-03-25 23:54:48.752078",
+        "temperature": 2.4,
+        "power_consumption": 295.6,
+        "door_status": "CLOSED",
+        "cash_level": 180.81,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-26 01:06:48.752078",
+        "temperature": 3.2,
+        "power_consumption": 247.7,
+        "door_status": "OPEN",
+        "cash_level": 100.57,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-26 02:18:48.752078",
+        "temperature": 3.0,
+        "power_consumption": 127.0,
+        "door_status": "OPEN",
+        "cash_level": 47.29,
+        "sales_count": 1
+      },
+      {
+        "timestamp": "2025-03-26 03:30:48.752078",
+        "temperature": 3.2,
+        "power_consumption": 385.9,
+        "door_status": "CLOSED",
+        "cash_level": 367.46,
+        "sales_count": 5
+      },
+      {
+        "timestamp": "2025-03-26 04:42:48.752078",
+        "temperature": 2.9,
+        "power_consumption": 132.9,
+        "door_status": "CLOSED",
+        "cash_level": 333.27,
+        "sales_count": 0
+      },
+      {
+        "timestamp": "2025-03-26 05:54:48.752078",
+        "temperature": 3.0,
+        "power_consumption": 167.9,
+        "door_status": "OPEN",
+        "cash_level": 29.42,
+        "sales_count": 2
+      },
+      {
+        "timestamp": "2025-03-26 07:06:48.752078",
+        "temperature": 3.0,
+        "power_consumption": 288.7,
+        "door_status": "CLOSED",
+        "cash_level": 111.7,
+        "sales_count": 0
+      },
+      {
+        "timestamp": "2025-03-26 08:18:48.752078",
+        "temperature": 3.3,
+        "power_consumption": 217.3,
+        "door_status": "CLOSED",
+        "cash_level": 478.58,
+        "sales_count": 5
+      },
+      {
+        "timestamp": "2025-03-26 09:30:48.752078",
+        "temperature": 3.5,
+        "power_consumption": 264.7,
+        "door_status": "OPEN",
+        "cash_level": 161.01,
+        "sales_count": 1
+      },
+      {
+        "timestamp": "2025-03-26 10:42:48.752078",
+        "temperature": 3.0,
+        "power_consumption": 348.8,
+        "door_status": "CLOSED",
+        "cash_level": 459.65,
+        "sales_count": 1
+      },
+      {
+        "timestamp": "2025-03-26 11:54:48.752078",
+        "temperature": 3.1,
+        "power_consumption": 191.3,
+        "door_status": "CLOSED",
+        "cash_level": 403.89,
+        "sales_count": 2
+      },
+      {
+        "timestamp": "2025-03-26 13:06:48.752078",
+        "temperature": 3.8,
+        "power_consumption": 127.8,
+        "door_status": "CLOSED",
+        "cash_level": 372.85,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-26 14:18:48.752078",
+        "temperature": 3.0,
+        "power_consumption": 187.6,
+        "door_status": "CLOSED",
+        "cash_level": 141.93,
+        "sales_count": 1
+      },
+      {
+        "timestamp": "2025-03-26 15:30:48.752078",
+        "temperature": 3.5,
+        "power_consumption": 121.6,
+        "door_status": "CLOSED",
+        "cash_level": 289.15,
+        "sales_count": 0
+      }
+    ]
+  },
+  "vm-63ecbb7c": {
+    "id": "vm-63ecbb7c",
+    "name": "PolarDelight - SuperVend 63ec",
+    "type": "vending_machine",
+    "status": "ONLINE",
+    "location": "Main Office - Shower Room",
+    "last_seen": "2025-03-26 16:42:48.752381",
+    "model_number": "SuperVend-357",
+    "serial_number": "SN-c9345ced-9",
+    "machine_status": "OUT_OF_STOCK",
+    "mode": "NORMAL",
+    "temperature": 4.1,
+    "total_capacity": 63,
+    "cash_capacity": 1249.0,
+    "current_cash": 170.74,
+    "location_business_name": "Amazon Offices",
+    "location_type": "OFFICE",
+    "sub_location": "WAITING_AREA",
+    "use_type": "SERVICED",
+    "usage_pattern": null,
+    "stock_level": null,
+    "maintenance_partner": "ColdStream Maintenance",
+    "last_maintenance_date": null,
+    "next_maintenance_date": null,
+    "products": [
+      {
+        "product_id": "prod-1dba78b8",
+        "name": "Crunchy Chips",
+        "price": 2.2,
+        "quantity": 12,
+        "category": "Snacks",
+        "location": "E1"
+      },
+      {
+        "product_id": "prod-04a26534",
+        "name": "Sandwich",
+        "price": 4.81,
+        "quantity": 3,
+        "category": "Meals",
+        "location": "B7"
+      },
+      {
+        "product_id": "prod-19e8f9bf",
+        "name": "Caramel Chews",
+        "price": 1.62,
+        "quantity": 14,
+        "category": "Candy",
+        "location": "D2"
+      },
+      {
+        "product_id": "prod-e7a6434f",
+        "name": "Instant Noodles",
+        "price": 3.8,
+        "quantity": 8,
+        "category": "Meals",
+        "location": "E7"
+      },
+      {
+        "product_id": "prod-09bf9c1d",
+        "name": "Iced Tea",
+        "price": 2.27,
+        "quantity": 15,
+        "category": "Beverages",
+        "location": "B4"
+      },
+      {
+        "product_id": "prod-69f48567",
+        "name": "Energy Shot",
+        "price": 3.1,
+        "quantity": 14,
+        "category": "Beverages",
+        "location": "B6"
+      },
+      {
+        "product_id": "prod-e44a9428",
+        "name": "Instant Noodles",
+        "price": 1.1,
+        "quantity": 0,
+        "category": "Meals",
+        "location": "B2"
+      },
+      {
+        "product_id": "prod-5178207f",
+        "name": "Sparkling Water",
+        "price": 4.12,
+        "quantity": 6,
+        "category": "Beverages",
+        "location": "C4"
+      },
+      {
+        "product_id": "prod-dc17aaaa",
+        "name": "Protein Bar",
+        "price": 2.12,
+        "quantity": 8,
+        "category": "Snacks",
+        "location": "C3"
+      },
+      {
+        "product_id": "prod-fcafe7a7",
+        "name": "Sandwich",
+        "price": 1.77,
+        "quantity": 12,
+        "category": "Meals",
+        "location": "B2"
+      },
+      {
+        "product_id": "prod-08d0709a",
+        "name": "Protein Snack",
+        "price": 2.47,
+        "quantity": 14,
+        "category": "Healthy Options",
+        "location": "E2"
+      },
+      {
+        "product_id": "prod-0a56b2a0",
+        "name": "Veggie Chips",
+        "price": 3.09,
+        "quantity": 2,
+        "category": "Healthy Options",
+        "location": "A1"
+      },
+      {
+        "product_id": "prod-0ab7c70d",
+        "name": "Soup Cup",
+        "price": 4.59,
+        "quantity": 13,
+        "category": "Meals",
+        "location": "B8"
+      },
+      {
+        "product_id": "prod-7fe28bc4",
+        "name": "Polar Chill Water",
+        "price": 2.53,
+        "quantity": 2,
+        "category": "Beverages",
+        "location": "E2"
+      },
+      {
+        "product_id": "prod-3a2c095c",
+        "name": "Caramel Chews",
+        "price": 3.21,
+        "quantity": 8,
+        "category": "Candy",
+        "location": "B1"
+      }
+    ],
+    "readings": [
+      {
+        "timestamp": "2025-03-25 16:42:48.752297",
+        "temperature": 4.2,
+        "power_consumption": 303.7,
+        "door_status": "CLOSED",
+        "cash_level": 353.47,
+        "sales_count": 5
+      },
+      {
+        "timestamp": "2025-03-25 17:58:36.120718",
+        "temperature": 4.2,
+        "power_consumption": 106.3,
+        "door_status": "CLOSED",
+        "cash_level": 97.87,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-25 19:14:23.489139",
+        "temperature": 4.4,
+        "power_consumption": 147.3,
+        "door_status": "CLOSED",
+        "cash_level": 388.29,
+        "sales_count": 5
+      },
+      {
+        "timestamp": "2025-03-25 20:30:10.857560",
+        "temperature": 3.8,
+        "power_consumption": 288.5,
+        "door_status": "CLOSED",
+        "cash_level": 482.15,
+        "sales_count": 2
+      },
+      {
+        "timestamp": "2025-03-25 21:45:58.225981",
+        "temperature": 4.5,
+        "power_consumption": 311.8,
+        "door_status": "CLOSED",
+        "cash_level": 278.56,
+        "sales_count": 5
+      },
+      {
+        "timestamp": "2025-03-25 23:01:45.594402",
+        "temperature": 3.8,
+        "power_consumption": 126.6,
+        "door_status": "CLOSED",
+        "cash_level": 29.56,
+        "sales_count": 0
+      },
+      {
+        "timestamp": "2025-03-26 00:17:32.962823",
+        "temperature": 4.1,
+        "power_consumption": 370.8,
+        "door_status": "CLOSED",
+        "cash_level": 329.92,
+        "sales_count": 1
+      },
+      {
+        "timestamp": "2025-03-26 01:33:20.331244",
+        "temperature": 4.2,
+        "power_consumption": 266.2,
+        "door_status": "CLOSED",
+        "cash_level": 374.71,
+        "sales_count": 5
+      },
+      {
+        "timestamp": "2025-03-26 02:49:07.699665",
+        "temperature": 4.4,
+        "power_consumption": 319.3,
+        "door_status": "CLOSED",
+        "cash_level": 448.68,
+        "sales_count": 2
+      },
+      {
+        "timestamp": "2025-03-26 04:04:55.068086",
+        "temperature": 4.3,
+        "power_consumption": 215.7,
+        "door_status": "CLOSED",
+        "cash_level": 58.43,
+        "sales_count": 0
+      },
+      {
+        "timestamp": "2025-03-26 05:20:42.436508",
+        "temperature": 3.9,
+        "power_consumption": 151.7,
+        "door_status": "CLOSED",
+        "cash_level": 87.91,
+        "sales_count": 2
+      },
+      {
+        "timestamp": "2025-03-26 06:36:29.804929",
+        "temperature": 4.1,
+        "power_consumption": 266.9,
+        "door_status": "OPEN",
+        "cash_level": 421.05,
+        "sales_count": 1
+      },
+      {
+        "timestamp": "2025-03-26 07:52:17.173350",
+        "temperature": 4.0,
+        "power_consumption": 323.9,
+        "door_status": "CLOSED",
+        "cash_level": 316.55,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-26 09:08:04.541771",
+        "temperature": 4.8,
+        "power_consumption": 372.4,
+        "door_status": "CLOSED",
+        "cash_level": 73.01,
+        "sales_count": 0
+      },
+      {
+        "timestamp": "2025-03-26 10:23:51.910192",
+        "temperature": 5.1,
+        "power_consumption": 304.0,
+        "door_status": "CLOSED",
+        "cash_level": 415.04,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-26 11:39:39.278613",
+        "temperature": 4.3,
+        "power_consumption": 276.8,
+        "door_status": "CLOSED",
+        "cash_level": 74.72,
+        "sales_count": 2
+      },
+      {
+        "timestamp": "2025-03-26 12:55:26.647034",
+        "temperature": 4.9,
+        "power_consumption": 235.3,
+        "door_status": "CLOSED",
+        "cash_level": 340.12,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-26 14:11:14.015455",
+        "temperature": 4.5,
+        "power_consumption": 111.0,
+        "door_status": "OPEN",
+        "cash_level": 48.93,
+        "sales_count": 1
+      },
+      {
+        "timestamp": "2025-03-26 15:27:01.383876",
+        "temperature": 4.2,
+        "power_consumption": 152.0,
+        "door_status": "CLOSED",
+        "cash_level": 56.93,
+        "sales_count": 2
+      }
+    ]
+  },
+  "vm-845d3961": {
+    "id": "vm-845d3961",
+    "name": "PolarDelight - CoolVend 845d",
+    "type": "vending_machine",
+    "status": "ONLINE",
+    "location": "Factory Floor - Shower Room",
+    "last_seen": "2025-03-26 16:42:48.752546",
+    "model_number": "CoolVend-221",
+    "serial_number": "SN-b5f51d60-9",
+    "machine_status": "NEEDS_RESTOCK",
+    "mode": "NORMAL",
+    "temperature": 4.3,
+    "total_capacity": 61,
+    "cash_capacity": 658.0,
+    "current_cash": 290.5,
+    "location_business_name": "Panera Bread",
+    "location_type": "FAST_FOOD",
+    "sub_location": "LOBBY",
+    "use_type": "SELF_SERVE",
+    "usage_pattern": null,
+    "stock_level": null,
+    "maintenance_partner": "FrostyFix Solutions",
+    "last_maintenance_date": null,
+    "next_maintenance_date": null,
+    "products": [
+      {
+        "product_id": "prod-a5baec80",
+        "name": "Trail Mix",
+        "price": 3.67,
+        "quantity": 4,
+        "category": "Snacks",
+        "location": "D3"
+      },
+      {
+        "product_id": "prod-ed2cef67",
+        "name": "Salad Bowl",
+        "price": 3.08,
+        "quantity": 15,
+        "category": "Meals",
+        "location": "E5"
+      },
+      {
+        "product_id": "prod-578bfbcd",
+        "name": "Hard Candy",
+        "price": 3.99,
+        "quantity": 15,
+        "category": "Candy",
+        "location": "C6"
+      },
+      {
+        "product_id": "prod-ef8765ac",
+        "name": "Iced Coffee",
+        "price": 1.94,
+        "quantity": 2,
+        "category": "Beverages",
+        "location": "C4"
+      },
+      {
+        "product_id": "prod-3ddec1d2",
+        "name": "Sparkling Water",
+        "price": 4.51,
+        "quantity": 10,
+        "category": "Beverages",
+        "location": "E2"
+      },
+      {
+        "product_id": "prod-71afcc22",
+        "name": "Salad Bowl",
+        "price": 4.98,
+        "quantity": 6,
+        "category": "Meals",
+        "location": "E6"
+      },
+      {
+        "product_id": "prod-01f96512",
+        "name": "Soup Cup",
+        "price": 4.61,
+        "quantity": 5,
+        "category": "Meals",
+        "location": "D8"
+      },
+      {
+        "product_id": "prod-736fa115",
+        "name": "Nuts Mix",
+        "price": 4.42,
+        "quantity": 9,
+        "category": "Snacks",
+        "location": "A6"
+      },
+      {
+        "product_id": "prod-1df2dbc1",
+        "name": "Hummus & Crackers",
+        "price": 1.82,
+        "quantity": 2,
+        "category": "Healthy Options",
+        "location": "A7"
+      }
+    ],
+    "readings": [
+      {
+        "timestamp": "2025-03-25 16:42:48.752463",
+        "temperature": 4.7,
+        "power_consumption": 366.8,
+        "door_status": "OPEN",
+        "cash_level": 183.0,
+        "sales_count": 1
+      },
+      {
+        "timestamp": "2025-03-25 17:51:23.038177",
+        "temperature": 4.4,
+        "power_consumption": 199.3,
+        "door_status": "OPEN",
+        "cash_level": 174.31,
+        "sales_count": 1
+      },
+      {
+        "timestamp": "2025-03-25 18:59:57.323892",
+        "temperature": 4.6,
+        "power_consumption": 298.1,
+        "door_status": "CLOSED",
+        "cash_level": 349.99,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-25 20:08:31.609606",
+        "temperature": 4.5,
+        "power_consumption": 132.1,
+        "door_status": "OPEN",
+        "cash_level": 472.92,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-25 21:17:05.895320",
+        "temperature": 4.4,
+        "power_consumption": 142.9,
+        "door_status": "CLOSED",
+        "cash_level": 184.26,
+        "sales_count": 1
+      },
+      {
+        "timestamp": "2025-03-25 22:25:40.181034",
+        "temperature": 4.7,
+        "power_consumption": 257.1,
+        "door_status": "CLOSED",
+        "cash_level": 360.61,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-25 23:34:14.466749",
+        "temperature": 4.6,
+        "power_consumption": 181.6,
+        "door_status": "CLOSED",
+        "cash_level": 118.2,
+        "sales_count": 5
+      },
+      {
+        "timestamp": "2025-03-26 00:42:48.752463",
+        "temperature": 4.5,
+        "power_consumption": 357.0,
+        "door_status": "CLOSED",
+        "cash_level": 389.56,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-26 01:51:23.038177",
+        "temperature": 4.4,
+        "power_consumption": 100.4,
+        "door_status": "OPEN",
+        "cash_level": 59.21,
+        "sales_count": 1
+      },
+      {
+        "timestamp": "2025-03-26 02:59:57.323892",
+        "temperature": 4.3,
+        "power_consumption": 239.3,
+        "door_status": "CLOSED",
+        "cash_level": 173.08,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-26 04:08:31.609606",
+        "temperature": 4.0,
+        "power_consumption": 252.7,
+        "door_status": "CLOSED",
+        "cash_level": 346.34,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-26 05:17:05.895320",
+        "temperature": 4.7,
+        "power_consumption": 198.4,
+        "door_status": "CLOSED",
+        "cash_level": 271.26,
+        "sales_count": 0
+      },
+      {
+        "timestamp": "2025-03-26 06:25:40.181034",
+        "temperature": 4.0,
+        "power_consumption": 236.5,
+        "door_status": "CLOSED",
+        "cash_level": 134.66,
+        "sales_count": 5
+      },
+      {
+        "timestamp": "2025-03-26 07:34:14.466749",
+        "temperature": 4.0,
+        "power_consumption": 169.2,
+        "door_status": "OPEN",
+        "cash_level": 449.59,
+        "sales_count": 0
+      },
+      {
+        "timestamp": "2025-03-26 08:42:48.752463",
+        "temperature": 4.6,
+        "power_consumption": 300.3,
+        "door_status": "CLOSED",
+        "cash_level": 408.69,
+        "sales_count": 1
+      },
+      {
+        "timestamp": "2025-03-26 09:51:23.038177",
+        "temperature": 4.7,
+        "power_consumption": 339.5,
+        "door_status": "CLOSED",
+        "cash_level": 235.81,
+        "sales_count": 1
+      },
+      {
+        "timestamp": "2025-03-26 10:59:57.323892",
+        "temperature": 5.2,
+        "power_consumption": 359.6,
+        "door_status": "CLOSED",
+        "cash_level": 70.48,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-26 12:08:31.609606",
+        "temperature": 4.8,
+        "power_consumption": 154.8,
+        "door_status": "CLOSED",
+        "cash_level": 39.76,
+        "sales_count": 5
+      },
+      {
+        "timestamp": "2025-03-26 13:17:05.895320",
+        "temperature": 5.2,
+        "power_consumption": 311.2,
+        "door_status": "OPEN",
+        "cash_level": 47.7,
+        "sales_count": 0
+      },
+      {
+        "timestamp": "2025-03-26 14:25:40.181034",
+        "temperature": 4.4,
+        "power_consumption": 289.3,
+        "door_status": "CLOSED",
+        "cash_level": 277.52,
+        "sales_count": 1
+      },
+      {
+        "timestamp": "2025-03-26 15:34:14.466749",
+        "temperature": 5.2,
+        "power_consumption": 191.6,
+        "door_status": "CLOSED",
+        "cash_level": 25.38,
+        "sales_count": 4
+      }
+    ]
+  },
+  "vm-e774faf3": {
+    "id": "vm-e774faf3",
+    "name": "PolarDelight - VX-1000 e774",
+    "type": "vending_machine",
+    "status": "ONLINE",
+    "location": "Main Office - Master Bathroom",
+    "last_seen": "2025-03-26 16:42:48.752667",
+    "model_number": "VX-1000-270",
+    "serial_number": "SN-360023df-7",
+    "machine_status": "OPERATIONAL",
+    "mode": "NORMAL",
+    "temperature": 3.5,
+    "total_capacity": 34,
+    "cash_capacity": 540.0,
+    "current_cash": 383.63,
+    "location_business_name": "Universal Studios",
+    "location_type": "OTHER",
+    "sub_location": "WAITING_AREA",
+    "use_type": "SERVICED",
+    "usage_pattern": null,
+    "stock_level": null,
+    "maintenance_partner": "VendingCare Partners",
+    "last_maintenance_date": null,
+    "next_maintenance_date": null,
+    "products": [
+      {
+        "product_id": "prod-c919870a",
+        "name": "Fruit Cup",
+        "price": 2.68,
+        "quantity": 3,
+        "category": "Healthy Options",
+        "location": "C2"
+      },
+      {
+        "product_id": "prod-85ec5e1c",
+        "name": "Licorice",
+        "price": 3.85,
+        "quantity": 2,
+        "category": "Candy",
+        "location": "A3"
+      },
+      {
+        "product_id": "prod-95f0565e",
+        "name": "Salad Bowl",
+        "price": 4.91,
+        "quantity": 7,
+        "category": "Meals",
+        "location": "A4"
+      },
+      {
+        "product_id": "prod-1cc7fca6",
+        "name": "Hummus & Crackers",
+        "price": 4.07,
+        "quantity": 1,
+        "category": "Healthy Options",
+        "location": "E4"
+      },
+      {
+        "product_id": "prod-f08b7112",
+        "name": "Sour Candy",
+        "price": 3.12,
+        "quantity": 1,
+        "category": "Candy",
+        "location": "D6"
+      },
+      {
+        "product_id": "prod-05fa8620",
+        "name": "Mixed Nuts",
+        "price": 4.86,
+        "quantity": 2,
+        "category": "Healthy Options",
+        "location": "C8"
+      },
+      {
+        "product_id": "prod-eb00fb54",
+        "name": "Licorice",
+        "price": 4.58,
+        "quantity": 14,
+        "category": "Candy",
+        "location": "A1"
+      },
+      {
+        "product_id": "prod-7e3d3709",
+        "name": "Hard Candy",
+        "price": 3.79,
+        "quantity": 5,
+        "category": "Candy",
+        "location": "A4"
+      },
+      {
+        "product_id": "prod-d97f39df",
+        "name": "Gummy Bears",
+        "price": 3.77,
+        "quantity": 15,
+        "category": "Candy",
+        "location": "E7"
+      }
+    ],
+    "readings": [
+      {
+        "timestamp": "2025-03-25 16:42:48.752624",
+        "temperature": 4.1,
+        "power_consumption": 325.5,
+        "door_status": "CLOSED",
+        "cash_level": 268.49,
+        "sales_count": 0
+      },
+      {
+        "timestamp": "2025-03-25 19:06:48.752624",
+        "temperature": 3.7,
+        "power_consumption": 363.0,
+        "door_status": "CLOSED",
+        "cash_level": 412.35,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-25 21:30:48.752624",
+        "temperature": 3.4,
+        "power_consumption": 328.3,
+        "door_status": "CLOSED",
+        "cash_level": 370.08,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-25 23:54:48.752624",
+        "temperature": 3.4,
+        "power_consumption": 397.5,
+        "door_status": "CLOSED",
+        "cash_level": 138.03,
+        "sales_count": 0
+      },
+      {
+        "timestamp": "2025-03-26 02:18:48.752624",
+        "temperature": 3.5,
+        "power_consumption": 218.4,
+        "door_status": "CLOSED",
+        "cash_level": 149.68,
+        "sales_count": 1
+      },
+      {
+        "timestamp": "2025-03-26 04:42:48.752624",
+        "temperature": 3.8,
+        "power_consumption": 247.4,
+        "door_status": "OPEN",
+        "cash_level": 156.25,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-26 07:06:48.752624",
+        "temperature": 3.2,
+        "power_consumption": 291.5,
+        "door_status": "CLOSED",
+        "cash_level": 364.45,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-26 09:30:48.752624",
+        "temperature": 4.4,
+        "power_consumption": 398.4,
+        "door_status": "CLOSED",
+        "cash_level": 49.21,
+        "sales_count": 2
+      },
+      {
+        "timestamp": "2025-03-26 11:54:48.752624",
+        "temperature": 4.5,
+        "power_consumption": 352.1,
+        "door_status": "CLOSED",
+        "cash_level": 448.6,
+        "sales_count": 5
+      },
+      {
+        "timestamp": "2025-03-26 14:18:48.752624",
+        "temperature": 3.6,
+        "power_consumption": 296.8,
+        "door_status": "OPEN",
+        "cash_level": 486.93,
+        "sales_count": 3
+      }
+    ]
+  },
+  "vm-30409918": {
+    "id": "vm-30409918",
+    "name": "PolarDelight - MaxCapacity 3040",
+    "type": "vending_machine",
+    "status": "ONLINE",
+    "location": "North Wing - Garage",
+    "last_seen": "2025-03-26 16:42:48.752806",
+    "model_number": "MaxCapacity-710",
+    "serial_number": "SN-a7fd52af-e",
+    "machine_status": "OPERATIONAL",
+    "mode": "NORMAL",
+    "temperature": 4.8,
+    "total_capacity": 37,
+    "cash_capacity": 1980.0,
+    "current_cash": 916.69,
+    "location_business_name": "NYU Medical Center",
+    "location_type": "HOSPITAL",
+    "sub_location": "WAITING_AREA",
+    "use_type": "SELF_SERVE",
+    "usage_pattern": null,
+    "stock_level": null,
+    "maintenance_partner": "PolarCare Services Inc.",
+    "last_maintenance_date": null,
+    "next_maintenance_date": null,
+    "products": [
+      {
+        "product_id": "prod-e2468600",
+        "name": "Pretzel Twists",
+        "price": 4.01,
+        "quantity": 10,
+        "category": "Snacks",
+        "location": "B3"
+      },
+      {
+        "product_id": "prod-2cba95f6",
+        "name": "Arctic Blast Soda",
+        "price": 4.54,
+        "quantity": 2,
+        "category": "Beverages",
+        "location": "C6"
+      },
+      {
+        "product_id": "prod-325a1d69",
+        "name": "Veggie Chips",
+        "price": 1.98,
+        "quantity": 12,
+        "category": "Healthy Options",
+        "location": "D4"
+      },
+      {
+        "product_id": "prod-95636271",
+        "name": "Mountain Fresh Juice",
+        "price": 1.81,
+        "quantity": 11,
+        "category": "Beverages",
+        "location": "C8"
+      },
+      {
+        "product_id": "prod-39bfc119",
+        "name": "Cheese Crackers",
+        "price": 2.24,
+        "quantity": 13,
+        "category": "Snacks",
+        "location": "B6"
+      },
+      {
+        "product_id": "prod-0966cc49",
+        "name": "Pasta Cup",
+        "price": 1.44,
+        "quantity": 2,
+        "category": "Meals",
+        "location": "B6"
+      },
+      {
+        "product_id": "prod-80506345",
+        "name": "Instant Noodles",
+        "price": 2.45,
+        "quantity": 11,
+        "category": "Meals",
+        "location": "B1"
+      },
+      {
+        "product_id": "prod-2c15af2e",
+        "name": "Pasta Cup",
+        "price": 1.85,
+        "quantity": 15,
+        "category": "Meals",
+        "location": "C7"
+      },
+      {
+        "product_id": "prod-04a23451",
+        "name": "Veggie Chips",
+        "price": 1.14,
+        "quantity": 1,
+        "category": "Healthy Options",
+        "location": "B2"
+      },
+      {
+        "product_id": "prod-51dfad33",
+        "name": "Rice Bowl",
+        "price": 4.24,
+        "quantity": 15,
+        "category": "Meals",
+        "location": "A3"
+      }
+    ],
+    "readings": [
+      {
+        "timestamp": "2025-03-25 16:42:48.752749",
+        "temperature": 5.7,
+        "power_consumption": 301.6,
+        "door_status": "CLOSED",
+        "cash_level": 114.4,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-25 18:18:48.752749",
+        "temperature": 5.3,
+        "power_consumption": 234.8,
+        "door_status": "CLOSED",
+        "cash_level": 203.49,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-25 19:54:48.752749",
+        "temperature": 5.3,
+        "power_consumption": 215.7,
+        "door_status": "CLOSED",
+        "cash_level": 446.58,
+        "sales_count": 2
+      },
+      {
+        "timestamp": "2025-03-25 21:30:48.752749",
+        "temperature": 5.0,
+        "power_consumption": 187.6,
+        "door_status": "OPEN",
+        "cash_level": 222.57,
+        "sales_count": 1
+      },
+      {
+        "timestamp": "2025-03-25 23:06:48.752749",
+        "temperature": 4.3,
+        "power_consumption": 389.5,
+        "door_status": "CLOSED",
+        "cash_level": 359.62,
+        "sales_count": 2
+      },
+      {
+        "timestamp": "2025-03-26 00:42:48.752749",
+        "temperature": 4.6,
+        "power_consumption": 250.5,
+        "door_status": "CLOSED",
+        "cash_level": 299.46,
+        "sales_count": 5
+      },
+      {
+        "timestamp": "2025-03-26 02:18:48.752749",
+        "temperature": 4.8,
+        "power_consumption": 327.9,
+        "door_status": "CLOSED",
+        "cash_level": 452.0,
+        "sales_count": 0
+      },
+      {
+        "timestamp": "2025-03-26 03:54:48.752749",
+        "temperature": 4.4,
+        "power_consumption": 122.7,
+        "door_status": "CLOSED",
+        "cash_level": 427.44,
+        "sales_count": 1
+      },
+      {
+        "timestamp": "2025-03-26 05:30:48.752749",
+        "temperature": 4.6,
+        "power_consumption": 183.5,
+        "door_status": "CLOSED",
+        "cash_level": 270.39,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-26 07:06:48.752749",
+        "temperature": 4.7,
+        "power_consumption": 270.2,
+        "door_status": "CLOSED",
+        "cash_level": 72.1,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-26 08:42:48.752749",
+        "temperature": 5.6,
+        "power_consumption": 293.1,
+        "door_status": "CLOSED",
+        "cash_level": 398.69,
+        "sales_count": 5
+      },
+      {
+        "timestamp": "2025-03-26 10:18:48.752749",
+        "temperature": 5.0,
+        "power_consumption": 355.9,
+        "door_status": "CLOSED",
+        "cash_level": 245.56,
+        "sales_count": 2
+      },
+      {
+        "timestamp": "2025-03-26 11:54:48.752749",
+        "temperature": 4.9,
+        "power_consumption": 115.5,
+        "door_status": "CLOSED",
+        "cash_level": 42.8,
+        "sales_count": 0
+      },
+      {
+        "timestamp": "2025-03-26 13:30:48.752749",
+        "temperature": 5.3,
+        "power_consumption": 380.2,
+        "door_status": "CLOSED",
+        "cash_level": 496.52,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-26 15:06:48.752749",
+        "temperature": 5.2,
+        "power_consumption": 152.2,
+        "door_status": "CLOSED",
+        "cash_level": 351.87,
+        "sales_count": 0
+      }
+    ]
+  },
+  "vm-039dc195": {
+    "id": "vm-039dc195",
+    "name": "PolarDelight - SmartDispense 039d",
+    "type": "vending_machine",
+    "status": "ONLINE",
+    "location": "Building A - Break Room",
+    "last_seen": "2025-03-26 16:42:48.752991",
+    "model_number": "SmartDispense-697",
+    "serial_number": "SN-29e3042e-2",
+    "machine_status": "NEEDS_RESTOCK",
+    "mode": "POWER_SAVE",
+    "temperature": 4.7,
+    "total_capacity": 46,
+    "cash_capacity": 1314.0,
+    "current_cash": 117.36,
+    "location_business_name": "Penn State HUB",
+    "location_type": "STUDENT_CENTER",
+    "sub_location": "LOBBY",
+    "use_type": "SELF_SERVE",
+    "usage_pattern": null,
+    "stock_level": null,
+    "maintenance_partner": "FrostyFix Solutions",
+    "last_maintenance_date": null,
+    "next_maintenance_date": null,
+    "products": [
+      {
+        "product_id": "prod-946372cb",
+        "name": "Iced Coffee",
+        "price": 2.1,
+        "quantity": 2,
+        "category": "Beverages",
+        "location": "A3"
+      },
+      {
+        "product_id": "prod-1b7685ab",
+        "name": "Mixed Nuts",
+        "price": 2.81,
+        "quantity": 11,
+        "category": "Healthy Options",
+        "location": "D2"
+      },
+      {
+        "product_id": "prod-6d8f31ea",
+        "name": "Granola Bar",
+        "price": 2.94,
+        "quantity": 9,
+        "category": "Healthy Options",
+        "location": "E1"
+      },
+      {
+        "product_id": "prod-1df82cc6",
+        "name": "Dried Fruit",
+        "price": 2.58,
+        "quantity": 10,
+        "category": "Healthy Options",
+        "location": "A3"
+      },
+      {
+        "product_id": "prod-11f79c81",
+        "name": "Fruit Cup",
+        "price": 4.3,
+        "quantity": 11,
+        "category": "Healthy Options",
+        "location": "A5"
+      },
+      {
+        "product_id": "prod-cc09c19e",
+        "name": "Veggie Chips",
+        "price": 3.28,
+        "quantity": 9,
+        "category": "Healthy Options",
+        "location": "A4"
+      },
+      {
+        "product_id": "prod-aee531a6",
+        "name": "Fruit Smoothie",
+        "price": 2.82,
+        "quantity": 1,
+        "category": "Beverages",
+        "location": "B8"
+      },
+      {
+        "product_id": "prod-bb8b8a3e",
+        "name": "Mountain Fresh Juice",
+        "price": 1.43,
+        "quantity": 9,
+        "category": "Beverages",
+        "location": "E1"
+      },
+      {
+        "product_id": "prod-46c6db8d",
+        "name": "Salad Bowl",
+        "price": 3.89,
+        "quantity": 13,
+        "category": "Meals",
+        "location": "A1"
+      },
+      {
+        "product_id": "prod-dfeeac88",
+        "name": "Pasta Cup",
+        "price": 2.92,
+        "quantity": 11,
+        "category": "Meals",
+        "location": "D3"
+      },
+      {
+        "product_id": "prod-7aff6974",
+        "name": "Popcorn",
+        "price": 4.11,
+        "quantity": 15,
+        "category": "Snacks",
+        "location": "B3"
+      },
+      {
+        "product_id": "prod-3cf288e7",
+        "name": "Mints",
+        "price": 3.56,
+        "quantity": 2,
+        "category": "Candy",
+        "location": "A3"
+      },
+      {
+        "product_id": "prod-2e9495b7",
+        "name": "Rice Crisps",
+        "price": 1.82,
+        "quantity": 6,
+        "category": "Snacks",
+        "location": "B2"
+      },
+      {
+        "product_id": "prod-c978527f",
+        "name": "Gummy Bears",
+        "price": 3.08,
+        "quantity": 8,
+        "category": "Candy",
+        "location": "A1"
+      },
+      {
+        "product_id": "prod-39a19482",
+        "name": "Chocolate Bar",
+        "price": 3.88,
+        "quantity": 11,
+        "category": "Candy",
+        "location": "E8"
+      }
+    ],
+    "readings": [
+      {
+        "timestamp": "2025-03-25 16:42:48.752922",
+        "temperature": 5.3,
+        "power_consumption": 258.7,
+        "door_status": "CLOSED",
+        "cash_level": 401.84,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-25 18:02:48.752922",
+        "temperature": 5.1,
+        "power_consumption": 381.9,
+        "door_status": "CLOSED",
+        "cash_level": 148.41,
+        "sales_count": 2
+      },
+      {
+        "timestamp": "2025-03-25 19:22:48.752922",
+        "temperature": 4.3,
+        "power_consumption": 308.8,
+        "door_status": "CLOSED",
+        "cash_level": 85.01,
+        "sales_count": 2
+      },
+      {
+        "timestamp": "2025-03-25 20:42:48.752922",
+        "temperature": 4.3,
+        "power_consumption": 308.1,
+        "door_status": "CLOSED",
+        "cash_level": 356.42,
+        "sales_count": 0
+      },
+      {
+        "timestamp": "2025-03-25 22:02:48.752922",
+        "temperature": 4.6,
+        "power_consumption": 110.6,
+        "door_status": "CLOSED",
+        "cash_level": 247.6,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-25 23:22:48.752922",
+        "temperature": 4.2,
+        "power_consumption": 234.4,
+        "door_status": "CLOSED",
+        "cash_level": 498.23,
+        "sales_count": 0
+      },
+      {
+        "timestamp": "2025-03-26 00:42:48.752922",
+        "temperature": 4.9,
+        "power_consumption": 172.5,
+        "door_status": "CLOSED",
+        "cash_level": 452.87,
+        "sales_count": 2
+      },
+      {
+        "timestamp": "2025-03-26 02:02:48.752922",
+        "temperature": 5.0,
+        "power_consumption": 190.8,
+        "door_status": "CLOSED",
+        "cash_level": 353.76,
+        "sales_count": 1
+      },
+      {
+        "timestamp": "2025-03-26 03:22:48.752922",
+        "temperature": 4.6,
+        "power_consumption": 235.2,
+        "door_status": "CLOSED",
+        "cash_level": 272.93,
+        "sales_count": 0
+      },
+      {
+        "timestamp": "2025-03-26 04:42:48.752922",
+        "temperature": 5.0,
+        "power_consumption": 348.9,
+        "door_status": "CLOSED",
+        "cash_level": 238.02,
+        "sales_count": 2
+      },
+      {
+        "timestamp": "2025-03-26 06:02:48.752922",
+        "temperature": 4.5,
+        "power_consumption": 252.5,
+        "door_status": "CLOSED",
+        "cash_level": 453.94,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-26 07:22:48.752922",
+        "temperature": 4.6,
+        "power_consumption": 201.0,
+        "door_status": "CLOSED",
+        "cash_level": 146.33,
+        "sales_count": 3
+      },
+      {
+        "timestamp": "2025-03-26 08:42:48.752922",
+        "temperature": 5.0,
+        "power_consumption": 183.6,
+        "door_status": "CLOSED",
+        "cash_level": 326.25,
+        "sales_count": 2
+      },
+      {
+        "timestamp": "2025-03-26 10:02:48.752922",
+        "temperature": 5.4,
+        "power_consumption": 156.4,
+        "door_status": "CLOSED",
+        "cash_level": 286.5,
+        "sales_count": 4
+      },
+      {
+        "timestamp": "2025-03-26 11:22:48.752922",
+        "temperature": 4.7,
+        "power_consumption": 169.1,
+        "door_status": "CLOSED",
+        "cash_level": 277.89,
+        "sales_count": 0
+      },
+      {
+        "timestamp": "2025-03-26 12:42:48.752922",
+        "temperature": 5.7,
+        "power_consumption": 321.9,
+        "door_status": "CLOSED",
+        "cash_level": 196.41,
+        "sales_count": 0
+      },
+      {
+        "timestamp": "2025-03-26 14:02:48.752922",
+        "temperature": 4.8,
+        "power_consumption": 293.7,
+        "door_status": "CLOSED",
+        "cash_level": 62.3,
+        "sales_count": 1
+      },
+      {
+        "timestamp": "2025-03-26 15:22:48.752922",
+        "temperature": 4.9,
+        "power_consumption": 225.4,
+        "door_status": "CLOSED",
+        "cash_level": 148.49,
+        "sales_count": 1
+      }
+    ]
+  }
+}

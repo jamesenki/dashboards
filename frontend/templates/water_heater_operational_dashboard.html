@@ -1,0 +1,125 @@
+<!-- Water Heater Operational Dashboard -->
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <h2>Operational Dashboard</h2>
+        <div class="last-updated">
+            <span>Last updated: </span>
+            <span id="last-update-time">Just now</span>
+            <button id="refresh-dashboard" class="btn btn-sm btn-outline-primary">
+                <i class="fas fa-sync-alt"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="dashboard-grid">
+        <!-- Status Cards Section -->
+        <div class="dashboard-section status-cards">
+            <h3>Status</h3>
+            <div class="status-card-grid">
+                <div class="status-card" id="status-card-mode">
+                    <div class="status-card-label">Mode</div>
+                    <div class="status-card-value" id="heater-mode">--</div>
+                </div>
+                <div class="status-card" id="status-card-heater">
+                    <div class="status-card-label">Heater</div>
+                    <div class="status-card-value" id="heater-status">--</div>
+                </div>
+                <div class="status-card" id="status-card-power">
+                    <div class="status-card-label">Power</div>
+                    <div class="status-card-value" id="power-status">--</div>
+                </div>
+                <div class="status-card" id="status-card-network">
+                    <div class="status-card-label">Network</div>
+                    <div class="status-card-value" id="network-status">--</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Temperature Gauge Section -->
+        <div class="dashboard-section temperature-gauge">
+            <h3>Current Temperature</h3>
+            <div class="gauge-container">
+                <div class="gauge" id="temperature-gauge">
+                    <div class="gauge-center">
+                        <span id="current-temperature">--</span>
+                        <span class="gauge-unit">°C</span>
+                    </div>
+                    <div class="gauge-target-marker" id="target-temp-marker"></div>
+                </div>
+                <div class="gauge-legend">
+                    <div class="gauge-legend-item">
+                        <div class="legend-color current-temp"></div>
+                        <div class="legend-label">Current: <span id="legend-current-temp">--</span>°C</div>
+                    </div>
+                    <div class="gauge-legend-item">
+                        <div class="legend-color target-temp"></div>
+                        <div class="legend-label">Target: <span id="legend-target-temp">--</span>°C</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Energy Usage Section -->
+        <div class="dashboard-section energy-usage">
+            <h3>Energy Usage</h3>
+            <div class="energy-container">
+                <div class="energy-gauge" id="energy-gauge">
+                    <div class="energy-gauge-value" id="energy-gauge-value"></div>
+                    <div class="energy-gauge-center">
+                        <span id="current-energy">--</span>
+                        <span class="gauge-unit">W</span>
+                    </div>
+                </div>
+                <div class="energy-stats">
+                    <div class="energy-stat-item">
+                        <div class="energy-stat-label">Daily Avg</div>
+                        <div class="energy-stat-value" id="daily-energy-avg">--</div>
+                    </div>
+                    <div class="energy-stat-item">
+                        <div class="energy-stat-label">Efficiency</div>
+                        <div class="energy-stat-value" id="energy-efficiency">--</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Heating Cycle Section -->
+        <div class="dashboard-section heating-cycle">
+            <h3>Heating Cycle</h3>
+            <div class="cycle-container">
+                <div class="cycle-gauge" id="cycle-gauge">
+                    <div class="cycle-progress" id="cycle-progress"></div>
+                    <div class="cycle-text">
+                        <div class="cycle-time" id="cycle-time">--:--</div>
+                        <div class="cycle-label">Last cycle duration</div>
+                    </div>
+                </div>
+                <div class="cycle-stats">
+                    <div class="cycle-stat-item">
+                        <span class="cycle-stat-label">Avg Time:</span>
+                        <span class="cycle-stat-value" id="avg-cycle-time">--</span>
+                    </div>
+                    <div class="cycle-stat-item">
+                        <span class="cycle-stat-label">Cycles Today:</span>
+                        <span class="cycle-stat-value" id="cycles-today">--</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Maintenance Predictions Section -->
+    <div class="dashboard-section maintenance-predictions">
+        <h3>Maintenance Predictions</h3>
+        <div id="device-id" data-device-id="{{ water_heater.id }}"></div>
+        {% include "maintenance_predictions.html" %}
+    </div>
+</div>
+
+<!-- JavaScript for operational dashboard -->
+<script src="/static/js/water-heater-dashboard.js"></script>
+<script src="/static/js/maintenance-predictions.js"></script>
+
+<!-- CSS for operational dashboard -->
+<link rel="stylesheet" href="/static/css/water-heater-dashboard.css">
+<link rel="stylesheet" href="/static/css/maintenance-predictions.css">

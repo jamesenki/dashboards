@@ -41,13 +41,15 @@ from src.models.vending_machine_operations import (
 class VendingMachineOperationsService:
     """Service for Polar Delight Ice Cream Machine operations and monitoring"""
     
-    def __init__(self, vending_machine_service):
+    def __init__(self, vending_machine_service, db=None):
         """Initialize vending machine operations service
         
         Args:
             vending_machine_service: Vending machine service
+            db: Optional database instance for persistence
         """
         self.vending_machine_service = vending_machine_service
+        self.db = db
     
     def get_operations_summary(self, machine_id: str) -> OperationsSummary:
         """Get operations summary for a vending machine

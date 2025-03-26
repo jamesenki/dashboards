@@ -428,10 +428,17 @@ def generate_vending_machines(count=30):
     
     return machines
 
+import json
+import os
+from pathlib import Path
+
 # Demo data repository
 class DummyDataRepository:
-    """In-memory repository of dummy data for testing"""
+    """Repository of dummy data for testing with JSON persistence"""
     _instance = None
+    _data_dir = Path(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))) / "data"
+    _water_heaters_file = _data_dir / "water_heaters.json"
+    _vending_machines_file = _data_dir / "vending_machines.json"
     
     def __new__(cls):
         import logging
@@ -440,31 +447,42 @@ class DummyDataRepository:
         if cls._instance is None:
             logging.error("Creating new DummyDataRepository instance")
             cls._instance = super(DummyDataRepository, cls).__new__(cls)
+            
+            # Ensure data directory exists
+            os.makedirs(cls._data_dir, exist_ok=True)
+            
+            # Initialize data containers
+            cls._instance.water_heaters = {}
+            cls._instance.vending_machines = {}
+            
+            # Initialize data (only if no persisted data exists)
+            cls._instance.initialize()
         else:
             logging.error("Reusing existing DummyDataRepository instance")
             
-        # Always reset the data containers
-        cls._instance.water_heaters = {}
-        cls._instance.vending_machines = {}
-        # Reinitialize every time to ensure we get fresh data with the latest code changes
-        logging.error("Reinitializing data in DummyDataRepository")
-        cls._instance.initialize()
         return cls._instance
     
     def initialize(self):
-        """Initialize with dummy data"""
+        """Initialize with dummy data, loading from JSON if available"""
         import logging
         logging.error("DummyDataRepository.initialize() called")
         
-        # Generate water heaters
-        water_heaters = generate_water_heaters(count=8)
-        self.water_heaters = {heater.id: heater for heater in water_heaters}
-        logging.error(f"Generated {len(water_heaters)} water heaters")
+        # Try to load from persistent storage first
+        data_loaded = self._load_persisted_data()
         
-        # Generate vending machines
-        vending_machines = generate_vending_machines(count=30)
-        logging.error(f"Generated {len(vending_machines)} vending machines with IDs: {[vm.id for vm in vending_machines]}")
-        self.vending_machines = {vm.id: vm for vm in vending_machines}
+        if not data_loaded:
+            # Generate water heaters if not loaded from JSON
+            water_heaters = generate_water_heaters(count=8)
+            self.water_heaters = {heater.id: heater for heater in water_heaters}
+            logging.error(f"Generated {len(water_heaters)} water heaters")
+            
+            # Generate vending machines if not loaded from JSON
+            vending_machines = generate_vending_machines(count=30)
+            logging.error(f"Generated {len(vending_machines)} vending machines with IDs: {[vm.id for vm in vending_machines]}")
+            self.vending_machines = {vm.id: vm for vm in vending_machines}
+            
+            # Save the generated data
+            self._persist_data()
     
     def get_water_heaters(self):
         """Get all water heaters"""
@@ -477,6 +495,7 @@ class DummyDataRepository:
     def add_water_heater(self, heater):
         """Add a new water heater"""
         self.water_heaters[heater.id] = heater
+        self._persist_data()
         return heater
     
     def update_water_heater(self, heater_id, updates):
@@ -503,6 +522,7 @@ class DummyDataRepository:
     def add_vending_machine(self, machine):
         """Add a new vending machine"""
         self.vending_machines[machine.id] = machine
+        self._persist_data()
         return machine
     
     def update_vending_machine(self, vm_id, updates):
@@ -519,8 +539,106 @@ class DummyDataRepository:
         """Delete a vending machine"""
         if vm_id in self.vending_machines:
             del self.vending_machines[vm_id]
+            self._persist_data()
             return True
         return False
+        
+    def _persist_data(self):
+        """Save data to JSON files for persistence"""
+        try:
+            # Convert water heaters to JSON-serializable dictionaries
+            water_heaters_data = {}
+            for wh_id, wh in self.water_heaters.items():
+                water_heaters_data[wh_id] = wh.model_dump()
+                
+            # Convert vending machines to JSON-serializable dictionaries
+            vending_machines_data = {}
+            for vm_id, vm in self.vending_machines.items():
+                vending_machines_data[vm_id] = vm.model_dump()
+            
+            # Save water heaters
+            with open(self._water_heaters_file, 'w') as f:
+                json.dump(water_heaters_data, f, indent=2, default=str)
+                
+            # Save vending machines
+            with open(self._vending_machines_file, 'w') as f:
+                json.dump(vending_machines_data, f, indent=2, default=str)
+                
+            import logging
+            logging.info(f"Persisted data to {self._data_dir}")
+            return True
+        except Exception as e:
+            import logging
+            logging.error(f"Error persisting data: {e}")
+            return False
+            
+    def _load_persisted_data(self):
+        """Load data from JSON files if they exist"""
+        import logging
+        
+        try:
+            if not os.path.exists(self._water_heaters_file) or not os.path.exists(self._vending_machines_file):
+                logging.info("No persisted data files found, will generate new data")
+                return False
+                
+            # Load water heaters
+            with open(self._water_heaters_file, 'r') as f:
+                water_heaters_data = json.load(f)
+                
+            # Load vending machines
+            with open(self._vending_machines_file, 'r') as f:
+                vending_machines_data = json.load(f)
+                
+            # Convert JSON data back to models
+            for wh_id, wh_data in water_heaters_data.items():
+                # Convert string date-times back to datetime objects
+                if 'created_at' in wh_data and wh_data['created_at']:
+                    wh_data['created_at'] = datetime.fromisoformat(wh_data['created_at'])
+                if 'updated_at' in wh_data and wh_data['updated_at']:
+                    wh_data['updated_at'] = datetime.fromisoformat(wh_data['updated_at'])
+                
+                # Convert readings
+                if 'readings' in wh_data and wh_data['readings']:
+                    readings = []
+                    for reading in wh_data['readings']:
+                        if 'timestamp' in reading and reading['timestamp']:
+                            reading['timestamp'] = datetime.fromisoformat(reading['timestamp'])
+                        readings.append(WaterHeaterReading(**reading))
+                    wh_data['readings'] = readings
+                    
+                self.water_heaters[wh_id] = WaterHeater(**wh_data)
+                
+            # Similarly for vending machines
+            for vm_id, vm_data in vending_machines_data.items():
+                # Convert string date-times back to datetime objects
+                if 'created_at' in vm_data and vm_data['created_at']:
+                    vm_data['created_at'] = datetime.fromisoformat(vm_data['created_at'])
+                if 'updated_at' in vm_data and vm_data['updated_at']:
+                    vm_data['updated_at'] = datetime.fromisoformat(vm_data['updated_at'])
+                    
+                # Convert readings
+                if 'readings' in vm_data and vm_data['readings']:
+                    readings = []
+                    for reading in vm_data['readings']:
+                        if 'timestamp' in reading and reading['timestamp']:
+                            reading['timestamp'] = datetime.fromisoformat(reading['timestamp'])
+                        readings.append(VendingMachineReading(**reading))
+                    vm_data['readings'] = readings
+                    
+                # Convert products
+                if 'products' in vm_data and vm_data['products']:
+                    products = []
+                    for product in vm_data['products']:
+                        products.append(ProductItem(**product))
+                    vm_data['products'] = products
+                    
+                self.vending_machines[vm_id] = VendingMachine(**vm_data)
+                
+            logging.info(f"Loaded {len(self.water_heaters)} water heaters and {len(self.vending_machines)} vending machines from persisted data")
+            return True
+        except Exception as e:
+            logging.error(f"Error loading persisted data: {e}")
+            return False
 
 # Create a singleton instance
 dummy_data = DummyDataRepository()

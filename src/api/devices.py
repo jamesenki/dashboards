@@ -4,7 +4,8 @@ from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, Query
 
 from src.db.repository import DeviceRepository
-from src.models.device import Device, DeviceReading, DeviceStatus, DeviceType
+from src.models.device import Device, DeviceStatus, DeviceType
+from src.models.device_reading import DeviceReading
 
 router = APIRouter(prefix="/devices", tags=["devices"])
 

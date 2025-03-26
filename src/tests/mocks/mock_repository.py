@@ -1,7 +1,8 @@
 """Mock repository for testing."""
 from typing import Dict, List, Optional, Type, Union
 
-from src.models.device import Device, DeviceReading, DeviceStatus, DeviceType
+from src.models.device import Device, DeviceStatus, DeviceType
+from src.models.device_reading import DeviceReading
 
 
 class MockDeviceRepository:

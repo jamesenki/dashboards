@@ -195,6 +195,33 @@ IoTSphere is designed with scalability in mind:
    - Database performance
    - Network metrics
 
+## Device Dashboards
+
+### Water Heater Dashboard
+
+The Water Heater Dashboard follows a tabbed interface pattern with three main views:
+
+1. **Details Tab**: Displays basic water heater information including current temperature, target temperature, mode, and status. Provides controls for adjusting settings.
+
+2. **Operations Tab**: Focused on real-time operational monitoring with:
+   - Status cards showing current operational state
+   - Asset health indicators
+   - Gauge visualizations for temperature, pressure, flow rate, and energy usage
+   - Real-time operational metrics
+
+3. **History Tab**: Provides historical analytics through time-series charts:
+   - Temperature history (actual vs. target)
+   - Energy usage patterns
+   - Pressure and flow rate trends
+   - Customizable time ranges (7, 14, or 30 days)
+
+#### Architecture Implementation
+
+- **Backend**: Separate services handle device details, operations data, and historical metrics
+- **APIs**: RESTful endpoints for each dashboard component (details, operations, history)
+- **Frontend**: JavaScript modules leverage Chart.js for data visualization
+- **Testing**: End-to-end tests verify data consistency across all three views
+
 ## Conclusion
 
 This architecture provides a solid foundation for IoTSphere's current functionality while allowing for future growth and enhancements. The separation of concerns and modular design facilitate maintainability and scalability.

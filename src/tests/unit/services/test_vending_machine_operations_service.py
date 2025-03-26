@@ -11,7 +11,11 @@ class TestVendingMachineOperationsService:
     
     def setup_method(self):
         """Setup for each test method."""
-        self.service = VendingMachineOperationsService()
+        # Create mocks for the service dependencies
+        self.mock_vm_service = MagicMock()
+        self.mock_db = MagicMock()
+        # Initialize the service with mocked dependencies
+        self.service = VendingMachineOperationsService(self.mock_vm_service, self.mock_db)
         
     def test_get_operations_summary(self):
         """Test retrieving operations summary data."""
