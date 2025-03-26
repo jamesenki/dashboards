@@ -1,0 +1,489 @@
+/**
+ * Operations Dashboard Styles
+ * IoTSphere - Polar Delight Operations Dashboards
+ */
+
+/* Common Operations Styles */
+.operations-container {
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.operations-container h2 {
+  color: #2c3e50;
+  margin-bottom: 10px;
+  padding-bottom: 5px;
+  border-bottom: 2px solid #3498db;
+}
+
+.operations-container h3 {
+  color: #34495e;
+  font-size: 1.2rem;
+  margin: 2px 0 2px 0;
+}
+
+/* Status Indicators */
+.status-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.status-item {
+  background-color: #1e1e1e;
+  padding: 12px 15px;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+  transition: transform 0.2s, box-shadow 0.2s;
+  text-align: center;
+}
+
+.status-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.status-label {
+  font-size: 0.85rem;
+  color: #cccccc;
+  margin-bottom: 5px;
+  text-align: center;
+}
+
+.status-value {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #ffffff;
+  text-align: center;
+}
+
+.status-value.online {
+  color: #27ae60;
+}
+
+.status-value.offline {
+  color: #e74c3c;
+}
+
+.status-value.door-closed {
+  color: #2ecc71;
+}
+
+.status-value.door-open {
+  color: #f39c12;
+}
+
+/* Analytics Dashboard Styles */
+.operations-analytics-dashboard {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+
+.analytics-section {
+  background-color: #1e1e1e;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.analytics-section h3 {
+  color: #ffffff;
+  margin-bottom: 15px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #3498db;
+}
+
+.analytics-section h4 {
+  color: #cccccc;
+  margin: 15px 0 10px;
+  font-size: 1rem;
+}
+
+.analytics-card {
+  background-color: #2a2a2a;
+  padding: 12px;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.analytics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.card-title {
+  color: #aaaaaa;
+  font-size: 0.85rem;
+  margin-bottom: 5px;
+}
+
+.card-value {
+  color: #ffffff;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.card-period {
+  color: #999999;
+  font-size: 0.8rem;
+  font-style: italic;
+  margin-top: 5px;
+}
+
+.product-sales-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+.product-sales-item {
+  background-color: #2a2a2a;
+  padding: 10px;
+  border-radius: 4px;
+  display: grid;
+  grid-template-columns: 1fr 2fr 80px;
+  align-items: center;
+  gap: 10px;
+}
+
+.product-name {
+  color: #dddddd;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.product-sales-bar-container {
+  height: 8px;
+  background-color: #444;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.product-sales-bar {
+  height: 100%;
+  background-color: #3498db;
+  border-radius: 4px;
+}
+
+.product-sales-value {
+  color: #bbbbbb;
+  font-size: 0.8rem;
+  text-align: right;
+}
+
+.analytics-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 10px 0;
+  font-size: 0.9rem;
+  background-color: #2a2a2a;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.analytics-table th,
+.analytics-table td {
+  padding: 8px 12px;
+  text-align: left;
+  border-bottom: 1px solid #444;
+}
+
+.analytics-table th {
+  background-color: #333;
+  color: #ddd;
+  font-weight: normal;
+}
+
+.analytics-table td {
+  color: #bbb;
+}
+
+.analytics-table tr:last-child td {
+  border-bottom: none;
+}
+
+.temperature-trend-visualization {
+  margin-top: 10px;
+  background-color: #2a2a2a;
+  padding: 10px;
+  border-radius: 6px;
+  min-height: 100px;
+}
+
+.trend-note {
+  padding: 10px;
+  text-align: center;
+  color: #aaa;
+}
+
+.trend-warning {
+  color: #e67e22;
+}
+
+.trend-normal {
+  color: #2ecc71;
+}
+
+/* Gauge Components */
+.gauge-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 10px;
+  margin-top: 0;
+  margin-bottom: 10px;
+  padding-top: 0;
+}
+
+.gauge-panel {
+  background-color: #1e1e1e;
+  padding: 5px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  text-align: center;
+  transition: transform 0.3s ease;
+  margin-top: 0;
+}
+
+.gauge-panel:hover {
+  transform: scale(1.02);
+}
+
+.gauge-title {
+  color: #ffffff;
+  font-size: 1rem;
+  margin-bottom: 5px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.gauge-container {
+  position: relative;
+  width: 150px;
+  height: 75px;
+  margin: 0 auto 15px;
+  background: linear-gradient(to right, #e74c3c, #f39c12, #2ecc71);
+  border-radius: 75px 75px 0 0;
+  overflow: hidden;
+}
+
+.gauge-container:before {
+  content: '';
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  right: 5px;
+  bottom: 0;
+  background: #121212;
+  border-radius: 70px 70px 0 0;
+  z-index: 1;
+}
+
+.gauge-needle {
+  position: absolute;
+  width: 3px;
+  height: 70px;
+  background-color: #ffffff;
+  bottom: 0;
+  left: 50%;
+  transform-origin: bottom center;
+  z-index: 2;
+  transform: rotate(0deg);
+  transition: transform 0.8s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+.gauge-value {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 5px 0;
+  text-align: center;
+}
+
+.temperature-value {
+  color: #3498db;
+}
+
+.gauge-limits {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: #aaaaaa;
+  padding: 0 10px;
+  text-align: center;
+}
+
+/* Inventory Section */
+.inventory-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+}
+
+.inventory-item {
+  background-color: #1e1e1e;
+  padding: 15px;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+  text-align: center;
+}
+
+.inventory-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.inventory-bar-container {
+  height: 15px;
+  background-color: #2a2a2a;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 5px;
+}
+
+.inventory-bar {
+  height: 100%;
+  background: linear-gradient(to right, #3498db, #2980b9);
+  border-radius: 10px;
+  transition: width 0.5s ease-out;
+}
+
+.inventory-value {
+  text-align: center;
+  font-size: 0.8rem;
+  color: #cccccc;
+}
+
+/* Bottom Panel Section */
+.operations-bottom-section {
+  margin-top: 25px;
+}
+
+.bottom-panels {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.status-panel {
+  background-color: #1e1e1e;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  text-align: center;
+}
+
+.panel-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.panel-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 10px 0;
+  text-align: center;
+}
+
+.panel-limits {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: #aaaaaa;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.panel-status {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.panel-status.ok {
+  background-color: #173b2a;
+  color: #2ecc71;
+}
+
+.panel-status.fault {
+  background-color: #3d1816;
+  color: #e74c3c;
+}
+
+/* Analytics-specific styles */
+.analytics-section {
+  background-color: #1e1e1e;
+  padding: 20px;
+  margin-bottom: 25px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  text-align: center;
+}
+
+.chart-container {
+  height: 250px;
+  margin: 15px 0;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 15px 0;
+}
+
+.data-table th,
+.data-table td {
+  padding: 12px 15px;
+  text-align: center;
+  border-bottom: 1px solid #333333;
+}
+
+.data-table th {
+  background-color: #2a2a2a;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.data-table tr:hover {
+  background-color: #f5f6fa;
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+  .gauge-grid,
+  .status-grid,
+  .inventory-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .gauge-panel {
+    padding: 10px;
+  }
+  
+  .gauge-container {
+    width: 120px;
+    height: 60px;
+  }
+  
+  .gauge-needle {
+    height: 55px;
+  }
+}

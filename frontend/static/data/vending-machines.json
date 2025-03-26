@@ -1,0 +1,38 @@
+[
+  {
+    "id": "vm001",
+    "name": "PolarDelight Alpha",
+    "model": "PD-5000",
+    "location_business_name": "Tech Center",
+    "location_address": "235 Main Street, Cleveland, OH",
+    "location_type": "OFFICE",
+    "sub_location": "LOBBY",
+    "status": "ONLINE",
+    "temperature": -5.6,
+    "last_maintenance": "2025-02-15"
+  },
+  {
+    "id": "vm002",
+    "name": "PolarDelight Beta",
+    "model": "PD-5000",
+    "location_business_name": "Main Building",
+    "location_address": "500 Hospital Drive, Cleveland, OH",
+    "location_type": "HOSPITAL",
+    "sub_location": "CAFETERIA",
+    "status": "ONLINE",
+    "temperature": -4.8,
+    "last_maintenance": "2025-03-01"
+  },
+  {
+    "id": "vm003",
+    "name": "PolarDelight Gamma",
+    "model": "PD-6000",
+    "location_business_name": "Central Mall",
+    "location_address": "1200 Shopping Lane, Cleveland, OH",
+    "location_type": "RETAIL",
+    "sub_location": "FOOD_COURT",
+    "status": "MAINTENANCE",
+    "temperature": -3.2,
+    "last_maintenance": "2025-03-20"
+  }
+]

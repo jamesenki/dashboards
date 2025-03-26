@@ -1,0 +1,159 @@
+/* Vending Machine specific styling */
+
+/* Icon styles for vending machine sidebar */
+.sidebar a[href="/vending-machines"] .sidebar-icon {
+  filter: brightness(1) !important;
+  opacity: 1 !important;
+}
+
+/* Card styling for vending machines */
+.device-card {
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  background-color: var(--card-background);
+  margin-bottom: 20px;
+}
+
+.device-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.device-card-header {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.device-icon {
+  width: 60px;
+  height: 60px;
+  margin-right: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #333;
+  border-radius: 8px;
+  padding: 8px;
+}
+
+.device-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.device-title h3 {
+  margin: 0 0 5px 0;
+  font-size: 1.2rem;
+}
+
+.device-status {
+  display: flex;
+  align-items: center;
+  font-size: 0.9rem;
+  color: var(--secondary-text);
+}
+
+.status-indicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+.status-success .status-indicator {
+  background-color: var(--success-color);
+}
+
+.status-warning .status-indicator {
+  background-color: var(--warning-color);
+}
+
+.status-danger .status-indicator {
+  background-color: var(--danger-color);
+}
+
+/* Card body styling */
+.device-card-body {
+  padding: 15px;
+}
+
+/* Dashboard gauges */
+.gauge-panel {
+  text-align: center;
+  margin-bottom: 1rem;
+  position: relative;
+}
+
+.gauge-title {
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: #4a4a4a;
+}
+
+.gauge-container {
+  position: relative;
+  width: 120px;
+  height: 60px;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+.gauge {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: #f0f0f0;
+  position: relative;
+  margin-top: -60px;  /* Show only bottom half */
+}
+
+.gauge-fill {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 0%;  /* Set via JS */
+  background: #00bcd4;
+  border-radius: 0 0 100px 100px;
+  transition: height 0.5s ease-out;
+}
+
+.gauge-needle {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 3px;
+  height: 60px;
+  background: #ff5722;
+  transform-origin: bottom center;
+  transform: rotate(0deg);  /* Set via JS */
+  transition: transform 0.5s ease-out;
+  z-index: 5; /* Ensure needle is above the fill */
+}
+
+.gauge-value {
+  font-size: 1rem;
+  font-weight: bold;
+  margin-top: 0.5rem;
+  color: #333;
+  position: relative;
+  z-index: 10; /* Ensure text is above everything */
+}
+
+/* Special style for temperature gauge to ensure text visibility */
+#temperature-gauge-panel .gauge-value,
+#temperature-gauge .gauge-value,
+div:has(#temperature-gauge) .gauge-value {
+  background-color: rgba(0, 0, 0, 0.6);
+  color: white;
+  padding: 2px 8px;
+  border-radius: 4px;
+  display: inline-block;
+  margin-top: 0.75rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}

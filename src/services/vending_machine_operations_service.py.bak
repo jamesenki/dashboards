@@ -1,0 +1,1354 @@
+"""
+Vending machine operations service implementation
+"""
+import uuid
+from datetime import datetime, timedelta
+from typing import List, Optional, Dict, Any, Union
+import random
+from statistics import mean
+
+from src.models.device import DeviceStatus, DeviceType
+from src.models.vending_machine import VendingMachine, VendingMachineReading, VendingMachineStatus
+from src.models.vending_machine_operations import (
+    SalesPeriod,
+    ProductSale,
+    SalesData,
+    TimeOfDay,
+    DayOfWeek, 
+    UsagePattern,
+    MaintenanceType,
+    MaintenanceEvent,
+    MaintenanceHistory,
+    RefillItem,
+    AlertModel,
+    AlertSeverity,
+    RefillEvent,
+    RefillHistory,
+    TemperatureReading,
+    TemperatureTrends,
+    MachineStatus,
+    GaugeIndicators,
+    OperationsSummary,
+    # New models for Polar Delight Ice Cream Machines
+    AssetHealth,
+    OperationalStatus,
+    IceCreamInventoryItem,
+    LocationPerformance,
+    ServiceTicket,
+    GaugeData
+)
+
+class VendingMachineOperationsService:
+    """Service for Polar Delight Ice Cream Machine operations and monitoring"""
+    
+    def __init__(self, db, vending_machine_service):
+        """Initialize service with database and vending machine service
+        
+        Args:
+            db: Database instance for persistence
+            vending_machine_service: VendingMachineService instance for accessing ice cream machine data
+        """
+        self.db = db
+        self.vending_machine_service = vending_machine_service
+    
+    def get_asset_health(self, machine_id: str) -> AssetHealth:
+        """Get real-time asset health data for a specific Polar Delight ice cream machine
+        
+        Args:
+            machine_id: Ice cream machine ID
+            
+        Returns:
+            Comprehensive asset health data including status cards, gauges, and inventory
+            
+        Raises:
+            ValueError: If ice cream machine not found
+        """
+        # In a real implementation, we would fetch actual data from a database or IoT platform
+        # For mock purposes, we'll generate consistent synthetic data
+        
+        # Create mock ice cream inventory items - only ice cream flavors as shown in Angular UI
+        inventory = [
+            IceCreamInventoryItem(name="Vanilla", amount=12, status="Normal"),
+            IceCreamInventoryItem(name="Chocolate", amount=8, status="Low"),
+            IceCreamInventoryItem(name="Strawberry", amount=15, status="Normal"),
+            IceCreamInventoryItem(name="Mint", amount=10, status="Normal"),
+            IceCreamInventoryItem(name="Cookie Dough", amount=5, status="Low")
+        ]
+        
+        # Create mock gauge data
+        asset_health_data = {
+            "value": 85,
+            "min": 0,
+            "max": 100,
+            "needle_value": 85
+        }
+        
+        freezer_temperature_data = {
+            "value": -4,
+            "min": -10,
+            "max": 10,
+            "needle_value": 40  # Percentage for gauge position
+        }
+        
+        dispense_force_data = {
+            "value": 25,
+            "min": 0,
+            "max": 50,
+            "needle_value": 50  # Percentage for gauge position
+        }
+        
+        cycle_time_data = {
+            "value": 8,
+            "min": 0,
+            "max": 15,
+            "needle_value": 53  # Percentage for gauge position
+        }
+        
+        max_ram_load_data = {
+            "value": 12,
+            "min": 0,
+            "max": 25,
+            "status": "Normal"
+        }
+        
+        # Return mock asset health data
+        return AssetHealth(
+            asset_id=machine_id,
+            machine_status="Online",
+            pod_code="PD-001",
+            cup_detect="Yes",
+            pod_bin_door="Closed",
+            customer_door="Closed",
+            asset_health=asset_health_data,
+            freezer_temperature=freezer_temperature_data,
+            dispense_force=dispense_force_data,
+            cycle_time=cycle_time_data,
+            max_ram_load=max_ram_load_data,
+            asset_location="Sheetz North",
+            inventory=inventory
+        )
+    
+    def get_fleet_operations_summary(self) -> OperationsSummary:
+        """Get fleet-wide operations summary for all Polar Delight ice cream machines
+        
+        Returns:
+            Operations summary with aggregated data across all machines
+        """
+        # In a real implementation, we would aggregate data from all machines
+        # For mock purposes, we'll generate synthetic data
+        
+        # Mock location performance data
+        locations = [
+            LocationPerformance(
+                location_name="Sheetz North",
+                avg_service_cost="$250/month",
+                asset_count=3,
+                online_count=3,
+                total_sales=1250.50
+            ),
+            LocationPerformance(
+                location_name="Sheetz East",
+                avg_service_cost="$50/month",
+                asset_count=2,
+                online_count=2,
+                total_sales=980.25
+            ),
+            LocationPerformance(
+                location_name="Sheetz West",
+                avg_service_cost="$75/month",
+                asset_count=2,
+                online_count=1,
+                total_sales=750.00
+            ),
+            LocationPerformance(
+                location_name="Sheetz South",
+                avg_service_cost="$400/month",
+                asset_count=4,
+                online_count=3,
+                total_sales=1875.30
+            )
+        ]
+        
+        # Mock ticket data specific to ice cream machines
+        tickets = [
+            ServiceTicket(
+                ticket_id="T1001",
+                vendor_id="V123",
+                asset_id="PD-001",
+                issue_type="Freezer Temperature High",
+                status="Open",
+                date_created="2025-03-20"
+            ),
+            ServiceTicket(
+                ticket_id="T1002",
+                vendor_id="V123",
+                asset_id="PD-003",
+                issue_type="Pod Jam",
+                status="Open",
+                date_created="2025-03-22"
+            ),
+            ServiceTicket(
+                ticket_id="T1003",
+                vendor_id="V124",
+                asset_id="PD-005",
+                issue_type="Customer Door Not Closing",
+                status="Open",
+                date_created="2025-03-24"
+            )
+        ]
+        
+        # Mock ice cream flavor sales data
+        sales_by_flavor = {
+            "Vanilla": 315.25,
+            "Chocolate": 285.75,
+            "Strawberry": 249.75,
+            "Mint Chocolate Chip": 175.50,
+            "Cookie Dough": 165.25,
+            "Coffee": 110.00,
+            "Butter Pecan": 85.50
+        }
+        
+        # Mock summary statistics
+        stats = {
+            "average_temperature": -4.2,
+            "average_cycle_time": 8.5,
+            "total_service_cost": 1950.00
+        }
+        
+        # Return mock operations summary
+        return OperationsSummary(
+            total_assets=11,
+            total_assets_online=9,
+            service_tickets_open=3,
+            service_tickets_closed=15,
+            average_uptime=92.5,
+            total_sales_today=850.75,
+            average_sales_per_asset=77.34,
+            locations=locations,
+            open_tickets=tickets,
+            sales_by_flavor=sales_by_flavor,
+            stats=stats
+        )
+        
+    def get_operations_summary(self, machine_id: str) -> Dict[str, Any]:
+        """Get complete operations summary for a specific ice cream machine (legacy function)
+        
+        Args:
+            machine_id: Ice cream machine ID
+            
+        Returns:
+            Operations summary with ONLY asset health data, NOT including operations data
+            
+        Raises:
+            ValueError: If ice cream machine not found
+        """
+        # This is a legacy function maintained for backward compatibility
+        # But we'll modify it to ONLY return asset health data, not operations data
+        # This matches the Angular implementation which separates these concerns
+        
+        # Get the asset health data
+        asset_health = self.get_asset_health(machine_id)
+        
+        # Convert to dict to allow for custom response structure
+        return {
+            "asset_health": asset_health.dict(),
+            "as_of": datetime.now().isoformat()
+        }
+        
+        # Generate real-time gauge indicators
+        gauges = self._generate_realtime_gauges(machine, temperature_trends)
+        
+        # Generate real-time alerts
+        alerts = self._generate_realtime_alerts(machine, temperature_trends, maintenance_history)
+        
+        # Build complete operations summary
+        summary = OperationsSummary(
+            machine_id=machine_id,
+            as_of=datetime.now(),
+            status=status,
+            gauges=gauges,
+            alerts=alerts,
+            sales=sales_data,
+            usage=usage_pattern,
+            maintenance=maintenance_history,
+            refills=refill_history,
+            temperature=temperature_trends
+        )
+        
+        return summary
+        
+    def _generate_realtime_status(self, machine: VendingMachine) -> MachineStatus:
+        """Generate real-time status indicators based on machine data
+        
+        Args:
+            machine: Vending machine instance
+            
+        Returns:
+            MachineStatus object with current statuses
+        """
+        # Get the latest reading if available
+        latest_reading = None
+        if machine.readings and len(machine.readings) > 0:
+            latest_reading = machine.readings[-1]
+        
+        # Machine status
+        machine_status = "Online" if machine.status == "ONLINE" else "Offline"
+        
+        # POD code status
+        pod_code = "OK" if machine.serial_number else "Error"
+        
+        # Cup detection
+        cup_detect = "No"
+        if latest_reading and hasattr(latest_reading, 'cup_detected'):
+            cup_detect = "Present" if latest_reading.cup_detected else "No"
+        
+        # Door statuses
+        pod_bin_status = "Closed"
+        customer_door_status = "Closed"
+        
+        if latest_reading:
+            if hasattr(latest_reading, 'pod_bin_door'):
+                pod_bin_status = "Open" if latest_reading.pod_bin_door == "OPEN" else "Closed"
+            
+            if hasattr(latest_reading, 'door_status'):
+                customer_door_status = "Open" if latest_reading.door_status == "OPEN" else "Closed"
+        
+        return MachineStatus(
+            machine=machine_status,
+            pod_code=pod_code,
+            cup_detect=cup_detect,
+            pod_bin=pod_bin_status,
+            customer_door=customer_door_status
+        )
+    
+    def _generate_realtime_gauges(self, machine: VendingMachine, temp_trends: TemperatureTrends) -> GaugeIndicators:
+        """Generate real-time gauge indicators based on machine data
+        
+        Args:
+            machine: Vending machine instance
+            temp_trends: Temperature trend data
+            
+        Returns:
+            GaugeIndicators object with current gauge values
+        """
+        # Get latest reading if available
+        latest_reading = None
+        if machine.readings and len(machine.readings) > 0:
+            latest_reading = machine.readings[-1]
+        
+        # Asset health - based on machine status and other indicators
+        asset_health = 75  # Default value
+        asset_health_status = "Good"
+        
+        if machine.status == "OFFLINE":
+            asset_health = 25
+            asset_health_status = "Poor"
+        elif latest_reading and hasattr(latest_reading, 'errors') and latest_reading.errors:
+            asset_health = 50
+            asset_health_status = "Fair"
+        elif machine.status == "ONLINE" and latest_reading and not (hasattr(latest_reading, 'errors') and latest_reading.errors):
+            asset_health = 90
+            asset_health_status = "Excellent"
+        
+        # Freezer temperature
+        freezer_temp = 60  # Default percentage (0-100)
+        freezer_temp_value = "5 °F"  # Default display value
+        
+        if temp_trends.readings and len(temp_trends.readings) > 0:
+            latest_temp = temp_trends.readings[-1].temperature
+            # Convert Celsius to Fahrenheit
+            temp_f = (latest_temp * 9/5) + 32
+            # Calculate percentage (0-100) based on target range
+            # Assuming ideal range is 0-10°F for freezer
+            if temp_f < 0:
+                freezer_temp = 100  # Too cold
+            elif temp_f > 10:
+                freezer_temp = max(0, 100 - (temp_f - 10) * 10)  # Decrease by 10% per degree above 10°F
+            else:
+                freezer_temp = 90 - (temp_f * 3)  # Scale within ideal range
+            
+            freezer_temp_value = f"{temp_f:.1f} °F"
+        
+        # Dispense force - randomly generated for demo
+        dispense_force = random.randint(60, 95)
+        force_value = int(dispense_force / 2)  # Scale for display
+        dispense_force_value = f"{force_value} lb"
+        
+        # Cycle time - randomly generated for demo
+        cycle_time = random.randint(55, 85)
+        time_value = 10 + int((cycle_time / 100) * 10)  # Scale between 10-20 seconds
+        cycle_time_value = f"{time_value} sec"
+        
+        return GaugeIndicators(
+            asset_health=asset_health,
+            asset_health_display=asset_health_status,
+            freezer_temp=freezer_temp,
+            freezer_temp_display=freezer_temp_value,
+            dispense_force=dispense_force,
+            dispense_force_display=dispense_force_value,
+            cycle_time=cycle_time,
+            cycle_time_display=cycle_time_value
+        )
+    
+    def _generate_realtime_alerts(self, machine: VendingMachine, 
+                                 temperature_trends: TemperatureTrends, 
+                                 maintenance_history: MaintenanceHistory) -> List[AlertModel]:
+        """Generate real-time alerts based on machine data
+        
+        Args:
+            machine: Vending machine instance
+            temperature_trends: Temperature trend data
+            maintenance_history: Maintenance history data
+            
+        Returns:
+            List of active alerts for the machine
+        """
+        alerts = []
+        now = datetime.now()
+        
+        # Check machine status for alerts
+        if machine.status == DeviceStatus.OFFLINE:
+            # Critical alert for offline machine
+            alerts.append(AlertModel(
+                id=f"{machine.id}-offline-{now.strftime('%Y%m%d%H%M')}",
+                timestamp=now,
+                severity=AlertSeverity.CRITICAL,
+                title="Machine Offline",
+                message=f"Machine {machine.name} is currently offline. Please check connectivity.",
+                resolved=False
+            ))
+        
+        # Check machine status indicators for alerts
+        if machine.machine_status != VendingMachineStatus.OPERATIONAL:
+            # Warning for non-operational machine
+            status_message = {
+                VendingMachineStatus.LOW_PRODUCT: "Low product levels detected",
+                VendingMachineStatus.MAINTENANCE_NEEDED: "Maintenance required",
+                VendingMachineStatus.ERROR: "Machine error detected"
+            }.get(machine.machine_status, "Machine not operational")
+            
+            alerts.append(AlertModel(
+                id=f"{machine.id}-status-{now.strftime('%Y%m%d%H%M')}",
+                timestamp=now,
+                severity=AlertSeverity.WARNING,
+                title=f"Machine Status: {machine.machine_status.value}",
+                message=status_message,
+                resolved=False
+            ))
+        
+        # Check temperature readings for alerts
+        if temperature_trends and temperature_trends.abnormal_readings_count > 0:
+            # Check for abnormal temperature readings
+            recent_readings = sorted(temperature_trends.readings, key=lambda x: x.timestamp, reverse=True)[:5]
+            recent_abnormal = [r for r in recent_readings if not r.is_normal]
+            
+            if recent_abnormal:
+                alerts.append(AlertModel(
+                    id=f"{machine.id}-temp-{now.strftime('%Y%m%d%H%M')}",
+                    timestamp=now,
+                    severity=AlertSeverity.WARNING,
+                    title="Temperature Anomaly",
+                    message=f"Abnormal temperature readings detected. Current: {machine.temperature}°C",
+                    resolved=False
+                ))
+        
+        # Check product inventory for alerts
+        low_products = [p for p in machine.products if p.quantity <= 2]
+        if low_products:
+            alerts.append(AlertModel(
+                id=f"{machine.id}-inventory-{now.strftime('%Y%m%d%H%M')}",
+                timestamp=now,
+                severity=AlertSeverity.INFO,
+                title="Low Product Inventory",
+                message=f"{len(low_products)} products are running low and need to be restocked soon.",
+                resolved=False
+            ))
+        
+        # Check maintenance history for alerts
+        if maintenance_history and maintenance_history.next_scheduled:
+            days_until_maintenance = (maintenance_history.next_scheduled - now).days
+            if 0 <= days_until_maintenance <= 7:
+                alerts.append(AlertModel(
+                    id=f"{machine.id}-maintenance-{now.strftime('%Y%m%d%H%M')}",
+                    timestamp=now,
+                    severity=AlertSeverity.INFO,
+                    title="Scheduled Maintenance",
+                    message=f"Maintenance scheduled in {days_until_maintenance} days.",
+                    resolved=False
+                ))
+        
+        # Check cash capacity (if nearing limit)
+        if machine.cash_capacity and machine.current_cash:
+            cash_percentage = (machine.current_cash / machine.cash_capacity) * 100
+            if cash_percentage >= 85:
+                alerts.append(AlertModel(
+                    id=f"{machine.id}-cash-{now.strftime('%Y%m%d%H%M')}",
+                    timestamp=now,
+                    severity=AlertSeverity.INFO,
+                    title="Cash Collection Needed",
+                    message=f"Cash level at {int(cash_percentage)}% of capacity. Collection recommended.",
+                    resolved=False
+                ))
+        
+        return alerts
+    
+    def get_sales_data(self, machine_id: str, period: Union[str, SalesPeriod] = SalesPeriod.WEEK) -> SalesData:
+        """Get sales data for a vending machine
+        
+        Args:
+            machine_id: Vending machine ID
+            period: Time period for data aggregation
+            
+        Returns:
+            Sales data
+            
+        Raises:
+            ValueError: If vending machine not found or period is invalid
+        """
+        # Validate vending machine existence
+        machine = self.vending_machine_service.get_vending_machine(machine_id)
+        
+        # Convert string period to enum if needed
+        if isinstance(period, str):
+            try:
+                period = SalesPeriod(period)
+            except ValueError:
+                raise ValueError(f"Invalid period: {period}")
+        
+        # Determine date range based on period
+        end_date = datetime.now()
+        if period == SalesPeriod.DAY:
+            start_date = end_date - timedelta(days=1)
+        elif period == SalesPeriod.WEEK:
+            start_date = end_date - timedelta(weeks=1)
+        elif period == SalesPeriod.MONTH:
+            start_date = end_date - timedelta(days=30)
+        elif period == SalesPeriod.QUARTER:
+            start_date = end_date - timedelta(days=90)
+        elif period == SalesPeriod.YEAR:
+            start_date = end_date - timedelta(days=365)
+        else:
+            raise ValueError(f"Unsupported period: {period}")
+        
+        # Retrieve sales data from database or generate mock data
+        # TODO: Replace with actual database calls in production
+        sales_data = self._generate_mock_sales_data(machine, period, start_date, end_date)
+        
+        return sales_data
+    
+    def get_usage_patterns(self, machine_id: str) -> UsagePattern:
+        """Get usage patterns for a vending machine
+        
+        Args:
+            machine_id: Vending machine ID
+            
+        Returns:
+            Usage pattern data
+            
+        Raises:
+            ValueError: If vending machine not found
+        """
+        # Validate vending machine existence
+        machine = self.vending_machine_service.get_vending_machine(machine_id)
+        
+        # Retrieve usage pattern data from database or generate mock data
+        # TODO: Replace with actual database calls in production
+        usage_pattern = self._generate_mock_usage_patterns(machine)
+        
+        return usage_pattern
+    
+    def get_maintenance_history(self, machine_id: str) -> MaintenanceHistory:
+        """Get maintenance history for a vending machine
+        
+        Args:
+            machine_id: Vending machine ID
+            
+        Returns:
+            Maintenance history
+            
+        Raises:
+            ValueError: If vending machine not found
+        """
+        # Validate vending machine existence
+        machine = self.vending_machine_service.get_vending_machine(machine_id)
+        
+        # Retrieve maintenance history from database or generate mock data
+        # TODO: Replace with actual database calls in production
+        maintenance_history = self._generate_mock_maintenance_history(machine)
+        
+        return maintenance_history
+    
+    def get_refill_history(self, machine_id: str) -> RefillHistory:
+        """Get refill history for a vending machine
+        
+        Args:
+            machine_id: Vending machine ID
+            
+        Returns:
+            Refill history
+            
+        Raises:
+            ValueError: If vending machine not found
+        """
+        # Validate vending machine existence
+        machine = self.vending_machine_service.get_vending_machine(machine_id)
+        
+        # Retrieve refill history from database or generate mock data
+        # TODO: Replace with actual database calls in production
+        refill_history = self._generate_mock_refill_history(machine)
+        
+        return refill_history
+    
+    def get_temperature_trends(self, machine_id: str) -> TemperatureTrends:
+        """Get temperature trends for a vending machine
+        
+        Args:
+            machine_id: Vending machine ID
+            
+        Returns:
+            Temperature trends
+            
+        Raises:
+            ValueError: If vending machine not found
+        """
+        # Validate vending machine existence
+        machine = self.vending_machine_service.get_vending_machine(machine_id)
+        
+        # Get readings from machine
+        readings = machine.readings
+        
+        # If readings exists, extract temperature data
+        if readings:
+            temp_readings = [
+                TemperatureReading(
+                    timestamp=reading.timestamp,
+                    temperature=reading.temperature or 0.0,
+                    is_normal=True if reading.temperature and -10 <= reading.temperature <= 10 else False
+                )
+                for reading in readings
+                if reading.temperature is not None
+            ]
+            
+            # Calculate statistics
+            if temp_readings:
+                temperatures = [r.temperature for r in temp_readings]
+                avg_temp = mean(temperatures) if temperatures else None
+                min_temp = min(temperatures) if temperatures else None
+                max_temp = max(temperatures) if temperatures else None
+                abnormal_count = sum(1 for r in temp_readings if not r.is_normal)
+                
+                trends = TemperatureTrends(
+                    readings=temp_readings,
+                    average_temperature=avg_temp,
+                    min_temperature=min_temp,
+                    max_temperature=max_temp,
+                    abnormal_readings_count=abnormal_count
+                )
+            else:
+                # No temperature readings available
+                trends = self._generate_mock_temperature_trends(machine)
+        else:
+            # No readings available at all
+            trends = self._generate_mock_temperature_trends(machine)
+        
+        return trends
+    
+    # ----- Helper Methods for Generating Mock Data -----
+    # Note: These would be replaced with actual database calls in production
+    
+    def _generate_mock_sales_data(self, machine: VendingMachine, 
+                                period: SalesPeriod, 
+                                start_date: datetime, 
+                                end_date: datetime) -> SalesData:
+        """Generate mock sales data for development and testing
+        
+        Args:
+            machine: Vending machine
+            period: Time period
+            start_date: Start date
+            end_date: End date
+            
+        Returns:
+            Mock sales data
+        """
+        # Get products from machine
+        products = machine.products
+        
+        # Generate mock sales for each product
+        total_sales = 0
+        total_revenue = 0.0
+        product_sales = []
+        
+        for product in products:
+            # Mock quantities sold
+            quantity_sold = random.randint(3, 20)
+            revenue = quantity_sold * product.price
+            
+            product_sale = ProductSale(
+                product_id=product.product_id,
+                name=product.name,
+                quantity_sold=quantity_sold,
+                revenue=revenue,
+                percentage_of_total=0.0  # Will calculate after total is known
+            )
+            
+            product_sales.append(product_sale)
+            total_sales += quantity_sold
+            total_revenue += revenue
+        
+        # If no products, create some mock ones
+        if not product_sales:
+            mock_products = [
+                ("Polar Ice", 12, 3.50),
+                ("Arctic Freeze", 8, 4.00),
+                ("Glacier Mint", 10, 3.75),
+                ("Frosty Delight", 15, 2.50),
+                ("Winter Blast", 5, 5.00)
+            ]
+            
+            for name, qty, price in mock_products:
+                revenue = qty * price
+                product_id = f"mock-{uuid.uuid4()}"
+                
+                product_sale = ProductSale(
+                    product_id=product_id,
+                    name=name,
+                    quantity_sold=qty,
+                    revenue=revenue,
+                    percentage_of_total=0.0  # Will calculate after total is known
+                )
+                
+                product_sales.append(product_sale)
+                total_sales += qty
+                total_revenue += revenue
+        
+        # Calculate percentages
+        for product_sale in product_sales:
+            if total_revenue > 0:
+                product_sale.percentage_of_total = (product_sale.revenue / total_revenue) * 100
+            else:
+                product_sale.percentage_of_total = 0.0
+        
+        # Create sales data
+        sales_data = SalesData(
+            period=period,
+            start_date=start_date,
+            end_date=end_date,
+            total_sales=total_sales,
+            total_revenue=total_revenue,
+            product_sales=product_sales
+        )
+        
+        return sales_data
+    
+    def _generate_mock_usage_patterns(self, machine: VendingMachine) -> UsagePattern:
+        """Generate mock usage patterns for development and testing
+        
+        Args:
+            machine: Vending machine
+            
+        Returns:
+            Mock usage pattern data
+        """
+        # Mock time of day distribution
+        time_of_day = {
+            TimeOfDay.MORNING: random.randint(10, 30),
+            TimeOfDay.MIDDAY: random.randint(20, 50),
+            TimeOfDay.AFTERNOON: random.randint(15, 40),
+            TimeOfDay.EVENING: random.randint(5, 25),
+            TimeOfDay.NIGHT: random.randint(1, 10)
+        }
+        
+        # Mock day of week distribution
+        day_of_week = {
+            DayOfWeek.MONDAY: random.randint(10, 30),
+            DayOfWeek.TUESDAY: random.randint(10, 30),
+            DayOfWeek.WEDNESDAY: random.randint(15, 35),
+            DayOfWeek.THURSDAY: random.randint(15, 35),
+            DayOfWeek.FRIDAY: random.randint(20, 40),
+            DayOfWeek.SATURDAY: random.randint(5, 15),
+            DayOfWeek.SUNDAY: random.randint(5, 15)
+        }
+        
+        # Get products from machine or use mock ice cream flavors
+        products = machine.products
+        if not products:
+            mock_products = [
+                ("Vanilla", 12, 3.50),
+                ("Chocolate", 8, 4.00),
+                ("Strawberry", 10, 3.75),
+                ("Mint Chocolate Chip", 15, 4.25),
+                ("Cookie Dough", 5, 4.50)
+            ]
+            
+            popular_products = []
+            for name, qty, price in mock_products[:3]:  # Top 3 most popular
+                product_id = f"mock-{uuid.uuid4()}"
+                
+                product_sale = ProductSale(
+                    product_id=product_id,
+                    name=name,
+                    quantity_sold=qty,
+                    revenue=qty * price,
+                    percentage_of_total=random.uniform(15.0, 30.0)
+                )
+                
+                popular_products.append(product_sale)
+        else:
+            # Use a subset of actual products
+            popular_products = []
+            for product in products[:min(3, len(products))]:
+                quantity_sold = random.randint(10, 30)
+                
+                product_sale = ProductSale(
+                    product_id=product.product_id,
+                    name=product.name,
+                    quantity_sold=quantity_sold,
+                    revenue=quantity_sold * product.price,
+                    percentage_of_total=random.uniform(15.0, 30.0)
+                )
+                
+                popular_products.append(product_sale)
+        
+        # Peak hour and sales
+        peak_hour = random.randint(11, 14)  # Most common peak is lunchtime
+        peak_sales = random.randint(10, 25)
+        
+        # Create usage pattern
+        usage_pattern = UsagePattern(
+            time_of_day=time_of_day,
+            day_of_week=day_of_week,
+            popular_products=popular_products,
+            peak_hour=peak_hour,
+            peak_sales=peak_sales
+        )
+        
+        return usage_pattern
+    
+    def _generate_mock_maintenance_history(self, machine: VendingMachine) -> MaintenanceHistory:
+        """Generate mock maintenance history for development and testing
+        
+        Args:
+            machine: Vending machine
+            
+        Returns:
+            Mock maintenance history
+        """
+        # Generate a few mock maintenance events
+        events = []
+        
+        # Maintenance types to simulate
+        maintenance_types = [
+            (MaintenanceType.CLEANING, "Routine cleaning", ["Filter", "Dispenser"], 45),
+            (MaintenanceType.RESTOCK, "Product restocking", [], 30),
+            (MaintenanceType.REPAIR, "Cooling system repair", ["Compressor", "Refrigerant"], 120),
+            (MaintenanceType.INSPECTION, "Quarterly inspection", [], 60),
+            (MaintenanceType.CASH_COLLECTION, "Cash collection", [], 15)
+        ]
+        
+        # Generate events over the past 6 months
+        now = datetime.now()
+        num_events = random.randint(3, 8)
+        
+        for i in range(num_events):
+            # Random date in past 6 months
+            days_ago = random.randint(1, 180)
+            event_date = now - timedelta(days=days_ago)
+            
+            # Random maintenance type
+            maint_type, desc, parts, duration = random.choice(maintenance_types)
+            
+            event = MaintenanceEvent(
+                event_id=str(uuid.uuid4()),
+                event_type=maint_type,
+                timestamp=event_date,
+                technician=f"Tech {random.randint(1001, 9999)}",
+                description=desc,
+                parts_replaced=parts if maint_type == MaintenanceType.REPAIR else None,
+                cost=random.uniform(50, 500) if maint_type == MaintenanceType.REPAIR else None,
+                duration_minutes=duration
+            )
+            
+            events.append(event)
+        
+        # Sort events by timestamp, newest first
+        events.sort(key=lambda e: e.timestamp, reverse=True)
+        
+        # Calculate total downtime
+        total_downtime = sum(e.duration_minutes for e in events)
+        
+        # Determine last maintenance and next scheduled
+        last_maintenance = events[0].timestamp if events else None
+        next_scheduled = now + timedelta(days=random.randint(7, 30))
+        
+        # Create maintenance history
+        maintenance_history = MaintenanceHistory(
+            events=events,
+            last_maintenance=last_maintenance,
+            next_scheduled=next_scheduled,
+            total_downtime_minutes=total_downtime
+        )
+        
+        return maintenance_history
+    
+    def _generate_mock_refill_history(self, machine: VendingMachine) -> RefillHistory:
+        """Generate mock refill history for development and testing
+        
+        Args:
+            machine: Vending machine
+            
+        Returns:
+            Mock refill history
+        """
+        # Generate mock refill events
+        events = []
+        
+        # Get products or use mock products
+        products = machine.products
+        if not products:
+            mock_products = [
+                ("Polar Ice", 12),
+                ("Arctic Freeze", 8),
+                ("Glacier Mint", 10),
+                ("Frosty Delight", 15),
+                ("Winter Blast", 5)
+            ]
+            
+            product_list = []
+            for name, qty in mock_products:
+                product_list.append((f"mock-{uuid.uuid4()}", name, qty))
+        else:
+            product_list = [(p.product_id, p.name, p.quantity) for p in products]
+        
+        # Generate events over the past 3 months
+        now = datetime.now()
+        num_events = random.randint(2, 6)
+        
+        product_refill_counts = {}  # Track which products are refilled most
+        
+        for i in range(num_events):
+            # Random date in past 3 months
+            days_ago = random.randint(1, 90)
+            event_date = now - timedelta(days=days_ago)
+            
+            # Randomly select products to refill
+            num_products = random.randint(1, min(len(product_list), 4))
+            refilled_products = random.sample(product_list, num_products)
+            
+            refill_items = []
+            total_quantity = 0
+            total_cost = 0.0
+            
+            for product_id, name, _ in refilled_products:
+                quantity = random.randint(5, 20)
+                cost = quantity * random.uniform(1.0, 3.0)  # Cost per item
+                
+                refill_item = RefillItem(
+                    product_id=product_id,
+                    name=name,
+                    quantity=quantity,
+                    cost=cost
+                )
+                
+                refill_items.append(refill_item)
+                total_quantity += quantity
+                total_cost += cost
+                
+                # Track refill counts for determining most refilled product
+                if product_id in product_refill_counts:
+                    product_refill_counts[product_id] = (product_refill_counts[product_id][0] + quantity, name)
+                else:
+                    product_refill_counts[product_id] = (quantity, name)
+            
+            event = RefillEvent(
+                refill_id=str(uuid.uuid4()),
+                timestamp=event_date,
+                operator=f"Operator {random.randint(101, 999)}",
+                items=refill_items,
+                total_quantity=total_quantity,
+                total_cost=total_cost
+            )
+            
+            events.append(event)
+        
+        # Sort events by timestamp, newest first
+        events.sort(key=lambda e: e.timestamp, reverse=True)
+        
+        # Determine most refilled product
+        most_refilled_product = None
+        most_refilled_quantity = 0
+        
+        for product_id, (quantity, name) in product_refill_counts.items():
+            if quantity > most_refilled_quantity:
+                most_refilled_quantity = quantity
+                most_refilled_product = name
+        
+        # Create refill history
+        refill_history = RefillHistory(
+            events=events,
+            last_refill=events[0].timestamp if events else None,
+            most_refilled_product=most_refilled_product
+        )
+        
+        return refill_history
+    
+    def _generate_mock_temperature_trends(self, machine: VendingMachine) -> TemperatureTrends:
+        """Generate mock temperature trends for development and testing
+        
+        Args:
+            machine: Vending machine
+            
+        Returns:
+            Mock temperature trends
+        """
+        # Generate mock temperature readings for past week
+        now = datetime.now()
+        readings = []
+        
+        # Set a base temperature (typical for a freezer)
+        base_temp = -5.0
+        
+        # Generate a reading every 2 hours for past 7 days
+        for hours in range(0, 24 * 7, 2):
+            timestamp = now - timedelta(hours=hours)
+            
+            # Random variation around base temperature
+            variation = random.uniform(-3.0, 3.0)
+            temperature = base_temp + variation
+            
+            # Determine if temperature is normal
+            is_normal = -10 <= temperature <= 0
+            
+            reading = TemperatureReading(
+                timestamp=timestamp,
+                temperature=temperature,
+                is_normal=is_normal
+            )
+            
+            readings.append(reading)
+        
+        # Sort readings by timestamp
+        readings.sort(key=lambda r: r.timestamp)
+        
+        # Calculate statistics
+        temperatures = [r.temperature for r in readings]
+        avg_temp = mean(temperatures) if temperatures else None
+        min_temp = min(temperatures) if temperatures else None
+        max_temp = max(temperatures) if temperatures else None
+        abnormal_count = sum(1 for r in readings if not r.is_normal)
+        
+        # Create temperature trends
+        trends = TemperatureTrends(
+            readings=readings,
+            average_temperature=avg_temp,
+            min_temperature=min_temp,
+            max_temperature=max_temp,
+            abnormal_readings_count=abnormal_count
+        )
+        
+        return trends
+
+        """Get real-time operational status for a Polar Delight ice cream machine
+    def get_operational_status(self, machine_id: str) -> OperationalStatus:
+        """Get real-time operational status for a Polar Delight ice cream machine
+        
+        Args:
+            machine_id: Ice cream machine ID
+            
+        Returns:
+            Real-time operational status data
+            
+        Raises:
+            ValueError: If ice cream machine not found
+        """
+        # Verify machine exists
+        machine = self.vending_machine_service.get_vending_machine(machine_id)
+        if not machine:
+            raise ValueError(f"Ice cream machine {machine_id} not found")
+        
+        # Get related data
+        temp_trends = self._generate_mock_temperature_trends(machine)
+        inventory = self._get_ice_cream_inventory(machine_id)
+        
+        # Set up consistent random seed based on machine ID
+        import random
+        random.seed(machine_id)
+        
+        # Format data for operational monitoring display
+        return OperationalStatus(
+            machine_id=machine_id,
+            machine_status="Online" if machine.status == DeviceStatus.ONLINE else "Offline",
+            last_updated=datetime.now(),
+            
+            # Status indicators
+            cap_position={
+                "capPosition": "Down",
+                "status": "OK" if random.random() > 0.2 else "FAULT"
+            },
+            ram_position={
+                "min": "55",
+                "max": "95",
+                "ramPosition": str(random.randint(60, 90)),
+                "status": "OK" if random.random() > 0.3 else "FAULT"
+            },
+            cup_detect="Yes" if random.random() > 0.5 else "No",
+            pod_bin_door="Closed" if random.random() > 0.2 else "Open",
+            customer_door="Closed" if random.random() > 0.3 else "Open",
+            pod_code=str(random.randint(80000, 89999)),
+            cycle_status={
+                "cycleStatus": "Complete" if random.random() > 0.3 else "In Progress",
+                "status": "OK" if random.random() > 0.2 else "FAULT"
+            },
+            
+            # Gauge metrics
+            dispense_pressure={
+                "min": "5",
+                "max": "40",
+                "needleValue": random.randint(30, 50),
+                "dispensePressure": str(random.randint(30, 50))
+            },
+            freezer_temperature={
+                "freezerTemperature": str(temp_trends.current_temperature),
+                "min": "-50",
+                "needleValue": temp_trends.current_temperature,
+                "max": "5"
+            },
+            max_ram_load={
+                "min": "10",
+                "max": "25",
+                "ramLoad": str(random.randint(40, 60)),
+                "status": "OK" if random.random() > 0.3 else "FAULT"
+            },
+            cycle_time={
+                "cycleTime": str(random.randint(8, 15)),
+                "min": "5",
+                "needleValue": random.randint(8, 15),
+                "max": "60"
+            },
+            
+            # Inventory and location
+            ice_cream_inventory=inventory,
+            location=machine.location or "Unknown"
+        )
+        
+        Args:
+            machine_id: Ice cream machine ID
+            
+        Returns:
+            Real-time operational status data
+            
+        Raises:
+            ValueError: If ice cream machine not found
+        """
+        # Verify machine exists
+        machine = self.vending_machine_service.get_vending_machine(machine_id)
+        if not machine or machine.device_type != DeviceType.ICE_CREAM_MACHINE:
+            raise ValueError(f"Ice cream machine {machine_id} not found")
+        
+        # Get related data
+        temp_trends = self._generate_mock_temperature_trends(machine)
+        inventory = self._get_ice_cream_inventory(machine_id)
+        
+        # Set up consistent random seed based on machine ID
+        import random
+        random.seed(machine_id)
+        
+        # Format data for operational monitoring display
+        return OperationalStatus(
+            machine_id=machine_id,
+            machine_status="Online" if machine.status == DeviceStatus.ONLINE else "Offline",
+            last_updated=datetime.now(),
+            
+            # Status indicators
+            cap_position={
+                "capPosition": "Down",
+                "status": "OK" if random.random() > 0.2 else "FAULT"
+            },
+            ram_position={
+                "min": "55",
+                "max": "95",
+                "ramPosition": str(random.randint(60, 90)),
+                "status": "OK" if random.random() > 0.3 else "FAULT"
+            },
+            cup_detect="Yes" if random.random() > 0.5 else "No",
+            pod_bin_door="Closed" if random.random() > 0.2 else "Open",
+            customer_door="Closed" if random.random() > 0.3 else "Open",
+            pod_code=str(random.randint(80000, 89999)),
+            cycle_status={
+                "cycleStatus": "Complete" if random.random() > 0.3 else "In Progress",
+                "status": "OK" if random.random() > 0.2 else "FAULT"
+            },
+            
+            # Gauge metrics
+            dispense_pressure={
+                "min": "5",
+                "max": "40",
+                "needleValue": random.randint(30, 50),
+                "dispensePressure": str(random.randint(30, 50))
+            },
+            freezer_temperature={
+                "freezerTemperature": str(temp_trends.current_temperature),
+                "min": "-50",
+                "needleValue": temp_trends.current_temperature,
+                "max": "5"
+            },
+            max_ram_load={
+                "min": "10",
+                "max": "25",
+                "ramLoad": str(random.randint(40, 60)),
+                "status": "OK" if random.random() > 0.3 else "FAULT"
+            },
+            cycle_time={
+                "cycleTime": str(random.randint(8, 15)),
+                "min": "5",
+                "needleValue": random.randint(8, 15),
+                "max": "60"
+            },
+            
+            # Inventory and location
+            ice_cream_inventory=inventory,
+            location=machine.location or "Unknown"
+        )
+    
+    def _get_ice_cream_inventory(self, machine_id: str) -> List[IceCreamInventoryItem]:
+        """Get ice cream inventory for a machine
+        
+        Args:
+            machine_id: Machine ID
+            
+        Returns:
+            List of ice cream inventory items
+        """
+        # Standard ice cream flavors with inventory levels
+        flavors = [
+            {"name": "Vanilla", "level": random.randint(1, 10)},
+            {"name": "Strawberry ShortCake", "level": random.randint(1, 10)},
+            {"name": "Chocolate", "level": random.randint(1, 10)},
+            {"name": "Mint & Chocolate", "level": random.randint(1, 10)},
+            {"name": "Cookies & Cream", "level": random.randint(1, 10)},
+            {"name": "Salty Caramel", "level": random.randint(1, 10)}
+        ]
+        
+        # Convert to model instances
+        return [
+            IceCreamInventoryItem(
+                name=flavor["name"],
+                current_level=flavor["level"],
+                max_level=10,
+                status="OK" if flavor["level"] > 3 else "Low"
+            ) for flavor in flavors
+        ]
+
+    def get_operational_status(self, machine_id: str) -> OperationalStatus:
+        """Get real-time operational status for a Polar Delight ice cream machine
+        
+        Args:
+            machine_id: Ice cream machine ID
+            
+        Returns:
+            Real-time operational status data
+            
+        Raises:
+            ValueError: If ice cream machine not found
+        """
+        # Verify machine exists
+        machine = self.vending_machine_service.get_vending_machine(machine_id)
+        if not machine:
+            raise ValueError(f"Ice cream machine {machine_id} not found")
+        
+        # Get related data
+        temp_trends = self._generate_mock_temperature_trends(machine)
+        inventory = self._get_ice_cream_inventory(machine_id)
+        
+        # Set up consistent random seed based on machine ID
+        import random
+        random.seed(machine_id)
+        
+        # Format data for operational monitoring display
+        return OperationalStatus(
+            machine_id=machine_id,
+            machine_status="Online" if machine.status == DeviceStatus.ONLINE else "Offline",
+            last_updated=datetime.now(),
+            
+            # Status indicators
+            cap_position={
+                "capPosition": "Down",
+                "status": "OK" if random.random() > 0.2 else "FAULT"
+            },
+            ram_position={
+                "min": "55",
+                "max": "95",
+                "ramPosition": str(random.randint(60, 90)),
+                "status": "OK" if random.random() > 0.3 else "FAULT"
+            },
+            cup_detect="Yes" if random.random() > 0.5 else "No",
+            pod_bin_door="Closed" if random.random() > 0.2 else "Open",
+            customer_door="Closed" if random.random() > 0.3 else "Open",
+            pod_code=str(random.randint(80000, 89999)),
+            cycle_status={
+                "cycleStatus": "Complete" if random.random() > 0.3 else "In Progress",
+                "status": "OK" if random.random() > 0.2 else "FAULT"
+            },
+            
+            # Gauge metrics
+            dispense_pressure={
+                "min": "5",
+                "max": "40",
+                "needleValue": random.randint(30, 50),
+                "dispensePressure": str(random.randint(30, 50))
+            },
+            freezer_temperature={
+                "freezerTemperature": str(temp_trends.current_temperature),
+                "min": "-50",
+                "needleValue": temp_trends.current_temperature,
+                "max": "5"
+            },
+            max_ram_load={
+                "min": "10",
+                "max": "25",
+                "ramLoad": str(random.randint(40, 60)),
+                "status": "OK" if random.random() > 0.3 else "FAULT"
+            },
+            cycle_time={
+                "cycleTime": str(random.randint(8, 15)),
+                "min": "5",
+                "needleValue": random.randint(8, 15),
+                "max": "60"
+            },
+            
+            # Inventory and location
+            ice_cream_inventory=inventory,
+            location=machine.location or "Unknown"
+        )
+    
+    def _get_ice_cream_inventory(self, machine_id: str) -> List[IceCreamInventoryItem]:
+        """Get ice cream inventory for a machine
+        
+        Args:
+            machine_id: Machine ID
+            
+        Returns:
+            List of ice cream inventory items
+        """
+        # Standard ice cream flavors with inventory levels
+        import random
+        random.seed(machine_id)  # Consistent randomization
+        
+        flavors = [
+            {"name": "Vanilla", "level": random.randint(1, 10)},
+            {"name": "Strawberry ShortCake", "level": random.randint(1, 10)},
+            {"name": "Chocolate", "level": random.randint(1, 10)},
+            {"name": "Mint & Chocolate", "level": random.randint(1, 10)},
+            {"name": "Cookies & Cream", "level": random.randint(1, 10)},
+            {"name": "Salty Caramel", "level": random.randint(1, 10)}
+        ]
+        
+        # Convert to model instances
+        return [
+            IceCreamInventoryItem(
+                name=flavor["name"],
+                current_level=flavor["level"],
+                max_level=10,
+                status="OK" if flavor["level"] > 3 else "Low"
+            ) for flavor in flavors
+        ]

@@ -1,0 +1,31 @@
+{
+  "name": "iotsphere-refactor",
+  "version": "1.0.0",
+  "description": "Python backend with lightweight JavaScript frontend for IoT monitoring",
+  "scripts": {
+    "test:unit": "jest",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:coverage": "jest --coverage",
+    "lint": "npm run lint:js && npm run lint:css && npm run lint:html",
+    "lint:js": "eslint 'frontend/static/js/**/*.js'",
+    "lint:css": "stylelint 'frontend/static/css/**/*.css'",
+    "lint:html": "htmlhint 'frontend/templates/**/*.html'",
+    "format": "prettier --write 'frontend/static/{js,css}/**/*.{js,css}'",
+    "check-format": "prettier --check 'frontend/static/{js,css}/**/*.{js,css}'",
+    "code-quality": "python tools/code-quality/check_code_quality.py",
+    "code-quality:fix": "python tools/code-quality/check_code_quality.py --fix"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.51.1",
+    "eslint": "^8.40.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "htmlhint": "^1.1.4",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "prettier": "^2.8.8",
+    "stylelint": "^15.6.1",
+    "stylelint-config-standard": "^33.0.0"
+  }
+}

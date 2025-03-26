@@ -1,0 +1,25 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Water Heaters{% endblock %}
+
+{% block nav %}
+<li><a href="/water-heaters" class="active">All Devices</a></li>
+<li><a href="/water-heaters/new">Add New</a></li>
+{% endblock %}
+
+{% block page_title %}Water Heaters{% endblock %}
+
+{% block content %}
+<div id="water-heater-list" class="dashboard"></div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/api.js"></script>
+<script src="/static/js/debug.js"></script>
+<script src="/static/js/water-heater-new.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        new WaterHeaterList('water-heater-list');
+    });
+</script>
+{% endblock %}

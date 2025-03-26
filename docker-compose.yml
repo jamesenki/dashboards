@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: timescale/timescaledb:latest-pg14
+    environment:
+      POSTGRES_DB: iotsphere
+      POSTGRES_USER: iotsphere
+      POSTGRES_PASSWORD: iotsphere
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U iotsphere"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7.0-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build: .
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    ports:
+      - "8001:8000"  # Changed port to 8001 on host
+    volumes:
+      - .:/app
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=iotsphere
+      - DB_PASSWORD=iotsphere
+      - DB_NAME=iotsphere
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+
+volumes:
+  postgres_data:
+  redis_data:

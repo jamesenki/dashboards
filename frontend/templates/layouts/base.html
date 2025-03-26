@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IoTSphere - {% block title %}Dashboard{% endblock %}</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <link rel="stylesheet" href="/static/css/water-heater.css">
+    <link rel="stylesheet" href="/static/css/vending-machine.css">
+    <link rel="stylesheet" href="/static/css/operations-dashboard.css">
+    {% block head %}{% endblock %}
+</head>
+<body class="{% block body_class %}{% endblock %}">
+    <header>
+        <div class="logo">
+            <img src="/static/assets/images/logo.svg" alt="IoTSphere Logo" onerror="this.src='/static/assets/images/logo.png'">
+            <div class="logo-text">
+                <span class="polar">IoT</span><span class="delight">Sphere</span>
+            </div>
+        </div>
+        <div class="user-info">
+            <span>Admin</span>
+        </div>
+    </header>
+
+    <div class="sidebar">
+        <a href="/dashboard" title="Dashboard">
+            <img src="/static/assets/icons/dashboard.svg" alt="Dashboard" class="sidebar-icon" 
+                 onerror="this.src='/static/assets/icons/dashboard.png'">
+        </a>
+        <a href="/water-heaters" title="Water Heaters" class="active-sidebar-item">
+            <img src="/static/assets/icons/water-heater.svg" alt="Water Heaters" class="sidebar-icon"
+                 onerror="this.src='/static/assets/icons/water-heater.png'">
+        </a>
+        <a href="/vending-machines/detail" title="Vending Machines">
+            <img src="/static/assets/icons/vending-machine.svg" alt="Vending Machines" class="sidebar-icon"
+                 onerror="this.src='/static/assets/icons/vending-machine.png'">
+        </a>
+    </div>
+
+    <div class="main-content">
+        <nav>
+            <ul>
+                {% block nav %}{% endblock %}
+            </ul>
+        </nav>
+        
+        <h1 class="page-title">{% block page_title %}{% endblock %}</h1>
+        
+        {% block before_content %}{% endblock %}
+        
+        <div id="content">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+
+    <script src="/static/js/icons.js"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

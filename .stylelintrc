@@ -1,0 +1,24 @@
+{
+  "extends": "stylelint-config-standard",
+  "rules": {
+    "indentation": 2,
+    "string-quotes": "double",
+    "selector-class-pattern": "^([a-z][a-z0-9]*)(-[a-z0-9]+)*(__([a-z][a-z0-9]*)(-[a-z0-9]+)*)?(--([a-z][a-z0-9]*)(-[a-z0-9]+)*)?$",
+    "max-empty-lines": 2,
+    "max-line-length": 100,
+    "comment-empty-line-before": "always",
+    "selector-pseudo-element-colon-notation": "double",
+    "color-hex-case": "lower",
+    "color-hex-length": "short",
+    "selector-attribute-quotes": "always",
+    "declaration-block-trailing-semicolon": "always",
+    "block-no-empty": true,
+    "comment-no-empty": true,
+    "no-duplicate-selectors": true,
+    "no-empty-source": true,
+    "no-extra-semicolons": true,
+    "property-no-unknown": true,
+    "selector-pseudo-class-no-unknown": true,
+    "selector-pseudo-element-no-unknown": true
+  }
+}

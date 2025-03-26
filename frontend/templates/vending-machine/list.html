@@ -1,0 +1,38 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Vending Machines{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="/static/css/vending-machine.css">
+{% endblock %}
+
+{% block nav %}
+<li><a href="/vending-machines" class="active">All Devices</a></li>
+<li><a href="/vending-machines/new">Add New</a></li>
+{% endblock %}
+
+{% block page_title %}Vending Machines{% endblock %}
+
+{% block before_content %}
+<div style="background-color: #FF5722; padding: 20px; margin-bottom: 20px; border-radius: 5px; text-align: center; box-shadow: 0 4px 8px rgba(0,0,0,0.2);">
+    <a href="/vending-machines/detail?_cache={{ now.timestamp() }}" style="display: block; color: white; font-weight: bold; font-size: 22px; text-decoration: none;">
+        🔄 CLICK HERE TO VIEW THE OPERATIONS DASHBOARD WITH ASSET HEALTH 🔄
+    </a>
+    <p style="color: white; margin-top: 10px;">This link will take you to the dashboard with Operations Summary and Asset Health tabs</p>
+</div>
+{% endblock %}
+
+{% block content %}
+<div id="vending-machine-list" class="dashboard"></div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/api.js?v={{now.timestamp()}}"></script>
+<script src="/static/js/debug.js"></script>
+<script src="/static/js/vending-machine.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        new VendingMachineList('vending-machine-list');
+    });
+</script>
+{% endblock %}

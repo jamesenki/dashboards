@@ -1,0 +1,526 @@
+"""
+Utility to generate dummy data for testing the application
+"""
+import random
+import uuid
+from datetime import datetime, timedelta
+
+from src.models.device import DeviceType, DeviceStatus
+from src.models.water_heater import (
+    WaterHeater,
+    WaterHeaterMode,
+    WaterHeaterStatus,
+    WaterHeaterReading
+)
+from src.models.vending_machine import (
+    VendingMachine,
+    VendingMachineMode,
+    VendingMachineStatus,
+    VendingMachineReading,
+    ProductItem,
+    LocationType,
+    UseType,
+    SubLocation
+)
+
+# Constants for generating realistic data
+WATER_HEATER_BRANDS = [
+    "SmartTemp", "EcoHeat", "AquaWarm", "ThermoGuard", "HydroHeat", 
+    "EnergyMax", "ComfortFlow", "WaterSteward", "HeatMaster", "EcoFlow"
+]
+
+VENDING_MACHINE_BRANDS = [
+    "PolarDelight", "VendTech", "RefreshMax", "SnackMaster", "CoolServe", 
+    "QuickBite", "AutoVend", "SnackWave", "ChillDispense", "FreshVending"
+]
+
+WATER_HEATER_MODELS = [
+    "Pro", "Elite", "Plus", "Smart", "Ultra", "MaxEco", "Platinum", 
+    "Industrial", "Commercial", "Residential", "Advanced", "Compact"
+]
+
+VENDING_MACHINE_MODELS = [
+    "MK-500", "VX-1000", "SmartDispense", "AutoSell", "CoolVend", 
+    "FrostyPlus", "QuickServe", "SuperVend", "MaxCapacity", "EcoVend"
+]
+
+WATER_HEATER_SIZES = [
+    "50L", "80L", "100L", "120L", "150L", "200L"
+]
+
+BUILDINGS = [
+    "Building A", "Building B", "Building C", "North Wing", "South Wing", 
+    "East Tower", "West Tower", "Main Office", "Factory Floor", "R&D Lab", 
+    "Warehouse", "Apartment 101", "Apartment 202", "Apartment 303"
+]
+
+LOCATIONS = [
+    "Kitchen", "Bathroom", "Garage", "Basement", "Utility Room",
+    "Master Bathroom", "Guest Bathroom", "Laundry Room", "Break Room",
+    "Staff Kitchen", "Shower Room", "Janitor Closet", "Boiler Room", 
+    "Maintenance Area", "Suite 101", "Suite 202", "Manufacturing Floor"
+]
+
+# Business names for location data by type
+BUSINESS_NAMES = {
+    LocationType.FAST_FOOD: [
+        "McDonald's", "Burger King", "Wendy's", "Subway", "Taco Bell", "KFC",
+        "Pizza Hut", "Chipotle", "Panera Bread", "Five Guys"
+    ],
+    LocationType.HOSPITAL: [
+        "Mercy Hospital", "Cleveland Clinic", "Mayo Medical Center", "St. Luke's Hospital",
+        "Mount Sinai Medical", "Johns Hopkins Hospital", "Northwestern Memorial", "NYU Medical Center",
+        "UCLA Medical Center", "Massachusetts General"
+    ],
+    LocationType.STUDENT_CENTER: [
+        "UC Berkeley Student Union", "Ohio State Union", "Michigan Student Center", "Stanford Tresidder",
+        "NYU Kimmel Center", "UCLA Ackerman Union", "Harvard Smith Center", "Penn State HUB",
+        "MIT Stratton Center", "Georgia Tech Student Center"
+    ],
+    LocationType.SCHOOL: [
+        "Lincoln High School", "Washington Elementary", "Jefferson Middle School", "Roosevelt Academy",
+        "Kennedy High", "Madison Elementary", "Adams Middle School", "Franklin Academy",
+        "Monroe School", "Oakwood Elementary"
+    ],
+    LocationType.OFFICE: [
+        "Google Campus", "Microsoft Headquarters", "Apple Park", "Amazon Offices", "Facebook HQ",
+        "IBM Building", "Oracle Tower", "Intel Campus", "Salesforce Tower", "Adobe Offices"
+    ],
+    LocationType.SPECIALTY_SHOP: [
+        "Whole Foods Market", "Trader Joe's", "REI Co-op", "Barnes & Noble", "Best Buy",
+        "GameStop", "Sephora", "Lululemon", "Apple Store", "Nordstrom"
+    ],
+    LocationType.RETAIL: [
+        "Westfield Mall", "Galleria Shopping Center", "Fashion Valley", "King of Prussia Mall",
+        "Mall of America", "South Coast Plaza", "Tysons Corner Center", "Aventura Mall",
+        "Roosevelt Field Mall", "Ala Moana Center"
+    ],
+    LocationType.TRANSPORTATION: [
+        "Grand Central Terminal", "Union Station", "Penn Station", "O'Hare Airport",
+        "JFK International Airport", "LAX Terminal", "Port Authority Bus Terminal", "Atlanta Airport",
+        "Denver International Airport", "San Francisco Airport"
+    ],
+    LocationType.OTHER: [
+        "Central Park", "Golden Gate Park", "Disney World", "Universal Studios", "SeaWorld",
+        "Lincoln Center", "Madison Square Garden", "Metropolitan Museum", "Hollywood Bowl", "Red Rocks Amphitheater"
+    ]
+}
+
+# Maintenance partners
+MAINTENANCE_PARTNERS = [
+    "PolarCare Services Inc.",
+    "IceTech Maintenance Co.",
+    "CoolServe Technicians",
+    "FrostyFix Solutions",
+    "ChillMasters Repair",
+    "VendingCare Partners",
+    "MachineHealth Experts",
+    "TechnoChill Services",
+    "VendingFix Professionals",
+    "ColdStream Maintenance"
+]
+
+def random_date(start_date, end_date):
+    """Generate a random date between start_date and end_date"""
+    time_delta = end_date - start_date
+    random_days = random.randrange(time_delta.days)
+    return start_date + timedelta(days=random_days)
+
+def generate_water_heater_readings(count=24, base_temp=45.0, variance=5.0, timestamp_hours_ago=24):
+    """Generate random temperature readings over a period of time"""
+    now = datetime.now()
+    readings = []
+    
+    for i in range(count):
+        # Generate timestamp, going backward in time
+        hours_back = (timestamp_hours_ago / count) * (count - i)
+        timestamp = now - timedelta(hours=hours_back)
+        
+        # Generate temperature with some variance and a trend
+        trend_factor = i / count  # 0 to 1
+        temp = base_temp + (random.random() * variance) - (variance / 2)
+        
+        # Add some cyclical patterns to simulate day/night
+        hour_of_day = timestamp.hour
+        if 8 <= hour_of_day <= 18:  # Daytime
+            temp += 2.0  # Slightly warmer during the day
+        
+        # Generate other metrics
+        pressure = round(random.uniform(1.5, 3.0), 1)  # bar
+        energy_usage = round(random.uniform(800, 2500), 0)  # watts
+        flow_rate = round(random.uniform(0.0, 12.0), 1) if random.random() > 0.3 else 0.0  # L/min
+        
+        reading = WaterHeaterReading(
+            timestamp=timestamp,
+            temperature=round(temp, 1),
+            pressure=pressure,
+            energy_usage=energy_usage,
+            flow_rate=flow_rate
+        )
+        readings.append(reading)
+    
+    return readings
+
+# Product categories and names for vending machines
+PRODUCT_CATEGORIES = ["Beverages", "Snacks", "Candy", "Meals", "Healthy Options"]
+
+PRODUCT_NAMES = {
+    "Beverages": ["Polar Chill Water", "Arctic Blast Soda", "Mountain Fresh Juice", "Iced Coffee", "Energy Shot", "Sparkling Water", "Fruit Smoothie", "Iced Tea"],
+    "Snacks": ["Crunchy Chips", "Pretzel Twists", "Trail Mix", "Cheese Crackers", "Popcorn", "Protein Bar", "Nuts Mix", "Rice Crisps"],
+    "Candy": ["Chocolate Bar", "Gummy Bears", "Mints", "Caramel Chews", "Sour Candy", "Licorice", "Hard Candy", "Chocolate Cookies"],
+    "Meals": ["Sandwich", "Pasta Cup", "Instant Noodles", "Burrito", "Salad Bowl", "Soup Cup", "Wrap", "Rice Bowl"],
+    "Healthy Options": ["Fruit Cup", "Veggie Chips", "Protein Snack", "Granola Bar", "Mixed Nuts", "Dried Fruit", "Greek Yogurt", "Hummus & Crackers"]
+}
+
+def generate_water_heaters(count=5):
+    """Generate random water heaters"""
+    heaters = []
+    
+    for i in range(count):
+        # Generate basic properties
+        id_suffix = str(uuid.uuid4())[:8]
+        heater_id = f"wh-{id_suffix}"
+        
+        # Generate more descriptive and unique name
+        brand = random.choice(WATER_HEATER_BRANDS)
+        model = random.choice(WATER_HEATER_MODELS)
+        size = random.choice(WATER_HEATER_SIZES)
+        building = random.choice(BUILDINGS)
+        location = random.choice(LOCATIONS)
+        
+        name = f"{building} {location} - {brand} {model} {size}"
+        
+        # Determine status - most should be online
+        status = DeviceStatus.ONLINE if random.random() < 0.8 else DeviceStatus.OFFLINE
+        
+        # Generate temperatures
+        target_temp = round(random.uniform(45.0, 65.0), 1)
+        current_temp = target_temp
+        
+        # If online, current temperature may vary from target
+        if status == DeviceStatus.ONLINE:
+            current_temp = round(target_temp + (random.random() * 5.0 - 2.5), 1)
+        
+        # Determine mode
+        mode_choices = list(WaterHeaterMode)
+        mode = random.choice(mode_choices)
+        
+        # Determine heater status
+        if status == DeviceStatus.OFFLINE:
+            heater_status = WaterHeaterStatus.STANDBY
+        else:
+            if current_temp < target_temp - 1.0:
+                heater_status = WaterHeaterStatus.HEATING
+            else:
+                heater_status = WaterHeaterStatus.STANDBY
+        
+        # Set min/max temperatures
+        min_temp = 40.0
+        max_temp = 85.0
+        
+        # Set capacity and efficiency for some heaters
+        capacity = random.choice([50, 80, 100, 120, 150, None])
+        efficiency = random.choice([0.85, 0.9, 0.92, 0.95, None])
+        
+        # Generate location for some heaters
+        location = random.choice(LOCATIONS) if random.random() > 0.3 else None
+        
+        # Create the water heater
+        heater = WaterHeater(
+            id=heater_id,
+            name=name,
+            type=DeviceType.WATER_HEATER,
+            status=status,
+            location=f"{building} - {location}",
+            last_seen=datetime.now() if status == DeviceStatus.ONLINE else random_date(
+                datetime.now() - timedelta(days=7),
+                datetime.now() - timedelta(hours=1)
+            ),
+            target_temperature=target_temp,
+            current_temperature=current_temp,
+            mode=mode,
+            heater_status=heater_status,
+            capacity=capacity,
+            efficiency_rating=efficiency,
+            max_temperature=max_temp,
+            min_temperature=min_temp,
+            readings=generate_water_heater_readings(
+                count=random.randint(8, 24),
+                base_temp=current_temp
+            )
+        )
+        
+        heaters.append(heater)
+    
+    return heaters
+
+def generate_products(count=10):
+    """Generate random products for vending machines"""
+    products = []
+    
+    for i in range(count):
+        # Select random category
+        category = random.choice(PRODUCT_CATEGORIES)
+        
+        # Select random product name from that category
+        name = random.choice(PRODUCT_NAMES[category])
+        
+        # Generate unique product ID
+        product_id = f"prod-{str(uuid.uuid4())[:8]}"
+        
+        # Generate price (between $1.00 and $5.00)
+        price = round(random.uniform(1.0, 5.0), 2)
+        
+        # Generate quantity (between 0 and 15)
+        quantity = random.randint(0, 15)
+        
+        # Generate slot/row location
+        row = random.choice(["A", "B", "C", "D", "E"])
+        column = random.randint(1, 8)
+        location = f"{row}{column}"
+        
+        product = ProductItem(
+            product_id=product_id,
+            name=name,
+            price=price,
+            quantity=quantity,
+            category=category,
+            location=location
+        )
+        products.append(product)
+    
+    return products
+
+def generate_vending_machine_readings(count=24, base_temp=3.5, variance=1.0, timestamp_hours_ago=24):
+    """Generate random vending machine readings over a period of time"""
+    now = datetime.now()
+    readings = []
+    
+    for i in range(count):
+        # Generate timestamp, going backward in time
+        hours_back = (timestamp_hours_ago / count) * (count - i)
+        timestamp = now - timedelta(hours=hours_back)
+        
+        # Generate temperature with some variance and a trend
+        trend_factor = i / count  # 0 to 1
+        temp = base_temp + (random.random() * variance) - (variance / 2)
+        
+        # Add some cyclical patterns to simulate day/night
+        hour_of_day = timestamp.hour
+        if 8 <= hour_of_day <= 18:  # Daytime
+            temp += 0.5  # Slightly warmer during the day
+        
+        # Generate other metrics
+        power_consumption = round(random.uniform(100, 400), 1)  # watts
+        door_status = "CLOSED" if random.random() > 0.1 else "OPEN"
+        cash_level = round(random.uniform(20, 500), 2)  # dollars
+        sales_count = random.randint(0, 5)  # sales in this period
+        
+        reading = VendingMachineReading(
+            timestamp=timestamp,
+            temperature=round(temp, 1),
+            power_consumption=power_consumption,
+            door_status=door_status,
+            cash_level=cash_level,
+            sales_count=sales_count
+        )
+        readings.append(reading)
+    
+    return readings
+
+def generate_vending_machines(count=30):
+    """Generate random vending machines"""
+    machines = []
+    
+    for i in range(count):
+        # Generate basic properties
+        id_suffix = str(uuid.uuid4())[:8]
+        vm_id = f"vm-{id_suffix}"
+        
+        # Generate location type first (to match business name)
+        location_type = random.choice(list(LocationType))
+        
+        # Generate more descriptive and unique name
+        brand = random.choice(VENDING_MACHINE_BRANDS)
+        model = random.choice(VENDING_MACHINE_MODELS)
+        building = random.choice(BUILDINGS)
+        location = random.choice(LOCATIONS)
+        
+        # Generate descriptive name based on location type
+        name = f"PolarDelight - {model} {id_suffix[:4]}"
+        
+        # Generate specifications
+        model_number = f"{model}-{random.randint(100, 999)}"
+        serial_number = f"SN-{str(uuid.uuid4())[:10]}"
+        temp = round(random.uniform(2.5, 5.0), 1)  # Celsius
+        total_capacity = random.randint(30, 80)
+        cash_capacity = float(random.randint(500, 2000))
+        current_cash = round(random.uniform(50, cash_capacity), 2)
+        
+        # Generate status and mode
+        status_weights = {VendingMachineStatus.OPERATIONAL: 0.7, 
+                          VendingMachineStatus.NEEDS_RESTOCK: 0.15,
+                          VendingMachineStatus.OUT_OF_STOCK: 0.05,
+                          VendingMachineStatus.MAINTENANCE_REQUIRED: 0.1}
+        statuses = list(status_weights.keys())
+        status_probabilities = list(status_weights.values())
+        machine_status = random.choices(statuses, status_probabilities)[0]
+        
+        mode_weights = {VendingMachineMode.NORMAL: 0.8,
+                        VendingMachineMode.POWER_SAVE: 0.15,
+                        VendingMachineMode.CLEANING: 0.05}
+        modes = list(mode_weights.keys())
+        mode_probabilities = list(mode_weights.values())
+        mode = random.choices(modes, mode_probabilities)[0]
+        
+        # Generate products (5-15 products per machine)
+        product_count = random.randint(5, 15)
+        products = generate_products(product_count)
+        
+        # Generate device status based on machine status
+        device_status = DeviceStatus.ONLINE
+        if machine_status == VendingMachineStatus.MAINTENANCE_REQUIRED:
+            # 50% chance of being offline if maintenance is required
+            if random.random() < 0.5:
+                device_status = DeviceStatus.OFFLINE
+        
+        # Generate location details based on location type
+        location_business_name = random.choice(BUSINESS_NAMES[location_type])
+        sub_location = random.choice(list(SubLocation))
+        
+        # For use type, focus on SERVICED and SELF_SERVE as requested
+        use_type_weights = {UseType.SERVICED: 0.6, UseType.SELF_SERVE: 0.4}
+        use_types = list(use_type_weights.keys())
+        use_type_probabilities = list(use_type_weights.values())
+        use_type = random.choices(use_types, use_type_probabilities)[0]
+        
+        # Add maintenance partner
+        maintenance_partner = random.choice(MAINTENANCE_PARTNERS)
+        
+        # Create the vending machine
+        vending_machine = VendingMachine(
+            id=vm_id,
+            name=name,
+            type=DeviceType.VENDING_MACHINE,
+            status=device_status,
+            location=f"{building} - {location}",
+            model_number=model_number,
+            serial_number=serial_number,
+            machine_status=machine_status,
+            mode=mode,
+            location_business_name=location_business_name,
+            location_type=location_type,
+            sub_location=sub_location,
+            use_type=use_type,
+            temperature=temp,
+            total_capacity=total_capacity,
+            cash_capacity=cash_capacity,
+            current_cash=current_cash,
+            maintenance_partner=maintenance_partner,
+            products=products,
+            readings=generate_vending_machine_readings(
+                count=random.randint(8, 24),
+                base_temp=temp
+            )
+        )
+        
+        machines.append(vending_machine)
+    
+    return machines
+
+# Demo data repository
+class DummyDataRepository:
+    """In-memory repository of dummy data for testing"""
+    _instance = None
+    
+    def __new__(cls):
+        import logging
+        logging.error("DummyDataRepository.__new__ called")
+        
+        if cls._instance is None:
+            logging.error("Creating new DummyDataRepository instance")
+            cls._instance = super(DummyDataRepository, cls).__new__(cls)
+        else:
+            logging.error("Reusing existing DummyDataRepository instance")
+            
+        # Always reset the data containers
+        cls._instance.water_heaters = {}
+        cls._instance.vending_machines = {}
+        # Reinitialize every time to ensure we get fresh data with the latest code changes
+        logging.error("Reinitializing data in DummyDataRepository")
+        cls._instance.initialize()
+        return cls._instance
+    
+    def initialize(self):
+        """Initialize with dummy data"""
+        import logging
+        logging.error("DummyDataRepository.initialize() called")
+        
+        # Generate water heaters
+        water_heaters = generate_water_heaters(count=8)
+        self.water_heaters = {heater.id: heater for heater in water_heaters}
+        logging.error(f"Generated {len(water_heaters)} water heaters")
+        
+        # Generate vending machines
+        vending_machines = generate_vending_machines(count=30)
+        logging.error(f"Generated {len(vending_machines)} vending machines with IDs: {[vm.id for vm in vending_machines]}")
+        self.vending_machines = {vm.id: vm for vm in vending_machines}
+    
+    def get_water_heaters(self):
+        """Get all water heaters"""
+        return list(self.water_heaters.values())
+    
+    def get_water_heater(self, heater_id):
+        """Get a specific water heater by ID"""
+        return self.water_heaters.get(heater_id)
+    
+    def add_water_heater(self, heater):
+        """Add a new water heater"""
+        self.water_heaters[heater.id] = heater
+        return heater
+    
+    def update_water_heater(self, heater_id, updates):
+        """Update a water heater"""
+        if heater_id not in self.water_heaters:
+            return None
+        
+        heater = self.water_heaters[heater_id]
+        updated_heater = heater.model_copy(update=updates)
+        self.water_heaters[heater_id] = updated_heater
+        return updated_heater
+    
+    def get_vending_machines(self):
+        """Get all vending machines"""
+        import logging
+        machines = list(self.vending_machines.values())
+        logging.error(f"DummyDataRepository.get_vending_machines() returning {len(machines)} machines with IDs: {[m.id for m in machines]}")
+        return machines
+    
+    def get_vending_machine(self, vm_id):
+        """Get a specific vending machine by ID"""
+        return self.vending_machines.get(vm_id)
+    
+    def add_vending_machine(self, machine):
+        """Add a new vending machine"""
+        self.vending_machines[machine.id] = machine
+        return machine
+    
+    def update_vending_machine(self, vm_id, updates):
+        """Update a vending machine"""
+        if vm_id not in self.vending_machines:
+            return None
+        
+        machine = self.vending_machines[vm_id]
+        updated_machine = machine.model_copy(update=updates)
+        self.vending_machines[vm_id] = updated_machine
+        return updated_machine
+    
+    def delete_vending_machine(self, vm_id):
+        """Delete a vending machine"""
+        if vm_id in self.vending_machines:
+            del self.vending_machines[vm_id]
+            return True
+        return False
+
+# Create a singleton instance
+dummy_data = DummyDataRepository()

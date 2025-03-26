@@ -1,0 +1,26 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Water Heater Details{% endblock %}
+
+{% block nav %}
+<li><a href="/water-heaters">All Devices</a></li>
+<li><a href="/water-heaters/new">Add New</a></li>
+{% endblock %}
+
+{% block page_title %}Water Heater Details{% endblock %}
+
+{% block content %}
+<div id="water-heater-detail"></div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/api.js"></script>
+<script src="/static/js/water-heater-new.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const urlParts = window.location.pathname.split('/');
+        const heaterId = urlParts[urlParts.length - 1];
+        new WaterHeaterDetail('water-heater-detail', heaterId);
+    });
+</script>
+{% endblock %}

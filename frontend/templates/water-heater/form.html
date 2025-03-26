@@ -1,0 +1,26 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}{% if heater_id %}Edit{% else %}Add New{% endif %} Water Heater{% endblock %}
+
+{% block nav %}
+<li><a href="/water-heaters">All Devices</a></li>
+<li><a href="/water-heaters/new" {% if not heater_id %}class="active"{% endif %}>Add New</a></li>
+{% endblock %}
+
+{% block page_title %}{% if heater_id %}Edit{% else %}Add New{% endif %} Water Heater{% endblock %}
+
+{% block content %}
+<div id="water-heater-form"></div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/api.js"></script>
+<script src="/static/js/water-heater-new.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const urlParts = window.location.pathname.split('/');
+        const heaterId = urlParts.length > 3 ? urlParts[urlParts.length - 1] : null;
+        new WaterHeaterForm('water-heater-form', heaterId);
+    });
+</script>
+{% endblock %}

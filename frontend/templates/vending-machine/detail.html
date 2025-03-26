@@ -1,0 +1,3410 @@
+{% extends "layouts/base.html" %}
+
+{% block body_class %}vending-machine-page{% endblock %}
+
+{% block title %}NEW UI: Vending Machine Details (UPDATED){% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="/static/css/vending-machine.css?v={{now.timestamp()}}">
+<link rel="stylesheet" href="/static/css/vending-machine-dashboard.css?v={{now.timestamp()}}">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="/static/js/operations-dashboard.js?v={{now.timestamp()}}"></script>
+<script src="/static/js/reload-monitor.js?v={{now.timestamp()}}"></script>
+<script src="/static/js/dropdown-debugger.js?v={{now.timestamp()}}"></script>
+<script src="/static/js/gauge-consistency-test.js?v={{now.timestamp()}}"></script>
+<script src="/static/js/dual-dropdown-test.js?v={{now.timestamp()}}">
+</script>
+<script src="/static/js/api.js?v={{now.timestamp()}}"></script>
+<!-- New modular JS architecture -->
+<script src="/static/js/machine-service.js?v={{now.timestamp()}}"></script>
+<script src="/static/js/dropdown-manager.js?v={{now.timestamp()}}"></script>
+<style>
+   /* Direct style overrides to remove gaps */
+  .dashboard-layout { margin-top: 0 !important; padding-top: 0 !important; display: flex !important; flex-direction: row !important; }
+  .asset-selection-header { margin-bottom: 0 !important; padding: 0 !important; }
+  .status-bar { margin-bottom: 0 !important; padding: 5px !important; }
+  .gauge-grid { margin-top: 0 !important; margin-bottom: 0 !important; gap: 5px !important; display: grid !important; grid-template-columns: repeat(2, 1fr) !important; }
+  .gauge-panel { padding: 5px !important; margin: 0 !important; }
+  .gauge-title { margin-bottom: 0 !important; }
+  .dashboard-content { padding: 5px !important; flex: 1 !important; }
+  /* Set machine column width */
+  .machine-column { padding-top: 0 !important; width: 210px !important; flex-shrink: 0 !important; }
+  .machine-image-container-large { height: auto !important; max-height: 350px !important; margin: 5px !important; padding: 5px !important; }
+  h2, h3 { margin: 0 !important; padding: 2px !important; }
+  /* Force content to top */
+  body { margin: 0 !important; padding: 0 !important; }
+  main { margin: 0 !important; padding: 0 !important; }
+  
+  /* Fix freezer inventory white backgrounds */
+  .tab-content-container { color: #ffffff !important; }
+  
+  /* Ensure layout stability during device switching */
+  #main-dashboard-layout { min-height: 400px !important; }
+  .freezer-inventory-item, .inventory-item { background-color: #1e1e1e !important; color: #ffffff !important; padding: 5px !important; border-radius: 5px !important; margin: 2px !important; box-shadow: 0 1px 3px rgba(0,0,0,0.3) !important; }
+  .inventory-label, .flavor-name { color: #ffffff !important; font-weight: bold !important; text-align: center !important; }
+  .inventory-grid { gap: 5px !important; }
+  .cycle-status { background-color: #1e1e1e !important; }
+  
+  /* Fix text alignment in specific elements */
+  .vanilla, .strawberry, .chocolate, .mint { background-color: #1e1e1e !important; color: #ffffff !important; padding: 10px !important; border-radius: 5px !important; margin: 2px !important; text-align: center !important; }
+  
+  /* Dark theme for operations dashboard */
+  .dark-theme {
+    background-color: #1e1e1e !important;
+    color: #ffffff !important;
+  }
+  
+  .dark-theme h2, .dark-theme h3 {
+    color: #ffffff;
+  }
+  
+  .operations-dashboard {
+    background-color: #1e1e1e;
+    color: #ffffff;
+    padding: 15px;
+  }
+  
+  .operations-dashboard h2,
+  .operations-dashboard h3 {
+    color: #ffffff;
+    margin-bottom: 10px;
+  }
+  
+  .status-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    margin-bottom: 15px;
+  }
+  
+  .status-item {
+    background-color: #333 !important;
+    border-radius: 5px;
+    padding: 10px;
+    text-align: center;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+  }
+  
+  .status-label {
+    font-size: 0.9em;
+    margin-bottom: 5px;
+    color: #aaa;
+  }
+  
+  .status-value {
+    font-weight: bold;
+    font-size: 1.1em;
+  }
+  
+  .status-value.online {
+    color: #2ecc71;
+  }
+  
+  .status-value.offline {
+    color: #e74c3c;
+  }
+  
+  .status-value.door-closed {
+    color: #2ecc71;
+  }
+  
+  .status-value.door-open {
+    color: #e74c3c;
+  }
+  
+  /* Gauge styling */
+  .gauge-container {
+    position: relative;
+    width: 139.992px;
+    height: 69.9844px;
+    margin: 0 auto;
+    overflow: hidden;
+    background: linear-gradient(0deg, #1a1a1a 0%, #333333 100%);
+    border-radius: 139.992px 139.992px 0 0;
+    border: 2px solid #444;
+  }
+  
+  /* No special styling for freezer temp gauge - use the same as other gauges */
+  
+
+  
+  .gauge-container::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+        rgba(255, 0, 0, 0.3) 0%, 
+        rgba(255, 255, 0, 0.3) 50%, 
+        rgba(0, 255, 0, 0.3) 100%);
+    opacity: 0.5;
+    border-radius: 139.992px 139.992px 0 0;
+  }
+  
+  .gauge-needle {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 3.5px;
+    height: 58px;
+    background-color: #ff6d00;
+    transform-origin: bottom center;
+    transform: translateX(-50%) rotate(0deg);
+    transition: transform 0.5s ease-out;
+    z-index: 10;
+    box-shadow: 0 0 4px rgba(255, 109, 0, 0.7);
+    border-radius: 4px 4px 0 0;
+  }
+  
+  .gauge-needle::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 12px;
+    height: 12px;
+    background-color: #555;
+    border-radius: 50%;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    z-index: 11;
+  }
+  
+  .gauge-panel {
+    border: 1px solid #444;
+    border-radius: 8px;
+    padding: 15px;
+    background-color: #222;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    margin-bottom: 20px;
+  }
+  
+  .gauge-title {
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #ddd;
+    font-size: 16px;
+  }
+  
+  .gauge-value {
+    text-align: center;
+    font-size: 22px;
+    font-weight: bold;
+    margin-top: 0;
+    margin-bottom: 5px;
+    width: 100%;
+    display: block;
+    color: #4fd1c5;
+  }
+  
+
+  
+  .gauge-limits {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    margin-top: 5px;
+    color: #999;
+  }
+  
+  .gauge-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+  }
+  
+  /* Operations Summary Tab Styling */
+  .operations-section {
+    margin-bottom: 30px;
+    padding: 15px;
+    background-color: #262626;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .operations-section h3 {
+    color: #ddd;
+    margin-bottom: 15px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #444;
+  }
+  
+  .operations-metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 15px;
+    margin: 15px 0;
+  }
+  
+  .metric-card {
+    padding: 15px;
+    border: 1px solid #444;
+    border-radius: 8px;
+    background-color: #2a2a2a;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  
+  .metric-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+  }
+  
+  .metric-title {
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #aaa;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  .metric-value {
+    font-size: 20px;
+    font-weight: bold;
+    color: #4fd1c5;
+  }
+  
+  .operations-content h2 {
+    color: #eee;
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 24px;
+  }
+  
+  /* Status Colors */
+  .status-online,
+  .status-good {
+    color: #10B981 !important;
+  }
+  
+  .status-offline,
+  .status-critical {
+    color: #EF4444 !important;
+  }
+  
+  .status-warning {
+    color: #F59E0B !important;
+  }
+  
+  /* Pulse animation for critical states */
+  @keyframes pulse {
+    0% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.6;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+</style>
+<script>
+    // Removed automatic reload functionality
+    window.onload = function() {
+        console.log('PAGE LOADED! - No auto-refresh');
+        // Initialize page normally without refreshing
+        console.log('Initializing page with hash:', window.location.hash);
+    }
+
+    // Global variables
+    let machineId = null;
+    let operationalMachineId = null;
+    let machineData = null;
+    let chartInstances = {};
+    let gaugeUpdateIntervals = {};
+
+    // Tab management
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize tabs
+        const tabs = document.querySelectorAll('.tab');
+        const tabContents = document.querySelectorAll('.tab-content');
+        
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                // Remove active class from all tabs and contents
+                tabs.forEach(t => {
+                    if (t) t.classList.remove('active');
+                });
+                tabContents.forEach(c => {
+                    if (c) c.classList.remove('active');
+                });
+                
+                // Add active class to clicked tab and corresponding content
+                this.classList.add('active');
+                const tabId = this.getAttribute('data-tab');
+                const tabContent = document.getElementById(tabId);
+                if (tabContent) tabContent.classList.add('active');
+                
+                // If switching to operations tab, update that view
+                if (tabId === 'operations-tab') {
+                    if (operationalMachineId) {
+                        fetchOperationsData(operationalMachineId);
+                    }
+                }
+            });
+        });
+        
+        // Set default active tab
+        tabs[0].click();
+        
+        // Initialize machine selector in asset health tab
+        initMachineSelector();
+        
+        // Initialize operations machine selector
+        initOperationsMachineSelector();
+        
+        // Initialize all gauges on the page with consistent styling
+        initializeAllGauges();
+    });
+    
+    // Function to initialize all gauges with consistent styling
+    function initializeAllGauges() {
+        console.log('Initializing all gauges with consistent styling');
+        
+        // Initialize gauges in Asset Health tab
+        const assetHealthGauge = document.getElementById('asset-health-gauge');
+        const freezerTempGauge = document.getElementById('freezer-temp-gauge');
+        const dispenseForceGauge = document.getElementById('dispense-force-gauge');
+        const cycleTimeGauge = document.getElementById('cycle-time-gauge');
+        
+        // Set default values if not already set
+        if (assetHealthGauge) updateGaugePosition('asset-health-gauge', assetHealthGauge.dataset.value || 75);
+        if (freezerTempGauge) updateGaugePosition('freezer-temp-gauge', freezerTempGauge.dataset.value || 60);
+        if (dispenseForceGauge) updateGaugePosition('dispense-force-gauge', dispenseForceGauge.dataset.value || 58);
+        if (cycleTimeGauge) updateGaugePosition('cycle-time-gauge', cycleTimeGauge.dataset.value || 59);
+        
+        // Also initialize any gauges in the Operations tab
+        const operationsGauges = document.querySelectorAll('#operations-tab .gauge-container');
+        operationsGauges.forEach(gauge => {
+            if (gauge.id) {
+                updateGaugePosition(gauge.id, gauge.dataset.value || 50);
+            }
+        });
+    }
+
+    // Initialize asset health machine selector
+    function initMachineSelector() {
+        const machineSelector = document.getElementById('machine-selector');
+        if (!machineSelector) return;
+        
+        // Fetch available machines and populate dropdown
+        fetch('/api/vending-machines')
+            .then(response => response.json())
+            .then(data => {
+                // Clear existing options
+                machineSelector.innerHTML = '';
+                
+                // Add default option
+                const defaultOption = document.createElement('option');
+                defaultOption.textContent = 'Select a machine';
+                defaultOption.value = '';
+                machineSelector.appendChild(defaultOption);
+                
+                // Add machine options
+                data.forEach(machine => {
+                    const option = document.createElement('option');
+                    option.value = machine.id;
+                    option.textContent = machine.name || `Machine ${machine.id}`;
+                    machineSelector.appendChild(option);
+                });
+                
+                // Set up change event handler
+                machineSelector.addEventListener('change', function() {
+                    machineId = this.value;
+                    if (machineId) {
+                        fetchMachineData(machineId);
+                        
+                        // Update operations machine selector if it exists
+                        const operationsMachineSelector = document.getElementById('operations-machine-selector');
+                        if (operationsMachineSelector) {
+                            operationsMachineSelector.value = machineId;
+                            operationalMachineId = machineId;
+                            // Only fetch operations data if currently on the operations tab
+                            const operationsTab = document.getElementById('operations-tab');
+                            if (operationsTab && operationsTab.classList.contains('active')) {
+                                fetchOperationsData(machineId);
+                            }
+                        }
+                    }
+                });
+                
+                // If URL contains machine ID, preselect it
+                const urlParams = new URLSearchParams(window.location.search);
+                const urlMachineId = urlParams.get('machine');
+                if (urlMachineId) {
+                    machineSelector.value = urlMachineId;
+                    machineSelector.dispatchEvent(new Event('change'));
+                }
+            })
+            .catch(error => {
+                console.error('Error loading machines:', error);
+                showErrorMessage('Error loading machines');
+            });
+    }
+
+    // Initialize operations machine selector
+    function initOperationsMachineSelector() {
+        const operationsMachineSelector = document.getElementById('operations-machine-selector');
+        if (!operationsMachineSelector) return;
+        
+        // Fetch available machines and populate dropdown
+        fetch('/api/vending-machines')
+            .then(response => response.json())
+            .then(data => {
+                // Clear existing options
+                operationsMachineSelector.innerHTML = '';
+                
+                // Add default option
+                const defaultOption = document.createElement('option');
+                defaultOption.textContent = 'Select a machine';
+                defaultOption.value = '';
+                operationsMachineSelector.appendChild(defaultOption);
+                
+                // Add machine options
+                data.forEach(machine => {
+                    const option = document.createElement('option');
+                    option.value = machine.id;
+                    
+                    // Helper function to get a proper string value
+                    function getStringValue(value) {
+                        if (value === null || value === undefined) return 'Unknown';
+                        if (typeof value === 'string') return value;
+                        if (typeof value === 'object' && value.value) return value.value;
+                        return String(value);
+                    }
+                    
+                    // Format with spaces instead of pipes for better readability
+                    const displayText = [
+                        getStringValue(machine.name),
+                        getStringValue(machine.location_business_name),
+                        getStringValue(machine.location_type),
+                        getStringValue(machine.sub_location)
+                    ].join(' ');
+                    
+                    option.textContent = displayText;
+                    operationsMachineSelector.appendChild(option);
+                });
+                
+                // Set up change event handler
+                operationsMachineSelector.addEventListener('change', function() {
+                    operationalMachineId = this.value;
+                    if (operationalMachineId) {
+                        fetchOperationsData(operationalMachineId);
+                        
+                        // Update main machine selector if it exists
+                        const machineSelector = document.getElementById('machine-selector');
+                        if (machineSelector) {
+                            machineSelector.value = operationalMachineId;
+                            machineId = operationalMachineId;
+                            // Fetch machine data for asset health tab
+                            fetchMachineData(operationalMachineId);
+                        }
+                    }
+                });
+                
+                // If main machine selector has a value, sync with it
+                const machineSelector = document.getElementById('machine-selector');
+                if (machineSelector && machineSelector.value) {
+                    operationsMachineSelector.value = machineSelector.value;
+                    operationalMachineId = machineSelector.value;
+                }
+            })
+            .catch(error => {
+                console.error('Error loading machines for operations:', error);
+                showErrorMessage('Error loading machines');
+            });
+    }
+
+    // Fetch machine data for asset health
+    function fetchMachineData(id) {
+        if (!id) return;
+        
+        // Show loading state - with null checks
+        const machineDataEl = document.getElementById('machine-data');
+        const loadingIndicatorEl = document.getElementById('loading-indicator');
+        
+        if (machineDataEl) machineDataEl.style.display = 'none';
+        if (loadingIndicatorEl) loadingIndicatorEl.style.display = 'block';
+        
+        fetch(`/api/vending-machines/${id}`)
+            .then(response => response.json())
+            .then(data => {
+                machineData = data;
+                updateDashboard(data);
+                
+                // Hide loading state, show data - with null checks
+                const loadingEl = document.getElementById('loading-indicator');
+                const machineDataEl = document.getElementById('machine-data');
+                
+                if (loadingEl) loadingEl.style.display = 'none';
+                if (machineDataEl) machineDataEl.style.display = 'block';
+                
+                // Update URL with machine ID parameter without page reload
+                const url = new URL(window.location);
+                url.searchParams.set('machine', id);
+                window.history.pushState({}, '', url);
+            })
+            .catch(error => {
+                console.error('Error loading machine data:', error);
+                showErrorMessage('Error loading machine data');
+                
+                // Hide loading state
+                document.getElementById('loading-indicator').style.display = 'none';
+            });
+    }
+
+    // Fetch operations data for operations summary tab
+    function fetchOperationsData(id) {
+        if (!id) return;
+        
+        // Show loading state for operations
+        const operationsContent = document.getElementById('operations-content');
+        const operationsLoading = document.getElementById('operations-loading');
+        
+        if (operationsContent) operationsContent.style.display = 'none';
+        if (operationsLoading) operationsLoading.style.display = 'block';
+        
+        // Clear any existing gauge update intervals
+        Object.keys(gaugeUpdateIntervals).forEach(key => {
+            clearInterval(gaugeUpdateIntervals[key]);
+        });
+        gaugeUpdateIntervals = {};
+        
+        console.log('Fetching operations data from:', `/api/ice-cream-machines/${id}/operations`);
+        fetch(`/api/ice-cream-machines/${id}/operations`)
+            .then(response => response.json())
+            .then(data => {
+                updateOperationsDashboard(data);
+                
+                // Hide loading state, show data
+                if (operationsLoading) operationsLoading.style.display = 'none';
+                if (operationsContent) operationsContent.style.display = 'block';
+            })
+            .catch(error => {
+                console.error('Error loading operations data:', error);
+                showErrorMessage('Error loading operations data');
+                
+                // Hide loading state
+                if (operationsLoading) operationsLoading.style.display = 'none';
+            });
+    }
+
+    // Update the operations dashboard with fetched data
+    function updateOperationsDashboard(data) {
+    if (!data) data = {}; // Guard against null/undefined
+    
+    try {
+      // Update status cards - handle both direct API format and pre-processed format
+      const statusData = data.status || {
+        machineStatus: data.machine_status || "Unknown",
+        podCode: data.pod_code || "N/A",
+        cupDetect: data.cup_detect === 'Yes',
+        doorStatus: data.customer_door || "Closed"
+      };
+      
+      updateStatusCards(statusData);
+      
+      // Create gauge data structure from response
+      let gaugeData = data.gauges || {};
+      
+      // Extract values if using the direct API response format
+      if (data.dispense_pressure || data.cycle_time || data.freezer_temperature) {
+        // Extract the dispense force value
+        if (data.dispense_pressure && data.dispense_pressure.dispensePressure) {
+          const dispensePressureValue = parseFloat(data.dispense_pressure.dispensePressure);
+          if (!isNaN(dispensePressureValue)) {
+            gaugeData.dispenseForce = dispensePressureValue;
+          } else {
+            gaugeData.dispenseForce = 30; // Default value
+          }
+        } else if (!gaugeData.dispenseForce) {
+          gaugeData.dispenseForce = 30; // Default value
+        }
+            
+        // Extract the cycle time value
+        if (data.cycle_time && data.cycle_time.cycleTime) {
+          const cycleTimeValue = parseFloat(data.cycle_time.cycleTime);
+          if (!isNaN(cycleTimeValue)) {
+            gaugeData.cycleTime = cycleTimeValue;
+          } else {
+            gaugeData.cycleTime = 15; // Default value
+          }
+        } else if (!gaugeData.cycleTime) {
+          gaugeData.cycleTime = 15; // Default value
+        }
+            
+        // Extract the freezer temperature value
+        if (data.freezer_temperature && data.freezer_temperature.freezerTemperature) {
+          const tempValue = parseFloat(data.freezer_temperature.freezerTemperature);
+          if (!isNaN(tempValue)) {
+            gaugeData.freezerTemperature = tempValue;
+          } else {
+            gaugeData.freezerTemperature = -15; // Default value
+          }
+        } else if (!gaugeData.freezerTemperature) {
+          gaugeData.freezerTemperature = -15; // Default value
+        }
+        
+        // Default asset health if not provided
+        if (!gaugeData.assetHealth) {
+          gaugeData.assetHealth = 85; // Default value
+        }
+      } else {
+        // Ensure gaugeData has all required fields even if not provided in API format
+        if (!gaugeData.dispenseForce) gaugeData.dispenseForce = 30;
+        if (!gaugeData.cycleTime) gaugeData.cycleTime = 15;
+        if (!gaugeData.freezerTemperature) gaugeData.freezerTemperature = -15;
+        if (!gaugeData.assetHealth) gaugeData.assetHealth = 85;
+      }
+      
+      // Update gauges
+      updateGauges(gaugeData);
+      
+      // Update inventory - handle multiple possible inventory formats
+      let inventoryData = data.inventory || data.ice_cream_inventory || [];
+      // Ensure inventory is an array
+      if (!Array.isArray(inventoryData)) {
+        console.warn("Inventory data is not an array, using empty array");
+        inventoryData = [];
+      }
+      updateInventory(inventoryData);
+      
+      // Set up periodic updates for real-time data
+      setupRealTimeUpdates(operationalMachineId);
+    } catch (error) {
+      console.error("Error in updateOperationsDashboard:", error);
+      // Recover gracefully by setting default values
+      updateStatusCards({
+        machineStatus: "Error",
+        podCode: "N/A",
+        cupDetect: false,
+        doorStatus: "Unknown"
+      });
+      updateGauges({
+        dispenseForce: 30,
+        cycleTime: 15,
+        freezerTemperature: -15,
+        assetHealth: 85
+      });
+      updateInventory([]);
+    }
+  }
+    // Update status cards in operations dashboard
+    function updateStatusCards(statusData) {
+        if (!statusData) return;
+        
+        // Update machine status
+        const machineStatusCard = document.getElementById('machine-status-card');
+        if (machineStatusCard) {
+            const statusValue = machineStatusCard.querySelector('.status-value');
+            if (statusValue) {
+                statusValue.textContent = statusData.machineStatus || 'Unknown';
+                
+                // Remove all status classes
+                statusValue.classList.remove('online', 'offline', 'maintenance');
+                
+                if (statusData.machineStatus === 'ONLINE') {
+                    statusValue.classList.add('online');
+                } else if (statusData.machineStatus === 'OFFLINE') {
+                    statusValue.classList.add('offline');
+                } else if (statusData.machineStatus === 'MAINTENANCE') {
+                    statusValue.classList.add('maintenance');
+                }
+            }
+        }
+        
+        // Update POD code
+        updateStatusCardValue('pod-code-card', statusData.podCode);
+        
+        // Update cup detect
+        updateStatusCardValue('cup-detect-card', statusData.cupDetect ? 'Detected' : 'Not Detected');
+        
+        // Update door status
+        const doorStatus = statusData.doorStatus || 'Unknown';
+        const doorStatusCard = document.getElementById('door-status-card');
+        if (doorStatusCard) {
+            const statusValue = doorStatusCard.querySelector('.status-value');
+            if (statusValue) {
+                statusValue.textContent = doorStatus;
+                
+                // Remove door status classes
+                statusValue.classList.remove('door-closed', 'door-open');
+                
+                // Add appropriate class
+                if (doorStatus === 'Closed') {
+                    statusValue.classList.add('door-closed');
+                } else if (doorStatus === 'Open') {
+                    statusValue.classList.add('door-open');
+                }
+            }
+        }
+        
+        // Update other status cards
+        updateStatusCardValue('dispense-status-card', statusData.dispenseStatus);
+        updateStatusCardValue('last-transaction-card', statusData.lastTransaction);
+    }
+
+    // Helper function to update a status card value
+    function updateStatusCardValue(cardId, value) {
+        const card = document.getElementById(cardId);
+        if (card) {
+            const statusValue = card.querySelector('.status-value');
+            if (statusValue) {
+                statusValue.textContent = value || 'Unknown';
+            }
+        }
+    }
+
+    // Update gauge displays in operations dashboard
+    function updateGauges(gaugeData) {
+        if (!gaugeData) return;
+        
+        // Update asset health gauge
+        updateGauge('asset-health-gauge', gaugeData.assetHealth || 0, '%');
+        
+        // Update freezer temperature gauge
+        updateGauge('freezer-temp-gauge', gaugeData.freezerTemperature || 0, '°F');
+        
+        // Update dispense force gauge
+        updateGauge('dispense-force-gauge', gaugeData.dispenseForce || 0, ' N');
+        
+        // Update cycle time gauge
+        updateGauge('cycle-time-gauge', gaugeData.cycleTime || 0, ' sec');
+    }
+
+    // Helper function to update a gauge
+    function updateGauge(gaugeId, value, unit) {
+        const gaugeContainer = document.getElementById(gaugeId);
+        if (!gaugeContainer) return;
+        
+        const needle = gaugeContainer.querySelector('.gauge-needle');
+        const valueDisplay = gaugeContainer.querySelector('.gauge-value');
+        
+        if (needle && valueDisplay) {
+            // Calculate the rotation angle based on value (assuming 0-100 range maps to -90 to 90 degrees)
+            let normalizedValue = value;
+            let maxValue = 100;
+            
+            // Special case for temperature which might have a different range
+            if (gaugeId === 'freezer-temp-gauge') {
+                // Assuming temperature range from -20 to 20
+                normalizedValue = ((value + 20) / 40) * 100;
+                maxValue = 40;
+            }
+            
+            // Clamp value between 0 and max
+            normalizedValue = Math.max(0, Math.min(normalizedValue, maxValue));
+            
+            // Map 0-100 to -90 to 90 degrees
+            const angle = -90 + (normalizedValue / maxValue) * 180;
+            
+            // Animate the needle
+            animateGaugeNeedle(needle, angle);
+            
+            // Update value display
+            valueDisplay.textContent = value + unit;
+        }
+    }
+
+    // Animate gauge needle movement
+    function animateGaugeNeedle(needle, targetAngle) {
+        // Get current angle
+        const currentTransform = needle.style.transform || 'translateX(-50%) rotate(-90deg)';
+        const currentAngle = parseFloat(currentTransform.match(/rotate\(([-\d.]+)deg\)/)?.[1] || -90);
+        
+        // Set up animation
+        const duration = 1000; // 1 second
+        const startTime = performance.now();
+        const startAngle = currentAngle;
+        const angleChange = targetAngle - startAngle;
+        
+        function updateNeedle(timestamp) {
+            const elapsed = timestamp - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            
+            // Easing function for smooth animation
+            const easedProgress = 1 - Math.pow(1 - progress, 3); // Cubic ease-out
+            
+            // Calculate current angle
+            const currentAngle = startAngle + angleChange * easedProgress;
+            
+            // Apply rotation
+            needle.style.transform = `translateX(-50%) rotate(${currentAngle}deg)`;
+            
+            // Continue animation if not complete
+            if (progress < 1) {
+                requestAnimationFrame(updateNeedle);
+            }
+        }
+        
+        // Start animation
+        requestAnimationFrame(updateNeedle);
+    }
+
+    // Update inventory display in operations dashboard
+    function updateInventory(inventoryData) {
+        if (!inventoryData) return;
+        
+        const inventoryContainer = document.getElementById('inventory-container');
+        if (!inventoryContainer) return;
+        
+        // Clear existing content
+        inventoryContainer.innerHTML = '';
+        
+        // Create inventory items
+        inventoryData.forEach(item => {
+            const inventoryItem = document.createElement('div');
+            inventoryItem.className = 'inventory-trend-card';
+            
+            const itemName = document.createElement('div');
+            itemName.className = 'trend-title';
+            itemName.textContent = item.name;
+            
+            const itemValue = document.createElement('div');
+            itemValue.className = 'trend-value';
+            itemValue.textContent = `${item.current}/${item.capacity}`;
+            
+            // Add a colored indicator for inventory level
+            const percentFull = (item.current / item.capacity) * 100;
+            let color = '#4CAF50'; // Green for good levels
+            
+            if (percentFull <= 20) {
+                color = '#f44336'; // Red for low levels
+            } else if (percentFull <= 50) {
+                color = '#ff9800'; // Orange for medium levels
+            }
+            
+            itemValue.style.color = color;
+            
+            inventoryItem.appendChild(itemName);
+            inventoryItem.appendChild(itemValue);
+            inventoryContainer.appendChild(inventoryItem);
+        });
+    }
+
+    // Set up periodic updates for real-time data
+    function setupRealTimeUpdates(id) {
+        if (!id) return;
+        
+        // Update operations data every 30 seconds
+        const dataUpdateInterval = setInterval(() => {
+            // Only fetch if we're still on the operations tab
+            const operationsTab = document.getElementById('operations-tab');
+            if (operationsTab.classList.contains('active')) {
+                fetchOperationsData(id);
+            } else {
+                // Clear interval if we're not on the operations tab anymore
+                clearInterval(dataUpdateInterval);
+            }
+        }, 30000);
+        
+        // Simulate real-time gauge changes (for demo purposes)
+        // In a real implementation, this would be replaced with real data updates
+        ['asset-health-gauge', 'freezer-temp-gauge', 'dispense-force-gauge', 'cycle-time-gauge'].forEach(gaugeId => {
+            gaugeUpdateIntervals[gaugeId] = setInterval(() => {
+                // Only update if we're on the operations tab
+                const operationsTab = document.getElementById('operations-tab');
+                if (operationsTab && operationsTab.classList.contains('active')) {
+                    const gauge = document.getElementById(gaugeId);
+                    if (!gauge) return;
+                    
+                    const valueDisplay = gauge.querySelector('.gauge-value');
+                    if (!valueDisplay) return;
+                    
+                    // Get current value and unit
+                    const valueParts = valueDisplay.textContent.match(/([\d.-]+)(.+)/);
+                    if (!valueParts) return;
+                    
+                    const currentValue = parseFloat(valueParts[1]);
+                    const unit = valueParts[2];
+                    
+                    // Generate a slightly different value
+                    let newValue;
+                    
+                    if (gaugeId === 'freezer-temp-gauge') {
+                        // Temperature fluctuates between -10 and 0
+                        newValue = Math.max(-15, Math.min(5, currentValue + (Math.random() * 2 - 1)));
+                    } else if (gaugeId === 'asset-health-gauge') {
+                        // Health between 75 and 100
+                        newValue = Math.max(75, Math.min(100, currentValue + (Math.random() * 2 - 1)));
+                    } else if (gaugeId === 'dispense-force-gauge') {
+                        // Force between 40 and 60
+                        newValue = Math.max(40, Math.min(60, currentValue + (Math.random() * 4 - 2)));
+                    } else {
+                        // Cycle time between 10 and 20
+                        newValue = Math.max(10, Math.min(20, currentValue + (Math.random() * 2 - 1)));
+                    }
+                    
+                    // Round to 1 decimal place
+                    newValue = Math.round(newValue * 10) / 10;
+                    
+                    // Update the gauge
+                    updateGauge(gaugeId, newValue, unit);
+                }
+            }, 5000 + Math.random() * 5000); // Random interval between 5-10 seconds
+        });
+    }
+
+    // Update machine info with data from API
+    function updateMachineInfo(data) {
+        if (!data) return;
+        
+        try {
+            // Update basic machine info
+            const nameEl = document.getElementById('machine-name');
+            const idEl = document.getElementById('machine-id');
+            const locationEl = document.getElementById('machine-location');
+            const typeEl = document.getElementById('machine-type');
+            
+            if (nameEl) nameEl.textContent = data.name || 'Unknown';
+            if (idEl) idEl.textContent = data.id || 'Unknown';
+            if (locationEl) locationEl.textContent = data.location || 'Unknown';
+            if (typeEl) typeEl.textContent = data.type || 'Unknown';
+        } catch (error) {
+            console.error('Error updating machine info:', error);
+        }
+    }
+    
+    // Update status indicators with machine status
+    function updateStatusIndicators(status) {
+        if (!status) return;
+        
+        try {
+            const statusValueEl = document.querySelector('.status-value');
+            if (statusValueEl) {
+                statusValueEl.textContent = status;
+                
+                // Update status class
+                statusValueEl.classList.remove('online', 'offline', 'maintenance');
+                
+                if (status === 'ONLINE') {
+                    statusValueEl.classList.add('online');
+                } else if (status === 'OFFLINE') {
+                    statusValueEl.classList.add('offline');
+                } else if (status === 'MAINTENANCE') {
+                    statusValueEl.classList.add('maintenance');
+                }
+            }
+        } catch (error) {
+            console.error('Error updating status indicators:', error);
+        }
+    }
+    
+    // Update charts with machine data
+    function updateCharts(data) {
+        if (!data) return;
+        
+        try {
+            // Update asset health chart if it exists
+            if (data.health_metrics && data.health_metrics.asset_health) {
+                updateGaugePosition('asset-health-gauge', data.health_metrics.asset_health);
+            }
+            
+            // Update temperature chart if it exists
+            if (data.health_metrics && data.health_metrics.temperature) {
+                updateGaugePosition('freezer-temp-gauge', data.health_metrics.temperature);
+            }
+            
+            // Update dispense force chart if it exists
+            if (data.health_metrics && data.health_metrics.dispense_force) {
+                updateGaugePosition('dispense-force-gauge', data.health_metrics.dispense_force);
+            }
+            
+            // Update cycle time chart if it exists
+            if (data.health_metrics && data.health_metrics.cycle_time) {
+                updateGaugePosition('cycle-time-gauge', data.health_metrics.cycle_time);
+            }
+        } catch (error) {
+            console.error('Error updating charts:', error);
+        }
+    }
+    
+    // Update the asset health dashboard with fetched data
+   
+  function updateOperationsDashboard(data) {
+    if (!data) data = {}; // Guard against null/undefined
+    
+    try {
+      // Update status cards - handle both direct API format and pre-processed format
+      const statusData = data.status || {
+        machineStatus: data.machine_status || "Unknown",
+        podCode: data.pod_code || "N/A",
+        cupDetect: data.cup_detect === 'Yes',
+        doorStatus: data.customer_door || "Closed"
+      };
+      
+      updateStatusCards(statusData);
+      
+      // Create gauge data structure from response
+      let gaugeData = data.gauges || {};
+      
+      // Extract values if using the direct API response format
+      if (data.dispense_pressure || data.cycle_time || data.freezer_temperature) {
+        // Extract the dispense force value
+        if (data.dispense_pressure && data.dispense_pressure.dispensePressure) {
+          const dispensePressureValue = parseFloat(data.dispense_pressure.dispensePressure);
+          if (!isNaN(dispensePressureValue)) {
+            gaugeData.dispenseForce = dispensePressureValue;
+          } else {
+            gaugeData.dispenseForce = 30; // Default value
+          }
+        } else if (!gaugeData.dispenseForce) {
+          gaugeData.dispenseForce = 30; // Default value
+        }
+            
+        // Extract the cycle time value
+        if (data.cycle_time && data.cycle_time.cycleTime) {
+          const cycleTimeValue = parseFloat(data.cycle_time.cycleTime);
+          if (!isNaN(cycleTimeValue)) {
+            gaugeData.cycleTime = cycleTimeValue;
+          } else {
+            gaugeData.cycleTime = 15; // Default value
+          }
+        } else if (!gaugeData.cycleTime) {
+          gaugeData.cycleTime = 15; // Default value
+        }
+
+   
+    function updateMachineDropdownFormat() {
+        console.log('🔴 DIRECT UPDATE FUNCTION CALLED!');
+        const selector = document.getElementById('machine-selector');
+        
+        // Exit if no selector found
+        if (!selector) {
+            console.error('Machine selector not found in DOM');
+            return;
+        }
+        
+        console.log('Making API request to fetch vending machines...');
+        
+        // Make a direct fetch call to get the latest machines
+        console.log('🔄 Fetching machines from:', `/api/vending-machines?_=${new Date().getTime()}`);
+        fetch(`/api/vending-machines?_=${new Date().getTime()}`, {
+            headers: {
+                'Cache-Control': 'no-cache',
+                'Pragma': 'no-cache'
+            },
+            method: 'GET'
+        })
+        .then(response => response.json())
+        .then(machines => {
+            console.log('🔴 Got', machines.length, 'machines directly from API');
+            
+            // Clear existing options
+            selector.innerHTML = '<option value="">-- Select Vending Machine --</option>';
+            
+            // Add new options with the desired format
+            machines.forEach(machine => {
+                const option = document.createElement('option');
+                option.value = machine.id;
+                
+                // Create the exact format requested: name | business_name | location_type | sub_location
+                const displayName = `${machine.name} | ${machine.location_business_name || 'Unknown'} | ${formatEnumValue(machine.location_type)} | ${formatEnumValue(machine.sub_location)}`;
+                
+                option.textContent = displayName;
+                selector.appendChild(option);
+                
+                console.log('Added machine option:', displayName);
+            });
+            
+            // Helper function to format enum values
+            function formatEnumValue(enumValue) {
+                if (!enumValue) return 'Unknown';
+                return enumValue.toLowerCase().split('_')
+                    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                    .join(' ');
+            }
+            
+            // Re-select the previously selected machine if any
+            const urlParams = new URLSearchParams(window.location.search);
+            const machineId = urlParams.get('id');
+            if (machineId) {
+                selector.value = machineId;
+            } else if (machines.length > 0) {
+                selector.value = machines[0].id;
+            }
+            
+            console.log('🔴 DROPDOWN UPDATE COMPLETE');
+        })
+        .catch(error => {
+            console.error('❌ Error updating dropdown format:', error);
+            // Show error in dropdown
+            selector.innerHTML = '<option value="">-- Error Loading Machines --</option>';
+            
+            // Try fallback with hardcoded demo data if API fails
+            console.log('Using fallback demo data for dropdown');
+            const demoMachines = [
+                { id: 'vm001', name: 'PolarDelight Alpha', location_business_name: 'Tech Center', location_type: 'OFFICE', sub_location: 'LOBBY' },
+                { id: 'vm002', name: 'PolarDelight Beta', location_business_name: 'Main Building', location_type: 'HOSPITAL', sub_location: 'CAFETERIA' },
+                { id: 'vm003', name: 'PolarDelight Gamma', location_business_name: 'Central Mall', location_type: 'RETAIL', sub_location: 'FOOD_COURT' }
+            ];
+            
+            // Populate with demo data
+            demoMachines.forEach(machine => {
+                const option = document.createElement('option');
+                option.value = machine.id;
+                const displayName = `${machine.name} | ${machine.location_business_name} | ${formatEnumValue(machine.location_type)} | ${formatEnumValue(machine.sub_location)}`;
+                option.textContent = displayName;
+                selector.appendChild(option);
+            });
+            
+            // Select the first machine
+            if (demoMachines.length > 0) {
+                selector.value = demoMachines[0].id;
+                // Trigger change event to load data
+                const event = new Event('change');
+                selector.dispatchEvent(event);
+            }
+        });
+    }
+    
+    // Call the update function after a short delay to ensure DOM is ready
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('🔴 DOM LOADED - Will update dropdown format shortly...');
+        setTimeout(updateMachineDropdownFormat, 1000);
+    });
+</script>
+
+{% endblock %}
+
+{% block nav %}
+<li><a href="/vending-machines">All Devices</a></li>
+<li><a href="/vending-machines/new">Add New</a></li>
+{% endblock %}
+
+{% block page_title %}Vending Machine Details{% endblock %}
+
+{% block content %}
+<div class="polar-delight-dashboard">
+    <div class="dashboard-header">
+        <div class="polar-branding">
+            <span class="polar">POLAR</span><span class="delight">delight</span>
+        </div>
+        <div class="dashboard-title">Digital Twin</div>
+        <div class="dashboard-date">Feb 15, 2022, 2:20:21 PM</div>
+    </div>
+
+    <div class="dashboard-tabs">
+        <div class="tab active">Asset Health</div>
+        <div class="tab">Operations Summary</div>
+        <div class="tab">Predictions</div>
+        <div class="tab">Insights</div>
+        <div class="tab">Remote Operations Cockpit</div>
+    </div>
+    
+<!-- Tab content containers -->
+<div class="tab-content-container">
+    <!-- Asset Health Tab Content - Currently visible by default -->
+    <div id="asset-health-content" class="tab-content active">
+        <!-- Asset Selection Header for Asset Health Tab -->
+        <div class="asset-selection-header" id="asset-health-selection-header">
+            <div class="asset-selection-content">
+                <h3 class="asset-header-title">Select Asset to Monitor:</h3>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <select id="machine-selector" class="asset-dropdown-prominent" style="flex: 1;">
+                        <option value="">-- Select Vending Machine --</option>
+                    </select>
+                    <button id="refresh-dropdown" style="padding: 6px 12px; background: #10B981; border: none; border-radius: 4px; color: white; cursor: pointer;" title="Refresh dropdown format">⟳ Format</button>
+                </div>
+                <div class="digital-twin-badge-large">Digital Twin Enabled</div>
+                
+                <script>
+                    // Add the refresh button handler
+                    document.addEventListener('DOMContentLoaded', function() {
+                        const refreshBtn = document.getElementById('refresh-dropdown');
+                        if (refreshBtn) {
+                            refreshBtn.addEventListener('click', function() {
+                                // Direct API fetch with cache busting
+                                fetch('/api/vending-machines?_=' + Date.now(), {
+                                    headers: {
+                                        'Cache-Control': 'no-cache, no-store, must-revalidate',
+                                        'Pragma': 'no-cache'
+                                    }
+                                })
+                                .then(response => response.json())
+                                .then(machines => {
+                                    console.log('Got machines for refresh:', machines.length);
+                                    
+                                    // Get selector and current value
+                                    const selector = document.getElementById('machine-selector');
+                                    const currentValue = selector.value;
+                                    
+                                    // Completely clear and rebuild the dropdown
+                                    selector.innerHTML = '<option value="">-- Select Vending Machine --</option>';
+                                    
+                                    // Add each machine with pipe-delimited format
+                                    machines.forEach(machine => {
+                                        const option = document.createElement('option');
+                                        option.value = machine.id;
+                                        
+                                        // Create the exact format: NAME | BUSINESS | LOCATION_TYPE | SUB_LOCATION 
+                                        const displayText = [
+                                            machine.name,
+                                            machine.location_business_name || 'Unknown',
+                                            formatEnumValue(machine.location_type),
+                                            formatEnumValue(machine.sub_location)
+                                        ].join(' | ');
+                                        
+                                        option.textContent = displayText;
+                                        selector.appendChild(option);
+                                        console.log('Added option:', displayText);
+                                    });
+                                    
+                                    // Reset selection if possible
+                                    if (currentValue) {
+                                        selector.value = currentValue;
+                                    }
+                                    
+                                    // Helper function for enum formatting
+                                    function formatEnumValue(value) {
+                                        if (!value) return 'Unknown';
+                                        return value.toLowerCase().replace(/_/g, ' ')
+                                            .split(' ')
+                                            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                                            .join(' ');
+                                    }
+                                    
+                                    refreshBtn.textContent = '✓ Done';
+                                    setTimeout(() => {
+                                        refreshBtn.textContent = '⟳ Format';
+                                    }, 1500);
+                                })
+                                .catch(error => {
+                                    console.error('Error refreshing dropdown:', error);
+                                    refreshBtn.textContent = '✗ Error';
+                                    setTimeout(() => {
+                                        refreshBtn.textContent = '⟳ Retry';
+                                    }, 1500);
+                                });
+                            });
+                        }
+                    });
+                </script>
+            </div>
+        </div>
+
+        <div class="dashboard-layout" id="asset-health-dashboard-layout">
+            <div class="machine-column">
+                <!-- More prominent machine image -->
+                <div class="machine-image-container-large">
+                    <img src="/frontend/static/assets/images/polar_delight_machine.png" alt="Polar Delight Machine" class="machine-image-large">
+                    <div class="machine-model">Model PD-5000</div>
+                </div>
+                
+                <div class="location-details">
+                    <div class="location-title">Location:</div>
+                    <div class="location-value">Cleveland, OH</div>
+                    <div class="location-address">235 Main Street</div>
+                </div>
+            </div>
+            
+            <div class="dashboard-content">
+                <div class="status-bar">
+                    <div class="status-item">
+                        <div class="status-label">Machine Status</div>
+                        <div class="status-value online">Online</div>
+                    </div>
+                    <div class="status-item">
+                        <div class="status-label">POD Code</div>
+                        <div class="status-value">85025</div>
+                    </div>
+                    <div class="status-item">
+                        <div class="status-label">Cup Detect</div>
+                        <div class="status-value">No</div>
+                    </div>
+                    <div class="status-item">
+                        <div class="status-label">POD Bin Door</div>
+                        <div class="status-value door-closed">Closed</div>
+                    </div>
+                    <div class="status-item">
+                        <div class="status-label">Customer Door</div>
+                        <div class="status-value door-open">Open</div>
+                    </div>
+                </div>
+                
+                <!-- Gauge panels -->
+                <div class="gauge-grid">
+                    <div class="gauge-panel">
+                        <div class="gauge-title">Asset Health</div>
+                        <div id="asset-health-gauge" class="gauge-container"></div>
+                        <div class="gauge-value">Very Good</div>
+                        <div class="gauge-limits">
+                            <span>Min</span>
+                            <span>Max</span>
+                        </div>
+                    </div>
+                    
+                    <div class="gauge-panel">
+                        <div class="gauge-title">Freezer Temperature</div>
+                        <div class="temp-gauge-wrapper">
+                            <div id="freezer-temp-gauge" class="gauge-container"></div>
+                            <div class="gauge-value temperature-value">5 °F</div>
+                        </div>
+                        <div class="gauge-limits">
+                            <span>Min: -50 °F</span>
+                            <span>Max: -5 °F</span>
+                        </div>
+                    </div>
+                    
+                    <div class="gauge-panel">
+                        <div class="gauge-title">Dispense Force</div>
+                        <div id="dispense-force-gauge" class="gauge-container"></div>
+                        <div class="gauge-value">46 lb</div>
+                        <div class="gauge-limits">
+                            <span>Min: 5 lb</span>
+                            <span>Max: 40 lb</span>
+                        </div>
+                    </div>
+                    
+                    <div class="gauge-panel">
+                        <div class="gauge-title">Cycle time</div>
+                        <div id="cycle-time-gauge" class="gauge-container"></div>
+                        <div class="gauge-value">13 sec</div>
+                        <div class="gauge-limits">
+                            <span>Min: 5 sec</span>
+                            <span>Max: 60 sec</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Bottom panels -->
+                <div class="bottom-panels">
+                    <div class="status-panel">
+                        <div class="panel-title">Max RAM Load</div>
+                        <div class="panel-value">50 kg</div>
+                        <div class="panel-limits">
+                            <span>Min: 10 kg</span>
+                            <span>Max: 25 kg</span>
+                        </div>
+                        <div class="panel-status fault">FAULT</div>
+                    </div>
+                    
+                    <div class="status-panel">
+                        <div class="panel-title">Cycle Status</div>
+                        <div class="checkmark-container">
+                            <div class="checkmark">✓</div>
+                        </div>
+                        <div class="panel-status complete">Complete</div>
+                    </div>
+                    
+                    <div class="status-panel">
+                        <div class="panel-title">RAM Position</div>
+                        <div class="panel-value">75 mm</div>
+                        <div class="panel-limits">
+                            <span>Min: 50mm</span>
+                            <span>Max: 95mm</span>
+                        </div>
+                        <div class="panel-status ok">OK</div>
+                    </div>
+                    
+                    <div class="inventory-panel">
+                        <div class="panel-title">Freezer Inventory</div>
+                        <div class="inventory-grid">
+                            <div class="inventory-item">
+                                <div class="item-name">Vanilla</div>
+                                <div class="item-count">8 pods</div>
+                            </div>
+                            <div class="inventory-item">
+                                <div class="item-name">Strawberry ShortCake</div>
+                                <div class="item-count">7 pods</div>
+                            </div>
+                            <div class="inventory-item">
+                                <div class="item-name">Chocolate</div>
+                                <div class="item-count">10 pods</div>
+                            </div>
+                            <div class="inventory-item">
+                                <div class="item-name">Mint & Chocolate</div>
+                                <div class="item-count">9 pods</div>
+                            </div>
+                            <div class="inventory-item">
+                                <div class="item-name">Cookies & Cream</div>
+                                <div class="item-count">9 pods</div>
+                            </div>
+                            <div class="inventory-item">
+                                <div class="item-name">Salty Caramel</div>
+                                <div class="item-count">6 pods</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Operations Summary Tab Content -->
+    <div id="operations-summary-content" class="tab-content">
+        <div class="operations-summary-container">
+            <!-- Machine selector for Operations Summary -->
+            <div class="asset-selection-header">
+                <div class="asset-selection-content">
+                    <h3 class="asset-header-title">Select Machine for Operations Summary:</h3>
+                    <select id="operations-machine-selector" class="asset-dropdown-prominent">
+                        <option value="">-- Select Vending Machine --</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- Loading indicator -->
+            <div id="operations-loading" class="loading-indicator" style="display: none;">
+                <div class="spinner"></div>
+                <div class="loading-text">Loading operations data...</div>
+            </div>
+            
+            <!-- Operations content container -->
+            <div id="operations-content" class="operations-content" style="display: none;">
+                <h2>Operations Status</h2>
+                
+                <!-- Status Cards Section -->
+                <div class="operations-section">
+                    <h3>Machine Status</h3>
+                    <div class="operations-metrics-grid">
+                        <div id="machine-status-card" class="metric-card">
+                            <div class="metric-title">Machine Status</div>
+                            <div class="status-value">Unknown</div>
+                        </div>
+                        <div id="pod-code-card" class="metric-card">
+                            <div class="metric-title">POD Code</div>
+                            <div class="status-value">Unknown</div>
+                        </div>
+                        <div id="cup-detect-card" class="metric-card">
+                            <div class="metric-title">Cup Detect</div>
+                            <div class="status-value">Unknown</div>
+                        </div>
+                        <div id="door-status-card" class="metric-card">
+                            <div class="metric-title">Door Status</div>
+                            <div class="status-value">Unknown</div>
+                        </div>
+                        <div id="dispense-status-card" class="metric-card">
+                            <div class="metric-title">Dispense Status</div>
+                            <div class="status-value">Unknown</div>
+                        </div>
+                        <div id="last-transaction-card" class="metric-card">
+                            <div class="metric-title">Last Transaction</div>
+                            <div class="status-value">Unknown</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Gauge Charts Section -->
+                <div class="operations-section">
+                    <h3>Performance Metrics</h3>
+                    <div class="operations-metrics-grid">
+                        <!-- Asset Health Gauge -->
+                        <div class="gauge-panel">
+                            <div class="metric-title">Asset Health</div>
+                            <div id="asset-health-gauge" class="gauge-container"></div>
+                            <div id="asset-health-value" class="gauge-value">0%</div>
+                            <div class="gauge-limits">
+                                <span>0%</span>
+                                <span>100%</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Freezer Temperature Gauge -->
+                        <div class="gauge-panel">
+                            <div class="metric-title">Freezer Temperature</div>
+                            <div id="freezer-temp-gauge" class="gauge-container"></div>
+                            <div id="freezer-temp-value" class="gauge-value">0°F</div>
+                            <div class="gauge-limits">
+                                <span>-20°F</span>
+                                <span>20°F</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Dispense Force Gauge -->
+                        <div class="gauge-panel">
+                            <div class="metric-title">Dispense Force</div>
+                            <div id="dispense-force-gauge" class="gauge-container"></div>
+                            <div id="dispense-force-value" class="gauge-value">0 N</div>
+                            <div class="gauge-limits">
+                                <span>0 N</span>
+                                <span>100 N</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Cycle Time Gauge -->
+                        <div class="gauge-panel">
+                            <div class="metric-title">Cycle Time</div>
+                            <div id="cycle-time-gauge" class="gauge-container"></div>
+                            <div id="cycle-time-value" class="gauge-value">0 sec</div>
+                            <div class="gauge-limits">
+                                <span>0 sec</span>
+                                <span>30 sec</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Inventory Section -->
+                <div class="operations-section">
+                    <h3>Inventory Status</h3>
+                    <div id="inventory-container" class="inventory-trends-grid">
+                        <!-- Will be populated dynamically -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Error message container -->
+            <div id="operations-error" class="error-message" style="display: none;">
+                Error loading operations data. Please try again later.
+            </div>
+        </div>
+    </div>
+
+    <!-- Predictions Tab Content -->
+    <div id="predictions-content" class="tab-content">
+        <div class="predictions-container">
+            <h2>Predictions</h2>
+            <div class="loading-indicator">Loading prediction data...</div>
+            <!-- Predictions content will be loaded here -->
+        </div>
+    </div>
+
+    <!-- Insights Tab Content -->
+    <div id="insights-content" class="tab-content">
+        <div class="insights-container">
+            <h2>Insights</h2>
+            <div class="loading-indicator">Loading insights data...</div>
+            <!-- Insights content will be loaded here -->
+        </div>
+    </div>
+
+    <!-- Remote Operations Cockpit Tab Content -->
+    <div id="remote-operations-content" class="tab-content">
+        <div class="remote-operations-container">
+            <h2>Remote Operations Cockpit</h2>
+            <div class="loading-indicator">Loading remote operations interface...</div>
+            <!-- Remote operations content will be loaded here -->
+        </div>
+    </div>
+</div>
+
+<!-- Original detail view (hidden) -->
+<div id="vending-machine-detail" style="display:none;"></div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/api.js"></script>
+<script src="/static/js/vending-machine.js"></script>
+<script>
+    // Global variables for machine management
+let initialMachineId = null;
+
+document.addEventListener('DOMContentLoaded', function() {
+        // Initialize the dashboard with default values
+        initPolarDelightDashboard();
+        
+        // Get machine ID from template variable first (set by backend)
+        let selectedMachineId = initialMachineId;
+        
+        // If no machine ID from template, check URL path
+        if (!selectedMachineId) {
+            const urlParts = window.location.pathname.split('/');
+            const pathId = urlParts[urlParts.length - 1];
+            if (pathId && pathId !== 'detail') {
+                selectedMachineId = pathId;
+            }
+        }
+        
+        console.log('Selected machine ID:', selectedMachineId);
+        
+        // Check for #loaded hash which indicates navigation from machine list
+        const hasLoadedHash = window.location.hash === '#loaded';
+        
+        // Load the machine list and select the appropriate machine
+        loadMachineList(selectedMachineId, hasLoadedHash);
+        
+        // Event listeners are set up in loadMachineList function
+        
+        // Set up tab switching (for demo purposes)
+        const tabs = document.querySelectorAll('.tab');
+        
+        // Initialize the operations tab data if we have a machine ID
+        if (selectedMachineId) {
+            setTimeout(() => {
+                loadRealtimeOperationsData(selectedMachineId, 'operations-content');
+            }, 1000);
+        }
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                // Remove active class from all tabs
+                tabs.forEach(t => t.classList.remove('active'));
+                // Add active class to clicked tab
+                this.classList.add('active');
+                // In a real app, we would show/hide content based on selected tab
+            });
+        });
+    });
+    
+    /**
+     * Initialize dashboard with default values
+     */
+    function initPolarDelightDashboard() {
+        // Set current date in dashboard header
+        const now = new Date();
+        const options = { 
+            year: 'numeric', 
+            month: 'short', 
+            day: 'numeric', 
+            hour: '2-digit', 
+            minute: '2-digit', 
+            second: '2-digit'
+        };
+        document.querySelector('.dashboard-date').textContent = now.toLocaleDateString('en-US', options);
+        
+        // Set up initial gauges - these are now CSS-based in our design, not canvas
+        // We'll just make sure our needle positions match the values displayed in text
+        setTimeout(() => {
+            try {
+                // Initialize all gauges with default values
+                updateGaugePosition('asset-health-gauge', 75); // Very Good (75%)
+                updateGaugePosition('freezer-temp-gauge', 80);  // 5°F (80% of range)
+                updateGaugePosition('dispense-force-gauge', 60); // 60 N (60% of range)
+                updateGaugePosition('cycle-time-gauge', 50);  // 15 sec (middle of range - 50%)
+                
+                // Update gauge value text displays
+                document.getElementById('freezer-temp-value').textContent = '5°F';
+                document.getElementById('dispense-force-value').textContent = '60 N';
+                document.getElementById('cycle-time-value').textContent = '15 sec';
+            } catch (error) {
+                console.warn('Initial gauge setup deferred until elements are ready:', error);
+            }
+        }, 500);
+    }
+    
+    /**
+     * Load the list of vending machines for the dropdown
+     * @param {string} initialMachineId - Optional ID of machine to select initially
+     * @param {boolean} hasLoadedHash - Whether the URL contains the #loaded hash, indicating navigation from list
+     */
+    function loadMachineList(initialMachineId, hasLoadedHash = false) {
+        console.log('Using DropdownManager to load machine list');
+        
+        // Show loading state in the dropdown
+        const selector = document.getElementById('machine-selector');
+        if (selector) {
+            selector.innerHTML = '<option value="">Loading machines...</option>';
+            selector.disabled = true;
+        }
+        
+        // Initialize our dropdowns with the DropdownManager
+        DropdownManager.initializeDropdowns(initialMachineId)
+            .then(() => {
+                console.log('DropdownManager initialization complete');
+                // Log dropdown diagnostic information
+                const diagnostics = DropdownManager.diagnoseDropdowns();
+                console.log('Dropdown diagnostics:', diagnostics);
+            })
+            .catch(error => {
+                console.error('Error initializing dropdowns:', error);
+            })
+            .finally(() => {
+                // Enable selector regardless of outcome
+                if (selector) {
+                    selector.disabled = false;
+                }
+            });
+    }
+    
+    /**
+     * REFACTORED APPROACH: Uses the DropdownManager module
+     */
+    function populateMachineSelector(machines) {
+        // This function is now delegated to the DropdownManager
+        // We keep this as a stub for backward compatibility with existing code
+        console.log('%c USING DROPDOWN MANAGER - REFACTORED APPROACH', 'background: green; color: white; font-size: 20px; padding: 10px;');
+        
+        // Save current machine data to window for debugging (keep this for compatibility)
+        window.machineData = machines;
+        
+        // Delegate all dropdown management to our centralized DropdownManager
+        DropdownManager.populateDropdowns(machines);
+    }
+    
+    /**
+     * Load data for a specific machine
+     * @param {string} machineId - ID of the machine to load
+     * @param {boolean} hasLoadedHash - Whether the URL contains the #loaded hash
+     */
+    function loadMachineData(machineId, hasLoadedHash = false) {
+        console.log(`Loading data for machine ID: ${machineId} using MachineService`);
+        
+        if (!machineId) {
+            console.error('No machine ID provided for loadMachineData');
+            return;
+        }
+        
+        // Set global machine ID for other functions
+        window.machineId = machineId;
+        
+        // Show loading state
+        const contentArea = document.querySelector('.dashboard-content');
+        const statusElements = document.querySelectorAll('.status-value');
+        statusElements.forEach(el => {
+            el.innerHTML = '<small style="opacity: 0.7">Loading...</small>';
+        });
+        
+        // Make sure gauge panels also show loading state
+        const gaugeValues = document.querySelectorAll('.gauge-value');
+        gaugeValues.forEach(el => {
+            el.innerHTML = '<small style="opacity: 0.7">Loading...</small>';
+        });
+        
+        // Update URL to reflect the selected machine
+        window.history.pushState({}, '', `/vending-machines/${machineId}`);
+        
+        // Use our centralized MachineService to get machine data
+        MachineService.getMachineById(machineId)
+            .then(machine => {
+                console.log('Machine data loaded successfully via MachineService:', machine);
+                
+                if (!machine || typeof machine !== 'object') {
+                    console.error('Invalid machine data received from MachineService');
+                    throw new Error('Invalid machine data format');
+                }
+                
+                try {
+                    // Update the UI with the machine data
+                    updateDashboardWithMachineData(machine, hasLoadedHash);
+                    
+                    // Update machine name in UI if possible
+                    const machineNameElement = document.querySelector('.machine-name');
+                    if (machineNameElement && machine.name) {
+                        machineNameElement.textContent = machine.name;
+                    }
+                    
+                    // Now that machine data is loaded, we can safely load the active tab's data
+                    // This focuses especially on real-time operational monitoring as per original design
+                    const activeTabName = window.activeTabName || localStorage.getItem('activeVendingMachineTab') || 'Asset Health';
+                    if (activeTabName !== 'Asset Health') { // Asset Health tab doesn't need explicit loading
+                        console.log(`Machine data loaded, now loading data for active tab: ${activeTabName}`);
+                        loadTabData(activeTabName, machineId); // Pass machineId explicitly to ensure it's available
+                    }
+                    
+                    // If Operations tab is active, ensure we focus on real-time operational metrics
+                    if (activeTabName === 'Operations') {
+                        console.log('Operations tab active - ensuring real-time metrics are displayed');
+                        // This will leverage the operational focus from our memories
+                        loadRealtimeOperationsData(machineId, 'operations-summary-content');
+                    }
+                } catch (error) {
+                    console.error('Error updating dashboard with machine data:', error);
+                    // Show error message to user
+                    showErrorMessage('Error displaying machine data');
+                }
+                
+                console.log('Dashboard update complete');
+            })
+            .catch(error => {
+                console.error('Error loading machine data via MachineService:', error);
+                showErrorMessage(`Failed to load data for machine ${machineId}`);
+                
+                // MachineService will handle fallback data internally, but we'll add a belt-and-suspenders approach
+                // to maintain compatibility with the existing code base
+                try {
+                    // Use MachineService's createFallbackMachine method to get consistent fallback data
+                    const fallbackMachine = MachineService.createFallbackMachine(machineId);
+                    
+                    // Add missing properties needed by the UI
+                    fallbackMachine.readings = [
+                        {
+                            timestamp: new Date().toISOString(),
+                            temperature: -12.5,
+                            door_status: 'CLOSED',
+                            power_consumption: 275.0,
+                            cash_level: 350.25,
+                            sales_count: 12
+                        }
+                    ];
+                    
+                    // Use fallback product data
+                    fallbackMachine.products = MachineService.createDefaultInventory().map(item => ({
+                        name: item.name,
+                        quantity: item.level,
+                        price: 2.75
+                    }));
+                    
+                    // Update the UI with fallback data
+                    updateDashboardWithMachineData(fallbackMachine, hasLoadedHash);
+                } catch (fallbackError) {
+                    console.error('Error using fallback machine data:', fallbackError);
+                    // At this point, we just show basic information without fancy UI
+                    const contentArea = document.querySelector('.dashboard-content');
+                    if (contentArea) {
+                        contentArea.innerHTML = `
+                            <div class="error-container">
+                                <h3>Error Loading Machine Data</h3>
+                                <p>Could not display machine information for ${machineId}.</p>
+                                <p>Please try refreshing the page or contact support.</p>
+                            </div>
+                        `;
+                    }
+                }
+            });
+    }
+    
+    /**
+     * Display an error message to the user
+     * @param {string} message - Error message to display
+     */
+    function showErrorMessage(message) {
+        // Create error notification element if it doesn't exist
+        let errorNotification = document.getElementById('error-notification');
+        
+        if (!errorNotification) {
+            errorNotification = document.createElement('div');
+            errorNotification.id = 'error-notification';
+            errorNotification.className = 'error-notification';
+            document.body.appendChild(errorNotification);
+            
+            // Add style if not already in stylesheet
+            if (!document.getElementById('error-notification-style')) {
+                const style = document.createElement('style');
+                style.id = 'error-notification-style';
+                style.textContent = `
+                    .error-notification {
+                        position: fixed;
+                        top: 20px;
+                        right: 20px;
+                        background-color: #f44336;
+                        color: white;
+                        padding: 15px;
+                        border-radius: 4px;
+                        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+                        z-index: 1000;
+                        max-width: 300px;
+                        word-wrap: break-word;
+                        transition: opacity 0.5s;
+                        opacity: 0;
+                    }
+                    .error-notification.show {
+                        opacity: 1;
+                    }
+                    .error-container {
+                        padding: 20px;
+                        margin: 20px 0;
+                        background-color: #ffebee;
+                        border-left: 5px solid #f44336;
+                        color: #333;
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+        }
+        
+        // Set the error message
+        errorNotification.textContent = message;
+        
+        // Show notification with animation
+        errorNotification.classList.add('show');
+        
+        // Hide after 5 seconds
+        setTimeout(() => {
+            errorNotification.classList.remove('show');
+            // Remove from DOM after fade out
+            setTimeout(() => {
+                if (errorNotification.parentNode) {
+                    errorNotification.parentNode.removeChild(errorNotification);
+                }
+            }, 500);
+        }, 5000);
+    }
+    
+    /**
+     * Update dashboard UI with machine data
+     * @param {Object} machine - Machine data object
+     * @param {boolean} hasLoadedHash - Whether the URL contains the #loaded hash
+     */
+    function updateDashboardWithMachineData(machine, hasLoadedHash = false) {
+        console.log('Updating dashboard with machine data:', machine);
+        
+        // Update UI with machine data
+        if (!machine) {
+            console.error('No machine data provided to updateDashboardWithMachineData');
+            return;
+        }
+        
+        try {
+            // Show the asset selection header and main dashboard content with null checks
+            const selectionHeader = document.getElementById('asset-selection-header');
+            const dashboardLayout = document.getElementById('main-dashboard-layout');
+            
+            if (selectionHeader) selectionHeader.style.display = 'block';
+            if (dashboardLayout) dashboardLayout.style.display = 'flex';
+        } catch (error) {
+            console.warn('Failed to update header display:', error);
+        }
+        
+        // Update location
+        const locationValueElement = document.querySelector('.location-value');
+        if (locationValueElement) {
+            locationValueElement.textContent = machine.location || 'Unknown';
+        }
+        
+        // Get the latest reading for status info
+        const latestReading = machine.readings && machine.readings.length > 0 ? 
+            machine.readings[machine.readings.length - 1] : {};
+        
+        // Map machine data to status elements - Use label as exact text in DOM
+        const statusMappings = [
+            { label: 'Machine Status', value: machine.status === 'ONLINE' ? 'Online' : 'Offline', className: machine.status === 'ONLINE' ? 'online' : '' },
+            { label: 'POD Code', value: machine.serial_number || '85025' },
+            { label: 'Cup Detect', value: 'No' },
+            { label: 'POD Bin Door', value: 'Closed', className: 'door-closed' },
+            { label: 'Customer Door', value: latestReading.door_status === 'OPEN' ? 'Open' : 'Closed', className: latestReading.door_status === 'OPEN' ? 'door-open' : 'door-closed' }
+        ];
+        
+        // Update each status item
+        statusMappings.forEach(mapping => {
+            const statusItems = document.querySelectorAll('.status-item');
+            for (const item of statusItems) {
+                const label = item.querySelector('.status-label');
+                if (label && label.textContent === mapping.label) {
+                    const valueElement = item.querySelector('.status-value');
+                    if (valueElement) {
+                        valueElement.textContent = mapping.value;
+                        valueElement.className = 'status-value';
+                        if (mapping.className) {
+                            valueElement.classList.add(mapping.className);
+                        }
+                    }
+                    break;
+                }
+            }
+        });
+        
+        // Update each gauge with appropriate data
+        
+        // Asset Health - based on machine status
+        let assetHealth = 75; // Default value
+        if (machine.machine_status === 'OPERATIONAL') {
+            assetHealth = 85;
+        } else if (machine.machine_status === 'MAINTENANCE_NEEDED') {
+            assetHealth = 60;
+        } else if (machine.machine_status === 'SERVICE_REQUIRED') {
+            assetHealth = 30;
+        }
+        
+        updateGaugeValue('asset-health-gauge', assetHealth, () => {
+            return assetHealth > 80 ? 'Very Good' : assetHealth > 60 ? 'Good' : assetHealth > 40 ? 'Fair' : 'Poor';
+        });
+        
+        // Freezer Temperature - from temperature property or latest reading
+        const tempValue = machine.temperature || 
+                         (latestReading && latestReading.temperature) || 
+                         3.5; // Default value
+        
+        // Map the temperature to a gauge percentage (assuming range of 1-6°C)
+        const tempMin = 1;
+        const tempMax = 6;
+        const tempRange = tempMax - tempMin;
+        const tempPercent = Math.min(100, Math.max(0, ((tempValue - tempMin) / tempRange) * 100));
+        
+        updateGaugeValue('freezer-temp-gauge', tempPercent, () => {
+            return `${tempValue.toFixed(1)} °C`;
+        });
+        
+        // Dispense Force - simulated based on machine ID
+        const machineIdNum = parseInt((machine.id || '').replace(/[^0-9]/g, '').substring(0, 2) || '46');
+        const dispenseForce = 40 + (machineIdNum % 20); // Generate a value between 40-60
+        
+        const forceMin = 10;
+        const forceMax = 60;
+        const forceRange = forceMax - forceMin;
+        const forcePercent = ((dispenseForce - forceMin) / forceRange) * 100;
+        
+        updateGaugeValue('dispense-force-gauge', forcePercent, () => {
+            return `${dispenseForce} lb`;
+        });
+        
+        // Cycle Time - simulated based on machine ID
+        const cycleTime = 10 + (machineIdNum % 10); // Generate a value between 10-20
+        
+        const timeMin = 5;
+        const timeMax = 30;
+        const timeRange = timeMax - timeMin;
+        const timePercent = ((cycleTime - timeMin) / timeRange) * 100;
+        
+        updateGaugeValue('cycle-time-gauge', timePercent, () => {
+            return `${cycleTime} sec`;
+        });
+        
+        // RAM load and position metrics - not in API, use defaults
+        const ramLpoadValue = document.querySelector('.cycle-status .panel-value:nth-of-type(1)');
+        if (ramLpoadValue) ramLpoadValue.textContent = '50 kg';
+        
+        const ramPositionValue = document.querySelector('.cycle-status .panel-value:nth-of-type(2)');
+        if (ramPositionValue) ramPositionValue.textContent = '75 mm';
+        
+        // Update inventory with product data
+        updateInventoryDisplay(machine.products || []);
+        
+        console.log('Dashboard update complete');
+    }
+    
+    /**
+     * Helper function to update gauge values consistently
+     * @param {string} gaugeId - ID of the gauge element
+     * @param {number} percent - Percentage value (0-100)
+     * @param {Function} getTextValue - Function that returns display text
+     */
+    function updateGaugeValue(gaugeId, percent, getTextValue) {
+        // Update gauge needle position
+        updateGaugePosition(gaugeId, percent);
+        
+        // Update the display text
+        const gaugeElement = document.getElementById(gaugeId);
+        if (!gaugeElement) {
+            console.error(`Gauge element not found: ${gaugeId}`);
+            return;
+        }
+        
+        const panel = gaugeElement.closest('.gauge-panel');
+        if (!panel) {
+            console.error(`Could not find parent panel for gauge: ${gaugeId}`);
+            return;
+        }
+        
+        const valueElement = panel.querySelector('.gauge-value');
+        if (valueElement) {
+            valueElement.textContent = getTextValue();
+            valueElement.style.visibility = 'visible';
+        }
+    }
+    
+    /**
+     * Update the inventory display with product data
+     * @param {Array} products - Array of product objects
+     */
+    function updateInventoryDisplay(products) {
+        const container = document.getElementById('inventory-container');
+        if (!container) return;
+        
+        // Clear current inventory
+        container.innerHTML = '';
+        
+        // If no products, show default message
+        if (!products || !products.length) {
+            const defaultProducts = [
+                { name: 'Vanilla', quantity: 8 },
+                { name: 'Strawberry', quantity: 7 },
+                { name: 'Chocolate', quantity: 10 },
+                { name: 'Mint', quantity: 9 },
+                { name: 'Cookies', quantity: 9 },
+                { name: 'Caramel', quantity: 6 }
+            ];
+            products = defaultProducts;
+        }
+        
+        // Add each product to the inventory grid
+        products.forEach(item => {
+            const itemElement = document.createElement('div');
+            itemElement.className = 'inventory-item';
+            
+            const maxCapacity = 15;
+            const fillPercentage = (item.quantity / maxCapacity) * 100;
+            
+            // Color coding based on stock level
+            let barColor = '#4CAF50'; // Green for good stock (>60%)
+            if (fillPercentage <= 20) {
+                barColor = '#F44336'; // Red for low stock (<20%)
+            } else if (fillPercentage <= 60) {
+                barColor = '#FFC107'; // Yellow/amber for medium stock (20-60%)
+            }
+            
+            itemElement.innerHTML = `
+                <div class="item-name">${item.name}</div>
+                <div class="inventory-bar-container">
+                    <div class="inventory-bar" style="width: ${fillPercentage}%; background-color: ${barColor}"></div>
+                </div>
+                <div class="item-count">${item.quantity} / ${maxCapacity}</div>
+            `;
+            
+            container.appendChild(itemElement);
+        });
+    }
+    
+    /**
+     * Initialize tab navigation
+     * @param {boolean} [loadData=true] - Whether to load tab data immediately
+     */
+    function initTabNavigation(loadData = true) {
+        // Get all tab elements
+        const tabs = document.querySelectorAll('.dashboard-tabs .tab');
+        const tabContents = document.querySelectorAll('.tab-content');
+        
+        // Try to get active tab from localStorage
+        const storedActiveTab = localStorage.getItem('activeVendingMachineTab');
+        
+        // Set initial active tab (either from localStorage or default to first tab)
+        let activeTabName;
+        if (storedActiveTab) {
+            // Activate the stored tab
+            activeTabName = storedActiveTab;
+            activateTab(activeTabName, loadData);
+        } else {
+            // Default: first tab is active
+            activeTabName = tabs[0].textContent.trim();
+            tabs[0].classList.add('active');
+            document.getElementById('asset-health-content').classList.add('active');
+            
+            // Only load data if explicitly requested
+            if (loadData) {
+                loadTabData(activeTabName);
+            }
+        }
+        
+        // Add click event listeners to all tabs
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                const tabName = this.textContent.trim();
+                // Always load data for tabs clicked by the user
+                activateTab(tabName, true);
+            });
+        });
+        
+        // Save the active tab name for later use
+        window.activeTabName = activeTabName;
+    }
+
+    /**
+     * Activate the specified tab and its content
+     * @param {string} tabName - The text content of the tab to activate
+     * @param {boolean} [loadData=true] - Whether to load tab data immediately
+     */
+    function activateTab(tabName, loadData = true) {
+        try {
+            // Get all tab elements
+            const tabs = document.querySelectorAll('.dashboard-tabs .tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            // First, remove active class from all tabs and content
+            tabs.forEach(tab => {
+                if (tab) tab.classList.remove('active');
+            });
+            tabContents.forEach(content => {
+                if (content) content.classList.remove('active');
+            });
+            
+            // Find the tab with matching text and make it active
+            tabs.forEach(tab => {
+                if (tab && tab.textContent && tab.textContent.trim() === tabName) {
+                    tab.classList.add('active');
+                }
+            });
+            
+            // Handle dashboard layout and asset selection visibility
+            const mainDashboard = document.getElementById('main-dashboard-layout');
+            const assetSelection = document.getElementById('asset-selection-header');
+            
+            // Show asset selection on both Asset Health and Operations Summary tabs
+            if (assetSelection) {
+                if (tabName === 'Asset Health' || tabName === 'Operations Summary') {
+                    assetSelection.style.display = 'block';
+                } else {
+                    assetSelection.style.display = 'none';
+                }
+            }
+            
+            // Only show main dashboard layout on Asset Health tab
+            if (mainDashboard) {
+                if (tabName === 'Asset Health') {
+                    mainDashboard.style.display = 'flex';
+                } else {
+                    mainDashboard.style.display = 'none';
+                }
+            }
+            
+            // Get content ID using the helper function
+            const contentId = getContentIdForTab(tabName);
+            
+            // Activate the corresponding content
+            const contentEl = document.getElementById(contentId);
+            if (contentEl) {
+                contentEl.classList.add('active');
+            }
+            
+            // Store active tab in localStorage
+            localStorage.setItem('activeVendingMachineTab', tabName);
+            
+            // Save current active tab globally
+            window.activeTabName = tabName;
+            
+            // Load tab-specific data if requested
+            if (loadData) {
+                loadTabData(tabName);
+            }
+        } catch (error) {
+            console.error('Error activating tab:', error);
+        }
+    }
+
+    /**
+     * Load data specific to the selected tab
+     * @param {string} tabName - The name of the active tab
+     * @param {string} [forceMachineId] - Optional machine ID to force use instead of dropdown value
+     */
+    function loadTabData(tabName, forceMachineId) {
+        // Skip if we're on the Asset Health tab (already loaded)
+        if (tabName === 'Asset Health') {
+            return;
+        }
+        
+        // Use forced machine ID if provided, otherwise get from dropdown
+        const selectedMachineId = forceMachineId || document.getElementById('machine-selector').value;
+        
+        if (!selectedMachineId) {
+            console.warn('No machine selected, cannot load tab data');
+            // Show error message in the tab content
+            const contentId = getContentIdForTab(tabName);
+            const content = document.getElementById(contentId);
+            if (content) {
+                content.innerHTML = '<div class="error-message">Please select a machine first to view this data.</div>';
+            }
+            return;
+        }
+        
+        console.log(`Loading data for tab ${tabName} with machine ID: ${selectedMachineId}`);
+        
+        // We don't want to completely clear the tab content as it removes important elements
+        // Instead, we'll just hide/show elements as needed and update their content when data is loaded
+        
+        if (tabName === 'Operations Summary') {
+            // Show real-time operations data in the Operations Summary tab
+            loadRealtimeOperationsData(selectedMachineId, 'operations-summary-content');
+        } else if (tabName === 'Remote Operations Cockpit') {
+            // Load into remote operations content with same layout
+            loadRealtimeOperationsData(selectedMachineId, 'remote-operations-content');
+        }
+    }
+    
+    /**
+     * Helper function to get content ID for a tab name
+     * @param {string} tabName - Tab name
+     * @returns {string} Content ID
+     */
+    function getContentIdForTab(tabName) {
+        switch(tabName) {
+            case 'Asset Health':
+                return 'asset-health-content';
+            case 'Operations Summary':
+                return 'operations-summary-content';
+            case 'Predictions':
+                return 'predictions-content';
+            case 'Insights':
+                return 'insights-content';
+            case 'Remote Operations Cockpit':
+                return 'remote-operations-content';
+            default:
+                return 'asset-health-content';
+        }
+    }
+    
+    /**
+     * Load real-time operations data for a vending machine
+     * @param {string} machineId - ID of the machine to load data for
+     * @param {string} contentId - ID of the content element to load into
+     */
+    async function loadRealtimeOperationsData(machineId, contentId) {
+        try {
+            // Get references to required elements
+            const contentElement = document.getElementById(contentId);
+            if (!contentElement) {
+                console.error(`Content element with ID ${contentId} not found`);
+                return;
+            }
+            
+            // Show the correct loading indicator and hide content/error
+            const loadingEl = document.getElementById('operations-loading');
+            const contentEl = document.getElementById('operations-content');
+            const errorEl = document.getElementById('operations-error');
+            
+            if (loadingEl) loadingEl.style.display = 'flex';
+            if (contentEl) contentEl.style.display = 'none';
+            if (errorEl) errorEl.style.display = 'none';
+            
+            // Log the machine ID we're trying to load
+            console.log(`Loading real-time operations data for machine ID: ${machineId} using MachineService`);
+            
+            try {
+                // Use the MachineService to get operations data
+                const data = await window.MachineService.getOperationsData(machineId);
+                
+                // Enhanced debugging for operations data
+                console.log('★★★ RECEIVED OPERATIONS DATA FROM MACHINE SERVICE ★★★');
+                console.log('Processed data:', data);
+                console.log('Machine ID:', data.machine_id);
+                console.log('Machine Status:', data.machine_status);
+                console.log('Freezer Temp:', data.freezer_temperature?.freezerTemperature);
+                console.log('Dispense Pressure:', data.dispense_pressure?.dispensePressure);
+                console.log('Cycle Time:', data.cycle_time?.cycleTime);
+                console.log('Inventory Items:', data.ice_cream_inventory?.length || 0);
+                
+                // Focus on real-time operational monitoring (as per memory)
+                // This follows the original Angular implementation with focus on real-time operational monitoring
+                updateOperationsUI(data);
+                
+                // Hide loading indicator and show content
+                if (loadingEl) loadingEl.style.display = 'none';
+                if (contentEl) contentEl.style.display = 'block';
+                
+                // Return the data for chaining
+                return data;
+            } catch (apiError) {
+                console.error('❌ Failed to load operations data from MachineService:', apiError);
+                console.error('Error message:', apiError.message);
+                console.error('Error stack:', apiError.stack);
+                
+                // Use MachineService's fallback data instead of local demo data
+                console.warn('Using fallback operations data from MachineService');
+                const fallbackData = MachineService.createFallbackOperationsData(machineId);
+                updateOperationsUI(fallbackData);
+                
+                // Hide loading indicator and show content
+                if (loadingEl) loadingEl.style.display = 'none';
+                if (contentEl) contentEl.style.display = 'block';
+                
+                // Return the fallback data for chaining
+                return fallbackData;
+            }
+        } catch (error) {
+            console.error('Error in operations data loading function:', error);
+            
+            // Hide loading indicator and show error
+            const loadingEl = document.getElementById('operations-loading');
+            const errorEl = document.getElementById('operations-error');
+            
+            if (loadingEl) loadingEl.style.display = 'none';
+            if (errorEl) {
+                errorEl.style.display = 'block';
+                errorEl.textContent = `Error loading operations data: ${error.message}`;
+            }
+            
+            return null;
+        }
+    }
+    
+    /**
+     * Update the operations UI with data from the backend
+     * @param {Object} data - Operations data object from API
+     */
+    function updateOperationsUI(data) {
+        if (!data) {
+            console.error('No operations data provided');
+            return;
+        }
+        
+        console.log('Updating operations UI with data:', data);
+        
+        try {
+            // Update status cards
+            updateStatusCard('machine-status-card', 'Machine Status', data.machine_status);
+            updateStatusCard('pod-code-card', 'POD Code', data.pod_code);
+            updateStatusCard('cup-detect-card', 'Cup Detect', data.cup_detect);
+            updateStatusCard('door-status-card', 'Door Status', data.customer_door);
+            updateStatusCard('dispense-status-card', 'Dispense Status', 
+                data.dispense_pressure && data.dispense_pressure.status ? data.dispense_pressure.status : 'Unknown');
+            
+            // Format timestamp for last transaction
+            const lastUpdated = new Date(data.last_updated);
+            const formattedDate = lastUpdated.toLocaleString();
+            updateStatusCard('last-transaction-card', 'Last Transaction', formattedDate);
+            
+            // Update gauge charts
+            try {
+                // Calculate asset health based on component statuses
+                const assetHealth = calculateAssetHealth(data);
+                
+                // Update the gauge with null checking
+                const assetHealthGauge = document.getElementById('asset-health-gauge');
+                if (assetHealthGauge) {
+                    updateGaugePosition('asset-health-gauge', assetHealth);
+                }
+                
+                // Update asset health value text with null checking
+                const assetHealthValue = document.getElementById('asset-health-value');
+                if (assetHealthValue) {
+                    assetHealthValue.textContent = `${Math.round(assetHealth)}%`;
+                }
+            } catch (error) {
+                console.warn('Error updating asset health gauge:', error);
+            }
+            
+            // Update freezer temperature gauge
+            if (data.freezer_temperature && 
+                (data.freezer_temperature.needleValue !== undefined || 
+                 data.freezer_temperature.freezerTemperature !== undefined)) {
+                
+                // Use needleValue if available, otherwise try freezerTemperature
+                let tempValue = data.freezer_temperature.needleValue;
+                if (tempValue === undefined) {
+                    tempValue = parseFloat(data.freezer_temperature.freezerTemperature);
+                }
+                
+                // Only proceed if we have a valid number
+                if (!isNaN(tempValue)) {
+                    const tempDisplay = `${tempValue}°F`;
+                    const tempElement = document.getElementById('freezer-temp-value');
+                    if (tempElement) {
+                        tempElement.textContent = tempDisplay;
+                        
+                        // Use aqua color for temperature display (like in the screenshot)
+                        tempElement.style.color = '#4fd1c5';
+                    }
+                    
+                    // Let the freezer gauge needle rotate normally like the other gauges
+                    
+                    // Map temperature to 0-100 for gauge (-20 to 20 range)
+                    const normalizedTemp = ((tempValue + 20) / 40) * 100;
+                    // Ensure it's within valid range
+                    const clampedTemp = Math.max(0, Math.min(100, normalizedTemp));
+                    updateGaugePosition('freezer-temp-gauge', clampedTemp);
+                } else {
+                    console.warn('Invalid freezer temperature value:', tempValue);
+                    // Set to a default value
+                    const tempElement = document.getElementById('freezer-temp-value');
+                    if (tempElement) {
+                        tempElement.textContent = 'N/A';
+                    }
+                    updateGaugePosition('freezer-temp-gauge', 50); // Default to middle
+                }
+            } else {
+                console.warn('Missing freezer temperature data');
+                const tempElement = document.getElementById('freezer-temp-value');
+                if (tempElement) {
+                    tempElement.textContent = 'N/A';
+                }
+                updateGaugePosition('freezer-temp-gauge', 50); // Default to middle
+            }
+            
+            // Update dispense force gauge
+            if (data.dispense_pressure && 
+                (data.dispense_pressure.needleValue !== undefined || 
+                 data.dispense_pressure.dispensePressure !== undefined)) {
+                
+                // Use needleValue if available, otherwise try dispensePressure
+                let forceValue = data.dispense_pressure.needleValue;
+                if (forceValue === undefined) {
+                    forceValue = parseFloat(data.dispense_pressure.dispensePressure);
+                }
+                
+                if (!isNaN(forceValue)) {
+                    const forceDisplay = `${forceValue} N`;
+                    const forceElement = document.getElementById('dispense-force-value');
+                    if (forceElement) {
+                        forceElement.textContent = forceDisplay;
+                    }
+                    
+                    // Map force to 0-100 for gauge, ensure it's within valid range
+                    const clampedForce = Math.max(0, Math.min(100, forceValue));
+                    updateGaugePosition('dispense-force-gauge', clampedForce);
+                } else {
+                    console.warn('Invalid dispense pressure value:', forceValue);
+                    const forceElement = document.getElementById('dispense-force-value');
+                    if (forceElement) {
+                        forceElement.textContent = 'N/A';
+                    }
+                    updateGaugePosition('dispense-force-gauge', 50); // Default to middle
+                }
+            } else {
+                console.warn('Missing dispense pressure data');
+                const forceElement = document.getElementById('dispense-force-value');
+                if (forceElement) {
+                    forceElement.textContent = 'N/A';
+                }
+                updateGaugePosition('dispense-force-gauge', 50); // Default to middle
+            }
+            
+            // Update cycle time gauge
+            if (data.cycle_time && 
+                (data.cycle_time.needleValue !== undefined || 
+                 data.cycle_time.cycleTime !== undefined)) {
+                
+                // Use needleValue if available, otherwise try cycleTime
+                let cycleValue = data.cycle_time.needleValue;
+                if (cycleValue === undefined) {
+                    cycleValue = parseFloat(data.cycle_time.cycleTime);
+                }
+                
+                if (!isNaN(cycleValue)) {
+                    const cycleDisplay = `${cycleValue} sec`;
+                    const cycleElement = document.getElementById('cycle-time-value');
+                    if (cycleElement) {
+                        cycleElement.textContent = cycleDisplay;
+                    }
+                    
+                    // Map cycle time to 0-100 for gauge (0 to 30 seconds range)
+                    const normalizedCycle = (cycleValue / 30) * 100;
+                    // Ensure it's within valid range
+                    const clampedCycle = Math.max(0, Math.min(100, normalizedCycle));
+                    updateGaugePosition('cycle-time-gauge', clampedCycle);
+                } else {
+                    console.warn('Invalid cycle time value:', cycleValue);
+                    const cycleElement = document.getElementById('cycle-time-value');
+                    if (cycleElement) {
+                        cycleElement.textContent = 'N/A';
+                    }
+                    updateGaugePosition('cycle-time-gauge', 50); // Default to middle
+                }
+            } else {
+                console.warn('Missing cycle time data');
+                const cycleElement = document.getElementById('cycle-time-value');
+                if (cycleElement) {
+                    cycleElement.textContent = 'N/A';
+                }
+                updateGaugePosition('cycle-time-gauge', 50); // Default to middle
+            }
+            
+            // Update inventory items
+            updateInventoryDisplay(data.ice_cream_inventory || []);
+            
+        } catch (error) {
+            console.error('Error updating operations UI:', error);
+        }
+    }
+    
+    /**
+     * Helper function to calculate overall asset health
+     * @param {Object} data - Operations data
+     * @returns {number} - Health score between 0-100
+     */
+    function calculateAssetHealth(data) {
+        if (!data) {
+            console.warn('No data provided to calculateAssetHealth');
+            return 50; // Default to middle value if no data
+        }
+
+        // Simple calculation based on component statuses
+        let healthScore = 85; // Default good health
+        
+        // Reduce score for problematic components, with null checking
+        if (data.machine_status && data.machine_status !== 'Online') healthScore -= 30;
+        if (data.cup_detect && data.cup_detect !== 'Yes') healthScore -= 10;
+        if (data.customer_door && data.customer_door !== 'Closed') healthScore -= 5;
+        if (data.pod_bin_door && data.pod_bin_door !== 'Closed') healthScore -= 5;
+        
+        // Check dispense pressure with thorough null checking
+        if (data.dispense_pressure && data.dispense_pressure.status && 
+            data.dispense_pressure.status !== 'OK') {
+            healthScore -= 15;
+        }
+        
+        // Check freezer temperature with thorough validation
+        if (data.freezer_temperature && data.freezer_temperature.value !== undefined) {
+            const temp = parseFloat(data.freezer_temperature.value);
+            if (!isNaN(temp) && temp > 0) healthScore -= 20; // Too warm
+        }
+        
+        // Ensure health stays within 0-100 range
+        return Math.max(0, Math.min(100, healthScore));
+    }
+    
+    /**
+     * Helper function to update a status card
+     * @param {string} cardId - ID of the card element
+     * @param {string} title - Title for the card
+     * @param {string} value - Value to display
+     */
+    function updateStatusCard(cardId, title, value) {
+        const card = document.getElementById(cardId);
+        if (card) {
+            const titleEl = card.querySelector('.metric-title');
+            const valueEl = card.querySelector('.status-value');
+            
+            if (titleEl) titleEl.textContent = title;
+            if (valueEl) {
+                valueEl.textContent = value;
+                
+                // Apply status classes
+                valueEl.className = 'status-value';
+                
+                // Map status values to appropriate CSS classes
+                if (value === 'OK' || value === 'Closed' || value === 'Yes' || value === 'Online') {
+                    valueEl.classList.add('status-good');
+                    valueEl.classList.add('status-online');
+                } else if (value === 'FAULT' || value === 'Open' || value === 'No' || value === 'Offline') {
+                    valueEl.classList.add('status-critical');
+                    valueEl.classList.add('status-offline');
+                } else if (value === 'WARNING' || value === 'Low') {
+                    valueEl.classList.add('status-warning');
+                }
+                
+                // Apply pulse animation effect to critical statuses
+                if (valueEl.classList.contains('status-critical')) {
+                    valueEl.style.animation = 'pulse 2s infinite';
+                } else {
+                    valueEl.style.animation = 'none';
+                }
+            }
+            
+            // Add subtle hover effect to status cards
+            card.onmouseover = function() {
+                card.style.transform = 'translateY(-2px)';
+                card.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.2)';
+            };
+            
+            card.onmouseout = function() {
+                card.style.transform = 'translateY(0)';
+                card.style.boxShadow = '0 1px 2px rgba(0, 0, 0, 0.2)';
+            };
+        }
+    }
+    
+    /**
+     * Function to update inventory display
+     * @param {Array} inventoryItems - Array of inventory items
+     */
+    /**
+     * Ensures consistent structure for all gauge elements
+     * This fixes inconsistencies between gauges
+     */
+    function ensureGaugeStructure(gaugeId, gaugeElement) {
+        // Get or create parent gauge panel
+        let gaugePanel = gaugeElement.closest('.gauge-panel');
+        if (!gaugePanel) {
+            // If gauge is not in a panel, wrap it in one
+            gaugePanel = document.createElement('div');
+            gaugePanel.className = 'gauge-panel';
+            gaugeElement.parentNode.insertBefore(gaugePanel, gaugeElement);
+            gaugePanel.appendChild(gaugeElement);
+        }
+        
+        // Ensure exact standard dimensions for the gauge container to match reference
+        gaugeElement.style.width = '139.992px';
+        gaugeElement.style.height = '69.9844px';
+        gaugeElement.style.margin = '0 auto';
+        gaugeElement.style.borderRadius = '139.992px 139.992px 0 0';
+        gaugeElement.style.background = 'linear-gradient(0deg, #1a1a1a 0%, #333333 100%)';
+        
+        // Make sure there's a title element
+        let titleElement = gaugePanel.querySelector('.gauge-title');
+        if (!titleElement) {
+            titleElement = document.createElement('div');
+            titleElement.className = 'gauge-title';
+            gaugePanel.insertBefore(titleElement, gaugePanel.firstChild);
+            
+            // Set default title based on gauge ID
+            const titleText = gaugeId.replace('-gauge', '').replace(/-/g, ' ');
+            titleElement.textContent = titleText.charAt(0).toUpperCase() + titleText.slice(1);
+        }
+        
+        // Make sure there's a value display
+        let valueElement = gaugePanel.querySelector('.gauge-value');
+        if (!valueElement) {
+            valueElement = document.createElement('div');
+            valueElement.className = 'gauge-value';
+            
+            // Add value after the gauge container
+            if (gaugeElement.nextSibling) {
+                gaugePanel.insertBefore(valueElement, gaugeElement.nextSibling);
+            } else {
+                gaugePanel.appendChild(valueElement);
+            }
+            
+            // Default value
+            valueElement.textContent = '0';
+        }
+        
+        // Make sure there's a limits display
+        let limitsElement = gaugePanel.querySelector('.gauge-limits');
+        if (!limitsElement) {
+            limitsElement = document.createElement('div');
+            limitsElement.className = 'gauge-limits';
+            gaugePanel.appendChild(limitsElement);
+            
+            // Default min/max labels
+            const minSpan = document.createElement('span');
+            minSpan.textContent = 'Min';
+            limitsElement.appendChild(minSpan);
+            
+            const maxSpan = document.createElement('span');
+            maxSpan.textContent = 'Max';
+            limitsElement.appendChild(maxSpan);
+        }
+        
+        // Add a style attribute to the gauge panel to ensure consistent spacing
+        gaugePanel.style.margin = '10px';
+        gaugePanel.style.padding = '10px';
+        gaugePanel.style.textAlign = 'center';
+    }
+
+    /**
+     * Helper function to update the position of a gauge needle
+     * @param {string} gaugeId - ID of the gauge element
+     * @param {number} value - Value to set (0-100)
+     */
+    function updateGaugePosition(gaugeId, value) {
+        try {
+            // Make sure the value is between 0-100
+            const safeValue = Math.max(0, Math.min(100, value));
+            
+            // Calculate rotation based on value (0-100 maps to -90 to 90 degrees)
+            const rotation = (safeValue / 100) * 180 - 90;
+            
+            // Get the gauge element
+            const gaugeElement = document.getElementById(gaugeId);
+            if (!gaugeElement) {
+                console.warn(`Gauge element with ID ${gaugeId} not found`);
+                return;
+            }
+            
+            // Ensure gauge has proper panel structure
+            ensureGaugeStructure(gaugeId, gaugeElement);
+            
+            // Clear the gauge container first (to prevent duplicates)
+            const existingNeedle = gaugeElement.querySelector('.gauge-needle');
+            const existingTicks = gaugeElement.querySelectorAll('.gauge-tick');
+            const existingOverlay = gaugeElement.querySelector('.temperature-overlay');
+            
+            if (existingNeedle) {
+                existingNeedle.remove();
+            }
+            
+            if (existingOverlay) {
+                existingOverlay.remove();
+            }
+            
+            existingTicks.forEach(tick => tick.remove());
+            
+            // Create the gauge ticks (5 ticks)
+            for (let i = 0; i <= 4; i++) {
+                const tick = document.createElement('div');
+                tick.className = 'gauge-tick';
+                tick.style.position = 'absolute';
+                tick.style.bottom = '0';
+                tick.style.left = '50%';
+                tick.style.width = '2px';
+                tick.style.height = '10px';
+                tick.style.backgroundColor = '#fff';
+                tick.style.transformOrigin = 'bottom center';
+                
+                // Calculate tick position (from -90 to 90 degrees)
+                const tickRotation = -90 + (i * 45);
+                tick.style.transform = `translateX(-50%) rotate(${tickRotation}deg) translateY(-75px)`;
+                gaugeElement.appendChild(tick);
+                
+                // Add tick labels
+                if (i === 0 || i === 4) {
+                    const label = document.createElement('div');
+                    label.className = 'gauge-tick-label';
+                    label.style.position = 'absolute';
+                    label.style.bottom = '20px';
+                    label.style.color = '#999';
+                    label.style.fontSize = '10px';
+                    label.style.transformOrigin = 'bottom center';
+                    
+                    if (i === 0) {
+                        label.style.left = '10%';
+                        label.textContent = '0';
+                    } else {
+                        label.style.right = '10%';
+                        label.textContent = '100';
+                    }
+                    
+                    gaugeElement.appendChild(label);
+                }
+            }
+            
+            // Create the needle - use exact reference styling
+            const needleElement = document.createElement('div');
+            needleElement.className = 'gauge-needle';
+            needleElement.style.width = '3.5px';
+            needleElement.style.height = '58px';
+            needleElement.style.backgroundColor = '#ff6d00'; // Exact reference color
+            needleElement.style.boxShadow = '0 0 4px rgba(255, 109, 0, 0.7)';
+            needleElement.style.borderRadius = '4px 4px 0 0';
+            gaugeElement.appendChild(needleElement);
+            
+            // Create center dot with reference styling
+            const centerDot = document.createElement('div');
+            centerDot.className = 'gauge-center-dot';
+            centerDot.style.position = 'absolute';
+            centerDot.style.bottom = '0';
+            centerDot.style.left = '50%';
+            centerDot.style.width = '12px';
+            centerDot.style.height = '12px';
+            centerDot.style.backgroundColor = '#555'; // Neutral color instead of matching needle
+            centerDot.style.borderRadius = '50%';
+            centerDot.style.transform = 'translateX(-50%)';
+            centerDot.style.boxShadow = '0 0 5px rgba(0, 0, 0, 0.5)';
+            centerDot.style.zIndex = '11';
+            gaugeElement.appendChild(centerDot);
+            
+            // Set the transform rotation with translateX to ensure proper centering
+            needleElement.style.transform = `translateX(-50%) rotate(${rotation}deg)`;
+            
+            console.log(`Updated gauge ${gaugeId} to value ${safeValue}`);
+            
+        } catch (error) {
+            console.error(`Error updating gauge position for ${gaugeId}:`, error);
+        }
+    }
+    
+    function updateInventoryDisplay(inventoryItems) {
+        const container = document.getElementById('inventory-container');
+        if (!container) return;
+        
+        // Clear current inventory
+        container.innerHTML = '';
+        
+        // If no inventory items, show a message
+        if (inventoryItems.length === 0) {
+            container.innerHTML = '<div class="no-data-message">No inventory data available</div>';
+        }
+        
+        // Add CSS for better inventory visualization if not already present
+        if (!document.getElementById('inventory-styles')) {
+            const style = document.createElement('style');
+            style.id = 'inventory-styles';
+            style.innerHTML = `
+                .inventory-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                    gap: 15px;
+                    margin-top: 15px;
+                }
+                .inventory-item {
+                    background: #1f2937;
+                    border-radius: 8px;
+                    padding: 15px;
+                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+                }
+                .inventory-header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-bottom: 10px;
+                }
+                .inventory-name {
+                    font-weight: bold;
+                    font-size: 16px;
+                    color: #e2e8f0;
+                }
+                .inventory-count {
+                    background: #2d3748;
+                    border-radius: 4px;
+                    padding: 3px 8px;
+                    font-size: 14px;
+                    color: #a0aec0;
+                }
+                .inventory-bar-container {
+                    height: 20px;
+                    background: #2d3748;
+                    border-radius: 10px;
+                    overflow: hidden;
+                    margin-bottom: 5px;
+                }
+                .inventory-bar {
+                    height: 100%;
+                    border-radius: 10px;
+                    transition: width 0.5s ease;
+                }
+                .inventory-status-ok {
+                    background: linear-gradient(90deg, #34d399, #10b981);
+                }
+                .inventory-status-low {
+                    background: linear-gradient(90deg, #fbbf24, #f59e0b);
+                }
+                .inventory-status-critical {
+                    background: linear-gradient(90deg, #f87171, #ef4444);
+                }
+                .inventory-labels {
+                    display: flex;
+                    justify-content: space-between;
+                    font-size: 12px;
+                    color: #a0aec0;
+                }
+            `;
+            document.head.appendChild(style);
+        }
+        
+        // Create grid container
+        const grid = document.createElement('div');
+        grid.className = 'inventory-grid';
+        container.appendChild(grid);
+        
+        // Create inventory items
+        inventoryItems.forEach(item => {
+            const itemElement = document.createElement('div');
+            itemElement.className = 'inventory-item';
+            
+            // Get inventory levels with fallbacks for different property naming conventions
+            const currentLevel = item.level || item.current_level || 0;
+            const maxLevel = item.max_capacity || item.max_level || 100;
+            
+            // Calculate percentage and determine status class
+            const percentage = Math.max(0, Math.min(100, (currentLevel / maxLevel) * 100));
+            let statusClass = 'inventory-status-ok';
+            let statusText = 'OK';
+            
+            if (percentage <= 20) {
+                statusClass = 'inventory-status-critical';
+                statusText = 'Critical';
+            } else if (percentage <= 50) {
+                statusClass = 'inventory-status-low';
+                statusText = 'Low';
+            }
+            
+            itemElement.innerHTML = `
+                <div class="inventory-header">
+                    <div class="inventory-name">${item.name || 'Unknown'}</div>
+                    <div class="inventory-count">${currentLevel}/${maxLevel}</div>
+                </div>
+                <div class="inventory-bar-container">
+                    <div class="inventory-bar ${statusClass}" style="width: ${percentage}%"></div>
+                </div>
+                <div class="inventory-labels">
+                    <span>${statusText}</span>
+                    <span>${percentage.toFixed(0)}%</span>
+                </div>
+            `;
+            
+            grid.appendChild(itemElement);
+        });
+        
+        // If no inventory items, show a message
+        if (inventoryItems.length === 0) {
+            container.innerHTML = '<div class="no-data-message">No inventory data available</div>';
+        }
+    }
+    
+    /**
+     * Create demo operations data for testing the UI
+     * @returns {Object} Demo operations data - matches the OperationalStatus model from backend
+     */
+    function createDemoOperationsData() {
+        return {
+            machine_id: 'ICM-DEMO-1',
+            machine_status: 'Online',
+            last_updated: new Date().toISOString(),
+            pod_code: 'POD-123456',
+            cup_detect: 'Yes',
+            pod_bin_door: 'Closed',
+            customer_door: 'Closed',
+            cap_position: {
+                status: 'OK',
+                value: 100
+            },
+            ram_position: {
+                status: 'OK',
+                value: 25
+            },
+            cycle_status: {
+                status: 'OK',
+                value: 'Idle'
+            },
+            dispense_pressure: {
+                status: 'OK',
+                value: 45,
+                display_suffix: ' N'
+            },
+            freezer_temperature: {
+                status: 'OK',
+                value: -5,
+                display_suffix: '°F'
+            },
+            max_ram_load: {
+                status: 'OK',
+                value: 50,
+                display_suffix: ' kg'
+            },
+            cycle_time: {
+                status: 'OK',
+                value: 12,
+                display_suffix: ' sec'
+            },
+            ice_cream_inventory: [
+                {
+                    name: 'Vanilla Pods',
+                    current_level: 8,
+                    max_level: 10,
+                    status: 'Normal'
+                },
+                {
+                    name: 'Chocolate Pods',
+                    current_level: 4,
+                    max_level: 10,
+                    status: 'Low'
+                },
+                {
+                    name: 'Strawberry Pods',
+                    current_level: 1,
+                    max_level: 10,
+                    status: 'Critical'
+                },
+                {
+                    name: 'Mint Pods',
+                    current_level: 7,
+                    max_level: 10,
+                    status: 'Normal'
+                }
+            ],
+            location: 'Demo Location'
+        };
+    }
+    
+    /**
+     * Render real-time operations data in the operations container
+     * @param {Object} data - Real-time operations data
+     * @param {HTMLElement} container - Container to render data in
+     */
+    function renderRealtimeOperationsData(data, container) {
+        console.log('Rendering operations data:', data);
+        
+        // Normalize data to handle various API response formats
+        data = data || {};
+        
+        // Get status data with proper fallbacks
+        const status = data.status || {};
+        // Get normalized machine status with proper fallbacks
+        const machineStatus = status.machine_status || status.machine || data.machine_status || 'Unknown';
+        const podCode = status.pod_code || data.pod_code || 'N/A';
+        const cupDetect = status.cup_detect || data.cup_detect || 'N/A';
+        const podBinDoor = status.pod_bin_door || status.pod_bin || data.pod_bin_door || 'Unknown';
+        const customerDoor = status.customer_door || data.customer_door || 'Unknown';
+        
+        // Get metrics data with proper fallbacks
+        const metrics = data.metrics || {};
+        
+        // Determine which tab we're in to set appropriate title
+        const isOperationsSummary = container.closest('#operations-summary-content') !== null;
+        const title = isOperationsSummary ? 'Operations Dashboard' : 'Remote Operations Cockpit';
+        
+        // Clear the container first to avoid duplication
+        container.innerHTML = '';
+        container.classList.add('dark-theme');
+        
+        // Create the operations dashboard content
+        let html = `
+            <h2>${title}</h2>
+            <div class="operations-dashboard dark-theme">
+                <div class="operations-status-section">
+                    <h3>Current Status</h3>
+                    <div class="status-grid">
+                        <div class="status-item">
+                            <div class="status-label">Machine Status</div>
+                            <div class="status-value ${machineStatus === 'Online' ? 'online' : 'offline'}">${machineStatus}</div>
+                        </div>
+                        <div class="status-item">
+                            <div class="status-label">POD Code</div>
+                            <div class="status-value">${podCode}</div>
+                        </div>
+                        <div class="status-item">
+                            <div class="status-label">Cup Detect</div>
+                            <div class="status-value">${cupDetect}</div>
+                        </div>
+                        <div class="status-item">
+                            <div class="status-label">POD Bin Door</div>
+                            <div class="status-value ${podBinDoor === 'Closed' ? 'door-closed' : 'door-open'}">${podBinDoor}</div>
+                        </div>
+                        <div class="status-item">
+                            <div class="status-label">Customer Door</div>
+                            <div class="status-value ${customerDoor === 'Closed' ? 'door-closed' : 'door-open'}">${customerDoor}</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="operations-gauges-section">
+                    <h3>Performance Metrics</h3>
+                    <div class="gauge-grid">
+                        <div class="gauge-panel">
+                            <div class="gauge-title">Asset Health</div>
+                            <div class="gauge-value">Very Good</div>
+                            <div id="asset-health-gauge" class="gauge-container" data-value="75"></div>
+                        </div>
+                        
+                        <div class="gauge-panel">
+                            <div class="gauge-title">Freezer Temperature</div>
+                            <div id="freezer-temp-gauge" class="gauge-container" data-value="60"></div>
+                            <div class="gauge-value">-17.3°F</div>
+                            <div class="gauge-limits">
+                                <span>-15 °F</span>
+                                <span>5 °F</span>
+                            </div>
+                        </div>
+                        
+                        <div class="gauge-panel">
+                            <div class="gauge-title">Dispense Force</div>
+                            <div class="gauge-value">15 lb</div>
+                            <div id="dispense-force-gauge" class="gauge-container" data-value="58"></div>
+                            <div class="gauge-limits">
+                                <span>Min: 5 lb</span>
+                                <span>Max: 25 lb</span>
+                            </div>
+                        </div>
+                        
+                        <div class="gauge-panel">
+                            <div class="gauge-title">Cycle time</div>
+                            <div class="gauge-value">14 sec</div>
+                            <div id="cycle-time-gauge" class="gauge-container" data-value="59"></div>
+                            <div class="gauge-limits">
+                                <span>Min: 10 sec</span>
+                                <span>Max: 30 sec</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="operations-bottom-section">
+                    <div class="bottom-panels">
+                        <div class="status-panel">
+                            <div class="panel-title">Max RAM Load</div>
+                            <div class="panel-value">${data.ram_load?.current || 'N/A'} kg</div>
+                            <div class="panel-limits">
+                                <span>Min: ${data.ram_load?.min || '0'} kg</span>
+                                <span>Max: ${data.ram_load?.max || '20'} kg</span>
+                            </div>
+                            <div class="panel-status ${data.ram_load?.status === 'OK' ? 'ok' : 'fault'}">${data.ram_load?.status || 'Unknown'}</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="operations-inventory-section">
+                    <h3>Freezer Inventory</h3>
+                    <div class="inventory-grid">
+                        <div class="inventory-item">
+                            <div class="inventory-label">Vanilla</div>
+                            <div class="inventory-bar-container">
+                                <div class="inventory-bar" style="width: 75%"></div>
+                            </div>
+                            <div class="inventory-value">8 units</div>
+                        </div>
+                        <div class="inventory-item">
+                            <div class="inventory-label">Chocolate</div>
+                            <div class="inventory-bar-container">
+                                <div class="inventory-bar" style="width: 60%"></div>
+                            </div>
+                            <div class="inventory-value">6 units</div>
+                        </div>
+                        <div class="inventory-item">
+                            <div class="inventory-label">Strawberry</div>
+                            <div class="inventory-bar-container">
+                                <div class="inventory-bar" style="width: 30%"></div>
+                            </div>
+                            <div class="inventory-value">3 units</div>
+                        </div>
+                        <div class="inventory-item">
+                            <div class="inventory-label">Mint</div>
+                            <div class="inventory-bar-container">
+                                <div class="inventory-bar" style="width: 90%"></div>
+                            </div>
+                            <div class="inventory-value">9 units</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        container.innerHTML = html;
+        
+        // Initialize gauges after rendering
+        setTimeout(() => {
+            // Target both the operations summary and remote operations tabs
+            document.querySelectorAll('.operations-dashboard .gauge-container').forEach(gauge => {
+                if (!gauge.querySelector('.gauge-needle')) {
+                    const needle = document.createElement('div');
+                    needle.className = 'gauge-needle';
+                    gauge.appendChild(needle);
+                }
+                
+                const value = parseFloat(gauge.getAttribute('data-value') || '50');
+                updateGaugePosition(gauge.id, value);
+            });
+            
+            // Add colors to inventory bars - target both tabs
+            document.querySelectorAll('.operations-dashboard .inventory-bar').forEach(bar => {
+                const widthStr = bar.style.width;
+                const width = parseFloat(widthStr);
+                
+                if (width <= 20) {
+                    bar.style.background = 'linear-gradient(to right, #e74c3c, #e74c3c)';
+                } else if (width <= 50) {
+                    bar.style.background = 'linear-gradient(to right, #f39c12, #f39c12)';
+                } else {
+                    bar.style.background = 'linear-gradient(to right, #3498db, #2980b9)';
+                }
+            });
+        }, 200);
+    }
+    
+    /**
+     * Render operations analytics data in the operations container
+     * @param {Object} data - Operations analytics data
+     * @param {HTMLElement} container - Container to render data in
+     */
+    function renderOperationsAnalyticsData(data, container) {
+        // Create the operations analytics dashboard content
+        // Add default empty structure for all expected fields to prevent errors
+        data = data || {};
+        // Sales data normalization
+        data.sales_data = data.sales_data || data.sales || { 
+            total_sales: 0, 
+            period: 'week', 
+            average_transaction: 0, 
+            units_sold: 0,
+            top_products: []
+        };
+        
+        // Usage patterns normalization
+        data.usage_patterns = data.usage_patterns || data.usage || { 
+            time_of_day: { peak: 'Afternoon' }, 
+            day_of_week: { peak: 'Friday' } 
+        };
+        
+        // Maintenance history normalization
+        data.maintenance_history = data.maintenance_history || data.maintenance || { events: [] };
+        
+        // Temperature trends normalization - API returns 'temperature' but frontend expects 'temperature_trends'
+        data.temperature_trends = data.temperature_trends || data.temperature || {
+            average_temperature: 4.2,
+            anomalies: 0,
+            readings: []
+        };
+        
+        // Map abnormal_readings_count to anomalies for frontend compatibility
+        if (data.temperature_trends && data.temperature_trends.abnormal_readings_count !== undefined && 
+            data.temperature_trends.anomalies === undefined) {
+            data.temperature_trends.anomalies = data.temperature_trends.abnormal_readings_count;
+        }
+        
+        let html = `
+            <h2>Operations Analytics</h2>
+            <div class="operations-analytics-dashboard">
+                <div class="analytics-section">
+                    <h3>Sales Data</h3>
+                    <div class="analytics-card">
+                        <div class="card-title">Total Sales</div>
+                        <div class="card-value">$${(data.sales_data?.total_sales || data.sales?.total_revenue || 0).toFixed(2)}</div>
+                        <div class="card-period">${data.sales_data?.period || (data.sales?.period ? data.sales.period.toLowerCase() : 'week')}</div>
+                    </div>
+                    
+                    <div class="analytics-grid">
+                        <div class="analytics-card">
+                            <div class="card-title">Average Transaction</div>
+                            <div class="card-value">$${(data.sales_data?.average_transaction || ((data.sales?.total_revenue || 0) / (data.sales?.total_sales || 1)) || 0).toFixed(2)}</div>
+                        </div>
+                        <div class="analytics-card">
+                            <div class="card-title">Units Sold</div>
+                            <div class="card-value">${data.sales_data?.units_sold || data.sales?.total_sales || 0}</div>
+                        </div>
+                    </div>
+                    
+                    <h4>Top Products</h4>
+                    <div class="product-sales-grid">
+                        ${(data.sales_data?.top_products || data.sales?.product_sales || []).map((product, idx, arr) => {
+                            const name = product.name || 'Unknown Product';
+                            const units = product.units || product.quantity_sold || 0;
+                            const maxUnits = arr.length > 0 ? (arr[0].units || arr[0].quantity_sold || 1) : 1;
+                            return `
+                            <div class="product-sales-item">
+                                <div class="product-name">${name}</div>
+                                <div class="product-sales-bar-container">
+                                    <div class="product-sales-bar" style="width: ${(units / maxUnits) * 100}%"></div>
+                                </div>
+                                <div class="product-sales-value">${units} units</div>
+                            </div>
+                            `;
+                        }).join('')}
+                    </div>
+                </div>
+                
+                <div class="analytics-section">
+                    <h3>Usage Patterns</h3>
+                    <div class="analytics-grid">
+                        <div class="analytics-card">
+                            <div class="card-title">Peak Time of Day</div>
+                            <div class="card-value">${data.usage_patterns?.time_of_day?.peak || (data.usage?.time_of_day ? Object.entries(data.usage.time_of_day).sort((a, b) => b[1] - a[1])[0]?.[0] : 'N/A')}</div>
+                        </div>
+                        <div class="analytics-card">
+                            <div class="card-title">Peak Day of Week</div>
+                            <div class="card-value">${data.usage_patterns?.day_of_week?.peak || (data.usage?.day_of_week ? Object.entries(data.usage.day_of_week).sort((a, b) => b[1] - a[1])[0]?.[0] : 'N/A')}</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="analytics-section">
+                    <h3>Maintenance History</h3>
+                    <table class="analytics-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                                <th>Technician</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${(data.maintenance_history?.events || data.maintenance?.events || []).map(event => {
+                                const date = event.date || event.timestamp || new Date();
+                                const type = event.type || event.event_type || 'Unknown';
+                                const description = event.description || 'No description available';
+                                const technician = event.technician || 'N/A';
+                                return `
+                                <tr>
+                                    <td>${new Date(date).toLocaleDateString()}</td>
+                                    <td>${type}</td>
+                                    <td>${description}</td>
+                                    <td>${technician}</td>
+                                </tr>
+                                `;
+                            }).join('')}
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="analytics-section">
+                    <h3>Temperature Trends</h3>
+                    <div class="analytics-card">
+                        <div class="card-title">Average Temperature</div>
+                        <div class="card-value">${(data.temperature_trends?.average_temperature || data.temperature?.average_temperature || 0).toFixed(1)}°C</div>
+                    </div>
+                    <div class="temperature-trend-visualization">
+                        <!-- Temperature trend visualization goes here -->
+                        <div class="trend-note">
+                            ${(data.temperature_trends?.anomalies || data.temperature?.abnormal_readings_count || 0) > 0 ? 
+                                `<div class="trend-warning">${data.temperature_trends?.anomalies || data.temperature?.abnormal_readings_count || 0} temperature anomalies detected</div>` : 
+                                `<div class="trend-normal">Temperature within normal range</div>`
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        container.innerHTML = html;
+    }
+    
+    /**
+     * Initialize dashboard with default values
+     */
+    function initPolarDelightDashboard() {
+        console.log('Initializing PolarDelight Dashboard');
+        
+        // Update date/time
+        const dashboardDate = document.querySelector('.dashboard-date');
+        if (dashboardDate) {
+            const now = new Date();
+            dashboardDate.textContent = now.toLocaleString();
+        }
+        
+        // Set up machine selector
+        const hasLoadedHash = window.location.hash === '#loaded';
+        console.log('Initial machine ID:', initialMachineId);
+        console.log('Has loaded hash:', hasLoadedHash);
+        
+        // Initialize tab navigation with delayed loading
+        // This ensures the UI is responsive while we're loading machine data
+        initTabNavigation(false); // Don't attempt to load tab data yet
+        
+        // Explicitly call loadMachineList to populate the dropdown and load the first machine
+        // Tab data will be loaded after machine data is available
+        loadMachineList(initialMachineId, hasLoadedHash);
+        
+        console.log('Dashboard initialization complete');
+    }
+</script>
+{% endblock %}

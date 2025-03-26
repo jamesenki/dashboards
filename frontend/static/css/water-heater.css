@@ -1,0 +1,574 @@
+/* Water Heater Management CSS
+ * Modern, professional styling for water heater dashboard
+ */
+
+:root {
+  /* Main color scheme */
+  --primary-color: #3a86ff;
+  --primary-hover: #2168e0;
+  --secondary-color: #8338ec;
+  --success-color: #06d6a0;
+  --warning-color: #ffbe0b;
+  --danger-color: #ef476f;
+  --dark-color: #212529;
+  --light-color: #f8f9fa;
+  
+  /* Status colors */
+  --status-online: #06d6a0;
+  --status-offline: #979797;
+  --status-heating: #ff9e00;
+  --status-standby: #8338ec;
+  
+  /* Mode colors */
+  --mode-eco: #06d6a0;
+  --mode-boost: #ff9e00;
+  --mode-off: #979797;
+  
+  /* Card colors */
+  --card-bg: #1e2227;
+  --card-header: #282c34;
+  --card-shadow: rgba(0, 0, 0, 0.3) 0px 6px 24px 0px, rgba(0, 0, 0, 0.4) 0px 0px 0px 1px;
+  --card-border: #353a40;
+  
+  /* Gauge colors */
+  --gauge-bg: #2a2e35;
+  --gauge-fill: linear-gradient(90deg, #06d6a0 0%, #ffbe0b 50%, #ef476f 100%);
+  --gauge-mask: #1e2227;
+  
+  /* Text colors */
+  --text-primary: #e6e9ed;
+  --text-secondary: #9ca3af;
+  --text-light: #f8f9fa;
+  
+  /* Font properties */
+  --font-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  --font-heading: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  --font-monospace: 'Consolas', 'Monaco', monospace;
+}
+
+/* Base Styles */
+body {
+  font-family: var(--font-main);
+  color: var(--text-primary);
+  line-height: 1.5;
+  background-color: #121417;
+  margin: 0;
+  padding: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  margin-top: 0;
+  font-weight: 600;
+}
+
+a {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Layout */
+.container {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--card-border);
+}
+
+.page-header h2 {
+  margin: 0;
+  color: var(--text-light);
+  font-size: 1.75rem;
+}
+
+/* Dashboard Layout */
+.dashboard {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.dashboard .card {
+  flex: 1 0 280px;
+  max-width: calc(33.333% - 16px);
+  min-width: 280px;
+  margin-bottom: 0;
+  height: auto;
+}
+
+@media (max-width: 992px) {
+  .dashboard .card {
+    max-width: calc(50% - 12px);
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard .card {
+    max-width: 100%;
+    width: 100%;
+  }
+}
+
+.detail-view {
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 768px) {
+  .detail-view {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  
+  .detail-view .card {
+    flex: 1 0 calc(50% - 12px);
+    margin-right: 12px;
+    margin-bottom: 12px;
+  }
+  
+  .chart-card {
+    flex-basis: 100% !important;
+    margin-right: 0;
+  }
+}
+
+/* Card Styles */
+.card {
+  background-color: var(--card-bg);
+  border-radius: 8px;
+  border: 1px solid var(--card-border);
+  box-shadow: var(--card-shadow);
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  margin-bottom: 20px;
+}
+
+.heater-card:hover {
+  transform: translateY(-5px);
+  box-shadow: rgba(0, 0, 0, 0.4) 0px 10px 25px;
+  border: 1px solid var(--primary-color);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  background-color: var(--card-header);
+  border-bottom: 1px solid var(--card-border);
+}
+
+.card-header h3 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.card-body {
+  padding: 20px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.heater-card .card-body {
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card-title {
+  margin: 0;
+  font-size: 1.25rem;
+  color: var(--text-light);
+}
+
+.model-name {
+  font-weight: 600;
+  margin-left: 8px;
+}
+
+/* Status Indicators */
+.status-indicator {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 5px;
+}
+
+.status-online {
+  background-color: var(--status-online);
+  box-shadow: 0 0 0 2px rgba(6, 214, 160, 0.2);
+}
+
+.status-offline {
+  background-color: var(--status-offline);
+  box-shadow: 0 0 0 2px rgba(151, 151, 151, 0.2);
+}
+
+.status-heating {
+  background-color: var(--status-heating);
+  box-shadow: 0 0 0 2px rgba(255, 158, 0, 0.2);
+}
+
+.status-standby {
+  background-color: var(--status-standby);
+  box-shadow: 0 0 0 2px rgba(131, 56, 236, 0.2);
+}
+
+/* Heater Status */
+.heater-status {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+}
+
+/* Mode Labels */
+.mode-label {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.mode-ECO {
+  background-color: rgba(6, 214, 160, 0.2);
+  color: var(--mode-eco);
+}
+
+.mode-BOOST {
+  background-color: rgba(255, 158, 0, 0.2);
+  color: var(--mode-boost);
+}
+
+.mode-OFF {
+  background-color: rgba(151, 151, 151, 0.2);
+  color: var(--mode-off);
+}
+
+/* Gauge Styling */
+.gauge-container {
+  position: relative;
+  width: 150px;
+  height: 150px;
+  margin: 0 auto;
+  flex: 0 0 auto;
+}
+
+.gauge {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: var(--gauge-bg);
+  overflow: hidden;
+}
+
+.gauge::before {
+  content: '';
+  position: absolute;
+  top: 10%;
+  left: 10%;
+  width: 80%;
+  height: 80%;
+  border-radius: 50%;
+  background: var(--gauge-mask);
+  z-index: 2;
+}
+
+.gauge-mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 50%;
+  background-color: var(--card-bg);
+  z-index: 1;
+  transform-origin: center bottom;
+}
+
+.gauge-indicator {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 2px;
+  height: 40%;
+  background-color: var(--primary-color);
+  transform-origin: center top;
+  transform: rotate(-120deg);
+  z-index: 3;
+}
+
+.gauge-indicator::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -4px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: var(--primary-color);
+}
+
+.gauge-value {
+  position: absolute;
+  top: 60%;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-light);
+  z-index: 4;
+}
+
+.gauge-label {
+  text-align: center;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 10px 0;
+}
+
+/* Detail Page Styles */
+.heater-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+  width: 100%;
+}
+
+.target-temp {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+/* Status Information */
+.status-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--card-border);
+}
+
+.status-row:last-child {
+  border-bottom: none;
+}
+
+.status-label {
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.status-value {
+  font-weight: 600;
+}
+
+/* Controls */
+.control-section {
+  margin-bottom: 24px;
+}
+
+.control-section h4 {
+  margin-bottom: 12px;
+  color: var(--text-secondary);
+  font-size: 1rem;
+}
+
+.temperature-slider {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+input[type="range"] {
+  flex: 1;
+  height: 5px;
+  border-radius: 5px;
+  background: #d3d3d3;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--primary-color);
+  cursor: pointer;
+}
+
+.slider-value {
+  margin-left: 12px;
+  font-weight: 600;
+  width: 60px;
+}
+
+.mode-controls {
+  display: flex;
+  gap: 12px;
+}
+
+.mode-btn {
+  padding: 8px 16px;
+  border: 1px solid var(--card-border);
+  border-radius: 4px;
+  background-color: var(--card-header);
+  color: var(--text-light);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.mode-btn:hover {
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+
+.mode-btn.active {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  color: white;
+}
+
+/* Chart Styling */
+.chart-container {
+  width: 100%;
+  height: 250px;
+  margin-top: 12px;
+}
+
+/* Button Styles */
+.btn {
+  display: inline-block;
+  font-weight: 500;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  user-select: none;
+  border: 1px solid transparent;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  border-radius: 4px;
+  transition: all 0.15s ease-in-out;
+  cursor: pointer;
+  background-color: var(--card-header);
+  border-color: var(--card-border);
+  color: var(--text-light);
+}
+
+.btn:hover {
+  text-decoration: none;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.05);
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-hover);
+  border-color: var(--primary-hover);
+}
+
+/* Form Styles */
+.form-card {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.form-control {
+  display: block;
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--text-primary);
+  background-color: white;
+  background-clip: padding-box;
+  border: 1px solid var(--card-border);
+  border-radius: 4px;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-control:focus {
+  border-color: var(--primary-color);
+  outline: 0;
+  box-shadow: 0 0 0 3px rgba(58, 134, 255, 0.25);
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-start;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+/* Error Message */
+.error-message {
+  padding: 16px;
+  background-color: rgba(239, 71, 111, 0.1);
+  color: var(--danger-color);
+  border-radius: 4px;
+  margin-bottom: 24px;
+}
+
+.empty-state {
+  padding: 40px;
+  text-align: center;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+/* Animations */
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(58, 134, 255, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(58, 134, 255, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(58, 134, 255, 0);
+  }
+}
+
+.status-heating .status-indicator {
+  animation: pulse 2s infinite;
+}
