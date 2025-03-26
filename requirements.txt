@@ -13,7 +13,7 @@ pytest-asyncio==0.23.3
 httpx==0.26.0
 
 # ML/AI Core Libraries
-scikit-learn==1.2.2  # BSD license - Classical ML algorithms
+scikit-learn==1.5.1  # BSD license - Classical ML algorithms
 torch==2.6.0  # BSD license - Deep learning
 torchvision==0.17.0  # BSD license - Computer vision models
 numpy>=1.24.3  # BSD license - Numerical computing
