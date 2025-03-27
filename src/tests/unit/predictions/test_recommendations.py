@@ -54,10 +54,17 @@ class TestRecommendationGeneration:
         }
         self.device_id = 'test-device-123'
     
-    def test_anomaly_detection_always_provides_recommendations(self):
+    @pytest.mark.asyncio
+    async def test_anomaly_detection_always_provides_recommendations(self):
         """Test that anomaly detection always provides at least one recommendation."""
         predictor = AnomalyDetectionPredictor()
-        result = predictor.predict(device_id=self.device_id, features=self.standard_features)
+        predict_result = predictor.predict(device_id=self.device_id, features=self.standard_features)
+        
+        # Handle both async and non-async predict methods
+        if asyncio.iscoroutine(predict_result):
+            result = await predict_result
+        else:
+            result = predict_result
         
         assert isinstance(result, PredictionResult)
         assert len(result.recommended_actions) > 0, "Anomaly detection should always provide at least one recommendation"
@@ -68,10 +75,11 @@ class TestRecommendationGeneration:
             assert action.severity is not None
             assert action.impact is not None and isinstance(action.impact, str)
     
-    def test_usage_patterns_always_provides_recommendations(self):
+    @pytest.mark.asyncio
+    async def test_usage_patterns_always_provides_recommendations(self):
         """Test that usage pattern analysis always provides at least one recommendation."""
         predictor = UsagePatternPredictor()
-        result = predictor.predict(device_id=self.device_id, features=self.standard_features)
+        result = await predictor.predict(device_id=self.device_id, features=self.standard_features)
         
         assert isinstance(result, PredictionResult)
         assert len(result.recommended_actions) > 0, "Usage patterns should always provide at least one recommendation"
@@ -82,10 +90,17 @@ class TestRecommendationGeneration:
             assert action.severity is not None
             assert action.impact is not None and isinstance(action.impact, str)
     
-    def test_multi_factor_always_provides_recommendations(self):
+    @pytest.mark.asyncio
+    async def test_multi_factor_always_provides_recommendations(self):
         """Test that multi-factor analysis always provides at least one recommendation."""
         predictor = MultiFactorPredictor()
-        result = predictor.predict(device_id=self.device_id, features=self.standard_features)
+        predict_result = predictor.predict(device_id=self.device_id, features=self.standard_features)
+        
+        # Handle both async and non-async predict methods
+        if asyncio.iscoroutine(predict_result):
+            result = await predict_result
+        else:
+            result = predict_result
         
         assert isinstance(result, PredictionResult)
         assert len(result.recommended_actions) > 0, "Multi-factor analysis should always provide at least one recommendation"
@@ -96,12 +111,19 @@ class TestRecommendationGeneration:
             assert action.severity is not None
             assert action.impact is not None and isinstance(action.impact, str)
     
-    def test_lifespan_estimation_always_provides_recommendations(self):
+    @pytest.mark.asyncio
+    async def test_lifespan_estimation_always_provides_recommendations(self):
         """Test that lifespan estimation always provides at least one recommendation."""
         predictor = LifespanEstimationPrediction()
         
-        # Use asyncio to handle the async predict method
-        result = asyncio.run(predictor.predict(device_id=self.device_id, features=self.standard_features))
+        # Get prediction result
+        predict_result = predictor.predict(device_id=self.device_id, features=self.standard_features)
+        
+        # Handle both async and non-async predict methods
+        if asyncio.iscoroutine(predict_result):
+            result = await predict_result
+        else:
+            result = predict_result
         
         assert isinstance(result, PredictionResult)
         assert len(result.recommended_actions) > 0, "Lifespan estimation should always provide at least one recommendation"
@@ -112,7 +134,8 @@ class TestRecommendationGeneration:
             assert action.severity is not None
             assert action.impact is not None and isinstance(action.impact, str)
     
-    def test_all_raw_details_properly_formatted(self):
+    @pytest.mark.asyncio
+    async def test_all_raw_details_properly_formatted(self):
         """Test that all models return properly formatted raw_details that avoid [object Object] display issues."""
         
         # Test each predictor for proper JSON serialization
@@ -124,7 +147,15 @@ class TestRecommendationGeneration:
         ]
         
         for predictor in predictors:
-            result = predictor.predict(device_id=self.device_id, features=self.standard_features)
+            # Handle both async and non-async predict methods
+            predict_result = predictor.predict(device_id=self.device_id, features=self.standard_features)
+            
+            # If the result is awaitable (coroutine), await it
+            if asyncio.iscoroutine(predict_result):
+                result = await predict_result
+            else:
+                # If it's already a PredictionResult, use it directly
+                result = predict_result
             
             # Check specific fields that might be incorrectly formatted as objects
             if 'environmental_impact' in result.raw_details:
@@ -137,7 +168,14 @@ class TestRecommendationGeneration:
         
         # Test async lifespan estimation separately
         lifespan_predictor = LifespanEstimationPrediction()
-        lifespan_result = asyncio.run(lifespan_predictor.predict(device_id=self.device_id, features=self.standard_features))
+        predict_result = lifespan_predictor.predict(device_id=self.device_id, features=self.standard_features)
+        
+        # If the result is awaitable (coroutine), await it
+        if asyncio.iscoroutine(predict_result):
+            lifespan_result = await predict_result
+        else:
+            # If it's already a PredictionResult, use it directly
+            lifespan_result = predict_result
         
         # Check lifespan estimation raw details
         assert isinstance(lifespan_result, PredictionResult)

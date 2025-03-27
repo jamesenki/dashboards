@@ -11,7 +11,8 @@ from src.models.vending_machine import (
     UseType,
     VendingMachineReading,
     ProductItem,
-    VendingMachine
+    VendingMachine,
+    SubLocation
 )
 
 
@@ -148,7 +149,7 @@ class TestVendingMachineModel:
             current_cash=125.50,
             location_business_name="Sheetz",
             location_type=LocationType.RETAIL,
-            sub_location="Entrance",
+            sub_location=SubLocation.LOBBY,
             use_type=UseType.CUSTOMER,
             maintenance_partner="ColdFix Solutions",
             last_maintenance_date=datetime(2024, 12, 15, 10, 30),
@@ -178,7 +179,7 @@ class TestVendingMachineModel:
         # Assert new location fields
         assert vending_machine.location_business_name == "Sheetz"
         assert vending_machine.location_type == LocationType.RETAIL
-        assert vending_machine.sub_location == "Entrance"
+        assert vending_machine.sub_location == SubLocation.LOBBY
         assert vending_machine.use_type == UseType.CUSTOMER
         
         # Assert new maintenance fields

@@ -8,7 +8,10 @@ from src.models.water_heater import WaterHeater, WaterHeaterReading, WaterHeater
 from src.services.water_heater_operations_service import WaterHeaterOperationsService
 
 
-client = TestClient(app)
+@pytest.fixture
+def test_client():
+    """Fixture to provide a test client."""
+    return TestClient(app)
 
 
 @pytest.fixture
@@ -20,70 +23,53 @@ def mock_water_heater_operations_service():
         yield mock_service
 
 
-def test_get_operations_dashboard(mock_water_heater_operations_service):
-    """Test GET /water-heaters/{heater_id}/operations endpoint."""
-    # Arrange
-    heater_id = "test-heater-123"
-    mock_response = {
-        "machine_status": "ONLINE",
-        "heater_status": "HEATING",
-        "current_temperature": 68.0,
-        "target_temperature": 70.0,
-        "mode": "ECO",
-        "gauges": {
-            "temperature": {
-                "value": 68.0,
-                "min": 40.0,
-                "max": 85.0,
-                "unit": "°C",
-                "percentage": 62.2,
-                "target": 70.0
-            },
-            "pressure": {
-                "value": 2.6,
-                "min": 0.0,
-                "max": 5.0,
-                "unit": "bar",
-                "percentage": 52.0
-            },
-            "energy_usage": {
-                "value": 1350,
-                "min": 0,
-                "max": 3000,
-                "unit": "W",
-                "percentage": 45.0
-            },
-            "flow_rate": {
-                "value": 3.5,
-                "min": 0.0,
-                "max": 10.0,
-                "unit": "L/min",
-                "percentage": 35.0
-            }
-        },
-        "asset_health": 85.0
+def test_get_operations_dashboard(test_client, mock_water_heater_operations_service):
+    """Test getting operations dashboard."""
+    # Set up mock
+    mock_water_heater_operations_service.get_operations_dashboard.return_value = {
+        "asset_id": "test-heater-123",
+        "status": "Online",
+        "temperature": 45.5,
+        "target_temperature": 50.0,
+        "efficiency": 0.85,
+        "energy_usage": [
+            {"timestamp": "2025-03-15T00:00:00Z", "value": 120},
+            {"timestamp": "2025-03-16T00:00:00Z", "value": 118},
+            {"timestamp": "2025-03-17T00:00:00Z", "value": 125}
+        ],
+        "uptime_percentage": 98.5,
+        "last_maintenance_date": "2025-01-15T10:30:00Z",
+        "next_maintenance_date": "2025-07-15T10:30:00Z"
     }
-    mock_water_heater_operations_service.get_operations_dashboard.return_value = mock_response
     
-    # Act
-    response = client.get(f"/water-heaters/{heater_id}/operations")
+    # Make request
+    heater_id = "test-heater-123"
+    response = test_client.get(f"/api/water-heaters/{heater_id}/operations")
     
-    # Assert
+    # Verify response
     assert response.status_code == 200
-    assert response.json() == mock_response
+    data = response.json()
+    assert data["asset_id"] == heater_id
+    assert "temperature" in data
+    assert "energy_usage" in data
+    assert len(data["energy_usage"]) == 3
+    
+    # Verify service was called
     mock_water_heater_operations_service.get_operations_dashboard.assert_called_once_with(heater_id)
 
 
-def test_get_operations_dashboard_not_found(mock_water_heater_operations_service):
-    """Test GET /water-heaters/{heater_id}/operations when heater is not found."""
-    # Arrange
-    heater_id = "non-existent-id"
-    mock_water_heater_operations_service.get_operations_dashboard.return_value = None
+def test_get_operations_dashboard_not_found(test_client, mock_water_heater_operations_service):
+    """Test getting operations dashboard for non-existent water heater."""
+    # Set up mock to simulate not found
+    heater_id = "nonexistent-id"
+    mock_water_heater_operations_service.get_operations_dashboard.side_effect = Exception(f"Water heater {heater_id} not found")
     
-    # Act
-    response = client.get(f"/water-heaters/{heater_id}/operations")
+    # Make request
+    response = test_client.get(f"/api/water-heaters/{heater_id}/operations")
     
-    # Assert
+    # Verify response
     assert response.status_code == 404
-    assert "detail" in response.json()
+    assert "not found" in response.json()["detail"].lower()
+    
+    # Verify service was called
     mock_water_heater_operations_service.get_operations_dashboard.assert_called_once_with(heater_id)

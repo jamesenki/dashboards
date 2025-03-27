@@ -8,9 +8,9 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 from src.db.adapters.operations_cache import OperationsDashboardCache
 from src.db.repository import DeviceRepository
-from src.models.device import DeviceStatus
+from src.models.device import DeviceStatus, DeviceType
 from src.models.device_reading import DeviceReading
-from src.models.vending_machine import VendingMachine
+from src.models.vending_machine import VendingMachine, VendingMachineReading, VendingMachineStatus, VendingMachineMode, SubLocation, LocationType, UseType, ProductItem
 from src.services.vending_machine_operations_service_db import VendingMachineOperationsServiceDB
 
 
@@ -39,25 +39,49 @@ def mock_cache():
 @pytest.fixture
 def sample_vm():
     """Sample vending machine for testing."""
+    from src.models.device import DeviceType
+    from src.models.vending_machine import (
+        VendingMachineStatus,
+        VendingMachineMode,
+        ProductItem,
+        SubLocation,
+        LocationType,
+        UseType
+    )
+
     return VendingMachine(
         id="test-vm-1",
         name="Test Vending Machine",
-        type="vending_machine",
+        type=DeviceType.VENDING_MACHINE,
         status=DeviceStatus.ONLINE,
         location="Test Location",
         last_seen=datetime.utcnow(),
         model_number="Test-123",
-        machine_status="OPERATIONAL",
-        mode="NORMAL",
+        machine_status=VendingMachineStatus.OPERATIONAL,
+        mode=VendingMachineMode.NORMAL,
         temperature=3.5,
         total_capacity=50,
         cash_capacity=1000.0,
         current_cash=500.0,
+        sub_location=SubLocation.LOBBY,
+        location_type=LocationType.RETAIL,
+        location_business_name="Test Business",
+        use_type=UseType.PUBLIC,
+        maintenance_partner="Test Maintenance",
+        last_maintenance_date="2024-11-15T10:30:00",
+        next_maintenance_date="2025-05-15T10:30:00",
         products=[
-            {"product_id": "prod-1", "name": "Test Product", "price": 1.5, "quantity": 10, "category": "Snacks", "location": "A1"}
+            ProductItem(
+                product_id="prod-1", 
+                name="Test Product", 
+                price=1.5, 
+                quantity=10, 
+                category="Snacks", 
+                location="A1"
+            )
         ],
         readings=[
-            DeviceReading(
+            VendingMachineReading(
                 timestamp=datetime.utcnow() - timedelta(hours=1),
                 temperature=3.5,
                 power_consumption=100.0,
@@ -65,7 +89,7 @@ def sample_vm():
                 cash_level=450.0,
                 sales_count=5
             ),
-            DeviceReading(
+            VendingMachineReading(
                 timestamp=datetime.utcnow(),
                 temperature=3.7,
                 power_consumption=110.0,

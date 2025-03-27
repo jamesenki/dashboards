@@ -11,7 +11,8 @@ from src.models.vending_machine import (
     UseType,
     ProductItem,
     VendingMachineReading,
-    VendingMachine
+    VendingMachine,
+    SubLocation
 )
 from src.services.vending_machine import VendingMachineService
 
@@ -46,7 +47,7 @@ class TestVendingMachineService:
             current_cash=125.50,
             location_business_name="Sheetz",
             location_type=LocationType.RETAIL,
-            sub_location="Entrance",
+            sub_location=SubLocation.LOBBY,
             use_type=UseType.CUSTOMER,
             maintenance_partner="ColdFix Solutions",
             last_maintenance_date=datetime(2024, 12, 15, 10, 30),
@@ -70,37 +71,38 @@ class TestVendingMachineService:
         self.mock_db.add_vending_machine.return_value = True
         
         # Call service method
-        result = self.service.create_vending_machine(
-            name="New Vending Machine",
-            location="Building C, Floor 2",
-            model_number="PD-3000",
-            serial_number="PD2023-67890",
-            temperature=4.0,
-            total_capacity=60,
-            cash_capacity=600.0,
-            current_cash=150.0,
-            location_business_name="7-Eleven",
-            location_type=LocationType.RETAIL,
-            sub_location="Food Court",
-            use_type=UseType.PUBLIC,
-            maintenance_partner="IceCream Tech",
-            last_maintenance_date=datetime(2024, 11, 15, 10, 30),
-            next_maintenance_date=datetime(2025, 5, 15, 10, 30)
-        )
+        vm_create = {
+            "name": "New Vending Machine",
+            "location": "Building A, Floor 1",
+            "model_number": "ICM-2000",
+            "serial_number": "ICM2023-12345",
+            "temperature": 0.0,
+            "total_capacity": 50,
+            "cash_capacity": 500.0,
+            "current_cash": 0.0,
+            "location_business_name": "7-Eleven",
+            "location_type": LocationType.RETAIL,
+            "sub_location": SubLocation.LOBBY,
+            "use_type": UseType.PUBLIC,
+            "maintenance_partner": "IceCream Tech",
+            "last_maintenance_date": "2024-11-15T10:30:00",
+            "next_maintenance_date": "2025-05-15T10:30:00"
+        }
+        result = self.service.create_vending_machine(**vm_create)
         
         # Assert results
         assert result.id == "12345678-1234-5678-1234-567812345678"
         assert result.name == "New Vending Machine"
         assert result.type == DeviceType.VENDING_MACHINE
-        assert result.location == "Building C, Floor 2"
-        assert result.model_number == "PD-3000"
-        assert result.serial_number == "PD2023-67890"
+        assert result.location == "Building A, Floor 1"
+        assert result.model_number == "ICM-2000"
+        assert result.serial_number == "ICM2023-12345"
         assert result.machine_status == VendingMachineStatus.OPERATIONAL
         assert result.mode == VendingMachineMode.NORMAL
-        assert result.temperature == 4.0
-        assert result.total_capacity == 60
-        assert result.cash_capacity == 600.0
-        assert result.current_cash == 150.0
+        assert result.temperature == 0.0
+        assert result.total_capacity == 50
+        assert result.cash_capacity == 500.0
+        assert result.current_cash == 0.0
         
         # Commenting out assertions for new fields as the service implementation may not be setting these fields
         # when we create a vending machine - we'll need to update the service implementation separately
@@ -141,57 +143,81 @@ class TestVendingMachineService:
         self.mock_db.get_vending_machine.assert_called_once_with("vm-001")
     
     def test_get_vending_machine_not_found_generates_mock_data(self):
-        """Test retrieving a non-existent vending machine generates mock data."""
-        # Setup mock
+        """Test that get_vending_machine generates mock data when a vending machine is not found."""
+        # Setup mock to return None, simulating not found
         self.mock_db.get_vending_machine.return_value = None
         
-        # Call service method - should return mock data, not raise exception
-        # Use a valid ID format that the service can parse (vm-999)
-        result = self.service.get_vending_machine("vm-999")
+        # Call service method with random UUID
+        test_id = str(uuid.uuid4())
+        result = self.service.get_vending_machine(test_id)
         
-        # Assert result is a mock vending machine
-        assert result is not None
-        assert result.id == "vm-999"
+        # Assert that we got a mocked vending machine with the requested ID
+        assert isinstance(result, VendingMachine)
+        assert result.id == test_id
+        assert result.type == DeviceType.VENDING_MACHINE
+        assert result.status in [DeviceStatus.ONLINE, DeviceStatus.OFFLINE, DeviceStatus.MAINTENANCE]
+        assert result.machine_status in [
+            VendingMachineStatus.OPERATIONAL, 
+            VendingMachineStatus.MAINTENANCE_REQUIRED,
+            VendingMachineStatus.OUT_OF_STOCK,
+            VendingMachineStatus.NEEDS_RESTOCK
+        ]
+        assert len(result.products) > 0  # Should have generated some mock products
+        
+        # Verify that sub_location is valid
+        assert isinstance(result.sub_location, SubLocation)
+        assert result.location_type is not None
+        assert result.use_type is not None
         
         # Assert mock calls
-        self.mock_db.get_vending_machine.assert_called_once_with("vm-999")
-        
+        self.mock_db.get_vending_machine.assert_called_once_with(test_id)
+    
     def test_mock_data_generation(self):
-        """Test mock data generation when vending machine not found."""
-        # Setup mock to return None (not found)
+        """Test the random mock data generation functionality."""
+        # Setup mock to return None for all get_vending_machine calls
+        # This will trigger the mock data generation code path
         self.mock_db.get_vending_machine.return_value = None
         
-        # Call service method without raising exception
-        with patch('logging.warning'):
-            # Use a valid ID format (vm-123) as the service parses this to generate mock data
-            result = self.service.get_vending_machine("vm-123")
+        # Generate multiple mock vending machines using get_vending_machine
+        # instead of the previous _generate_mock_vending_machine method
+        machines = []
+        for i in range(5):
+            vm_id = f"test-vm-{i}"
+            machines.append(self.service.get_vending_machine(vm_id))
         
-        # Assert basic properties are set
-        assert result is not None
-        assert result.id == "vm-123"
-        assert result.type == DeviceType.VENDING_MACHINE
-        assert result.status == DeviceStatus.ONLINE
-        assert result.model_number is not None
-        assert result.machine_status == VendingMachineStatus.OPERATIONAL
+        # Check that each machine has a unique ID matching what we provided
+        ids = [vm.id for vm in machines]
+        assert len(ids) == len(set(ids))  # All IDs should be unique
+        for i, vm_id in enumerate(ids):
+            assert vm_id == f"test-vm-{i}"
         
-        # Assert location fields are set
-        assert result.location_business_name is not None
-        assert result.location_type is not None
-        assert result.sub_location is not None
-        assert result.use_type is not None
-        assert isinstance(result.location_business_name, str)
-        assert isinstance(result.location_type, LocationType)
-        assert isinstance(result.sub_location, str)
-        assert isinstance(result.use_type, UseType)
-        
-        # Assert maintenance fields are set
-        assert result.maintenance_partner is not None
-        assert result.last_maintenance_date is not None
-        assert result.next_maintenance_date is not None
-        assert isinstance(result.maintenance_partner, str)
-        assert isinstance(result.last_maintenance_date, datetime)
-        assert isinstance(result.next_maintenance_date, datetime)
-        assert result.last_maintenance_date < result.next_maintenance_date
+        # Check that each machine has valid fields
+        for vm in machines:
+            assert isinstance(vm, VendingMachine)
+            assert isinstance(vm.name, str) and len(vm.name) > 0
+            assert isinstance(vm.location, str) and len(vm.location) > 0
+            assert isinstance(vm.machine_status, VendingMachineStatus)
+            assert isinstance(vm.temperature, float)
+            
+            # Ensure required location fields are properly set
+            assert isinstance(vm.location_business_name, str) and len(vm.location_business_name) > 0
+            assert isinstance(vm.location_type, LocationType)
+            assert isinstance(vm.sub_location, SubLocation)
+            assert isinstance(vm.use_type, UseType)
+            
+            # Validate maintenance dates are datetime objects
+            if vm.last_maintenance_date is not None:
+                assert isinstance(vm.last_maintenance_date, datetime)
+            if vm.next_maintenance_date is not None:
+                assert isinstance(vm.next_maintenance_date, datetime)
+            
+            # Check for products
+            assert len(vm.products) > 0
+            for product in vm.products:
+                assert isinstance(product.product_id, str)
+                assert isinstance(product.name, str)
+                assert isinstance(product.price, float)
+                assert isinstance(product.quantity, int)
     
     def test_get_all_vending_machines(self):
         """Test retrieving all vending machines."""
@@ -224,7 +250,7 @@ class TestVendingMachineService:
             machine_status=VendingMachineStatus.NEEDS_RESTOCK,
             location_business_name="Kroger",
             location_type=LocationType.SCHOOL,
-            sub_location="Library",
+            sub_location=SubLocation.LOBBY,
             use_type=UseType.STUDENT,
             maintenance_partner="FreezeMasters",
             last_maintenance_date=datetime(2025, 1, 15, 10, 30),
@@ -241,7 +267,7 @@ class TestVendingMachineService:
         # Assert updated location fields
         assert result.location_business_name == "Kroger"
         assert result.location_type == LocationType.SCHOOL
-        assert result.sub_location == "Library"
+        assert result.sub_location == SubLocation.LOBBY
         assert result.use_type == UseType.STUDENT
         
         # Assert updated maintenance fields

@@ -5,13 +5,15 @@
     "type": "water_heater",
     "status": "ONLINE",
     "location": "Warehouse - None",
-    "last_seen": "2025-03-26 16:42:48.739799",
+    "last_seen": "2025-03-27 10:21:00.419909",
     "target_temperature": 52.4,
-    "current_temperature": 50.1,
+    "current_temperature": 54.4,
     "min_temperature": 40.0,
     "max_temperature": 85.0,
     "mode": "ECO",
-    "heater_status": "HEATING",
+    "heater_status": "STANDBY",
+    "heater_type": "Residential",
+    "specification_link": null,
     "capacity": 120.0,
     "efficiency_rating": 0.9,
     "readings": [
@@ -98,8 +100,16 @@
         "pressure": 1.9,
         "energy_usage": 1101.0,
         "flow_rate": 0.9
+      },
+      {
+        "timestamp": "2025-03-27 10:21:00.419909",
+        "temperature": 54.4,
+        "pressure": null,
+        "energy_usage": null,
+        "flow_rate": null
       }
-    ]
+    ],
+    "diagnostic_codes": []
   },
   "wh-9de45793": {
     "id": "wh-9de45793",
@@ -114,6 +124,8 @@
     "max_temperature": 85.0,
     "mode": "OFF",
     "heater_status": "STANDBY",
+    "heater_type": "Residential",
+    "specification_link": null,
     "capacity": null,
     "efficiency_rating": null,
     "readings": [
@@ -222,7 +234,8 @@
         "energy_usage": 2480.0,
         "flow_rate": 11.3
       }
-    ]
+    ],
+    "diagnostic_codes": []
   },
   "wh-1f63b1bf": {
     "id": "wh-1f63b1bf",
@@ -230,13 +243,15 @@
     "type": "water_heater",
     "status": "ONLINE",
     "location": "R&D Lab - Guest Bathroom",
-    "last_seen": "2025-03-26 16:42:48.739974",
+    "last_seen": "2025-03-27 10:35:13.467349",
     "target_temperature": 63.5,
-    "current_temperature": 61.1,
+    "current_temperature": 65.5,
     "min_temperature": 40.0,
     "max_temperature": 85.0,
     "mode": "OFF",
-    "heater_status": "HEATING",
+    "heater_status": "STANDBY",
+    "heater_type": "Residential",
+    "specification_link": null,
     "capacity": null,
     "efficiency_rating": 0.9,
     "readings": [
@@ -337,8 +352,16 @@
         "pressure": 3.0,
         "energy_usage": 2291.0,
         "flow_rate": 2.1
+      },
+      {
+        "timestamp": "2025-03-27 10:35:13.467349",
+        "temperature": 65.5,
+        "pressure": null,
+        "energy_usage": null,
+        "flow_rate": null
       }
-    ]
+    ],
+    "diagnostic_codes": []
   },
   "wh-291248df": {
     "id": "wh-291248df",
@@ -353,6 +376,8 @@
     "max_temperature": 85.0,
     "mode": "BOOST",
     "heater_status": "STANDBY",
+    "heater_type": "Residential",
+    "specification_link": null,
     "capacity": 150.0,
     "efficiency_rating": 0.92,
     "readings": [
@@ -426,7 +451,8 @@
         "energy_usage": 2028.0,
         "flow_rate": 0.0
       }
-    ]
+    ],
+    "diagnostic_codes": []
   },
   "wh-7c59cd8d": {
     "id": "wh-7c59cd8d",
@@ -441,6 +467,8 @@
     "max_temperature": 85.0,
     "mode": "ECO",
     "heater_status": "STANDBY",
+    "heater_type": "Residential",
+    "specification_link": null,
     "capacity": 100.0,
     "efficiency_rating": 0.85,
     "readings": [
@@ -542,7 +570,8 @@
         "energy_usage": 2492.0,
         "flow_rate": 5.7
       }
-    ]
+    ],
+    "diagnostic_codes": []
   },
   "wh-58b7bcc6": {
     "id": "wh-58b7bcc6",
@@ -550,13 +579,15 @@
     "type": "water_heater",
     "status": "ONLINE",
     "location": "Main Office - Suite 101",
-    "last_seen": "2025-03-26 16:42:48.740227",
+    "last_seen": "2025-03-27 10:41:48.656076",
     "target_temperature": 52.7,
-    "current_temperature": 50.7,
+    "current_temperature": 54.7,
     "min_temperature": 40.0,
     "max_temperature": 85.0,
     "mode": "ECO",
-    "heater_status": "HEATING",
+    "heater_status": "STANDBY",
+    "heater_type": "Residential",
+    "specification_link": null,
     "capacity": null,
     "efficiency_rating": 0.85,
     "readings": [
@@ -636,8 +667,16 @@
         "pressure": 2.8,
         "energy_usage": 1686.0,
         "flow_rate": 0.3
+      },
+      {
+        "timestamp": "2025-03-27 10:41:48.656076",
+        "temperature": 54.7,
+        "pressure": null,
+        "energy_usage": null,
+        "flow_rate": null
       }
-    ]
+    ],
+    "diagnostic_codes": []
   },
   "wh-0bcd2aae": {
     "id": "wh-0bcd2aae",
@@ -652,6 +691,8 @@
     "max_temperature": 85.0,
     "mode": "ECO",
     "heater_status": "STANDBY",
+    "heater_type": "Residential",
+    "specification_link": null,
     "capacity": 120.0,
     "efficiency_rating": 0.9,
     "readings": [
@@ -746,7 +787,8 @@
         "energy_usage": 2176.0,
         "flow_rate": 10.3
       }
-    ]
+    ],
+    "diagnostic_codes": []
   },
   "wh-a764d328": {
     "id": "wh-a764d328",
@@ -761,6 +803,8 @@
     "max_temperature": 85.0,
     "mode": "OFF",
     "heater_status": "STANDBY",
+    "heater_type": "Residential",
+    "specification_link": null,
     "capacity": 120.0,
     "efficiency_rating": 0.95,
     "readings": [
@@ -932,6 +976,7 @@
         "energy_usage": 1453.0,
         "flow_rate": 0.0
       }
-    ]
+    ],
+    "diagnostic_codes": []
   }
 }

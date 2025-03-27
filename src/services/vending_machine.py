@@ -11,6 +11,7 @@ from src.models.vending_machine import (
     VendingMachineMode,
     LocationType,
     UseType,
+    SubLocation,
     ProductItem,
     VendingMachineReading,
     VendingMachine
@@ -161,14 +162,14 @@ class VendingMachineService:
             # Use hash for consistent, deterministic selection rather than trying to convert the ID to an integer
             location_type = location_types[hash(vm_id) % len(location_types)]
             
-            # Set sub-location based on location type
+            # Set sub-location based on location type using SubLocation enum values
             sub_locations = {
-                LocationType.RETAIL: ["Entrance", "Checkout Area", "Food Court", "Electronics Dept"],
-                LocationType.OFFICE: ["Lobby", "Break Room", "Cafeteria", "Conference Area"],
-                LocationType.SCHOOL: ["Student Center", "Gymnasium", "Library", "Administration Building"],
-                LocationType.HOSPITAL: ["Main Lobby", "ER Waiting Room", "Cafeteria", "Staff Lounge"],
-                LocationType.TRANSPORTATION: ["Main Terminal", "Waiting Area", "Ticketing Area", "Food Court"],
-                LocationType.OTHER: ["Main Area", "Lounge", "Entrance", "Public Space"]
+                LocationType.RETAIL: [SubLocation.HALLWAY, SubLocation.LOBBY, SubLocation.DINING_AREA, SubLocation.WAITING_AREA],
+                LocationType.OFFICE: [SubLocation.LOBBY, SubLocation.BREAK_ROOM, SubLocation.CAFETERIA, SubLocation.HALLWAY],
+                LocationType.SCHOOL: [SubLocation.CAFETERIA, SubLocation.HALLWAY, SubLocation.LOBBY, SubLocation.DINING_AREA],
+                LocationType.HOSPITAL: [SubLocation.LOBBY, SubLocation.WAITING_AREA, SubLocation.CAFETERIA, SubLocation.BREAK_ROOM],
+                LocationType.TRANSPORTATION: [SubLocation.LOBBY, SubLocation.WAITING_AREA, SubLocation.HALLWAY, SubLocation.DINING_AREA],
+                LocationType.OTHER: [SubLocation.HALLWAY, SubLocation.BREAK_ROOM, SubLocation.LOBBY, SubLocation.WAITING_AREA]
             }
             sub_location = random.choice(sub_locations[location_type])
             

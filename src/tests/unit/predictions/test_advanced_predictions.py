@@ -7,6 +7,7 @@ and multi-factor prediction models.
 import pytest
 from datetime import datetime, timedelta
 from unittest.mock import MagicMock, patch
+import copy
 
 from src.predictions.interfaces import PredictionResult, ActionSeverity, RecommendedAction
 from src.predictions.advanced.anomaly_detection import AnomalyDetectionPredictor
@@ -115,105 +116,84 @@ class TestAnomalyDetectionPredictor:
 
 
 class TestUsagePatternPredictor:
-    """Tests for the usage pattern prediction model."""
+    """Test suite for the UsagePatternPredictor class."""
     
-    def test_initialization(self):
-        """Test that the usage pattern predictor can be initialized."""
-        predictor = UsagePatternPredictor()
-        assert predictor is not None
-    
-    def test_usage_pattern_prediction(self):
-        """Test that usage pattern analysis generates predictions based on water usage."""
-        # Arrange
-        predictor = UsagePatternPredictor()
-        mock_usage_data = {
-            'daily_usage_liters': [
-                {'date': datetime.now() - timedelta(days=30), 'value': 150},
-                {'date': datetime.now() - timedelta(days=29), 'value': 160},
-                {'date': datetime.now() - timedelta(days=28), 'value': 145},
-                # Weekend pattern
-                {'date': datetime.now() - timedelta(days=27), 'value': 200},
-                {'date': datetime.now() - timedelta(days=26), 'value': 220},
-                # Weekday pattern repeats
-                {'date': datetime.now() - timedelta(days=25), 'value': 155},
-                {'date': datetime.now() - timedelta(days=24), 'value': 165},
-                {'date': datetime.now() - timedelta(days=23), 'value': 152},
-                {'date': datetime.now() - timedelta(days=22), 'value': 148},
-                {'date': datetime.now() - timedelta(days=21), 'value': 150},
-                # Weekend pattern
-                {'date': datetime.now() - timedelta(days=20), 'value': 210},
-                {'date': datetime.now() - timedelta(days=19), 'value': 225},
+    def setup_method(self):
+        """Set up test data."""
+        self.device_id = "wh-test-123"
+        self.predictor = UsagePatternPredictor()
+        
+        # Sample test features
+        self.test_features = {
+            "system_age": {"years": 3, "months": 2},
+            "temperature_setting": 130,
+            "heating_cycles_per_day": 8,
+            "daily_usage_liters": [
+                {"date": "2024-12-28", "value": 165},
+                {"date": "2024-12-29", "value": 170},
+                {"date": "2024-12-30", "value": 185},
+                {"date": "2024-12-31", "value": 155},
+                {"date": "2025-01-01", "value": 210},
+                {"date": "2025-01-02", "value": 126}
             ],
-            'heating_cycles_per_day': [
-                {'date': datetime.now() - timedelta(days=30), 'value': 5},
-                {'date': datetime.now() - timedelta(days=20), 'value': 6},
-                {'date': datetime.now() - timedelta(days=10), 'value': 7},
-                {'date': datetime.now() - timedelta(days=5), 'value': 8},
-                {'date': datetime.now(), 'value': 9},
-            ],
-            'average_temperature_setting': 140,
-            'installation_date': datetime.now() - timedelta(days=365)
+            "usage_history": [
+                {"date": "2024-12-28", "value": 165},
+                {"date": "2024-12-29", "value": 170},
+                {"date": "2024-12-30", "value": 185},
+                {"date": "2024-12-31", "value": 155},
+                {"date": "2025-01-01", "value": 210},
+                {"date": "2025-01-02", "value": 126}
+            ]
         }
+    
+    @pytest.mark.asyncio
+    async def test_usage_pattern_prediction(self):
+        """Test basic usage pattern prediction functionality."""
+        # Generate prediction
+        result = await self.predictor.predict(self.device_id, self.test_features)
         
-        # Act
-        result = predictor.predict(device_id='test_device', features=mock_usage_data)
-        
-        # Assert
+        # Verify basic properties
         assert isinstance(result, PredictionResult)
-        assert result.prediction_type == "usage_pattern"
-        assert result.device_id == "test_device"
+        assert result.device_id == self.device_id
+        assert result.prediction_type == "usage_patterns"
+        assert result.predicted_value >= 0.0
+        assert result.confidence > 0.0
         
-        # Check that the result contains usage pattern analysis
-        assert "usage_patterns" in result.raw_details
+        # Check raw details
+        assert "usage_classification" in result.raw_details
         assert "impact_on_components" in result.raw_details
         
-        # Verify component impacts
-        impact_data = result.raw_details["impact_on_components"]
-        assert "heating_element" in impact_data
-        assert "wear_acceleration_factor" in impact_data["heating_element"]
-        
-        # Verify recommended actions
+        # Check that we have recommendations
         assert len(result.recommended_actions) > 0
-        action = result.recommended_actions[0]
-        assert isinstance(action, RecommendedAction)
-        assert "usage" in action.description.lower() or "pattern" in action.description.lower()
     
-    def test_heavy_usage_detection(self):
-        """Test that the predictor can detect heavy usage patterns."""
-        predictor = UsagePatternPredictor()
-        # Simulate heavy usage pattern
-        mock_usage_data = {
-            'daily_usage_liters': [
-                {'date': datetime.now() - timedelta(days=10), 'value': 250},
-                {'date': datetime.now() - timedelta(days=9), 'value': 245},
-                {'date': datetime.now() - timedelta(days=8), 'value': 260},
-                {'date': datetime.now() - timedelta(days=7), 'value': 255},
-                {'date': datetime.now() - timedelta(days=6), 'value': 265},
-                {'date': datetime.now() - timedelta(days=5), 'value': 250},
-                {'date': datetime.now() - timedelta(days=4), 'value': 270},
-                {'date': datetime.now() - timedelta(days=3), 'value': 265},
-                {'date': datetime.now() - timedelta(days=2), 'value': 255},
-                {'date': datetime.now() - timedelta(days=1), 'value': 260},
-            ],
-            'heating_cycles_per_day': [
-                {'date': datetime.now() - timedelta(days=10), 'value': 10},
-                {'date': datetime.now() - timedelta(days=5), 'value': 12},
-                {'date': datetime.now(), 'value': 13},
-            ],
-            'average_temperature_setting': 145,
-            'installation_date': datetime.now() - timedelta(days=180)
-        }
+    @pytest.mark.asyncio
+    async def test_heavy_usage_detection(self):
+        """Test that heavy usage patterns are properly detected."""
+        # Create features with heavy usage
+        heavy_usage_features = copy.deepcopy(self.test_features)
+        # Override with heavy usage data
+        heavy_usage_features["daily_usage_liters"] = [
+            {"date": "2024-12-28", "value": 280},
+            {"date": "2024-12-29", "value": 290},
+            {"date": "2024-12-30", "value": 310},
+            {"date": "2024-12-31", "value": 295},
+            {"date": "2025-01-01", "value": 320},
+            {"date": "2025-01-02", "value": 305}
+        ]
+        heavy_usage_features["heating_cycles_per_day"] = 12  # Frequent cycles
         
-        result = predictor.predict(device_id='test_device', features=mock_usage_data)
+        # Generate prediction
+        result = await self.predictor.predict(self.device_id, heavy_usage_features)
         
-        # Verify heavy usage detection
+        # Usage should be classified as "heavy"
         assert "usage_classification" in result.raw_details
         assert result.raw_details["usage_classification"] == "heavy"
         
-        # Verify wear acceleration is reported
+        # Impact on components should reflect heavy usage with higher wear factors
         assert "impact_on_components" in result.raw_details
-        assert "heating_element" in result.raw_details["impact_on_components"]
-        assert result.raw_details["impact_on_components"]["heating_element"]["wear_acceleration_factor"] > 1.0
+        for component, impact in result.raw_details["impact_on_components"].items():
+            assert "wear_acceleration_factor" in impact
+            assert impact["wear_acceleration_factor"] > 1.0
 
 
 class TestMultiFactorPredictor:

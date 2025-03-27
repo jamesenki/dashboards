@@ -103,8 +103,8 @@ class TestWaterHeaterAPI:
     @patch('src.api.water_heater.router.service')
     def test_get_water_heater_not_found(self, mock_service, client):
         """Test getting a non-existent water heater."""
-        # Mock the service method
-        mock_service.get_water_heater = AsyncMock(return_value=None)
+        # Mock the service method to raise an exception
+        mock_service.get_water_heater = AsyncMock(side_effect=Exception("Water heater not found"))
         
         # Make the request
         response = client.get("/api/water-heaters/nonexistent-id")
