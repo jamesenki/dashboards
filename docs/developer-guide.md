@@ -356,17 +356,72 @@ def test_end_to_end_consistency():
     # Additional assertions...
 ```
 
-### Real-time vs. Historical Focus
+### Tab System Architecture
 
-Our dashboard implementation follows these principles:
+IoTSphere uses a centralized TabManager system for dashboard navigation and component lifecycle management. See the full documentation in `docs/tab-manager.md`.
 
-- **Operations Tab**: Focuses on real-time operational monitoring with status cards, gauges, and asset health metrics
-- **History Tab**: Provides historical analysis through time-series charts for temperature, energy usage, and pressure/flow metrics
+#### Key Principles
 
-When extending either tab, maintain this separation of concerns:
+1. **Component Registration**: Each dashboard component must register with the TabManager
+2. **Reload Method**: All components must implement a `reload()` method that's called when a tab is activated
+3. **Visibility Management**: Components should handle their own visibility
+4. **Error Recovery**: Components should include robust error handling
+
+#### Example Implementation
+
+```javascript
+// In your dashboard component
+class MyDashboard {
+  constructor() {
+    // Register with TabManager
+    window.tabManager.registerComponent('my-tab', this, 'my-dashboard');
+  }
+  
+  // Called when tab is activated
+  reload() {
+    try {
+      // Load/refresh data
+      this.fetchData();
+      return true;
+    } catch (error) {
+      console.error('Error in reload:', error);
+      return false;
+    }
+  }
+}
+```
+
+### Water Heater Dashboards
+
+Our water heater dashboard implementation has the following tabs:
+
+- **Details Tab**: Basic information and configuration
+- **Operations Tab**: Real-time operational monitoring with status cards, gauges, and asset health metrics
+- **Predictions Tab**: Predictive analytics with lifespan estimation, anomaly detection, and recommended actions
+- **History Tab**: Historical analysis through time-series charts for temperature, energy usage, and pressure/flow metrics
+
+When extending any tab, maintain the separation of concerns:
 
 1. Operations tab should answer: "What is happening right now?"
-2. History tab should answer: "What has happened over time?"
+2. Predictions tab should answer: "What will happen in the future?"
+3. History tab should answer: "What has happened over time?"
+
+#### Prediction Features
+
+The Predictions tab includes:
+- Lifespan estimation cards
+- Anomaly detection
+- Usage pattern analysis
+- Multi-factor predictions
+- "Take Action" buttons for ServiceCow integration
+
+#### Operation Features
+
+The Operations tab includes:
+- Real-time status monitoring
+- Temperature gauges
+- Pressure and flow metrics
+- Asset health indicators
 
 ## Debugging Tips
 

@@ -34,6 +34,12 @@ class WaterHeaterPredictionsDashboard {
     
     // Start data loading immediately
     this.initializeData();
+    
+    // Initialize prediction storage service if available
+    this.predictionStorage = window.predictionStorage || null;
+    if (!this.predictionStorage) {
+      console.warn('Prediction storage service not available - predictions will not be stored');
+    }
   }
   
   /**
@@ -131,14 +137,29 @@ class WaterHeaterPredictionsDashboard {
   }
   
   /**
-   * Fetch all prediction data from the API
+   * Fetch all prediction data from the API and store results in the database
+   * for historical analysis and AI training
    */
+  
   /**
    * Sequentially reload each prediction card with slight delays between each
    * This ensures each card's data loads properly without race conditions
    */
   sequentialReload() {
     console.log('Starting sequential reload of all prediction cards');
+    
+    // Make sure prediction content is visible
+    const predictionsContent = document.getElementById('predictions-content');
+    if (predictionsContent) {
+      predictionsContent.style.display = 'block';
+      predictionsContent.style.visibility = 'visible';
+    }
+    
+    // Reset fetching flags to allow new requests
+    this.fetchingLifespan = false;
+    this.fetchingAnomaly = false;
+    this.fetchingUsage = false;
+    this.fetchingMultiFactor = false;
     
     // Fetch lifespan prediction first
     setTimeout(() => {
@@ -160,6 +181,12 @@ class WaterHeaterPredictionsDashboard {
             console.log('Sequential reload: Fetching multi-factor analysis');
             this.fetchMultiFactorPrediction();
             console.log('Sequential reload complete');
+            
+            // Update the load status timestamp
+            if (window.predictionLoadStatus) {
+              window.predictionLoadStatus.timestamp = new Date().getTime();
+              window.predictionLoadStatus.completed = true;
+            }
           }, 300);
         }, 300);
       }, 300);
@@ -230,6 +257,8 @@ class WaterHeaterPredictionsDashboard {
           if (data.lifespan_estimation) {
             this.lifespanPrediction = data.lifespan_estimation;
             this.renderLifespanPrediction();
+            // Store lifespan prediction for historical analysis
+            this.storePrediction('lifespan-estimation', data.lifespan_estimation);
           } else {
             console.warn('No lifespan estimation data received');
             this.showError('Lifespan estimation data unavailable', 'lifespan');
@@ -243,6 +272,8 @@ class WaterHeaterPredictionsDashboard {
           if (data.anomaly_detection) {
             this.anomalyDetection = data.anomaly_detection;
             this.renderAnomalyDetection();
+            // Store anomaly detection for historical analysis
+            this.storePrediction('anomaly-detection', data.anomaly_detection);
           } else {
             console.warn('No anomaly detection data received');
             this.showError('Anomaly detection data unavailable', 'anomaly');
@@ -256,6 +287,8 @@ class WaterHeaterPredictionsDashboard {
           if (data.usage_patterns) {
             this.usagePatterns = data.usage_patterns;
             this.renderUsagePatterns();
+            // Store usage patterns for historical analysis
+            this.storePrediction('usage-patterns', data.usage_patterns);
           } else {
             console.warn('No usage patterns data received');
             this.showError('Usage patterns data unavailable', 'usage');
@@ -269,6 +302,8 @@ class WaterHeaterPredictionsDashboard {
           if (data.multi_factor) {
             this.multiFactor = data.multi_factor;
             this.renderMultiFactorPrediction();
+            // Store multi-factor prediction for historical analysis
+            this.storePrediction('multi-factor', data.multi_factor);
           } else {
             console.warn('No multi-factor analysis data received');
             this.showError('Multi-factor analysis data unavailable', 'multi-factor');
@@ -362,6 +397,34 @@ class WaterHeaterPredictionsDashboard {
   }
   
   /**
+   * Store a prediction in the database for historical analysis
+   * @param {string} predictionType - Type of prediction (lifespan-estimation, anomaly-detection, etc.)
+   * @param {Object} data - Prediction data to store
+   */
+  storePrediction(predictionType, data) {
+    if (!this.predictionStorage) {
+      // Storage service not available, skip
+      return;
+    }
+    
+    try {
+      this.predictionStorage.storePrediction(this.deviceId, predictionType, data)
+        .then(result => {
+          if (result.success === false) {
+            console.warn(`Failed to store ${predictionType} prediction: ${result.error}`);
+          } else {
+            console.log(`Successfully stored ${predictionType} prediction for device ${this.deviceId}`);
+          }
+        })
+        .catch(error => {
+          console.error(`Error storing ${predictionType} prediction:`, error);
+        });
+    } catch (error) {
+      console.error('Error in prediction storage:', error);
+    }
+  }
+  
+  /**
    * Fetch the lifespan prediction data from the API
    */
   fetchLifespanPrediction() {
@@ -392,6 +455,9 @@ class WaterHeaterPredictionsDashboard {
         console.log('Received lifespan prediction data:', response);
         this.lifespanPrediction = response;
         this.renderLifespanPrediction();
+        
+        // Store lifespan prediction for historical analysis
+        this.storePrediction('lifespan-estimation', response);
       })
       .catch(error => {
         console.error('Error fetching lifespan prediction:', error);
@@ -438,6 +504,9 @@ class WaterHeaterPredictionsDashboard {
       .then(response => {
         this.anomalyDetection = response;
         this.renderAnomalyDetection();
+        
+        // Store anomaly detection for historical analysis
+        this.storePrediction('anomaly-detection', response);
       })
       .catch(error => {
         console.error('Error fetching anomaly detection:', error);
@@ -484,6 +553,9 @@ class WaterHeaterPredictionsDashboard {
       .then(response => {
         this.usagePatterns = response;
         this.renderUsagePatterns();
+        
+        // Store usage patterns for historical analysis
+        this.storePrediction('usage-patterns', response);
         
         // Check if recommendations exist and make sure they are displayed
         if (response.recommended_actions && response.recommended_actions.length > 0) {
@@ -538,6 +610,9 @@ class WaterHeaterPredictionsDashboard {
       .then(response => {
         this.multiFactor = response;
         this.renderMultiFactorPrediction();
+        
+        // Store multi-factor prediction for historical analysis
+        this.storePrediction('multi-factor', response);
       })
       .catch(error => {
         console.error('Error fetching multi-factor prediction:', error);
@@ -1739,10 +1814,120 @@ class WaterHeaterPredictionsDashboard {
             </div>
           ` : ''}
         </div>
+        <div class="action-buttons" style="display: flex; justify-content: flex-end; margin-top: 12px;">
+          <button class="btn btn-primary take-action-btn" data-action-id="${action.id || ''}" data-action-type="${type}">
+            <i class="fas fa-tools mr-1"></i> Take Action
+          </button>
+        </div>
       `;
       
       container.appendChild(actionElement);
     });
+    
+    // Add event listeners to all take action buttons
+    this.addTakeActionButtonListeners(container);
+  }
+  
+  /**
+   * Add event listeners to Take Action buttons
+   * @param {HTMLElement} container - Container element with the buttons
+   */
+  addTakeActionButtonListeners(container) {
+    const buttons = container.querySelectorAll('.take-action-btn');
+    
+    buttons.forEach(button => {
+      button.addEventListener('click', (event) => {
+        // Prevent event bubbling
+        event.preventDefault();
+        event.stopPropagation();
+        
+        // Get data attributes
+        const actionId = button.getAttribute('data-action-id');
+        const actionType = button.getAttribute('data-action-type');
+        
+        // Log the action for analytics
+        console.log(`Take action clicked for ${actionType} action ID: ${actionId}`);
+        
+        // Open the ServiceCow integration page in a new window/tab
+        const serviceCowWindow = window.open('/static/service-cow-integration.html', 'ServiceCowIntegration', 
+          'width=600,height=500,resizable=yes,scrollbars=yes,status=yes');
+        
+        // Optional: Focus the new window
+        if (serviceCowWindow) {
+          serviceCowWindow.focus();
+        }
+      });
+    });
+  }
+  
+  /**
+   * TabManager reload method - Called when the Predictions tab is activated
+   * This method is critical for tab integration and must be present for proper tab switching
+   * 
+   * @returns {boolean} Success status of the reload operation
+   */
+  reload() {
+    try {
+      console.log('Predictions Dashboard: Reload method called by TabManager');
+      
+      // Ensure the UI is visible - following TabManager visibility pattern
+      this.ensureUIVisible();
+      
+      // Don't fetch new data if we loaded recently (within 2 minutes)
+      // This prevents unnecessary API calls when rapidly switching tabs
+      const now = new Date().getTime();
+      const lastLoadTime = window.predictionLoadStatus?.timestamp || 0;
+      const timeElapsed = now - lastLoadTime;
+      
+      if (!this.dataInitialized || !lastLoadTime || timeElapsed > 120000) {
+        // More than 2 minutes since last load, do a full reload of all prediction data
+        console.log(`Predictions data last loaded ${Math.round(timeElapsed/1000)}s ago, performing full reload`);
+        
+        // We'll use our sequential reload method to ensure all cards load properly
+        this.sequentialReload();
+      } else {
+        // For frequent tab switches, just refresh UI with existing data
+        console.log(`Predictions data loaded ${Math.round(timeElapsed/1000)}s ago, refreshing UI only`);
+        
+        // Make sure all cards are up to date with current data
+        if (this.lifespanPrediction) this.renderLifespanPrediction();
+        if (this.anomalyDetection) this.renderAnomalyDetection();
+        if (this.usagePatterns) this.renderUsagePatterns();
+        if (this.multiFactor) this.renderMultiFactorPrediction();
+      }
+      
+      return true; // Indicate successful reload initiation per TabManager interface
+    } catch (error) {
+      console.error('Predictions Dashboard: Error during reload:', error);
+      
+      // Try to recover by forcing a full data reload
+      setTimeout(() => {
+        try {
+          console.log('Predictions Dashboard: Attempting recovery');
+          this.fetchPredictionData();
+        } catch (e) {
+          console.error('Predictions Dashboard: Recovery failed', e);
+        }
+      }, 500);
+      
+      return false; // Indicate reload failure for TabManager error handling
+    }
+  }
+  
+  /**
+   * Ensure the predictions UI is visible
+   * Private helper method for the reload process
+   */
+  ensureUIVisible() {
+    // Make sure predictions content is visible
+    const predictionsContent = document.getElementById('predictions-content');
+    if (predictionsContent) {
+      predictionsContent.style.display = 'block';
+      predictionsContent.style.visibility = 'visible';
+    }
+    
+    // Make prediction cards visible for tests and visual rendering
+    this.makeElementsVisibleForTests();
   }
 }
 

@@ -64,12 +64,29 @@ The IoTSphere application follows a client-server architecture with a clear sepa
 │  │             │    │             │    │                     │  │
 │  └─────────────┘    └─────────────┘    └─────────────────────┘  │
 │         │                 │                      │              │
-│         ▼                 ▼                      │              │
-│  ┌─────────────┐    ┌─────────────┐              │              │
-│  │             │    │             │              │              │
-│  │    CSS      │    │  Components │◄─────────────┘              │
-│  │             │    │             │                             │
-│  └─────────────┘    └─────────────┘                             │
+│         ▼                 ▼                      ▼              │
+│  ┌─────────────┐    ┌─────────────┐    ┌─────────────────────┐  │
+│  │             │    │             │    │                     │  │
+│  │    CSS      │    │ TabManager  │───►│ Dashboard Components │  │
+│  │             │    │             │    │                     │  │
+│  └─────────────┘    └─────────────┘    └─────────────────────┘  │
+│                                                │                │
+│                                                ▼                │
+│                     ┌──────────────────────────────────────┐    │
+│                     │           Dashboard Modules          │    │
+│                     │                                      │    │
+│                     │ ┌────────────┐  ┌────────────┐       │    │
+│                     │ │            │  │            │       │    │
+│                     │ │ Operations │  │ Predictions│       │    │
+│                     │ │            │  │            │       │    │
+│                     │ └────────────┘  └────────────┘       │    │
+│                     │                                      │    │
+│                     │ ┌────────────┐  ┌────────────┐       │    │
+│                     │ │            │  │            │       │    │
+│                     │ │  History   │  │  Details   │       │    │
+│                     │ │            │  │            │       │    │
+│                     │ └────────────┘  └────────────┘       │    │
+│                     └──────────────────────────────────────┘    │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -77,8 +94,13 @@ The IoTSphere application follows a client-server architecture with a clear sepa
 1. **Templates**: HTML templates for rendering pages
 2. **JS Core**: Core JavaScript functionality and utilities
 3. **CSS**: Styling and visual presentation
-4. **Components**: Reusable UI components
-5. **API Client**: Handles communication with the backend API
+4. **TabManager**: Centralized tab navigation and component lifecycle management system
+5. **Dashboard Components**: Reusable dashboard UI components that implement the TabManager interface
+6. **Dashboard Modules**:
+   - **Operations**: Real-time operational monitoring with status cards and metrics
+   - **Predictions**: Predictive analytics with action recommendations
+   - **History**: Historical data visualization and analysis
+   - **Details**: Basic device information and configuration
 
 ## Key Design Patterns
 

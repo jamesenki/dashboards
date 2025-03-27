@@ -24,6 +24,8 @@ from src.api.water_heater_operations import router as water_heater_operations_ap
 from src.api.water_heater_history import router as water_heater_history_api_router
 # Predictions API
 from src.api.predictions import router as predictions_api_router
+# Prediction Storage API
+from src.api.prediction_storage import router as prediction_storage_api_router
 # Basic vending machine management API
 from src.api.vending_machine import router as vending_machine_api_router
 # Polar Delight Ice Cream Machine operations API
@@ -107,6 +109,7 @@ api_router.include_router(water_heater_api_router)
 api_router.include_router(water_heater_operations_api_router)
 api_router.include_router(water_heater_history_api_router)
 api_router.include_router(predictions_api_router)
+api_router.include_router(prediction_storage_api_router)
 api_router.include_router(vending_machine_api_router)
 api_router.include_router(ice_cream_machine_operations_api_router)
 api_router.include_router(vending_machine_realtime_operations_api_router)

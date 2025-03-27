@@ -39,12 +39,39 @@ For a local installation:
 
 ## Key Architecture Components
 
+### Dashboard Architecture
+
+Our dashboard architecture consists of several key components:
+
+#### TabManager System
+
+The TabManager is a core UI component that provides:
+
+- **Component Lifecycle Management**: Handles component activation/deactivation
+- **Tab Navigation**: Manages tab switching and visibility
+- **Event Propagation**: Provides a publish/subscribe mechanism for cross-component communication
+- **Error Recovery**: Implements robust error handling and recovery mechanisms
+
+See the full documentation in `docs/tab-manager.md`.
+
+#### Water Heater Dashboard Modules
+
+The Water Heater dashboard is organized into tabbed modules:
+
+- **Details Tab**: Basic device information and configuration
+- **Operations Tab**: Real-time operational monitoring with status cards, gauges, and asset health metrics
+- **Predictions Tab**: Predictive analytics with lifespan estimation, anomaly detection, and recommended actions
+- **History Tab**: Historical analysis through time-series charts for temperature, energy usage, and pressure metrics
+
+See the detailed documentation in `docs/water-heater-dashboard.md`.
+
 ### Real-Time Operational Focus
 
 Our architecture emphasizes real-time operational monitoring rather than historical analytics, as highlighted in ADR-002. Key components include:
 
 - **Real-time Operations API**: Provides current status of devices with minimal latency
 - **Operational Dashboard**: Displays status cards, temperature/energy gauges, and cycle tracking
+- **Predictions Dashboard**: Provides forward-looking analytics with action recommendations
 - **PostgreSQL with TimescaleDB**: Efficiently stores and retrieves time-series data, with graceful degradation if TimescaleDB is not available
 
 ### Test-Driven Development Workflow

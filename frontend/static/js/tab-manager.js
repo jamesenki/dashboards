@@ -153,43 +153,61 @@ class TabManager {
       tabButtons.forEach(btn => {
         // Get tab ID from button ID by removing -tab-btn suffix
         const tabId = btn.id.replace('-tab-btn', '');
-      if (!tabId) return;
-      
-      // Add click handler
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        this.showTab(tabId);
+        if (!tabId) return;
+        
+        // Add click handler
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          this.showTab(tabId);
+        });
+        
+        // Cache button element for faster access
+        this.elements[`${tabId}Button`] = btn;
+        
+        // Initialize component tracking for this tab
+        this.components[tabId] = [];
+        
+        console.log(`TabManager: Setup tab '${tabId}'`);
       });
       
-      // Cache button element for faster access
-      this.elements[`${tabId}Button`] = btn;
+      // Set initial tab based on URL hash or default to first tab
+      let initialTab = null;
       
-      // Initialize component tracking for this tab
-      this.components[tabId] = [];
-      
-      console.log(`TabManager: Setup tab '${tabId}'`);
-    });
-    
-    // Set initial tab based on URL hash or default to first tab
-    let initialTab = null;
-    
-    // Try to get tab ID from URL hash
-    if (window.location.hash) {
-      initialTab = window.location.hash.substring(1);
-      // Verify this tab exists using our element selection method
-      if (!this.getElement(`#${initialTab}-tab-btn`, false)) {
-        initialTab = null;
+      // Try to get tab ID from URL hash
+      if (window.location.hash) {
+        initialTab = window.location.hash.substring(1);
+        // Verify this tab exists using our element selection method
+        if (!this.getElement(`#${initialTab}-tab-btn`, false)) {
+          initialTab = null;
+        }
       }
-    }
-    
-    // If no valid hash tab, use the first tab or predictions for test environment
-    if (!initialTab) {
-      const isTestEnv = window.location.href.includes('localhost:8006');
-      initialTab = isTestEnv ? 'predictions' : (tabButtons[0]?.id.replace('-tab-btn', ''));
-    }
-    
-    // Show the initial tab with a slight delay to ensure DOM is ready
       
+      // If no valid hash tab, use the first tab or predictions for test environment
+      if (!initialTab) {
+        const isTestEnv = window.location.href.includes('localhost:8006');
+        initialTab = isTestEnv ? 'predictions' : (tabButtons[0]?.id.replace('-tab-btn', ''));
+      }
+      
+      // Show the initial tab with a slight delay to ensure DOM is ready
+      if (initialTab) {
+        setTimeout(() => {
+          this.showTab(initialTab);
+        }, 50);
+      }
+      
+      // Listen for hash changes
+      window.addEventListener('hashchange', () => {
+        const tabId = window.location.hash.substring(1);
+        // Use our element selection method to check if tab exists
+        if (tabId && this.getElement(`#${tabId}-tab-btn`, false)) {
+          this.showTab(tabId);
+        }
+      });
+      
+      // Set initialization flag only after successful completion
+      this.initialized = true;
+      console.log('TabManager: Initialization complete');
+      return true;
     } catch (error) {
       this.logger.error('Error during tab system initialization:', error);
       
@@ -201,36 +219,32 @@ class TabManager {
       
       // Try to recover by showing a fallback tab
       try {
+        let fallbackTab = null;
         if (document.getElementById('details-tab-btn')) {
           this.logger.info('Recovering by showing details tab');
-          initialTab = 'details';
+          fallbackTab = 'details';
         } else if (document.querySelector('.tab-btn')) {
           // Get the first available tab as fallback
-          const firstTab = document.querySelector('.tab-btn').id.replace('-tab-btn', '');
-          this.logger.info(`Recovering by showing first available tab: ${firstTab}`);
-          initialTab = firstTab;
+          fallbackTab = document.querySelector('.tab-btn').id.replace('-tab-btn', '');
+          this.logger.info(`Recovering by showing first available tab: ${fallbackTab}`);
+        }
+        
+        if (fallbackTab) {
+          setTimeout(() => {
+            this.showTab(fallbackTab);
+          }, 50);
+          
+          // Set initialization flag even in recovery mode
+          this.initialized = true;
+          console.log('TabManager: Initialization completed in recovery mode');
+          return true;
         }
       } catch (recoveryError) {
         this.logger.error('Error during initialization recovery:', recoveryError);
       }
+      
+      return false;
     }
-    if (initialTab) {
-      setTimeout(() => {
-        this.showTab(initialTab);
-      }, 50);
-    }
-    
-    // Listen for hash changes
-    window.addEventListener('hashchange', () => {
-      const tabId = window.location.hash.substring(1);
-      // Use our element selection method to check if tab exists
-      if (tabId && this.getElement(`#${tabId}-tab-btn`, false)) {
-        this.showTab(tabId);
-      }
-    });
-    
-    this.initialized = true;
-    console.log('TabManager: Initialization complete');
   }
   
   /**

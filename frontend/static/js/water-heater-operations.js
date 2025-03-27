@@ -514,32 +514,59 @@ class WaterHeaterOperationsDashboard {
     reload() {
         console.log('Operations Dashboard: Reload method called by TabManager');
         
-        // Ensure operations content is visible (this should already be handled by TabManager)
-        const operationsContent = document.getElementById('operations-content');
-        if (operationsContent) {
-            console.log('Operations Dashboard: Ensuring content is visible');
-            operationsContent.style.display = 'block';
-            operationsContent.style.visibility = 'visible';
-        }
-        
-        // Reload dashboard data
-        if (this.initialized) {
-            // If already initialized, just refresh data
-            this.loadDashboardData().catch(error => {
-                console.error('Operations Dashboard: Error reloading data', error);
-                this.showError('Failed to refresh operations data');
-            });
+        try {
+            // Ensure operations content is visible (this should already be handled by TabManager)
+            const operationsContent = document.getElementById('operations-content');
+            if (operationsContent) {
+                console.log('Operations Dashboard: Ensuring content is visible');
+                operationsContent.style.display = 'block';
+                operationsContent.style.visibility = 'visible';
+            }
             
-            // Restart periodic updates
-            this.setupPeriodicUpdates();
-        } else {
-            // If not initialized, do full initialization
-            this.initialize().catch(error => {
-                console.error('Operations Dashboard: Error during initialization', error);
-            });
+            // Safe initialization check
+            const safeInitialized = this.initialized === true;
+            console.log(`Operations Dashboard: Initialization status: ${safeInitialized ? 'Initialized' : 'Not initialized'}`);
+            
+            // Reload dashboard data - this is a defensive implementation
+            // that will work even if the initialization state is incorrect
+            if (safeInitialized && typeof this.loadDashboardData === 'function') {
+                // If already initialized, just refresh data
+                console.log('Operations Dashboard: Refreshing data for initialized dashboard');
+                this.loadDashboardData().catch(error => {
+                    console.error('Operations Dashboard: Error reloading data', error);
+                    this.showError('Failed to refresh operations data');
+                });
+                
+                // Restart periodic updates
+                if (typeof this.setupPeriodicUpdates === 'function') {
+                    this.setupPeriodicUpdates();
+                }
+            } else {
+                // If not initialized or in an uncertain state, do full initialization
+                console.log('Operations Dashboard: Performing full initialization');
+                if (typeof this.initialize === 'function') {
+                    this.initialize().catch(error => {
+                        console.error('Operations Dashboard: Error during initialization', error);
+                    });
+                } else {
+                    console.error('Operations Dashboard: Initialize method not found');
+                }
+            }
+            
+            return true; // Indicate successful reload attempt
+        } catch (error) {
+            console.error('Operations Dashboard: Critical error in reload method:', error);
+            // Try recovery
+            setTimeout(() => {
+                console.log('Operations Dashboard: Attempting recovery initialization');
+                try {
+                    this.initialize();
+                } catch (e) {
+                    console.error('Operations Dashboard: Recovery failed', e);
+                }
+            }, 500);
+            return false;
         }
-        
-        return true;
     }
 }
 
