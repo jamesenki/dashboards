@@ -2,13 +2,21 @@
 Component failure prediction model for water heaters.
 
 This module implements prediction of component failures based on
-telemetry data patterns and usage information.
+telemetry data patterns, usage information, and diagnostic code history.
+It provides enhanced predictions by utilizing water heater type information
+and historical diagnostic data.
 """
 from datetime import datetime, timedelta
+import logging
 import numpy as np
 import pandas as pd
 from typing import Dict, List, Any, Optional, Tuple
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 
+from src.db.connection import get_db_session
+from src.db.models import DeviceModel, DiagnosticCodeModel, ReadingModel
+from src.models.water_heater import WaterHeater, WaterHeaterType
 from src.predictions.interfaces import (
     IPredictionModel,
     IActionRecommender,
@@ -28,7 +36,8 @@ class ComponentFailurePrediction(IPredictionModel):
     def __init__(self):
         """Initialize the component failure prediction model."""
         self.model_name = "ComponentFailurePrediction"
-        self.model_version = "1.0.0"
+        self.model_version = "2.0.0"  # Updated version to reflect diagnostic code integration
+        self.logger = logging.getLogger(__name__)
         self.features_required = [
             "temperature", 
             "pressure", 
@@ -36,7 +45,8 @@ class ComponentFailurePrediction(IPredictionModel):
             "flow_rate", 
             "heating_cycles",
             "total_operation_hours",
-            "maintenance_history"
+            "maintenance_history",
+            "diagnostic_codes"  # Added diagnostic codes as a feature
         ]
     
     async def predict(self, device_id: str, features: Dict[str, Any]) -> PredictionResult:
@@ -53,8 +63,19 @@ class ComponentFailurePrediction(IPredictionModel):
         # Extract features into DataFrames for analysis
         telemetry_df = self._prepare_telemetry_data(features)
         
+        # Get water heater type and diagnostic codes if not in features
+        if 'diagnostic_codes' not in features or 'heater_type' not in features:
+            db_features = await self._fetch_device_data_from_db(device_id)
+            features = {**features, **db_features}
+        
         # Calculate component-specific failure probabilities
         component_probabilities = self._calculate_component_probabilities(telemetry_df, features)
+        
+        # Factor in diagnostic codes to adjust component probabilities
+        component_probabilities = self._adjust_with_diagnostic_codes(
+            component_probabilities, 
+            features.get('diagnostic_codes', [])
+        )
         
         # Calculate overall failure probability (weighted average of component probabilities)
         component_weights = {
@@ -64,6 +85,18 @@ class ComponentFailurePrediction(IPredictionModel):
             "anode_rod": 0.1,
             "tank_integrity": 0.1
         }
+        
+        # Adjust weights based on heater type
+        heater_type = features.get('heater_type', WaterHeaterType.RESIDENTIAL)
+        if heater_type == WaterHeaterType.COMMERCIAL:
+            # Commercial heaters have different component importance
+            component_weights = {
+                "heating_element": 0.35,
+                "thermostat": 0.15,
+                "pressure_valve": 0.25,  # More critical in commercial units
+                "anode_rod": 0.10,
+                "tank_integrity": 0.15   # Also more important for commercial
+            }
         
         overall_probability = sum(
             probability * component_weights.get(component, 0.1)
@@ -86,7 +119,8 @@ class ComponentFailurePrediction(IPredictionModel):
             timestamp=datetime.now(),
             recommended_actions=recommendations,
             raw_details={
-                "components": component_probabilities
+                "components": component_probabilities,
+                "heater_type": str(heater_type)
             }
         )
     
@@ -316,12 +350,156 @@ class ComponentFailurePrediction(IPredictionModel):
         if features.get('maintenance_history') and len(features['maintenance_history']) > 0:
             confidence_factors.append(0.1)
         
+        # 5. Diagnostic code availability
+        if features.get('diagnostic_codes') and len(features['diagnostic_codes']) > 0:
+            confidence_factors.append(0.15)  # Diagnostic codes significantly increase confidence
+        
+        # 6. Water heater type known
+        if 'heater_type' in features:
+            confidence_factors.append(0.05)
+        
         # Calculate final confidence score
         confidence = base_confidence + sum(confidence_factors)
         
         # Ensure confidence is between 0 and 1
         return max(0.1, min(0.95, confidence))
     
+    async def _fetch_device_data_from_db(self, device_id: str) -> Dict[str, Any]:
+        """
+        Fetch device type and diagnostic codes from the database.
+        
+        Args:
+            device_id: ID of the water heater to fetch data for
+            
+        Returns:
+            Dictionary with device information including heater_type and diagnostic_codes
+        """
+        result = {
+            'heater_type': WaterHeaterType.RESIDENTIAL,  # Default
+            'diagnostic_codes': []
+        }
+        
+        try:
+            async for session in get_db_session():
+                if session is None:
+                    self.logger.error("Could not establish database session")
+                    return result
+                    
+                # Query device information
+                stmt = (select(DeviceModel)
+                         .where(DeviceModel.id == device_id))
+                device_result = await session.execute(stmt)
+                device = device_result.scalar_one_or_none()
+                
+                if not device:
+                    self.logger.warning(f"Device {device_id} not found in database")
+                    return result
+                
+                # Get water heater type from properties
+                if device.properties and 'heater_type' in device.properties:
+                    heater_type_str = device.properties.get('heater_type', '').upper()
+                    result['heater_type'] = (
+                        WaterHeaterType.COMMERCIAL if heater_type_str == 'COMMERCIAL' 
+                        else WaterHeaterType.RESIDENTIAL
+                    )
+                
+                # Query diagnostic codes for this device
+                stmt = (select(DiagnosticCodeModel)
+                         .where(DiagnosticCodeModel.device_id == device_id))
+                diagnostic_codes_result = await session.execute(stmt)
+                diagnostic_codes = diagnostic_codes_result.scalars().all()
+                
+                if diagnostic_codes:
+                    result['diagnostic_codes'] = [
+                        {
+                            'code': code.code,
+                            'description': code.description,
+                            'severity': code.severity,
+                            'timestamp': code.timestamp
+                        }
+                        for code in diagnostic_codes
+                    ]
+                    
+                    self.logger.info(f"Found {len(diagnostic_codes)} diagnostic codes for device {device_id}")
+                else:
+                    self.logger.info(f"No diagnostic codes found for device {device_id}")
+                    
+        except Exception as e:
+            self.logger.error(f"Error fetching device data: {e}")
+        
+        return result
+    
+    def _adjust_with_diagnostic_codes(self, 
+                                      component_probabilities: Dict[str, float], 
+                                      diagnostic_codes: List[Dict[str, Any]]) -> Dict[str, float]:
+        """
+        Adjust component failure probabilities based on diagnostic codes.
+        
+        Args:
+            component_probabilities: Dictionary mapping components to failure probabilities
+            diagnostic_codes: List of diagnostic codes with code, description, severity, and timestamp
+            
+        Returns:
+            Updated component probabilities
+        """
+        if not diagnostic_codes:
+            return component_probabilities
+            
+        # Create a copy of probabilities to modify
+        adjusted_probabilities = component_probabilities.copy()
+        
+        # Map diagnostic code patterns to components
+        component_code_patterns = {
+            'heating_element': ['HEATING', 'ELEMENT', 'HIGH TEMPERATURE', 'OVERHEATING'],
+            'thermostat': ['THERMOSTAT', 'TEMPERATURE CONTROL', 'TEMP SENSOR'],
+            'pressure_valve': ['PRESSURE', 'VALVE', 'RELIEF VALVE', 'T&P VALVE'],
+            'anode_rod': ['ANODE', 'CORROSION', 'RUST', 'WATER QUALITY'],
+            'tank_integrity': ['LEAK', 'TANK', 'SEAL', 'INTEGRITY', 'WATER LEAK']
+        }
+        
+        # Process each diagnostic code
+        for code_info in diagnostic_codes:
+            code = code_info.get('code', '')
+            description = code_info.get('description', '')
+            severity = code_info.get('severity', 'INFO').upper()
+            
+            # Calculate recency factor - more recent codes have higher impact
+            timestamp = code_info.get('timestamp')
+            if timestamp:
+                days_ago = (datetime.now() - timestamp).days
+                recency_factor = max(0.2, min(1.0, 1.0 - (days_ago / 365.0)))  # Decline over a year
+            else:
+                recency_factor = 0.5  # Default if timestamp missing
+            
+            # Determine severity factor
+            if severity == 'CRITICAL':
+                severity_factor = 0.4
+            elif severity == 'WARNING':
+                severity_factor = 0.25
+            elif severity == 'MAINTENANCE':
+                severity_factor = 0.15
+            else:  # INFO
+                severity_factor = 0.05
+            
+            # Combine description and code for matching
+            text_to_match = f"{code} {description}".upper()
+            
+            # Determine which components are affected by this code
+            for component, patterns in component_code_patterns.items():
+                if any(pattern in text_to_match for pattern in patterns):
+                    # Increase probability based on severity and recency
+                    impact = severity_factor * recency_factor
+                    current_prob = adjusted_probabilities.get(component, 0.1)
+                    
+                    # Use a probabilistic combination that avoids exceeding 1.0
+                    # P(A or B) = P(A) + P(B) - P(A and B)
+                    adjusted_probabilities[component] = min(
+                        0.95,  # Cap at 95%
+                        current_prob + impact - (current_prob * impact)
+                    )
+        
+        return adjusted_probabilities
+                    
     def _generate_recommendations(
         self, component_probabilities: Dict[str, float], device_id: str
     ) -> List[RecommendedAction]:
@@ -447,6 +625,10 @@ class ComponentFailureActionRecommender(IActionRecommender):
     Analyzes component failure predictions and creates prioritized, actionable recommendations.
     """
     
+    def __init__(self):
+        """Initialize the component failure action recommender."""
+        self.logger = logging.getLogger(__name__)
+    
     async def recommend_actions(self, prediction_result: PredictionResult) -> List[RecommendedAction]:
         """
         Generate recommended actions based on a component failure prediction.
@@ -459,13 +641,36 @@ class ComponentFailureActionRecommender(IActionRecommender):
         """
         # If raw details are missing, return empty recommendations
         if not prediction_result.raw_details or "components" not in prediction_result.raw_details:
+            self.logger.warning(f"Missing component data in prediction for device {prediction_result.device_id}")
             return []
         
         component_probabilities = prediction_result.raw_details["components"]
         
+        # Consider heater type when generating recommendations
+        heater_type = prediction_result.raw_details.get("heater_type", "RESIDENTIAL")
+        
+        # Add more specific recommendations for commercial units if applicable
+        special_recommendations = []
+        if heater_type == "COMMERCIAL" and prediction_result.predicted_value >= 0.6:
+            special_recommendations.append(
+                RecommendedAction(
+                    action_id=f"{prediction_result.device_id}-commercial-check",
+                    description="Schedule priority maintenance for commercial unit",
+                    severity=ActionSeverity.HIGH,
+                    impact="Commercial unit failure could affect multiple users or critical operations",
+                    expected_benefit="Prevent downtime that could impact business operations",
+                    due_date=datetime.now() + timedelta(days=7),
+                    estimated_cost=200.0,
+                    estimated_duration="2-4 hours"
+                )
+            )
+        
         # Use the internal method from ComponentFailurePrediction to generate recommendations
         component_failure_model = ComponentFailurePrediction()
-        return component_failure_model._generate_recommendations(
+        standard_recommendations = component_failure_model._generate_recommendations(
             component_probabilities, 
             prediction_result.device_id
         )
+        
+        # Combine and return all recommendations
+        return special_recommendations + standard_recommendations

@@ -3,8 +3,10 @@
 Script to load generated dummy data into PostgreSQL database with TimescaleDB.
 """
 import asyncio
+import json
 import logging
 from datetime import datetime
+from typing import Any, Dict, List, Optional, Union
 
 from fastapi.encoders import jsonable_encoder
 
@@ -19,8 +21,45 @@ logging.basicConfig(level=logging.INFO,
 logger = logging.getLogger(__name__)
 
 
+def ensure_datetime(value: Union[str, datetime, None]) -> Optional[datetime]:
+    """Convert a string date to datetime if needed."""
+    if value is None:
+        return None
+    if isinstance(value, datetime):
+        return value
+    if isinstance(value, str):
+        try:
+            return datetime.fromisoformat(value)
+        except ValueError:
+            logger.warning(f"Could not parse datetime from string: {value}")
+            return None
+    return None
+
+
+def process_device_dict(device_dict: Dict[str, Any]) -> Dict[str, Any]:
+    """Process a device dictionary to ensure all values are of the correct type."""
+    # Make a copy to avoid modifying the original
+    processed = device_dict.copy()
+    
+    # Convert string timestamps to datetime objects
+    if 'last_seen' in processed and processed['last_seen']:
+        processed['last_seen'] = ensure_datetime(processed['last_seen'])
+        
+    # Convert created_at and updated_at if they exist
+    if 'created_at' in processed and processed['created_at']:
+        processed['created_at'] = ensure_datetime(processed['created_at'])
+    if 'updated_at' in processed and processed['updated_at']:
+        processed['updated_at'] = ensure_datetime(processed['updated_at'])
+        
+    return processed
+
+
 async def load_devices():
-    """Load devices from dummy data to PostgreSQL."""
+    """Load devices from dummy data to PostgreSQL.
+    
+    This function checks if devices already exist in the database before inserting them,
+    making it safe to run multiple times without causing duplicate key violations.
+    """
     # First make sure we have a valid session
     session_generator = get_db_session()
     if not session_generator:
@@ -33,12 +72,21 @@ async def load_devices():
             return
             
         try:
+            # First, get a list of existing device IDs to avoid duplicate insertions
+            from sqlalchemy import select, text
+            existing_devices_result = await session.execute(select(DeviceModel.id))
+            existing_device_ids = set(row[0] for row in existing_devices_result.fetchall())
+            
+            logger.info(f"Found {len(existing_device_ids)} existing devices in database")
             # Load vending machines
             for vm_id, vm in dummy_data.vending_machines.items():
                 logger.info(f"Loading vending machine {vm_id}")
                 
                 # Convert Pydantic model to dict
                 vm_dict = jsonable_encoder(vm)
+                
+                # Process the device dict to ensure proper data types
+                vm_dict = process_device_dict(vm_dict)
                 
                 # Extract readings for separate insertion
                 readings = vm_dict.pop("readings", [])
@@ -66,20 +114,38 @@ async def load_devices():
                     "products": products
                 }
                 
-                # Create device model
-                device = DeviceModel(
-                    id=vm_id,
-                    name=vm_dict.get("name", ""),
-                    type="vending_machine",
-                    status=vm_dict.get("status", "OFFLINE"),
-                    location=vm_dict.get("location", ""),
-                    last_seen=vm_dict.get("last_seen", datetime.utcnow()),
-                    properties=properties
-                )
-                
-                # Add to session
-                session.add(device)
-                await session.flush()
+                # Check if this device already exists in the database
+                if vm_id in existing_device_ids:
+                    logger.info(f"Device {vm_id} already exists, updating instead of inserting")
+                    # Update existing device - convert properties dict to JSON string
+                    device_update = {
+                        "name": vm_dict.get("name", ""),
+                        "status": vm_dict.get("status", "OFFLINE"),
+                        "location": vm_dict.get("location", ""),
+                        "last_seen": vm_dict.get("last_seen", datetime.utcnow()),
+                        "properties": json.dumps(properties)
+                    }
+                    
+                    await session.execute(
+                        text("UPDATE devices SET name = :name, status = :status, location = :location, "
+                             "last_seen = :last_seen, properties = :properties WHERE id = :id"),
+                        {"id": vm_id, **device_update}
+                    )
+                else:
+                    # Create new device model
+                    device = DeviceModel(
+                        id=vm_id,
+                        name=vm_dict.get("name", ""),
+                        type="vending_machine",
+                        status=vm_dict.get("status", "OFFLINE"),
+                        location=vm_dict.get("location", ""),
+                        last_seen=vm_dict.get("last_seen", datetime.utcnow()),
+                        properties=properties
+                    )
+                    
+                    # Add to session
+                    session.add(device)
+                    await session.flush()
                 
                 # Add readings
                 for reading_data in readings:
@@ -94,9 +160,19 @@ async def load_devices():
                     # Create separate reading records for each metric
                     for metric_name, value in metric_readings.items():
                         if value is not None:
+                            # Ensure timestamp is a datetime object
+                            timestamp = reading_data.get("timestamp")
+                            if isinstance(timestamp, str):
+                                try:
+                                    timestamp = datetime.fromisoformat(timestamp)
+                                except ValueError:
+                                    timestamp = datetime.utcnow()
+                            elif not isinstance(timestamp, datetime):
+                                timestamp = datetime.utcnow()
+                                
                             reading = ReadingModel(
                                 device_id=vm_id,
-                                timestamp=reading_data.get("timestamp", datetime.utcnow()),
+                                timestamp=timestamp,
                                 metric_name=metric_name,
                                 value=value
                             )
@@ -108,6 +184,9 @@ async def load_devices():
                 
                 # Convert Pydantic model to dict
                 heater_dict = jsonable_encoder(heater)
+                
+                # Process the device dict to ensure proper data types
+                heater_dict = process_device_dict(heater_dict)
                 
                 # Extract readings for separate insertion
                 readings = heater_dict.pop("readings", [])
@@ -126,20 +205,38 @@ async def load_devices():
                     "warranty_expiry": heater_dict.pop("warranty_expiry", None)
                 }
                 
-                # Create device model
-                device = DeviceModel(
-                    id=heater_id,
-                    name=heater_dict.get("name", ""),
-                    type="water_heater",
-                    status=heater_dict.get("status", "OFFLINE"),
-                    location=heater_dict.get("location", ""),
-                    last_seen=heater_dict.get("last_seen", datetime.utcnow()),
-                    properties=properties
-                )
-                
-                # Add to session
-                session.add(device)
-                await session.flush()
+                # Check if this device already exists in the database
+                if heater_id in existing_device_ids:
+                    logger.info(f"Device {heater_id} already exists, updating instead of inserting")
+                    # Update existing device - convert properties dict to JSON string
+                    device_update = {
+                        "name": heater_dict.get("name", ""),
+                        "status": heater_dict.get("status", "OFFLINE"),
+                        "location": heater_dict.get("location", ""),
+                        "last_seen": heater_dict.get("last_seen", datetime.utcnow()),
+                        "properties": json.dumps(properties)
+                    }
+                    
+                    await session.execute(
+                        text("UPDATE devices SET name = :name, status = :status, location = :location, "
+                             "last_seen = :last_seen, properties = :properties WHERE id = :id"),
+                        {"id": heater_id, **device_update}
+                    )
+                else:
+                    # Create new device model
+                    device = DeviceModel(
+                        id=heater_id,
+                        name=heater_dict.get("name", ""),
+                        type="water_heater",
+                        status=heater_dict.get("status", "OFFLINE"),
+                        location=heater_dict.get("location", ""),
+                        last_seen=heater_dict.get("last_seen", datetime.utcnow()),
+                        properties=properties
+                    )
+                    
+                    # Add to session
+                    session.add(device)
+                    await session.flush()
                 
                 # Add readings
                 for reading_data in readings:
@@ -153,9 +250,19 @@ async def load_devices():
                     # Create separate reading records for each metric
                     for metric_name, value in metric_readings.items():
                         if value is not None:
+                            # Ensure timestamp is a datetime object
+                            timestamp = reading_data.get("timestamp")
+                            if isinstance(timestamp, str):
+                                try:
+                                    timestamp = datetime.fromisoformat(timestamp)
+                                except ValueError:
+                                    timestamp = datetime.utcnow()
+                            elif not isinstance(timestamp, datetime):
+                                timestamp = datetime.utcnow()
+                                
                             reading = ReadingModel(
                                 device_id=heater_id,
-                                timestamp=reading_data.get("timestamp", datetime.utcnow()),
+                                timestamp=timestamp,
                                 metric_name=metric_name,
                                 value=value
                             )

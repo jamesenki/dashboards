@@ -17,9 +17,14 @@ This README provides high-level information about the project. For detailed docu
 
 ### Design & Architecture
 - [Architecture Overview](./docs/architecture-overview.md) - High-level system architecture and component interaction
-- [Architecture Decision Records](./docs/adr/) - Key technical decisions and their rationales
-  - [ADR-001: Angular to Python/JS Migration](./docs/adr/001-angular-to-python-js-migration.md)
-  - [ADR-002: Operations Dashboard Real-time Focus](./docs/adr/002-operations-dashboard-realtime-focus.md)
+- [Database Configuration](./docs/database_configuration.md) - PostgreSQL and TimescaleDB integration details
+- [Predictions Plan](./docs/predictionsplan.md) - Machine learning features for water heater monitoring
+
+### Architecture Decision Records
+- [ADR-001: Angular to Python/JS Migration](./docs/adr/001-angular-to-python-js-migration.md) - Rationale for platform migration
+- [ADR-002: Operations Dashboard Real-time Focus](./docs/adr/002-operations-dashboard-realtime-focus.md) - Focus on operational metrics
+- [ADR-003: PostgreSQL with TimescaleDB](./docs/adr/003-postgresql-timescaledb-database-choice.md) - Database architecture decisions
+- [ADR-004: ML Approach for Lifespan Estimation](./docs/adr/004-ml-approach-for-lifespan-estimation.md) - Machine learning implementation approach
 - [Data Models](./docs/data-models.md) - Database schema and model relationships
 
 ### Features & Implementation
@@ -71,11 +76,99 @@ IoTSphere-Refactor/
    ```bash
    npm install
    ```
-4. Run the application:
+
+### Database Setup
+
+#### Option 1: Using Docker (Recommended)
+
+The easiest way to get started is using Docker Compose, which will set up PostgreSQL with TimescaleDB automatically:
+
+```bash
+# Start PostgreSQL and Redis services
+docker-compose up -d postgres redis
+
+# Check that services are running
+docker-compose ps
+```
+
+#### Option 2: Manual PostgreSQL Setup
+
+If you prefer a local PostgreSQL installation:
+
+1. Install PostgreSQL 14:
    ```bash
-   python src/main.py
+   # On macOS with Homebrew
+   brew install postgresql@14
+   brew services start postgresql@14
    ```
-5. Access the application at `http://localhost:8006` in your browser
+
+2. Create the database and user:
+   ```bash
+   createdb iotsphere
+   psql -c "CREATE USER iotsphere WITH ENCRYPTED PASSWORD 'iotsphere';"
+   psql -c "GRANT ALL PRIVILEGES ON DATABASE iotsphere TO iotsphere;"
+   ```
+
+3. (Optional) Install TimescaleDB extension:
+   ```bash
+   # On macOS with Homebrew
+   brew install timescaledb
+   /opt/homebrew/bin/timescaledb-tune --quiet --yes
+   brew services restart postgresql@14
+   psql iotsphere -c "CREATE EXTENSION IF NOT EXISTS timescaledb CASCADE;"
+   ```
+
+> **Note:** The application is designed to work with or without TimescaleDB. If TimescaleDB is not available, the application will gracefully fall back to standard PostgreSQL tables.
+
+### Running the Application
+
+```bash
+python -m uvicorn src.main:app --host 0.0.0.0 --port 8006 --reload
+```
+
+Access the application at `http://localhost:8006` in your browser
+
+### Test-Driven Development Workflow
+
+This project follows Test-Driven Development (TDD) principles with the Red-Green-Refactor cycle:
+
+#### Using the TDD Workflow Script
+
+The TDD workflow helper script streamlines development of new features:
+
+```bash
+# Start a new feature with failing tests (Red phase)
+python scripts/tdd_workflow.py red water_heater_prediction
+
+# Run tests after implementing the feature (Green phase)
+python scripts/tdd_workflow.py green water_heater_prediction
+
+# Verify tests still pass after refactoring (Refactor phase)
+python scripts/tdd_workflow.py refactor water_heater_prediction
+
+# Or run the entire guided TDD cycle
+python scripts/tdd_workflow.py cycle water_heater_prediction
+```
+
+#### Manual TDD Process
+
+1. **Red Phase**: Write failing tests that define the expected behavior
+   ```bash
+   # Run tests and verify they fail
+   pytest src/tests -v -m tdd_red
+   ```
+
+2. **Green Phase**: Write the minimum code needed to make tests pass
+   ```bash
+   # Run tests and verify they pass
+   pytest src/tests -v -m "tdd_red or tdd_green"
+   ```
+
+3. **Refactor Phase**: Improve code quality while keeping tests passing
+   ```bash
+   # Run all tests to ensure nothing broke during refactoring
+   pytest src/tests -v
+   ```
 
 ## Key Features
 

@@ -10,7 +10,9 @@ from src.models.water_heater import (
     WaterHeater,
     WaterHeaterMode,
     WaterHeaterStatus,
-    WaterHeaterReading
+    WaterHeaterReading,
+    WaterHeaterType,
+    WaterHeaterDiagnosticCode
 )
 from src.models.vending_machine import (
     VendingMachine,
@@ -172,29 +174,122 @@ PRODUCT_NAMES = {
     "Healthy Options": ["Fruit Cup", "Veggie Chips", "Protein Snack", "Granola Bar", "Mixed Nuts", "Dried Fruit", "Greek Yogurt", "Hummus & Crackers"]
 }
 
+# Commercial and residential water heater models with their specs
+COMMERCIAL_WATER_HEATER_MODELS = [
+    {"name": "EcoHeat C-1000", "capacity": 1000, "max_temp": 85.0, "efficiency": 0.93},
+    {"name": "ThermoGuard Industrial-1500", "capacity": 1500, "max_temp": 85.0, "efficiency": 0.95},
+    {"name": "HydroHeat Commercial-2000", "capacity": 2000, "max_temp": 85.0, "efficiency": 0.97},
+    {"name": "SmartTemp Enterprise-3000", "capacity": 3000, "max_temp": 85.0, "efficiency": 0.98},
+]
+
+RESIDENTIAL_WATER_HEATER_MODELS = [
+    {"name": "SmartTemp Home-50", "capacity": 50, "max_temp": 75.0, "efficiency": 0.85},
+    {"name": "EcoHeat Family-80", "capacity": 80, "max_temp": 75.0, "efficiency": 0.88},
+    {"name": "AquaWarm Comfort-100", "capacity": 100, "max_temp": 75.0, "efficiency": 0.90},
+    {"name": "ThermoGuard Premium-150", "capacity": 150, "max_temp": 75.0, "efficiency": 0.92},
+]
+
+# Diagnostic codes for each water heater type
+COMMERCIAL_DIAGNOSTIC_CODES = [
+    {"code": "C001", "description": "High temperature warning", "severity": "Warning"},
+    {"code": "C002", "description": "Critical high temperature", "severity": "Critical"},
+    {"code": "C003", "description": "Low pressure warning", "severity": "Warning"},
+    {"code": "C004", "description": "High pressure warning", "severity": "Warning"},
+    {"code": "C005", "description": "Critical high pressure", "severity": "Critical"},
+    {"code": "C006", "description": "Control board communication error", "severity": "Warning"},
+    {"code": "C007", "description": "Temperature sensor failure", "severity": "Critical"},
+    {"code": "C008", "description": "Pressure sensor failure", "severity": "Critical"},
+    {"code": "C009", "description": "Flow meter error", "severity": "Warning"},
+    {"code": "C010", "description": "Heating element failure", "severity": "Critical"},
+    {"code": "C011", "description": "Low flow rate", "severity": "Warning"},
+    {"code": "C012", "description": "Anode rod depletion", "severity": "Maintenance"},
+    {"code": "C013", "description": "Scale buildup detected", "severity": "Maintenance"},
+    {"code": "C014", "description": "Network connectivity lost", "severity": "Warning"},
+    {"code": "C015", "description": "Energy usage anomaly", "severity": "Warning"},
+    {"code": "C016", "description": "Operating efficiency decline", "severity": "Maintenance"},
+    {"code": "C017", "description": "Failed power relay", "severity": "Critical"},
+    {"code": "C018", "description": "Multiple heating element failure", "severity": "Critical"},
+    {"code": "C019", "description": "Water leakage detected", "severity": "Critical"},
+    {"code": "C020", "description": "Temperature regulation failure", "severity": "Critical"},
+]
+
+RESIDENTIAL_DIAGNOSTIC_CODES = [
+    {"code": "R001", "description": "High temperature warning", "severity": "Warning"},
+    {"code": "R002", "description": "Critical high temperature", "severity": "Critical"},
+    {"code": "R003", "description": "Low pressure warning", "severity": "Warning"},
+    {"code": "R004", "description": "High pressure warning", "severity": "Warning"},
+    {"code": "R005", "description": "Critical high pressure", "severity": "Critical"},
+    {"code": "R006", "description": "Control system error", "severity": "Warning"},
+    {"code": "R007", "description": "Temperature sensor error", "severity": "Critical"},
+    {"code": "R008", "description": "Pressure sensor error", "severity": "Warning"},
+    {"code": "R009", "description": "Water leak detected", "severity": "Critical"},
+    {"code": "R010", "description": "Heating element failure", "severity": "Critical"},
+    {"code": "R011", "description": "WiFi connection lost", "severity": "Info"},
+    {"code": "R012", "description": "Scale buildup detected", "severity": "Maintenance"},
+    {"code": "R013", "description": "Anode rod depletion", "severity": "Maintenance"},
+    {"code": "R014", "description": "Efficiency reduced", "severity": "Warning"},
+    {"code": "R015", "description": "Unusual usage pattern", "severity": "Info"},
+    {"code": "R016", "description": "Vacation mode active", "severity": "Info"},
+    {"code": "R017", "description": "Power outage recovery", "severity": "Info"},
+    {"code": "R018", "description": "Multiple heating cycles", "severity": "Warning"},
+    {"code": "R019", "description": "Long recovery time", "severity": "Warning"},
+    {"code": "R020", "description": "Energy usage high", "severity": "Warning"},
+]
+
+def generate_random_diagnostic_codes(heater_type, count=2):
+    """Generate random diagnostic codes for a water heater"""
+    code_list = COMMERCIAL_DIAGNOSTIC_CODES if heater_type == WaterHeaterType.COMMERCIAL else RESIDENTIAL_DIAGNOSTIC_CODES
+    selected_codes = random.sample(code_list, min(count, len(code_list)))
+    
+    diagnostic_codes = []
+    for code_info in selected_codes:
+        # 70% of codes are active, 30% resolved
+        active = random.random() < 0.7
+        
+        # Create a diagnostic code with a random timestamp
+        timestamp = random_date(
+            datetime.now() - timedelta(days=7),
+            datetime.now() - timedelta(minutes=5)
+        )
+        
+        diagnostic_code = WaterHeaterDiagnosticCode(
+            code=code_info["code"],
+            description=code_info["description"],
+            severity=code_info["severity"],
+            timestamp=timestamp,
+            active=active
+        )
+        diagnostic_codes.append(diagnostic_code)
+    
+    return diagnostic_codes
+
 def generate_water_heaters(count=5):
     """Generate random water heaters"""
     heaters = []
     
-    for i in range(count):
+    # Ensure at least one water heater of each type
+    commercial_count = max(1, count // 3)  # Approx 1/3 commercial
+    residential_count = count - commercial_count
+    
+    # Generate commercial water heaters
+    for i in range(commercial_count):
         # Generate basic properties
         id_suffix = str(uuid.uuid4())[:8]
-        heater_id = f"wh-{id_suffix}"
+        heater_id = f"wh-comm-{id_suffix}"
         
-        # Generate more descriptive and unique name
+        # Select a commercial model
+        model_info = random.choice(COMMERCIAL_WATER_HEATER_MODELS)
         brand = random.choice(WATER_HEATER_BRANDS)
-        model = random.choice(WATER_HEATER_MODELS)
-        size = random.choice(WATER_HEATER_SIZES)
         building = random.choice(BUILDINGS)
-        location = random.choice(LOCATIONS)
+        location = random.choice(["Boiler Room", "Utility Room", "Mechanical Room", "Basement"])
         
-        name = f"{building} {location} - {brand} {model} {size}"
+        name = f"{building} {location} - {brand} {model_info['name']}"
         
         # Determine status - most should be online
         status = DeviceStatus.ONLINE if random.random() < 0.8 else DeviceStatus.OFFLINE
         
         # Generate temperatures
-        target_temp = round(random.uniform(45.0, 65.0), 1)
+        target_temp = round(random.uniform(60.0, 75.0), 1)  # Commercial units run hotter
         current_temp = target_temp
         
         # If online, current temperature may vary from target
@@ -214,18 +309,7 @@ def generate_water_heaters(count=5):
             else:
                 heater_status = WaterHeaterStatus.STANDBY
         
-        # Set min/max temperatures
-        min_temp = 40.0
-        max_temp = 85.0
-        
-        # Set capacity and efficiency for some heaters
-        capacity = random.choice([50, 80, 100, 120, 150, None])
-        efficiency = random.choice([0.85, 0.9, 0.92, 0.95, None])
-        
-        # Generate location for some heaters
-        location = random.choice(LOCATIONS) if random.random() > 0.3 else None
-        
-        # Create the water heater
+        # Create the commercial water heater with diagnostic codes
         heater = WaterHeater(
             id=heater_id,
             name=name,
@@ -240,14 +324,85 @@ def generate_water_heaters(count=5):
             current_temperature=current_temp,
             mode=mode,
             heater_status=heater_status,
-            capacity=capacity,
-            efficiency_rating=efficiency,
-            max_temperature=max_temp,
-            min_temperature=min_temp,
+            heater_type=WaterHeaterType.COMMERCIAL,
+            capacity=model_info["capacity"],
+            efficiency_rating=model_info["efficiency"],
+            max_temperature=model_info["max_temp"],
+            min_temperature=40.0,
+            specification_link="/docs/specifications/water_heaters/commercial.md",
             readings=generate_water_heater_readings(
                 count=random.randint(8, 24),
                 base_temp=current_temp
-            )
+            ),
+            diagnostic_codes=generate_random_diagnostic_codes(WaterHeaterType.COMMERCIAL, random.randint(0, 3))
+        )
+        
+        heaters.append(heater)
+    
+    # Generate residential water heaters
+    for i in range(residential_count):
+        # Generate basic properties
+        id_suffix = str(uuid.uuid4())[:8]
+        heater_id = f"wh-res-{id_suffix}"
+        
+        # Select a residential model
+        model_info = random.choice(RESIDENTIAL_WATER_HEATER_MODELS)
+        brand = random.choice(WATER_HEATER_BRANDS)
+        building = random.choice(["Apartment 101", "Apartment 202", "House 123", "Condo 456"])
+        location = random.choice(["Bathroom", "Kitchen", "Utility Closet", "Garage", "Basement"])
+        
+        name = f"{building} {location} - {brand} {model_info['name']}"
+        
+        # Determine status - most should be online
+        status = DeviceStatus.ONLINE if random.random() < 0.8 else DeviceStatus.OFFLINE
+        
+        # Generate temperatures
+        target_temp = round(random.uniform(45.0, 65.0), 1)  # Residential units run cooler
+        current_temp = target_temp
+        
+        # If online, current temperature may vary from target
+        if status == DeviceStatus.ONLINE:
+            current_temp = round(target_temp + (random.random() * 5.0 - 2.5), 1)
+        
+        # Determine mode
+        mode_choices = list(WaterHeaterMode)
+        mode = random.choice(mode_choices)
+        
+        # Determine heater status
+        if status == DeviceStatus.OFFLINE:
+            heater_status = WaterHeaterStatus.STANDBY
+        else:
+            if current_temp < target_temp - 1.0:
+                heater_status = WaterHeaterStatus.HEATING
+            else:
+                heater_status = WaterHeaterStatus.STANDBY
+        
+        # Create the residential water heater with diagnostic codes
+        heater = WaterHeater(
+            id=heater_id,
+            name=name,
+            type=DeviceType.WATER_HEATER,
+            status=status,
+            location=f"{building} - {location}",
+            last_seen=datetime.now() if status == DeviceStatus.ONLINE else random_date(
+                datetime.now() - timedelta(days=7),
+                datetime.now() - timedelta(hours=1)
+            ),
+            target_temperature=target_temp,
+            current_temperature=current_temp,
+            mode=mode,
+            heater_status=heater_status,
+            heater_type=WaterHeaterType.RESIDENTIAL,
+            capacity=model_info["capacity"],
+            efficiency_rating=model_info["efficiency"],
+            max_temperature=model_info["max_temp"],
+            min_temperature=40.0,
+            specification_link="/docs/specifications/water_heaters/residential.md",
+            readings=generate_water_heater_readings(
+                count=random.randint(8, 24),
+                base_temp=current_temp
+            ),
+            diagnostic_codes=generate_random_diagnostic_codes(WaterHeaterType.RESIDENTIAL, random.randint(0, 3))
         )
         
         heaters.append(heater)

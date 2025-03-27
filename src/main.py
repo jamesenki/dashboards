@@ -38,7 +38,32 @@ from src.web.routes import router as web_router
 from src.db.migration import initialize_db
 
 # Create FastAPI app
-app = FastAPI(title="IoTSphere API", description="API for IoT device management")
+app = FastAPI(
+    title="IoTSphere API",
+    description="API for IoT device management and real-time operational monitoring",
+    version="1.0.0",
+    docs_url="/api/docs",
+    redoc_url="/api/redoc",
+    openapi_url="/api/openapi.json",
+    openapi_tags=[
+        {
+            "name": "Water Heaters",
+            "description": "Endpoints for water heater device management"
+        },
+        {
+            "name": "Operations",
+            "description": "Real-time operational monitoring endpoints"
+        },
+        {
+            "name": "Predictions",
+            "description": "Machine learning prediction endpoints for maintenance and lifespan estimation"
+        },
+        {
+            "name": "Vending Machines",
+            "description": "Endpoints for vending machine device management"
+        }
+    ]
+)
 
 # Custom CORS middleware to ensure preflight requests work correctly
 class CustomCORSMiddleware(BaseHTTPMiddleware):

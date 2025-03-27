@@ -21,6 +21,38 @@ exclude = '''
 )/
 '''
 
+[tool.pytest.ini_options]
+testpaths = ["src/tests"]
+python_files = "test_*.py"
+python_functions = "test_*"
+filterwarnings = ["ignore::DeprecationWarning"]
+markers = [
+    "unit: marks tests as unit tests",
+    "integration: marks tests as integration tests",
+    "slow: marks tests as slow running",
+    "tdd_red: marks tests that are expected to fail in the Red phase of TDD",
+    "tdd_green: marks tests that should pass in the Green phase of TDD",
+    "tdd_refactor: marks tests for the Refactor phase of TDD"
+]
+
+[tool.mypy]
+python_version = "3.9"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false  # Set to true gradually as you add type hints
+disallow_incomplete_defs = false  # Set to true gradually as you add type hints
+check_untyped_defs = true
+disallow_untyped_decorators = false
+
+[[tool.mypy.overrides]]
+module = "tests.*"
+disallow_untyped_defs = false
+check_untyped_defs = false
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+
 [build-system]
 requires = ["setuptools>=42", "wheel"]
 build-backend = "setuptools.build_meta"

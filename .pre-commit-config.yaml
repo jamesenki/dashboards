@@ -64,3 +64,12 @@ repos:
     hooks:
     -   id: prettier
         types_or: [javascript, jsx, css, html]
+
+-   repo: local
+    hooks:
+    -   id: pytest-tdd
+        name: pytest-tdd
+        entry: python -m pytest src/tests/unit -v --no-header
+        language: system
+        pass_filenames: false
+        always_run: true

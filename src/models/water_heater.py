@@ -3,7 +3,7 @@ Water heater device model
 """
 from datetime import datetime
 from enum import Enum
-from typing import List, Optional, Literal
+from typing import List, Optional, Literal, Dict, Any
 
 from pydantic import BaseModel, Field
 
@@ -19,6 +19,20 @@ class WaterHeaterStatus(str, Enum):
     """Water heater heater status"""
     HEATING = "HEATING"
     STANDBY = "STANDBY"
+    
+class WaterHeaterType(str, Enum):
+    """Water heater type classification"""
+    COMMERCIAL = "Commercial"
+    RESIDENTIAL = "Residential"
+
+class WaterHeaterDiagnosticCode(BaseModel):
+    """Water heater diagnostic code"""
+    code: str = Field(..., description="Diagnostic code identifier")
+    description: str = Field(..., description="Human-readable description")
+    severity: str = Field(..., description="Severity level (Info, Warning, Critical, Maintenance)")
+    timestamp: datetime = Field(..., description="Time the diagnostic code was generated")
+    active: bool = Field(True, description="Whether the code is currently active")
+    metadata: Optional[Dict[str, Any]] = Field(None, description="Additional diagnostic data")
 
 class WaterHeaterReading(BaseModel):
     """Water heater sensor reading"""
@@ -42,12 +56,21 @@ class WaterHeater(Device):
     mode: WaterHeaterMode = Field(WaterHeaterMode.ECO, description="Current operational mode")
     heater_status: WaterHeaterStatus = Field(WaterHeaterStatus.STANDBY, description="Current heater status")
     
+    # New: Water heater type classification
+    heater_type: WaterHeaterType = Field(WaterHeaterType.RESIDENTIAL, description="Water heater type (Commercial or Residential)")
+    
+    # New: Link to detailed specifications
+    specification_link: Optional[str] = Field(None, description="Link to detailed specifications document")
+    
     # Device specifications
     capacity: Optional[float] = Field(None, description="Water tank capacity in liters")
     efficiency_rating: Optional[float] = Field(None, description="Energy efficiency rating (0-1)")
     
     # Sensor readings history
     readings: List[WaterHeaterReading] = Field(default_factory=list, description="Historical sensor readings")
+    
+    # New: Diagnostic codes history
+    diagnostic_codes: List[WaterHeaterDiagnosticCode] = Field(default_factory=list, description="Diagnostic codes history")
     
     def add_reading(self, reading: WaterHeaterReading):
         """Add a sensor reading to the water heater and update current temperature."""
@@ -59,3 +82,19 @@ class WaterHeater(Device):
             self.heater_status = WaterHeaterStatus.STANDBY
         else:
             self.heater_status = WaterHeaterStatus.HEATING
+    
+    def add_diagnostic_code(self, diagnostic_code: WaterHeaterDiagnosticCode):
+        """Add a diagnostic code to the water heater."""
+        self.diagnostic_codes.append(diagnostic_code)
+    
+    def resolve_diagnostic_code(self, code: str):
+        """Mark a diagnostic code as resolved/inactive."""
+        for diagnostic in self.diagnostic_codes:
+            if diagnostic.code == code and diagnostic.active:
+                diagnostic.active = False
+                return True
+        return False
+    
+    def get_active_diagnostic_codes(self) -> List[WaterHeaterDiagnosticCode]:
+        """Get all currently active diagnostic codes."""
+        return [diagnostic for diagnostic in self.diagnostic_codes if diagnostic.active]

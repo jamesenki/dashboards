@@ -244,17 +244,21 @@ class LifespanEstimationPrediction(IPredictionModel):
                 modification_factors.append(self.lifespan_factors["water_hardness"]["very_hard"])
         
         # Temperature setting factor
-        if "temperature_settings" in features and features["temperature_settings"]:
+        if "temperature_settings" in features and features["temperature_settings"] is not None:
             # Handle both single temperature value and list of temperature readings
             temp_settings = features["temperature_settings"]
             if isinstance(temp_settings, (int, float)):
+                # Handle single temperature value
                 avg_temp = float(temp_settings)
             else:
                 # Handle as a list of temperature readings
                 try:
-                    avg_temp = sum(temp_settings) / len(temp_settings)
-                except (TypeError, ZeroDivisionError):
-                    # Fallback if temp_settings is not iterable or empty
+                    # Convert all items to float in case they're strings
+                    temps = [float(t) for t in temp_settings]
+                    avg_temp = sum(temps) / len(temps) if temps else 55.0
+                except (TypeError, ValueError, ZeroDivisionError):
+                    # Fallback if temp_settings is not iterable, contains non-numeric values, or is empty
+                    logger.warning(f"Invalid temperature_settings format: {temp_settings}. Using default.")
                     avg_temp = 55.0  # Default to moderate temperature
         elif "target_temperature" in features and features["target_temperature"] is not None:
             # Use target_temperature as fallback
@@ -262,16 +266,21 @@ class LifespanEstimationPrediction(IPredictionModel):
             if isinstance(temp, (int, float)):
                 avg_temp = float(temp)
             else:
-                avg_temp = 55.0  # Default to moderate temperature
+                try:
+                    avg_temp = float(temp)  # Try to convert string to float
+                except (TypeError, ValueError):
+                    avg_temp = 55.0  # Default to moderate temperature
         else:
             # No temperature data available
             avg_temp = 55.0  # Default to moderate temperature
-            if avg_temp < 50:
-                modification_factors.append(self.lifespan_factors["temperature_setting"]["low"])
-            elif avg_temp < 60:
-                modification_factors.append(self.lifespan_factors["temperature_setting"]["moderate"])
-            else:
-                modification_factors.append(self.lifespan_factors["temperature_setting"]["high"])
+            
+        # Apply the temperature modification factor based on the average temperature
+        if avg_temp < 50:
+            modification_factors.append(self.lifespan_factors["temperature_setting"]["low"])
+        elif avg_temp < 60:
+            modification_factors.append(self.lifespan_factors["temperature_setting"]["moderate"])
+        else:
+            modification_factors.append(self.lifespan_factors["temperature_setting"]["high"])
         
         # Usage intensity factor
         if "usage_intensity" in features:

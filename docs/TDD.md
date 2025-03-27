@@ -180,6 +180,97 @@ class TextClassifier:
 
 By following this cycle, you build ML applications that are well-tested, meet requirements, and are easier to maintain and enhance over time.
 
+## IoTSphere TDD Workflow Implementation
+
+The IoTSphere project includes a custom TDD workflow automation tool (`scripts/tdd_workflow.py`) that enforces and streamlines the Red-Green-Refactor cycle, particularly for machine learning and real-time operational features.
+
+### Automated TDD Workflow
+
+The workflow script supports the complete TDD cycle with specialized features for IoTSphere development:
+
+```bash
+# Start a new feature with failing tests (Red phase)
+python scripts/tdd_workflow.py red water_heater_prediction
+
+# Run tests after implementing the feature (Green phase)
+python scripts/tdd_workflow.py green water_heater_prediction
+
+# Verify tests still pass after refactoring (Refactor phase)
+python scripts/tdd_workflow.py refactor water_heater_prediction
+
+# Or run the entire guided TDD cycle
+python scripts/tdd_workflow.py cycle water_heater_prediction
+
+# Simulate CI pipeline for complete verification
+python scripts/tdd_workflow.py ci water_heater_prediction
+```
+
+### Key Features of the TDD Workflow
+
+1. **PostgreSQL Integration Testing**
+   - Automatically verifies PostgreSQL connection
+   - Checks TimescaleDB extension availability
+   - Creates appropriate test databases and tables
+
+2. **Test Generation Templates**
+   - Creates phase-appropriate test templates
+   - Generates realistic test data for ML features
+   - Provides mock templates for external dependencies
+
+3. **Test Verification and Metrics**
+   - Validates tests follow TDD principles
+   - Tracks test coverage and quality metrics
+   - Detects test tampering between phases
+
+4. **CI/CD Pipeline Integration**
+   - Simulates CI pipeline locally before commits
+   - Integrates with GitHub Actions workflows
+   - Enforces code quality through static analysis
+
+### Custom Pytest Markers
+
+The project uses custom pytest markers to categorize tests according to their TDD phase:
+
+```python
+@pytest.mark.tdd_red
+def test_should_fail_before_implementation():
+    # This test should fail until properly implemented
+    assert False, "Not implemented yet"
+
+@pytest.mark.tdd_green
+def test_should_pass_after_implementation():
+    # This test should pass after basic implementation
+    result = calculate_water_heater_efficiency(60.5, 45.2)
+    assert result > 0
+
+@pytest.mark.realtime  # Specific to real-time operational monitoring
+def test_realtime_temperature_reading():
+    # Test real-time operational functionality
+    reading = get_current_temperature("device_123")
+    assert isinstance(reading, float)
+```
+
+These markers allow for targeted test execution during each TDD phase and help maintain the integrity of the Red-Green-Refactor cycle.
+
+### Real-Time Operations Focus
+
+Our TDD approach for IoTSphere emphasizes real-time operational monitoring rather than historical analytics. Test fixtures and mocks are designed to verify:
+
+- Sub-second response times for critical operational endpoints
+- Accurate real-time state representation
+- Proper telemetry processing
+- Operational dashboard data flow
+
+### Database Testing Strategy
+
+Tests that require database access use:
+
+1. In-memory SQLite for fast unit tests
+2. Test PostgreSQL instance for integration tests
+3. Optional TimescaleDB verification when available
+
+The workflow script automatically handles the appropriate database setup based on the test type and available environment.
+
 ## Best Practices for Test Creation and Modification
 
 ### Core Principles from TDD Thought Leaders
