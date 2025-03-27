@@ -72,7 +72,7 @@ class UsagePatternPredictor:
             'very_high': (150, 1.5) # Above 140°F
         }
     
-    def predict(self, device_id: str, features: Dict[str, Any]) -> PredictionResult:
+    async def predict(self, device_id: str, features: Dict[str, Any]) -> PredictionResult:
         """
         Generate predictions based on water heater usage patterns.
         
@@ -86,7 +86,7 @@ class UsagePatternPredictor:
         # Initialize prediction result
         result = PredictionResult(
             device_id=device_id,
-            prediction_type="usage_pattern",
+            prediction_type="usage_patterns",  # Changed to match API endpoint
             predicted_value=0.0,  # Will be updated based on usage impact
             confidence=0.80,  # Initial confidence level
             features_used=[key for key in features.keys()],
@@ -95,7 +95,8 @@ class UsagePatternPredictor:
             raw_details={
                 "usage_patterns": {},
                 "impact_on_components": {},
-                "efficiency_projections": {}
+                "efficiency_projections": {},
+                "optimization_recommendations": []  # Added this key for optimization recommendations
             }
         )
         
@@ -538,3 +539,129 @@ class UsagePatternPredictor:
         
         # Add recommendations to result
         result.recommended_actions.extend(recommendations)
+        
+        # Add a fallback recommendation if no recommendations were generated
+        if not result.recommended_actions:
+            # Get current date for the action ID
+            current_date = datetime.now().strftime('%Y%m%d')
+            
+            # Add a recommendation based on usage classification
+            usage_class = result.raw_details.get("usage_classification", "normal")
+            device_id = result.device_id  # Get device_id from the result object
+            
+            if usage_class == "light":
+                action = RecommendedAction(
+                    action_id=f"light_usage_maint_{device_id}_{current_date}",
+                    description="Maintain current optimal usage pattern",
+                    severity=ActionSeverity.LOW,
+                    impact="Your current light usage pattern extends component lifespan",
+                    expected_benefit="Continued optimal efficiency and extended equipment life",
+                    due_date=datetime.now() + timedelta(days=180),  # Semi-annual reminder
+                    estimated_cost=0.0,
+                    estimated_duration="N/A"
+                )
+            elif usage_class == "normal":
+                action = RecommendedAction(
+                    action_id=f"normal_usage_maint_{device_id}_{current_date}",
+                    description="Schedule routine maintenance check",
+                    severity=ActionSeverity.LOW,
+                    impact="Maintain optimal performance with your normal usage pattern",
+                    expected_benefit="Prevent efficiency loss and extend equipment lifespan",
+                    due_date=datetime.now() + timedelta(days=120),  # Quarterly reminder
+                    estimated_cost=50.0,
+                    estimated_duration="1 hour"
+                )
+            else:  # heavy
+                action = RecommendedAction(
+                    action_id=f"heavy_usage_maint_{device_id}_{current_date}",
+                    description="Consider usage adjustments to optimize efficiency",
+                    severity=ActionSeverity.MEDIUM,
+                    impact="Your heavy usage pattern may affect long-term efficiency",
+                    expected_benefit="Extended equipment life and reduced operating costs",
+                    due_date=datetime.now() + timedelta(days=30),
+                    estimated_cost=0.0,
+                    estimated_duration="N/A"
+                )
+            
+            result.recommended_actions.append(action)
+            
+        # Generate optimization recommendations
+        self._generate_optimization_recommendations(result)
+    def _generate_optimization_recommendations(self, result: PredictionResult) -> None:
+        """
+        Generate optimization recommendations based on usage patterns.
+        
+        Args:
+            result: PredictionResult to update with optimization recommendations
+        """
+        optimizations = []
+        usage_class = result.raw_details.get('usage_classification', 'normal')
+        usage_patterns = result.raw_details.get('usage_patterns', {})
+        efficiency_projections = result.raw_details.get('efficiency_projections', {})
+        
+        # Default estimated annual cost increase if not available
+        est_annual_cost_increase = 100
+        if 'efficiency_projections' in result.raw_details:
+            est_annual_cost_increase = result.raw_details['efficiency_projections'].get('estimated_annual_cost_increase', 100)
+        
+        # Generate optimization recommendations based on usage classification
+        if usage_class == 'heavy':
+            # Recommend temperature reduction if usage is heavy
+            optimizations.append({
+                'type': 'temperature',
+                'description': 'Reduce water temperature by 3-5°C',
+                'impact': 'Temperature reduction will decrease energy usage and reduce strain on heating elements',
+                'benefit': 'Extended component lifespan and improved energy efficiency',
+                'annual_savings_estimate': f'${round(est_annual_cost_increase * 0.4, 2)}'
+            })
+            
+            # Recommend scheduled usage if we see peak usage times
+            if usage_patterns.get('weekly_pattern') in ['peak_day', 'weekend_heavy']:
+                optimizations.append({
+                    'type': 'scheduling',
+                    'description': 'Distribute water usage more evenly throughout the week',
+                    'impact': 'Reducing peak loads extends component lifespan by preventing stress cycles',
+                    'benefit': 'More consistent water temperature and reduced energy costs',
+                    'annual_savings_estimate': f'${round(est_annual_cost_increase * 0.3, 2)}'
+                })
+                
+            # Recommend usage monitoring system
+            optimizations.append({
+                'type': 'monitoring',
+                'description': 'Install water usage monitoring system',
+                'impact': 'Real-time monitoring allows for immediate detection of excessive usage',
+                'benefit': 'Prevent water waste and optimize heating cycles',
+                'annual_savings_estimate': f'${round(est_annual_cost_increase * 0.5, 2)}'
+            })
+            
+        elif usage_class == 'normal':
+            # For normal usage, optimize based on patterns
+            if usage_patterns.get('daily_pattern') == 'morning_evening_peaks':
+                optimizations.append({
+                    'type': 'timing',
+                    'description': 'Use timer to heat water just before peak usage periods',
+                    'impact': 'Reduces standby losses by heating water only when needed',
+                    'benefit': 'Lower energy consumption and reduced operating costs',
+                    'annual_savings_estimate': '$75-$120'
+                })
+                
+            # Recommend insulation improvement for all normal usage scenarios
+            optimizations.append({
+                'type': 'insulation',
+                'description': 'Add supplemental insulation blanket to water heater',
+                'impact': 'Reduces heat loss during standby periods',
+                'benefit': 'Lower energy consumption and more consistent water temperature',
+                'annual_savings_estimate': '$40-$60'
+            })
+            
+        # For all usage classes, recommend regular maintenance
+        optimizations.append({
+            'type': 'maintenance',
+            'description': 'Schedule regular maintenance every 6-12 months',
+            'impact': 'Maintains efficiency and prevents sediment buildup',
+            'benefit': 'Extended equipment life and consistent performance',
+            'annual_savings_estimate': 'Prevents $200-$500 in potential repair costs'
+        })
+        
+        # Add optimizations to raw details
+        result.raw_details['optimization_recommendations'] = optimizations

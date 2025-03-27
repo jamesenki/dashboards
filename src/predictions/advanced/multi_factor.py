@@ -306,7 +306,25 @@ class MultiFactorPredictor:
         sorted_history = sorted(maintenance_history, key=lambda x: x['date'])
         
         # Calculate days since last maintenance
-        days_since_maintenance = (datetime.now() - sorted_history[-1]['date']).days
+        if sorted_history and 'date' in sorted_history[-1] and sorted_history[-1]['date']:
+            try:
+                # Handle case where date might be a string or other format
+                last_maint_date = sorted_history[-1]['date']
+                if not isinstance(last_maint_date, datetime):
+                    # Try to parse if it's a string
+                    if isinstance(last_maint_date, str):
+                        last_maint_date = datetime.fromisoformat(last_maint_date.replace('Z', '+00:00'))
+                    else:
+                        # If can't parse, use a default
+                        last_maint_date = datetime.now() - timedelta(days=180)
+                        
+                days_since_maintenance = (datetime.now() - last_maint_date).days
+            except Exception:
+                # Default to 180 days if calculation fails
+                days_since_maintenance = 180
+        else:
+            # Default if no maintenance history
+            days_since_maintenance = 365
         
         # Analyze maintenance frequency and recency
         maintenance_analysis = {
@@ -339,7 +357,25 @@ class MultiFactorPredictor:
         
         for maintenance_type, expected_interval in expected_intervals.items():
             if maintenance_type in last_maintenance_by_type:
-                days_since = (datetime.now() - last_maintenance_by_type[maintenance_type]).days
+                # Handle case where date might be None or not a datetime
+                last_date = last_maintenance_by_type[maintenance_type]
+                if not last_date:
+                    days_since = expected_interval  # Default to expected interval
+                else:
+                    try:
+                        # Convert to datetime if not already
+                        if not isinstance(last_date, datetime):
+                            if isinstance(last_date, str):
+                                last_date = datetime.fromisoformat(last_date.replace('Z', '+00:00'))
+                            else:
+                                # Default if can't convert
+                                days_since = expected_interval
+                                continue
+                                
+                        days_since = (datetime.now() - last_date).days
+                    except Exception:
+                        # Default if calculation fails
+                        days_since = expected_interval
                 gap_ratio = days_since / expected_interval
                 
                 maintenance_analysis['maintenance_gaps'][maintenance_type] = {

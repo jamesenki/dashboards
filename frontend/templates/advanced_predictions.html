@@ -1,0 +1,189 @@
+<!-- Advanced Predictions Components -->
+<!-- Anomaly Detection Component -->
+<div class="anomaly-detection-container prediction-container">
+    <div class="prediction-header">
+        <h3>Anomaly Detection</h3>
+        <div class="prediction-controls">
+            <button id="refresh-anomaly-detection" class="btn btn-sm btn-primary">
+                <i class="fas fa-sync-alt"></i> Refresh
+            </button>
+        </div>
+    </div>
+    
+    <div class="prediction-list">
+        <div id="anomaly-loading" class="text-center py-4">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2">Analyzing anomalies...</p>
+        </div>
+        
+        <div id="anomaly-error" class="alert alert-warning" style="display: none;">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span id="anomaly-error-message">Unable to generate anomaly detection at this time.</span>
+        </div>
+        
+        <!-- Anomaly Detection Card -->
+        <div id="anomaly-detection-card" class="prediction-card" style="display: none;">
+            <div class="prediction-card-header">
+                <h4>Detected Anomalies</h4>
+                <div class="prediction-score">
+                    <div class="prediction-status-icon" id="anomaly-status-icon">
+                        <i class="fas fa-check-circle text-success" style="display: none;"></i>
+                        <i class="fas fa-exclamation-triangle text-warning" style="display: none;"></i>
+                        <i class="fas fa-times-circle text-danger" style="display: none;"></i>
+                    </div>
+                    <span class="prediction-confidence" id="anomaly-confidence">--</span>
+                </div>
+            </div>
+            <div class="prediction-details">
+                <p class="prediction-summary" id="anomaly-summary">Analyzing water heater anomalies...</p>
+                
+                <div class="anomaly-list" id="anomaly-list">
+                    <!-- Anomalies will be populated here -->
+                </div>
+                
+                <div class="trend-analysis">
+                    <h5>Trend Analysis</h5>
+                    <div id="trend-analysis-content">
+                        <!-- Trend analysis will be populated here -->
+                    </div>
+                </div>
+            </div>
+            
+            <div class="recommended-actions">
+                <h5>Recommended Actions</h5>
+                <div id="anomaly-recommendations" class="recommendations-list">
+                    <!-- Recommendations will be populated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Usage Patterns Component -->
+<div class="usage-patterns-container prediction-container">
+    <div class="prediction-header">
+        <h3>Usage Pattern Analysis</h3>
+        <div class="prediction-controls">
+            <button id="refresh-usage-patterns" class="btn btn-sm btn-primary">
+                <i class="fas fa-sync-alt"></i> Refresh
+            </button>
+        </div>
+    </div>
+    
+    <div class="prediction-list">
+        <div id="usage-loading" class="text-center py-4">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2">Analyzing usage patterns...</p>
+        </div>
+        
+        <div id="usage-error" class="alert alert-warning" style="display: none;">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span id="usage-error-message">Unable to generate usage pattern analysis at this time.</span>
+        </div>
+        
+        <!-- Usage Patterns Card -->
+        <div id="usage-patterns-card" class="prediction-card" style="display: none;">
+            <div class="prediction-card-header">
+                <h4>Usage Classification</h4>
+                <div class="prediction-score">
+                    <div class="prediction-usage-icon" id="usage-icon">
+                        <i class="fas fa-tint"></i>
+                    </div>
+                    <span class="prediction-classification" id="usage-classification">--</span>
+                </div>
+            </div>
+            <div class="prediction-details">
+                <p class="prediction-summary" id="usage-summary">Analyzing water heater usage patterns...</p>
+                
+                <div class="component-impacts">
+                    <h5>Component Impacts</h5>
+                    <div id="component-impacts-list">
+                        <!-- Component impacts will be populated here -->
+                    </div>
+                </div>
+            </div>
+            
+            <div class="recommended-actions">
+                <h5>Recommended Actions</h5>
+                <div id="usage-recommendations" class="recommendations-list">
+                    <!-- Recommendations will be populated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Multi-Factor Analysis Component -->
+<div class="multi-factor-container prediction-container">
+    <div class="prediction-header">
+        <h3>Multi-Factor Analysis</h3>
+        <div class="prediction-controls">
+            <button id="refresh-multi-factor" class="btn btn-sm btn-primary">
+                <i class="fas fa-sync-alt"></i> Refresh
+            </button>
+        </div>
+    </div>
+    
+    <div class="prediction-list">
+        <div id="multi-factor-loading" class="text-center py-4">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2">Running multi-factor analysis...</p>
+        </div>
+        
+        <div id="multi-factor-error" class="alert alert-warning" style="display: none;">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span id="multi-factor-error-message">Unable to generate multi-factor analysis at this time.</span>
+        </div>
+        
+        <!-- Multi-Factor Card -->
+        <div id="multi-factor-card" class="prediction-card" style="display: none;">
+            <div class="prediction-card-header">
+                <h4>Comprehensive Analysis</h4>
+                <div class="prediction-score">
+                    <div class="multi-factor-gauge" id="multi-factor-gauge"></div>
+                    <span class="prediction-health-score" id="multi-factor-score">--</span>
+                </div>
+            </div>
+            <div class="prediction-details">
+                <p class="prediction-summary" id="multi-factor-summary">Performing comprehensive multi-factor analysis...</p>
+                
+                <div class="factor-analysis">
+                    <h5>Combined Factors</h5>
+                    <div id="combined-factors-list">
+                        <!-- Combined factors will be populated here -->
+                    </div>
+                </div>
+                
+                <div class="environmental-impact">
+                    <h5>Environmental Impact</h5>
+                    <p id="environmental-impact-text">--</p>
+                </div>
+                
+                <div class="component-interactions">
+                    <h5>Component Interactions</h5>
+                    <div id="component-interactions-list">
+                        <!-- Component interactions will be populated here -->
+                    </div>
+                </div>
+                
+                <div class="overall-evaluation">
+                    <h5>Overall Evaluation</h5>
+                    <p id="overall-evaluation-text">--</p>
+                </div>
+            </div>
+            
+            <div class="recommended-actions">
+                <h5>Recommended Actions</h5>
+                <div id="multi-factor-recommendations" class="recommendations-list">
+                    <!-- Recommendations will be populated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

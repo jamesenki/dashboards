@@ -328,6 +328,21 @@ class AnomalyDetectionPredictor:
         """
         recommendations = []
         
+        # Always add a basic monitoring recommendation even if no anomalies are detected
+        if not result.raw_details.get("detected_anomalies") or len(result.raw_details.get("detected_anomalies", [])) == 0:
+            # Add basic monitoring recommendation
+            monitoring_action = RecommendedAction(
+                action_id=f"monitor_system_{datetime.now().strftime('%Y%m%d')}",
+                description="Monitor system for any unusual behavior",
+                impact="Continued monitoring will ensure early detection of potential issues",
+                expected_benefit="Early detection of potential anomalies",
+                severity=ActionSeverity.LOW,
+                due_date=datetime.now() + timedelta(days=395),  # Roughly 13 months
+                estimated_cost=0.0,
+                estimated_duration="15 minutes"
+            )
+            recommendations.append(monitoring_action)
+        
         # Process temperature trend recommendations
         if "temperature" in result.raw_details["trend_analysis"]:
             temp_trend = result.raw_details["trend_analysis"]["temperature"]
@@ -421,3 +436,18 @@ class AnomalyDetectionPredictor:
         
         # Add recommendations to result
         result.recommended_actions.extend(recommendations)
+        
+        # Ensure at least one recommendation is provided
+        if not result.recommended_actions:
+            # Fallback monitoring recommendation
+            fallback_action = RecommendedAction(
+                action_id=f"system_check_{datetime.now().strftime('%Y%m%d')}",
+                description="Perform routine system check",
+                impact="Regular monitoring helps maintain optimal performance",
+                expected_benefit="Prevention of potential issues",
+                severity=ActionSeverity.LOW,
+                due_date=datetime.now() + timedelta(days=90),
+                estimated_cost=0.0,
+                estimated_duration="10 minutes"
+            )
+            result.recommended_actions.append(fallback_action)

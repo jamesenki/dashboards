@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1743052216427" clover="3.2.0">
+  <project timestamp="1743052216427" name="All files">
+    <metrics statements="35" coveredstatements="34" conditionals="12" coveredconditionals="10" methods="7" coveredmethods="7" elements="54" coveredelements="51" complexity="0" loc="35" ncloc="35" packages="1" files="1" classes="1"/>
+    <file name="water_heater_predictions_mock.js" path="/Users/lisasimon/repos/IoTSphereAngular/IoTSphere-Refactor/src/tests/frontend/water-heater/water_heater_predictions_mock.js">
+      <metrics statements="35" coveredstatements="34" conditionals="12" coveredconditionals="10" methods="7" coveredmethods="7"/>
+      <line num="7" count="1" type="stmt"/>
+      <line num="9" count="3" type="stmt"/>
+      <line num="10" count="3" type="stmt"/>
+      <line num="13" count="3" type="stmt"/>
+      <line num="14" count="3" type="stmt"/>
+      <line num="15" count="3" type="stmt"/>
+      <line num="16" count="3" type="stmt"/>
+      <line num="19" count="3" type="stmt"/>
+      <line num="20" count="3" type="stmt"/>
+      <line num="21" count="3" type="stmt"/>
+      <line num="22" count="3" type="stmt"/>
+      <line num="25" count="3" type="stmt"/>
+      <line num="28" count="3" type="stmt"/>
+      <line num="31" count="3" type="stmt"/>
+      <line num="35" count="3" type="stmt"/>
+      <line num="36" count="3" type="stmt"/>
+      <line num="39" count="3" type="stmt"/>
+      <line num="40" count="3" type="cond" truecount="2" falsecount="0"/>
+      <line num="41" count="1" type="stmt"/>
+      <line num="42" count="1" type="stmt"/>
+      <line num="48" count="4" type="stmt"/>
+      <line num="51" count="4" type="stmt"/>
+      <line num="54" count="4" type="stmt"/>
+      <line num="56" count="3" type="cond" truecount="1" falsecount="1"/>
+      <line num="57" count="0" type="stmt"/>
+      <line num="59" count="3" type="stmt"/>
+      <line num="62" count="3" type="stmt"/>
+      <line num="65" count="3" type="stmt"/>
+      <line num="68" count="3" type="cond" truecount="1" falsecount="1"/>
+      <line num="69" count="3" type="cond" truecount="2" falsecount="0"/>
+      <line num="70" count="3" type="cond" truecount="2" falsecount="0"/>
+      <line num="71" count="3" type="cond" truecount="2" falsecount="0"/>
+      <line num="73" count="3" type="stmt"/>
+      <line num="76" count="1" type="stmt"/>
+      <line num="77" count="1" type="stmt"/>
+    </file>
+  </project>
+</coverage>

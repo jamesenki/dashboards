@@ -1,0 +1,254 @@
+/* Usage Pattern Analysis Grid Layout Styling */
+.usage-grid-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background-color: #292929;
+  border-bottom: 1px solid #333;
+}
+
+.usage-classification-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #2d3748;
+  padding: 10px 15px;
+  border-radius: 8px;
+  min-width: 200px;
+}
+
+.classification-label {
+  color: #a0aec0;
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
+.usage-classification {
+  font-size: 20px;
+  font-weight: bold;
+  color: #4fd1c5;
+  padding: 5px 15px;
+  border-radius: 20px;
+  background-color: rgba(79, 209, 197, 0.1);
+  border: 1px solid rgba(79, 209, 197, 0.3);
+  text-transform: uppercase;
+}
+
+.usage-classification.light {
+  color: #68d391;
+  background-color: rgba(104, 211, 145, 0.1);
+  border-color: rgba(104, 211, 145, 0.3);
+}
+
+.usage-classification.normal {
+  color: #4fd1c5;
+  background-color: rgba(79, 209, 197, 0.1);
+  border-color: rgba(79, 209, 197, 0.3);
+}
+
+.usage-classification.heavy {
+  color: #f6ad55;
+  background-color: rgba(246, 173, 85, 0.1);
+  border-color: rgba(246, 173, 85, 0.3);
+}
+
+.usage-summary-container {
+  flex: 1;
+  padding-left: 20px;
+}
+
+.usage-summary {
+  color: #e2e8f0;
+  font-size: 16px;
+  margin: 0;
+}
+
+/* Grid Layout */
+.usage-grid-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  padding: 15px;
+}
+
+.usage-grid-column {
+  min-width: 0; /* Helps with text overflow in grid layouts */
+}
+
+.grid-card {
+  background-color: #2d2d2d;
+  border-radius: 8px;
+  padding: 15px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.grid-card h5 {
+  color: #4fd1c5;
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid #333;
+  padding-bottom: 10px;
+}
+
+.grid-card h5 i {
+  color: #4fd1c5;
+}
+
+/* Component Impact List */
+.impacts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow-y: auto;
+  max-height: 300px;
+}
+
+.impact-item {
+  background-color: #333;
+  border-radius: 6px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.impact-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.component-name {
+  font-weight: bold;
+  color: #e2e8f0;
+}
+
+.impact-level {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.impact-low {
+  background-color: #2c7a7b;
+  color: #e6fffa;
+}
+
+.impact-medium {
+  background-color: #d69e2e;
+  color: #fffff0;
+}
+
+.impact-high {
+  background-color: #c53030;
+  color: #fff5f5;
+}
+
+.impact-description {
+  color: #cbd5e0;
+  font-size: 14px;
+}
+
+.impact-gauge {
+  width: 100%;
+  height: 8px;
+  background-color: #444;
+  border-radius: 4px;
+  margin-top: 5px;
+  position: relative;
+  overflow: hidden;
+}
+
+.impact-gauge-fill {
+  height: 100%;
+  background-color: #4fd1c5;
+  border-radius: 4px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  transition: width 0.5s ease;
+}
+
+/* Optimization Recommendations */
+.recommendations-list.compact-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow-y: auto;
+  max-height: 300px;
+}
+
+.optimization-item {
+  background-color: #333;
+  border-radius: 6px;
+  padding: 12px;
+  margin-bottom: 0; /* Override default margin */
+}
+
+.optimization-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  align-items: center;
+}
+
+.optimization-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.optimization-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.optimization-detail-label {
+  color: #a0aec0;
+  font-size: 12px;
+}
+
+.optimization-detail-value {
+  color: #e2e8f0;
+}
+
+.savings-estimate {
+  color: #68d391;
+  font-weight: bold;
+}
+
+/* For mobile responsive layout */
+@media (max-width: 768px) {
+  .usage-grid-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .usage-classification-badge {
+    margin-bottom: 15px;
+    align-self: center;
+  }
+  
+  .usage-summary-container {
+    padding-left: 0;
+  }
+  
+  .usage-grid-container {
+    grid-template-columns: 1fr;
+  }
+  
+  .grid-card {
+    margin-bottom: 15px;
+  }
+}

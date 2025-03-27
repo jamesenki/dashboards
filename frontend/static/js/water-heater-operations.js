@@ -9,17 +9,88 @@
 class WaterHeaterOperationsDashboard {
     /**
      * Initialize the operations dashboard
-     * @param {string} containerId - ID of the container element
      * @param {string} heaterId - ID of the water heater
+     * @param {string} [containerId='operations-content'] - ID of the container element
      */
-    constructor(containerId, heaterId) {
-        this.containerId = containerId;
+    constructor(heaterId, containerId = 'operations-content') {
         this.heaterId = heaterId;
+        this.containerId = containerId;
+        
+        // Root container for scoped element selection
         this.container = document.getElementById(containerId);
+        if (!this.container) {
+            console.error(`Operations Dashboard: Container element #${this.containerId} not found`);
+        }
+        
+        // Element cache for performance optimization
+        this.elements = {};
+        
+        // Initialize charts container
+        this.gauges = {};
+        
+        // Track initialization state
         this.initialized = false;
+        
+        // Intervals for cleanup
+        this.updateInterval = null;
         
         // Initialize the dashboard
         this.initialize();
+    }
+    
+    /**
+     * Get a DOM element within the dashboard's container
+     * @param {string} selector - CSS selector for the element
+     * @param {boolean} [cacheResult=true] - Whether to cache the result for future use
+     * @param {string} [cacheKey=null] - Key to use for caching (defaults to selector)
+     * @returns {HTMLElement|null} The element or null if not found
+     */
+    getElement(selector, cacheResult = true, cacheKey = null) {
+        const key = cacheKey || selector;
+        
+        // Return cached element if available
+        if (this.elements[key]) {
+            return this.elements[key];
+        }
+        
+        // Try to find element within container first (scoped)
+        let element = null;
+        if (this.container) {
+            element = this.container.querySelector(selector);
+        }
+        
+        // If not found in container, try document-wide as fallback
+        if (!element) {
+            // Handle ID selectors specially
+            if (selector.startsWith('#')) {
+                const id = selector.substring(1);
+                element = document.getElementById(id);
+            } else {
+                element = document.querySelector(selector);
+            }
+        }
+        
+        // Cache result if requested
+        if (element && cacheResult) {
+            this.elements[key] = element;
+        }
+        
+        return element;
+    }
+    
+    /**
+     * Get all DOM elements matching a selector within the dashboard's container
+     * @param {string} selector - CSS selector for the elements
+     * @returns {NodeList} The matching elements
+     */
+    getAllElements(selector) {
+        // First try container-scoped query
+        if (this.container) {
+            return this.container.querySelectorAll(selector);
+        }
+        
+        // Fallback to document-wide
+        return document.querySelectorAll(selector);
     }
     
     /**
@@ -27,12 +98,19 @@ class WaterHeaterOperationsDashboard {
      */
     async initialize() {
         if (!this.container) {
-            console.error(`Container element #${this.containerId} not found`);
+            console.error(`Operations Dashboard: Container element #${this.containerId} not found`);
             return;
         }
         
-        // Build dashboard UI structure
-        this.buildDashboardUI();
+        console.log(`Operations Dashboard: Initializing for water heater ${this.heaterId}`);
+        
+        // Build dashboard UI structure if not already built
+        if (!this.initialized) {
+            this.buildDashboardUI();
+        }
+        
+        // Cache frequently accessed elements
+        this.cacheElements();
         
         // Load initial data
         try {
@@ -41,9 +119,35 @@ class WaterHeaterOperationsDashboard {
             
             // Set up periodic updates
             this.setupPeriodicUpdates();
+            
+            console.log('Operations Dashboard: Initialization complete');
         } catch (error) {
+            console.error('Operations Dashboard: Initialization error', error);
             this.showError(`Failed to load dashboard data: ${error.message}`);
         }
+    }
+    
+    /**
+     * Cache frequently accessed DOM elements for better performance
+     */
+    cacheElements() {
+        // Status elements
+        this.elements.machineStatus = this.getElement('#machine-status-card .status-value');
+        this.elements.heaterStatus = this.getElement('#heater-status-card .status-value');
+        this.elements.currentTemp = this.getElement('#current-temp-card .status-value');
+        this.elements.targetTemp = this.getElement('#target-temp-card .status-value');
+        this.elements.modeValue = this.getElement('#mode-card .status-value');
+        
+        // Gauge elements
+        this.elements.temperatureGauge = this.getElement('#temperature-gauge');
+        this.elements.pressureGauge = this.getElement('#pressure-gauge');
+        this.elements.flowRateGauge = this.getElement('#flow-rate-gauge');
+        this.elements.energyGauge = this.getElement('#energy-gauge');
+        
+        // Error container
+        this.elements.errorContainer = this.getElement('#operations-error');
+        
+        console.log('Operations Dashboard: Cached DOM elements');
     }
     
     /**
@@ -322,10 +426,16 @@ class WaterHeaterOperationsDashboard {
      * @param {string} message - Error message to display
      */
     showError(message) {
-        const errorElement = document.getElementById('operations-error');
+        // Use cached element or find it
+        const errorElement = this.elements.errorContainer || this.getElement('#operations-error');
         if (errorElement) {
             errorElement.textContent = message;
             errorElement.style.display = 'block';
+            
+            // Hide after 5 seconds
+            setTimeout(() => {
+                errorElement.style.display = 'none';
+            }, 5000);
         }
         console.error('Operations Dashboard Error:', message);
     }
@@ -334,12 +444,37 @@ class WaterHeaterOperationsDashboard {
      * Setup periodic updates for real-time data
      */
     setupPeriodicUpdates() {
-        // Update every 30 seconds
-        this.updateInterval = setInterval(() => {
-            this.loadDashboardData().catch(error => {
-                console.error('Error during periodic update:', error);
-            });
-        }, 30000);
+        // Clear any existing interval first
+        this.clearUpdateInterval();
+        
+        // Only set up interval if we're the active tab
+        if (window.tabManager && window.tabManager.getActiveTabId() === 'operations') {
+            console.log('Operations Dashboard: Setting up periodic updates (30s interval)');
+            
+            // Update every 30 seconds
+            this.updateInterval = setInterval(() => {
+                // Only fetch data if this tab is still active
+                if (window.tabManager && window.tabManager.getActiveTabId() === 'operations') {
+                    this.loadDashboardData().catch(error => {
+                        console.error('Error during periodic update:', error);
+                    });
+                } else {
+                    // If no longer active, clear the interval
+                    console.log('Operations Dashboard: No longer active, clearing update interval');
+                    this.clearUpdateInterval();
+                }
+            }, 30000);
+        }
+    }
+    
+    /**
+     * Clear the update interval
+     */
+    clearUpdateInterval() {
+        if (this.updateInterval) {
+            clearInterval(this.updateInterval);
+            this.updateInterval = null;
+        }
     }
     
     /**
@@ -355,10 +490,56 @@ class WaterHeaterOperationsDashboard {
      * Clean up resources (e.g., when component is destroyed)
      */
     destroy() {
+        console.log('Operations Dashboard: Cleaning up resources');
+        
         // Clear update interval
-        if (this.updateInterval) {
-            clearInterval(this.updateInterval);
+        this.clearUpdateInterval();
+        
+        // Clear gauge objects
+        Object.values(this.gauges).forEach(gauge => {
+            if (gauge && typeof gauge.destroy === 'function') {
+                gauge.destroy();
+            }
+        });
+        this.gauges = {};
+        
+        // Clear element cache
+        this.elements = {};
+    }
+    
+    /**
+     * TabManager reload method - Called when the Operations tab is activated
+     * @returns {boolean} Success status
+     */
+    reload() {
+        console.log('Operations Dashboard: Reload method called by TabManager');
+        
+        // Ensure operations content is visible (this should already be handled by TabManager)
+        const operationsContent = document.getElementById('operations-content');
+        if (operationsContent) {
+            console.log('Operations Dashboard: Ensuring content is visible');
+            operationsContent.style.display = 'block';
+            operationsContent.style.visibility = 'visible';
         }
+        
+        // Reload dashboard data
+        if (this.initialized) {
+            // If already initialized, just refresh data
+            this.loadDashboardData().catch(error => {
+                console.error('Operations Dashboard: Error reloading data', error);
+                this.showError('Failed to refresh operations data');
+            });
+            
+            // Restart periodic updates
+            this.setupPeriodicUpdates();
+        } else {
+            // If not initialized, do full initialization
+            this.initialize().catch(error => {
+                console.error('Operations Dashboard: Error during initialization', error);
+            });
+        }
+        
+        return true;
     }
 }
 

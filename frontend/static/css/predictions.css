@@ -47,6 +47,11 @@
   overflow: hidden;
 }
 
+/* Fix for the duplicate recommendation headers issue */
+.recommendations-header {
+  display: none;
+}
+
 .prediction-card-header {
   background-color: #333;
   padding: 15px;
@@ -183,10 +188,14 @@
   gap: 10px;
 }
 
-.action-item {
+.action-item, .recommendation-item {
   background-color: #333;
   border-radius: 6px;
   padding: 12px;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
 }
 
 .action-header {
@@ -245,19 +254,70 @@
 .action-description {
   color: #cbd5e0;
   margin-bottom: 8px;
+  word-break: break-word;
+  white-space: normal;
 }
 
 .action-meta {
   display: flex;
-  gap: 20px;
+  flex-wrap: wrap;
+  gap: 12px;
   margin-top: 10px;
   font-size: 14px;
+  width: 100%;
 }
 
 .action-meta-item {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  min-width: 150px;
+  flex: 1 0 45%;
+  margin-bottom: 8px;
+}
+
+/* Style for empty sections */
+.no-actions-message, .no-data-message {
+  color: #a0aec0;
+  font-style: italic;
+  padding: 10px;
+  text-align: center;
+  background-color: rgba(45, 55, 72, 0.5);
+  border-radius: 4px;
+  margin: 8px 0;
+}
+
+/* Styling for optimization items */
+.optimization-item {
+  background-color: #333;
+  border-radius: 6px;
+  padding: 12px;
+  margin-bottom: 10px;
+}
+
+.optimization-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  align-items: center;
+}
+
+.optimization-type {
+  background-color: #2b6cb0;
+  color: white;
+  padding: 3px 6px;
+  border-radius: 3px;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.optimization-title {
+  font-weight: bold;
+  color: #e2e8f0;
+}
+
+.optimization-details {
+  color: #cbd5e0;
 }
 
 .meta-label {
@@ -267,6 +327,9 @@
 
 .meta-value {
   color: #e2e8f0;
+  word-break: break-word;
+  max-width: 100%;
+  white-space: normal;
 }
 
 .due-date {
