@@ -519,7 +519,31 @@
                 id: 'mlops-1',
                 title: 'Implement automated model retraining',
                 description: 'Create system for automatic model retraining based on feedback patterns',
-                status: 'todo',
+                status: 'progress',
+                priority: 'high',
+                category: 'mlops'
+            },
+            {
+                id: 'mlops-1-1',
+                title: 'Create test cases for automated training pipeline',
+                description: 'Define tests for scheduled jobs, data preprocessing, model selection, evaluation metrics, and integration with SecureModelLoader',
+                status: 'progress',
+                priority: 'high',
+                category: 'mlops'
+            },
+            {
+                id: 'mlops-1-2',
+                title: 'Explore existing data structure',
+                description: 'Analyze available water heater data, identify features, document quality issues, define transformation pipeline',
+                status: 'progress',
+                priority: 'high',
+                category: 'mlops'
+            },
+            {
+                id: 'mlops-1-3',
+                title: 'Set up pipeline infrastructure',
+                description: 'Create job framework, preprocessing components, training orchestration, model registry integration, secure deployment',
+                status: 'progress',
                 priority: 'high',
                 category: 'mlops'
             },
@@ -694,7 +718,40 @@
                 status: 'todo',
                 priority: 'medium',
                 category: 'arch'
-            }
+            },
+            // SECURITY ENHANCEMENT TASKS
+            {
+                id: 'security-1',
+                title: 'Add authentication and authorization',
+                description: 'Implement API key validation or OAuth2 and add role-based access control (RBAC) for different dashboard operations',
+                status: 'todo',
+                priority: 'high',
+                category: 'security'
+            },
+            {
+                id: 'security-2',
+                title: 'Implement rate limiting',
+                description: 'Add rate limiting to prevent abuse of the API endpoints',
+                status: 'todo',
+                priority: 'high',
+                category: 'security'
+            },
+            {
+                id: 'security-3',
+                title: 'Enhance data validation',
+                description: 'Add range checks for metric values (e.g., accuracy should be between 0 and 1) and implement validation for metric names (allowed values)',
+                status: 'todo',
+                priority: 'high',
+                category: 'security'
+            },
+            {
+                id: 'security-4',
+                title: 'Add structured logging for security events',
+                description: 'Implement logging for failed access attempts, alert creations and triggers, and metric submissions',
+                status: 'todo',
+                priority: 'high',
+                category: 'security'
+            },
         ];
 
         // Check for saved tasks in localStorage

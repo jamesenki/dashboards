@@ -120,6 +120,16 @@ api_router.include_router(operations_db_router)
 app.include_router(api_router)
 app.include_router(web_router)
 
+# Include router for model monitoring dashboard
+from src.monitoring.dashboard_api import create_dashboard_api
+from src.monitoring.model_monitoring_service import ModelMonitoringService
+from src.db.database import Database
+
+monitoring_db = Database()  # Create a database instance for monitoring
+monitoring_service = ModelMonitoringService(monitoring_db)
+model_monitoring_api = create_dashboard_api(monitoring_service)
+app.mount("/api/monitoring", model_monitoring_api)
+
 @app.on_event("startup")
 async def startup_event():
     """Initialize database and connections on startup."""

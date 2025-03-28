@@ -99,3 +99,13 @@ async def get_edit_vending_machine_form(request: Request, machine_id: str = Path
         "request": request,
         "machine_id": machine_id
     })
+
+@router.get("/model-monitoring", response_class=HTMLResponse)
+async def get_model_monitoring_dashboard(request: Request):
+    """Render the model monitoring dashboard"""
+    return templates.TemplateResponse("model-monitoring/dashboard.html", {"request": request})
+
+@router.get("/model-monitoring/models", response_class=HTMLResponse)
+async def get_model_monitoring_models(request: Request):
+    """Render the model monitoring models tab"""
+    return templates.TemplateResponse("model-monitoring/models.html", {"request": request})

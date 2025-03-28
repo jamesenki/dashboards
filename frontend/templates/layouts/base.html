@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="/static/css/water-heater.css">
     <link rel="stylesheet" href="/static/css/vending-machine.css">
     <link rel="stylesheet" href="/static/css/operations-dashboard.css">
+    <link rel="stylesheet" href="/static/css/model-monitoring.css">
     {% block head %}{% endblock %}
 </head>
 <body class="{% block body_class %}{% endblock %}">
@@ -35,6 +36,10 @@
         <a href="/vending-machines/detail" title="Vending Machines">
             <img src="/static/assets/icons/vending-machine.svg" alt="Vending Machines" class="sidebar-icon"
                  onerror="this.src='/static/assets/icons/vending-machine.png'">
+        </a>
+        <a href="/model-monitoring" title="Model Monitoring">
+            <img src="/static/assets/icons/monitoring.svg" alt="Model Monitoring" class="sidebar-icon"
+                 onerror="this.src='/static/assets/icons/dashboard.png'">
         </a>
     </div>
 

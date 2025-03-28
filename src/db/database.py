@@ -78,3 +78,51 @@ class Database:
     def close(self):
         """Close the database connection."""
         logger.debug("Mock closing database connection")
+
+    def fetch_all(self, query: str, params: Optional[Union[Tuple, List]] = None) -> List[dict]:
+        """
+        Execute a query and fetch all results as a list of dictionaries.
+        
+        Args:
+            query: SQL query to execute
+            params: Query parameters
+            
+        Returns:
+            Query results as a list of dictionaries
+        """
+        logger.debug(f"Mock fetch_all query: {query}")
+        if params:
+            logger.debug(f"With parameters: {params}")
+            
+        # For testing, return mock data based on the query content
+        if "model_versions" in query:
+            # Return mock model versions
+            return [
+                {"version": "1.0", "created_at": "2023-01-15T10:30:00Z", "status": "active"},
+                {"version": "1.1", "created_at": "2023-02-10T14:45:00Z", "status": "active"},
+                {"version": "1.2", "created_at": "2023-03-05T09:20:00Z", "status": "inactive"}
+            ]
+        elif "metrics" in query:
+            # Return mock metrics
+            return [
+                {"metric_name": "accuracy", "metric_value": 0.92, "timestamp": "2023-04-01T08:15:00Z"},
+                {"metric_name": "precision", "metric_value": 0.89, "timestamp": "2023-04-01T08:15:00Z"},
+                {"metric_name": "recall", "metric_value": 0.85, "timestamp": "2023-04-01T08:15:00Z"}
+            ]
+        else:
+            # Default empty result
+            return []
+    
+    def fetch_one(self, query: str, params: Optional[Union[Tuple, List]] = None) -> Optional[dict]:
+        """
+        Execute a query and fetch a single result as a dictionary.
+        
+        Args:
+            query: SQL query to execute
+            params: Query parameters
+            
+        Returns:
+            Single query result as a dictionary, or None if no results
+        """
+        results = self.fetch_all(query, params)
+        return results[0] if results else None

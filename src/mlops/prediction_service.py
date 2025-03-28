@@ -370,9 +370,22 @@ class PredictionService:
         if model_path in self._model_cache:
             return self._model_cache[model_path]
         
-        # Load model
+        # Load model securely
         try:
-            model = joblib.load(model_path)
+            from security.secure_model_loader import SecureModelLoader
+            
+            # Configure the secure loader
+            secure_loader = SecureModelLoader(
+                # Define trusted model sources - adjust to your environment
+                allowed_sources=[os.path.dirname(model_path)],
+                # Enable signature verification when in production
+                signature_verification=False,  # Set to True in production
+                # Enable sandbox in production for critical models
+                use_sandbox=False  # Set to True for stronger isolation
+            )
+            
+            # Load the model securely
+            model = secure_loader.load(model_path)
             
             # Cache the model
             self._model_cache[model_path] = model

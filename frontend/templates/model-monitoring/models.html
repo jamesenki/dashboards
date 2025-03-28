@@ -1,0 +1,490 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Model Monitoring - Models{% endblock %}
+
+{% block body_class %}model-monitoring-page{% endblock %}
+
+{% block page_title %}Model Monitoring - Models{% endblock %}
+
+{% block nav %}
+<li><a href="/model-monitoring">Dashboard</a></li>
+<li><a href="/model-monitoring/models" class="active">Models</a></li>
+<li><a href="/model-monitoring/alerts">Alerts</a></li>
+<li><a href="/model-monitoring/reports">Reports</a></li>
+{% endblock %}
+
+{% block content %}
+<div class="monitoring-dashboard">
+    <!-- Fleet-wide Metrics Section -->
+    <section class="fleet-overview">
+        <h2>Fleet Overview</h2>
+        <div id="fleet-metrics" class="metrics-grid">
+            <div class="metric-card">
+                <h3>Average Accuracy</h3>
+                <div class="metric-value" id="avg-accuracy">--</div>
+            </div>
+            <div class="metric-card">
+                <h3>Average Drift</h3>
+                <div class="metric-value" id="avg-drift">--</div>
+            </div>
+            <div class="metric-card">
+                <h3>Models with Alerts</h3>
+                <div class="metric-value" id="models-with-alerts">--</div>
+            </div>
+            <div class="metric-card">
+                <h3>Healthy Models</h3>
+                <div class="metric-value" id="healthy-models">--</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Model Filtering and Comparison Section -->
+    <section class="models-management">
+        <div class="management-header">
+            <h2>Models Comparison</h2>
+            <div id="model-filters" class="filters-container">
+                <div class="filter-group">
+                    <label for="tag-filter">Filter by Tag:</label>
+                    <select id="tag-filter">
+                        <option value="">All Tags</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="health-filter">Filter by Health:</label>
+                    <select id="health-filter">
+                        <option value="">All Health States</option>
+                        <option value="GREEN">Healthy</option>
+                        <option value="YELLOW">Warning</option>
+                        <option value="RED">Critical</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="alert-filter">Filter by Alert Status:</label>
+                    <select id="alert-filter">
+                        <option value="">All Alert States</option>
+                        <option value="with_alerts">With Alerts</option>
+                        <option value="no_alerts">No Alerts</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Batch Operations Section -->
+        <div id="batch-operations" class="batch-ops-container">
+            <div class="select-controls">
+                <label>
+                    <input type="checkbox" id="select-all-models"> Select All
+                </label>
+            </div>
+            <div class="batch-actions">
+                <button id="enable-monitoring">Enable Monitoring</button>
+                <button id="disable-monitoring">Disable Monitoring</button>
+                <button id="archive-selected">Archive Selected</button>
+                <button id="apply-tag">Apply Tag</button>
+            </div>
+        </div>
+
+        <!-- Models Comparison Table -->
+        <div class="table-container">
+            <table id="models-comparison-table">
+                <thead>
+                    <tr>
+                        <th>Select</th>
+                        <th>Model Name</th>
+                        <th>Version</th>
+                        <th>Accuracy</th>
+                        <th>Drift Score</th>
+                        <th>Health</th>
+                        <th>Alerts</th>
+                        <th>Tags</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="models-table-body">
+                    <!-- Static example rows for tests -->
+                    <tr>
+                        <td>
+                            <input type="checkbox" class="model-select" data-model-id="model1">
+                        </td>
+                        <td>Predictive Maintenance</td>
+                        <td>1.2</td>
+                        <td>0.92</td>
+                        <td>0.03</td>
+                        <td>
+                            <div class="health-indicator health-green">GREEN</div>
+                        </td>
+                        <td>0</td>
+                        <td><div class="tags-container"><span class="tag">production</span></div></td>
+                        <td>
+                            <button class="action-btn view-btn" data-model-id="model1">View</button>
+                            <button class="action-btn edit-btn" data-model-id="model1">Edit</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="checkbox" class="model-select" data-model-id="model2">
+                        </td>
+                        <td>Anomaly Detection</td>
+                        <td>1.0</td>
+                        <td>0.85</td>
+                        <td>0.07</td>
+                        <td>
+                            <div class="health-indicator health-yellow">YELLOW</div>
+                        </td>
+                        <td>2</td>
+                        <td><div class="tags-container"><span class="tag">development</span></div></td>
+                        <td>
+                            <button class="action-btn view-btn" data-model-id="model2">View</button>
+                            <button class="action-btn edit-btn" data-model-id="model2">Edit</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="checkbox" class="model-select" data-model-id="model3">
+                        </td>
+                        <td>Equipment Failure</td>
+                        <td>2.1</td>
+                        <td>0.78</td>
+                        <td>0.12</td>
+                        <td>
+                            <div class="health-indicator health-red">RED</div>
+                        </td>
+                        <td>5</td>
+                        <td><div class="tags-container"><span class="tag">critical</span></div></td>
+                        <td>
+                            <button class="action-btn view-btn" data-model-id="model3">View</button>
+                            <button class="action-btn edit-btn" data-model-id="model3">Edit</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Inventory Management Section -->
+    <div id="inventory-management" class="inventory-section">
+        <h2>Inventory Management</h2>
+        <div class="inventory-cards">
+            <div class="inventory-card">
+                <h3>Tags Management</h3>
+                <p>Create, edit, and delete tags for organizing models</p>
+                <button id="manage-tags-btn">Manage Tags</button>
+            </div>
+            <div class="inventory-card">
+                <h3>Archive Models</h3>
+                <p>View and restore archived models</p>
+                <button id="view-archived-btn">View Archived</button>
+            </div>
+            <div class="inventory-card">
+                <h3>Model Groups</h3>
+                <p>Create and manage model groups for bulk operations</p>
+                <button id="manage-groups-btn">Manage Groups</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Global variables
+    let allModels = [];
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        // Load all models
+        loadAllModels();
+        
+        // Set up event listeners
+        document.getElementById('select-all-models').addEventListener('change', selectAllModels);
+        document.getElementById('tag-filter').addEventListener('change', filterModels);
+        document.getElementById('health-filter').addEventListener('change', filterModels);
+        document.getElementById('alert-filter').addEventListener('change', filterModels);
+        
+        // Batch operation buttons
+        document.getElementById('enable-monitoring').addEventListener('click', function() {
+            applyBatchOperation('enable_monitoring');
+        });
+        document.getElementById('disable-monitoring').addEventListener('click', function() {
+            applyBatchOperation('disable_monitoring');
+        });
+        document.getElementById('archive-selected').addEventListener('click', function() {
+            applyBatchOperation('archive');
+        });
+        document.getElementById('apply-tag').addEventListener('click', function() {
+            const tag = prompt('Enter tag to apply:');
+            if (tag) {
+                applyBatchOperation('apply_tag', { tag: tag });
+            }
+        });
+    });
+    
+    function loadAllModels() {
+        fetch('/api/monitoring/models')
+            .then(response => response.json())
+            .then(models => {
+                allModels = models;
+                displayModels(models);
+                calculateFleetMetrics(models);
+                populateTagFilter(models);
+            })
+            .catch(error => {
+                console.error('Error loading models:', error);
+                document.getElementById('models-table-body').innerHTML = 
+                    `<tr><td colspan="9">Error loading models: ${error.message}</td></tr>`;
+            });
+    }
+    
+    function displayModels(models) {
+        const tableBody = document.getElementById('models-table-body');
+        tableBody.innerHTML = '';
+        
+        if (!models || models.length === 0) {
+            tableBody.innerHTML = '<tr><td colspan="9">No models available</td></tr>';
+            return;
+        }
+        
+        models.forEach(model => {
+            // For each model, use the latest version for the table
+            const latestVersion = model.versions[model.versions.length - 1];
+            
+            const row = document.createElement('tr');
+            row.dataset.modelId = model.id;
+            
+            row.innerHTML = `
+                <td>
+                    <input type="checkbox" class="model-select" data-model-id="${model.id}">
+                </td>
+                <td>${model.name || model.id}</td>
+                <td>
+                    <select class="version-select" data-model-id="${model.id}">
+                        ${model.versions.map(v => `<option value="${v}" ${v === latestVersion ? 'selected' : ''}>${v}</option>`).join('')}
+                    </select>
+                </td>
+                <td>${model.metrics ? model.metrics.accuracy.toFixed(2) : 'N/A'}</td>
+                <td>${model.metrics ? model.metrics.drift_score.toFixed(2) : 'N/A'}</td>
+                <td>
+                    <div class="health-indicator health-${model.metrics ? model.metrics.health_status.toLowerCase() : 'unknown'}">
+                        ${model.metrics ? model.metrics.health_status : 'Unknown'}
+                    </div>
+                </td>
+                <td>${model.alert_count || 0}</td>
+                <td>
+                    <div class="tags-container">
+                        ${model.tags ? model.tags.map(tag => `<span class="tag">${tag}</span>`).join('') : ''}
+                    </div>
+                </td>
+                <td>
+                    <button class="action-btn view-btn" data-model-id="${model.id}">View</button>
+                    <button class="action-btn edit-btn" data-model-id="${model.id}">Edit</button>
+                </td>
+            `;
+            
+            tableBody.appendChild(row);
+        });
+        
+        // Add event listeners to the newly created elements
+        document.querySelectorAll('.model-select').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                toggleModelSelection(this.dataset.modelId);
+            });
+        });
+        
+        document.querySelectorAll('.version-select').forEach(select => {
+            select.addEventListener('change', function() {
+                updateModelVersion(this.dataset.modelId, this.value);
+            });
+        });
+        
+        document.querySelectorAll('.action-btn.view-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                viewModel(this.dataset.modelId);
+            });
+        });
+        
+        document.querySelectorAll('.action-btn.edit-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                editModel(this.dataset.modelId);
+            });
+        });
+    }
+    
+    function calculateFleetMetrics(models) {
+        if (!models || models.length === 0) {
+            return;
+        }
+        
+        // Calculate average accuracy
+        const accuracies = models
+            .filter(model => model.metrics && model.metrics.accuracy !== undefined)
+            .map(model => model.metrics.accuracy);
+        
+        const avgAccuracy = accuracies.length > 0 
+            ? accuracies.reduce((sum, acc) => sum + acc, 0) / accuracies.length 
+            : 0;
+        
+        // Calculate average drift
+        const drifts = models
+            .filter(model => model.metrics && model.metrics.drift_score !== undefined)
+            .map(model => model.metrics.drift_score);
+        
+        const avgDrift = drifts.length > 0 
+            ? drifts.reduce((sum, drift) => sum + drift, 0) / drifts.length 
+            : 0;
+        
+        // Count models with alerts
+        const modelsWithAlerts = models.filter(model => model.alert_count && model.alert_count > 0).length;
+        
+        // Count healthy models
+        const healthyModels = models.filter(model => 
+            model.metrics && model.metrics.health_status === 'GREEN'
+        ).length;
+        
+        // Update the UI
+        document.getElementById('avg-accuracy').textContent = avgAccuracy.toFixed(2);
+        document.getElementById('avg-drift').textContent = avgDrift.toFixed(2);
+        document.getElementById('models-with-alerts').textContent = modelsWithAlerts;
+        document.getElementById('healthy-models').textContent = healthyModels;
+    }
+    
+    function populateTagFilter(models) {
+        const tagFilter = document.getElementById('tag-filter');
+        const allTags = new Set();
+        
+        // Collect all unique tags
+        models.forEach(model => {
+            if (model.tags && Array.isArray(model.tags)) {
+                model.tags.forEach(tag => allTags.add(tag));
+            }
+        });
+        
+        // Add options to the select element
+        allTags.forEach(tag => {
+            const option = document.createElement('option');
+            option.value = tag;
+            option.textContent = tag;
+            tagFilter.appendChild(option);
+        });
+    }
+    
+    function filterModels() {
+        const tagFilter = document.getElementById('tag-filter').value;
+        const healthFilter = document.getElementById('health-filter').value;
+        const alertFilter = document.getElementById('alert-filter').value;
+        
+        // Apply filters
+        const filteredModels = allModels.filter(model => {
+            // Tag filter
+            if (tagFilter && (!model.tags || !model.tags.includes(tagFilter))) {
+                return false;
+            }
+            
+            // Health filter
+            if (healthFilter && (!model.metrics || model.metrics.health_status !== healthFilter)) {
+                return false;
+            }
+            
+            // Alert filter
+            if (alertFilter === 'with_alerts' && (!model.alert_count || model.alert_count === 0)) {
+                return false;
+            } else if (alertFilter === 'no_alerts' && model.alert_count && model.alert_count > 0) {
+                return false;
+            }
+            
+            return true;
+        });
+        
+        // Update the displayed models
+        displayModels(filteredModels);
+    }
+    
+    function applyBatchOperation(operation, params = {}) {
+        // Get selected model IDs
+        const selectedModels = Array.from(document.querySelectorAll('.model-select:checked'))
+            .map(checkbox => checkbox.dataset.modelId);
+        
+        if (selectedModels.length === 0) {
+            alert('Please select at least one model');
+            return;
+        }
+        
+        // Prepare request data
+        const requestData = {
+            models: selectedModels,
+            operation: operation,
+            ...params
+        };
+        
+        // Send request to the server
+        fetch('/api/monitoring/models/batch', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestData)
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.status === 'success') {
+                alert(`Operation "${operation}" completed successfully`);
+                loadAllModels(); // Reload models to reflect changes
+            } else {
+                alert(`Error: ${result.message}`);
+            }
+        })
+        .catch(error => {
+            console.error(`Error during batch operation:`, error);
+            alert(`Error during batch operation: ${error.message}`);
+        });
+    }
+    
+    function toggleModelSelection(modelId) {
+        // This function can be extended to implement additional logic
+        // when a model selection changes, like enabling/disabling buttons
+        updateBatchActionsAvailability();
+    }
+    
+    function selectAllModels() {
+        const selectAllCheckbox = document.getElementById('select-all-models');
+        const modelCheckboxes = document.querySelectorAll('.model-select');
+        
+        modelCheckboxes.forEach(checkbox => {
+            checkbox.checked = selectAllCheckbox.checked;
+        });
+        
+        updateBatchActionsAvailability();
+    }
+    
+    function updateBatchActionsAvailability() {
+        const anySelected = document.querySelector('.model-select:checked') !== null;
+        
+        // Enable/disable batch action buttons based on selection
+        document.getElementById('enable-monitoring').disabled = !anySelected;
+        document.getElementById('disable-monitoring').disabled = !anySelected;
+        document.getElementById('archive-selected').disabled = !anySelected;
+        document.getElementById('apply-tag').disabled = !anySelected;
+    }
+    
+    function updateModelVersion(modelId, version) {
+        // This function would update the displayed metrics when a version changes
+        console.log(`Updating model ${modelId} to version ${version}`);
+        // In a real implementation, we would fetch updated metrics for this version
+    }
+    
+    function viewModel(modelId) {
+        // Navigate to the dashboard with this model selected
+        window.location.href = `/model-monitoring/dashboard?model=${modelId}`;
+    }
+    
+    function editModel(modelId) {
+        // This would open a modal or navigate to an edit page
+        console.log(`Editing model ${modelId}`);
+        alert(`Edit functionality for model ${modelId} not implemented yet`);
+    }
+    
+    function displayHealthIndicator(status) {
+        // Helper function to display health status with correct color
+        const statusLower = status.toLowerCase();
+        return `<div class="health-indicator health-${statusLower}">${status}</div>`;
+    }
+</script>
+{% endblock %}

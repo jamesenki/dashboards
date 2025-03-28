@@ -1,0 +1,12 @@
+# Machine learning dependencies
+mlflow==2.8.0
+pyarrow==13.0.0
+numpy<2.0.0
+scikit-learn<2.0.0
+
+# Optional ML dependencies - uncomment as needed
+# torch==2.2.0
+# torchvision==0.17.0
+# pandas<3.0.0
+# matplotlib<4.0.0
+# scipy<2.0.0

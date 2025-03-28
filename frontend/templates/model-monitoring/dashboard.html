@@ -1,0 +1,586 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Model Monitoring Dashboard{% endblock %}
+
+{% block body_class %}model-monitoring-page{% endblock %}
+
+{% block page_title %}Model Monitoring Dashboard{% endblock %}
+
+{% block nav %}
+<li><a href="/model-monitoring">Dashboard</a></li>
+<li><a href="/model-monitoring/models">Models</a></li>
+<li><a href="/model-monitoring/alerts">Alerts</a></li>
+<li><a href="/model-monitoring/reports">Reports</a></li>
+{% endblock %}
+
+{% block content %}
+<div class="monitoring-dashboard">
+    <div class="dashboard-grid">
+        <div class="dashboard-card models-list">
+            <h2>Monitored Models</h2>
+            <div class="select-model-instruction">
+                Click on a model below to select it for monitoring and configuration
+            </div>
+            <div class="models-container">
+                <div id="models-list-container">Loading models...</div>
+                <div id="model-context-display" class="selected-model-display"></div>
+                <!-- Hidden fields to maintain selected model state -->
+                <input type="hidden" id="selected-model-id">
+                <input type="hidden" id="selected-model-version">
+            </div>
+        </div>
+        
+        <div class="dashboard-card metrics-card">
+            <h2>Latest Metrics</h2>
+            <div class="metrics-container">
+                <div id="metrics-container">Select a model to view metrics</div>
+            </div>
+        </div>
+        
+        <div class="dashboard-card alerts-card">
+            <h2>Recent Alerts</h2>
+            <div class="alerts-container">
+                <div id="alerts-container">No recent alerts</div>
+                <button class="btn btn-primary" id="configure-alerts-btn" disabled>Configure Alerts</button>
+            </div>
+        </div>
+        
+        <div class="dashboard-card drift-card">
+            <h2>Model Drift Analysis</h2>
+            <div class="drift-container">
+                <div id="drift-container">No drift detected in the past 30 days</div>
+                <div class="drift-chart-placeholder">
+                    <canvas id="drift-chart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Alert Configuration Modal -->
+<div id="configure-alerts-modal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Configure Alerts</h2>
+        <div id="current-alert-rules">
+            <h3>Current Alert Rules</h3>
+            <div id="alert-rules-list">Loading alert rules...</div>
+        </div>
+        <h3>Add New Alert Rule</h3>
+        <form id="alert-rule-form">
+            <div class="form-group">
+                <label for="rule_name">Rule Name</label>
+                <input type="text" id="rule_name" name="rule_name" required>
+            </div>
+            <div class="form-group">
+                <label for="metric_name">Metric</label>
+                <select id="metric_name" name="metric_name" required>
+                    <option value="accuracy">Accuracy</option>
+                    <option value="precision">Precision</option>
+                    <option value="recall">Recall</option>
+                    <option value="f1_score">F1 Score</option>
+                    <option value="latency">Latency (ms)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="operator">Operator</label>
+                <select id="operator" name="operator" required>
+                    <option value="<">Less than (&lt;)</option>
+                    <option value=">">Greater than (&gt;)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="threshold">Threshold</label>
+                <input type="number" id="threshold" name="threshold" min="0" max="1" step="0.01" required>
+            </div>
+            <div class="form-group">
+                <label for="severity">Severity</label>
+                <select id="severity" name="severity" required>
+                    <option value="LOW">Low</option>
+                    <option value="MEDIUM">Medium</option>
+                    <option value="HIGH">High</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea id="description" name="description"></textarea>
+            </div>
+            <button type="submit" id="save-alert-rule">Save Alert Rule</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Fetch models from the API
+    fetch('/api/monitoring/models')
+        .then(response => response.json())
+        .then(models => {
+            displayModels(models);
+            
+            // After models are loaded, check if we have a previously selected model
+            const savedModelId = localStorage.getItem('selectedModelId');
+            const savedModelVersion = localStorage.getItem('selectedModelVersion');
+            
+            if (savedModelId && savedModelVersion) {
+                // Restore the previous selection
+                document.getElementById('selected-model-id').value = savedModelId;
+                document.getElementById('selected-model-version').value = savedModelVersion;
+                
+                // Find the model in the list and select the right version
+                const modelItem = document.querySelector(`.model-item[data-model-id="${savedModelId}"]`);
+                if (modelItem) {
+                    // Select the correct version in the dropdown
+                    const versionSelect = modelItem.querySelector('.version-select');
+                    if (versionSelect) {
+                        versionSelect.value = savedModelVersion;
+                    }
+                    
+                    // Load the metrics and alerts for this model
+                    loadMetricsForModel(savedModelId, savedModelVersion);
+                }
+            }
+        })
+        .catch(error => {
+            document.getElementById('models-list-container').innerHTML = 
+                `<p>Error loading models: ${error.message}</p>`;
+        });
+    
+    // Global reference to charts that need to be updated
+    let driftChart = null;
+
+    // Initialize charts
+    initDriftChart();
+});
+
+function displayModels(models) {
+    let html = '<ul class="model-list">';
+    
+    // Handle case where models isn't an array
+    if (!models || !Array.isArray(models)) {
+        console.error("Error loading models: expected array but got", models);
+        document.getElementById('models-list-container').innerHTML = 
+            '<div class="error-message">No models available or error loading models</div>';
+        return;
+    }
+    
+    models.forEach(model => {
+        html += `
+            <li class="model-item" data-model-id="${model.id}">
+                <div class="model-name">${model.name || model.id}</div>
+                <div class="model-versions">
+                    <select class="version-select" onchange="loadMetricsForModel('${model.id}', this.value)">
+                        ${model.versions.map(v => `<option value="${v}">${v}</option>`).join('')}
+                    </select>
+                </div>
+            </li>
+        `;
+    });
+    html += '</ul>';
+    
+    document.getElementById('models-list-container').innerHTML = html;
+    
+    // Add event listeners to model items to handle selection
+    document.querySelectorAll('.model-item').forEach(item => {
+        item.addEventListener('click', function() {
+            // Remove active class from all model items
+            document.querySelectorAll('.model-item').forEach(m => {
+                m.classList.remove('active');
+            });
+            
+            // Add active class to the clicked model
+            this.classList.add('active');
+            
+            // Get model ID and selected version
+            const modelId = this.dataset.modelId;
+            const versionSelect = this.querySelector('.version-select');
+            const modelVersion = versionSelect.value;
+            
+            // Load metrics for selected model and version
+            loadMetricsForModel(modelId, modelVersion);
+        });
+    });
+    
+    // Load metrics for the first model
+    if (models.length > 0) {
+        const firstModel = models[0];
+        const firstVersion = firstModel.versions[0] || 'latest';
+        
+        // Set the first model as active by default
+        const firstModelElement = document.querySelector('.model-item');
+        if (firstModelElement) {
+            firstModelElement.classList.add('active');
+        }
+        
+        loadMetricsForModel(firstModel.id, firstVersion);
+    }
+}
+
+function loadMetricsForModel(modelId, modelVersion) {
+    if (!modelId || !modelVersion) {
+        console.error('Model ID or version is missing');
+        return;
+    }
+    
+    // Save the selection to localStorage for persistence
+    localStorage.setItem('selectedModelId', modelId);
+    localStorage.setItem('selectedModelVersion', modelVersion);
+    
+    // Remove 'active' class from all model items
+    document.querySelectorAll('.model-item').forEach(item => {
+        item.classList.remove('active');
+    });
+    
+    // Add 'active' class to selected model
+    const selectedModel = document.querySelector(`.model-item[data-model-id="${modelId}"]`);
+    if (selectedModel) {
+        selectedModel.classList.add('active');
+    }
+    
+    // Set the model context for alerts and other actions
+    document.getElementById('selected-model-id').value = modelId;
+    document.getElementById('selected-model-version').value = modelVersion;
+    
+    // Update model name display
+    let modelNameDisplay = selectedModel ? 
+        selectedModel.querySelector('.model-name').textContent : 
+        modelId;
+    document.getElementById('model-context-display').innerHTML = 
+        `<span class="model-name">${modelNameDisplay}</span> <span class="model-version">v${modelVersion}</span>`;
+    
+    // Enable the configure alerts button now that a model is selected
+    document.getElementById('configure-alerts-btn').disabled = false;
+    
+    // Clear previous metrics and alerts displays
+    document.getElementById('metrics-container').innerHTML = '<div class="loading">Loading metrics...</div>';
+    document.getElementById('alerts-container').innerHTML = '<div class="loading">Loading alerts...</div>';
+    
+    // Load metrics from the API
+    fetch(`/api/monitoring/models/${modelId}/versions/${modelVersion}/metrics`)
+        .then(response => response.json())
+        .then(metrics => {
+            displayMetrics(metrics);
+            updateDriftChart(metrics);
+        })
+        .catch(error => {
+            document.getElementById('metrics-container').innerHTML = 
+                `<div class="error-message">Error loading metrics: ${error.message}</div>`;
+        });
+    
+    // Load and display alerts for this model
+    updateRecentAlerts(modelId, modelVersion);
+    
+    // Load existing alert rules for this model
+    loadAlertRules(modelId, modelVersion);
+}
+
+function displayMetrics(metrics) {
+    if (!metrics || Object.keys(metrics).length === 0) {
+        document.getElementById('metrics-container').innerHTML = 
+            '<p>No metrics available for this model.</p>';
+        return;
+    }
+    
+    let html = '<div class="metrics-grid">';
+    for (const [metricName, metricValue] of Object.entries(metrics)) {
+        const formattedValue = typeof metricValue === 'number' ? 
+            metricValue.toFixed(2) : metricValue;
+        
+        html += `
+            <div class="metric-item">
+                <div class="metric-name">${metricName}</div>
+                <div class="metric-value">${formattedValue}</div>
+            </div>
+        `;
+    }
+    html += '</div>';
+    
+    document.getElementById('metrics-container').innerHTML = html;
+}
+
+function initDriftChart() {
+    const ctx = document.getElementById('drift-chart').getContext('2d');
+    driftChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['30 days ago', '25 days ago', '20 days ago', '15 days ago', '10 days ago', '5 days ago', 'Today'],
+            datasets: [{
+                label: 'Drift Score',
+                data: [0.02, 0.03, 0.02, 0.04, 0.03, 0.05, 0.04],
+                borderColor: 'rgba(75, 192, 192, 1)',
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 0.1,
+                    title: {
+                        display: true,
+                        text: 'Drift Score'
+                    }
+                }
+            }
+        }
+    });
+}
+
+function updateDriftChart(metrics) {
+    // Destroy the existing chart if it exists
+    if (driftChart) {
+        driftChart.destroy();
+    }
+    
+    const ctx = document.getElementById('drift-chart').getContext('2d');
+    driftChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['30 days ago', '25 days ago', '20 days ago', '15 days ago', '10 days ago', '5 days ago', 'Today'],
+            datasets: [{
+                label: 'Drift Score',
+                data: [0.02, 0.03, 0.02, 0.04, 0.03, 0.05, 0.04],
+                borderColor: 'rgba(75, 192, 192, 1)',
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 0.1,
+                    title: {
+                        display: true,
+                        text: 'Drift Score'
+                    }
+                }
+            }
+        }
+    });
+}
+
+// Add event listener to the configure alerts button
+document.getElementById('configure-alerts-btn').addEventListener('click', function() {
+    var modal = document.getElementById('configure-alerts-modal');
+    modal.style.display = "block";
+    
+    // Get the currently selected model and version
+    var modelId = document.querySelector('.model-item.active')?.dataset?.modelId;
+    var modelVersion = document.querySelector('.version-select')?.value;
+    
+    if (modelId && modelVersion) {
+        // Load existing alert rules for this model and version
+        loadAlertRules(modelId, modelVersion);
+    } else {
+        document.getElementById('alert-rules-list').innerHTML = 
+            '<p>Please select a model first</p>';
+    }
+});
+
+// Function to load existing alert rules
+function loadAlertRules(modelId, modelVersion) {
+    document.getElementById('alert-rules-list').innerHTML = 'Loading alert rules...';
+    
+    fetch(`/api/monitoring/models/${modelId}/versions/${modelVersion}/alerts/rules`)
+        .then(response => response.json())
+        .then(rules => {
+            if (!rules || rules.length === 0) {
+                document.getElementById('alert-rules-list').innerHTML = 
+                    '<p>No alert rules configured for this model</p>';
+                return;
+            }
+            
+            let rulesHtml = '';
+            rules.forEach(rule => {
+                rulesHtml += `
+                    <div class="alert-rule-item">
+                        <span class="delete-rule" data-rule-id="${rule.id}">&times;</span>
+                        <h4>${rule.rule_name}</h4>
+                        <p>Metric: ${rule.metric_name}</p>
+                        <p>Condition: ${rule.operator} ${rule.threshold}</p>
+                        <p>Severity: ${rule.severity}</p>
+                        ${rule.description ? `<p>Description: ${rule.description}</p>` : ''}
+                    </div>
+                `;
+            });
+            
+            document.getElementById('alert-rules-list').innerHTML = rulesHtml;
+            
+            // Add event listeners to delete buttons
+            document.querySelectorAll('.delete-rule').forEach(button => {
+                button.addEventListener('click', function() {
+                    deleteAlertRule(modelId, modelVersion, this.dataset.ruleId);
+                });
+            });
+        })
+        .catch(error => {
+            console.error('Error loading alert rules:', error);
+            document.getElementById('alert-rules-list').innerHTML = 
+                `<p>Error loading alert rules: ${error.message}</p>`;
+        });
+}
+
+// Function to delete an alert rule
+function deleteAlertRule(modelId, modelVersion, ruleId) {
+    if (!confirm('Are you sure you want to delete this alert rule?')) {
+        return;
+    }
+    
+    fetch(`/api/monitoring/models/${modelId}/versions/${modelVersion}/alerts/rules/${ruleId}`, {
+        method: 'DELETE'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            // Reload the alert rules
+            loadAlertRules(modelId, modelVersion);
+        } else {
+            alert('Error deleting alert rule: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error deleting alert rule:', error);
+        alert('Error deleting alert rule: ' + error.message);
+    });
+}
+
+// Add event listener to the close button
+var closeButton = document.getElementsByClassName('close')[0];
+closeButton.addEventListener('click', function() {
+    var modal = document.getElementById('configure-alerts-modal');
+    modal.style.display = "none";
+});
+
+// When the user clicks anywhere outside of the modal, close it
+window.addEventListener('click', function(event) {
+    var modal = document.getElementById('configure-alerts-modal');
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+});
+
+// Add event listener to the alert rule form
+document.getElementById('alert-rule-form').addEventListener('submit', function(event) {
+    event.preventDefault();
+    
+    // Get the currently selected model and version
+    var modelId = document.querySelector('.model-item.active')?.dataset?.modelId;
+    var modelVersion = document.querySelector('.version-select')?.value;
+    
+    if (!modelId || !modelVersion) {
+        alert('Please select a model first');
+        return;
+    }
+    
+    // Get form data
+    const formData = new FormData(this);
+    const alertRule = {
+        rule_name: formData.get('rule_name'),
+        metric_name: formData.get('metric_name'),
+        threshold: parseFloat(formData.get('threshold')),
+        operator: formData.get('operator'),
+        severity: formData.get('severity'),
+        description: formData.get('description')
+    };
+    
+    // Send the alert rule to the server
+    fetch(`/api/monitoring/models/${modelId}/versions/${modelVersion}/alerts/rules`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(alertRule)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            // Reset form
+            document.getElementById('alert-rule-form').reset();
+            
+            // Reload alert rules
+            loadAlertRules(modelId, modelVersion);
+            
+            // Close the modal after saving
+            var modal = document.getElementById('configure-alerts-modal');
+            modal.style.display = "none";
+            
+            // Update the alerts display in the dashboard
+            updateRecentAlerts(modelId, modelVersion);
+            
+            // Show success message
+            alert('Alert rule created successfully');
+        } else {
+            alert('Error creating alert rule: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error creating alert rule:', error);
+        alert('Error creating alert rule: ' + error.message);
+    });
+});
+
+// Function to update the recent alerts in the dashboard
+function updateRecentAlerts(modelId, modelVersion) {
+    fetch(`/api/monitoring/models/${modelId}/versions/${modelVersion}/alerts`)
+        .then(response => response.json())
+        .then(alerts => {
+            let html = '';
+            
+            if (!alerts || alerts.length === 0) {
+                html = '<p>No recent alerts for this model</p>';
+            } else {
+                html = '<ul class="recent-alerts-list">';
+                alerts.forEach(alert => {
+                    // Default to 'info' if severity is missing
+                    const severity = alert.severity || 'INFO';
+                    const severityClass = severity.toLowerCase();
+                    
+                    // Format date safely or provide a fallback
+                    let formattedDate = 'Unknown date';
+                    const dateValue = alert.triggered_at || alert.timestamp;
+                    if (dateValue) {
+                        try {
+                            formattedDate = new Date(dateValue).toLocaleString();
+                            // Check if date parsing resulted in Invalid Date
+                            if (formattedDate === 'Invalid Date') {
+                                formattedDate = 'Unknown date';
+                            }
+                        } catch (e) {
+                            console.error('Error parsing date:', e);
+                            formattedDate = 'Unknown date';
+                        }
+                    }
+                    
+                    // Ensure message has a value
+                    const message = alert.message || alert.rule_name || 'Alert triggered';
+                    
+                    html += `
+                        <li class="alert-item ${severityClass}">
+                            <div class="alert-header">
+                                <span class="alert-severity">${severity}</span>
+                                <span class="alert-timestamp">${formattedDate}</span>
+                            </div>
+                            <div class="alert-message">${message}</div>
+                        </li>
+                    `;
+                });
+                html += '</ul>';
+            }
+            
+            document.getElementById('alerts-container').innerHTML = html;
+        })
+        .catch(error => {
+            console.error('Error loading recent alerts:', error);
+            document.getElementById('alerts-container').innerHTML = 
+                `<p>Error loading alerts: ${error.message}</p>`;
+        });
+}
+</script>
+{% endblock %}
