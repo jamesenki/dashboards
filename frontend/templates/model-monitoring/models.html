@@ -21,19 +21,19 @@
         <div id="fleet-metrics" class="metrics-grid">
             <div class="metric-card">
                 <h3>Average Accuracy</h3>
-                <div class="metric-value" id="avg-accuracy">--</div>
+                <p id="fleet-accuracy">0.00</p>
             </div>
             <div class="metric-card">
                 <h3>Average Drift</h3>
-                <div class="metric-value" id="avg-drift">--</div>
+                <p id="fleet-drift">0.00</p>
             </div>
             <div class="metric-card">
                 <h3>Models with Alerts</h3>
-                <div class="metric-value" id="models-with-alerts">--</div>
+                <p id="models-with-alerts">-</p>
             </div>
             <div class="metric-card">
                 <h3>Healthy Models</h3>
-                <div class="metric-value" id="healthy-models">--</div>
+                <p id="healthy-models">-</p>
             </div>
         </div>
     </section>
@@ -41,7 +41,22 @@
     <!-- Model Filtering and Comparison Section -->
     <section class="models-management">
         <div class="management-header">
-            <h2>Models Comparison</h2>
+            <div class="header-row">
+                <h2>
+                {% if request.query_params.get('view') == 'archived' %}
+                    Archived Models
+                {% else %}
+                    Active Models
+                {% endif %}
+                </h2>
+                <div class="mode-toggle">
+                    {% if request.query_params.get('view') == 'archived' %}
+                        <a href="/model-monitoring/models" class="toggle-button">Switch to Active</a>
+                    {% else %}
+                        <a href="/model-monitoring/models?view=archived" class="toggle-button">Switch to Archived</a>
+                    {% endif %}
+                </div>
+            </div>
             <div id="model-filters" class="filters-container">
                 <div class="filter-group">
                     <label for="tag-filter">Filter by Tag:</label>
@@ -66,6 +81,7 @@
                         <option value="no_alerts">No Alerts</option>
                     </select>
                 </div>
+                <button id="apply-filters" class="primary-button">Apply Filters</button>
             </div>
         </div>
 
@@ -183,16 +199,397 @@
         </div>
     </div>
 </div>
+
+<!-- Tags Management Modal -->
+<div id="tags-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Manage Tags</h2>
+            <span class="close-modal" id="close-tags-modal">&times;</span>
+        </div>
+        <div class="modal-body">
+            <div class="tags-management-container">
+                <div class="tags-form">
+                    <h3>Create New Tag</h3>
+                    <div class="form-group">
+                        <label for="tag-name">Tag Name:</label>
+                        <input type="text" id="tag-name" placeholder="Enter tag name">
+                    </div>
+                    <div class="form-group">
+                        <label for="tag-color">Tag Color:</label>
+                        <select id="tag-color">
+                            <option value="blue">Blue</option>
+                            <option value="green">Green</option>
+                            <option value="red">Red</option>
+                            <option value="orange">Orange</option>
+                            <option value="purple">Purple</option>
+                        </select>
+                    </div>
+                    <button id="create-tag-btn">Create Tag</button>
+                </div>
+                <div class="tags-list-container">
+                    <h3>Existing Tags</h3>
+                    <div id="tags-list">
+                        <!-- Tags will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block scripts %}
+<style>
+    /* Styles for the page */
+    .monitoring-dashboard {
+        font-family: 'Roboto', Arial, sans-serif;
+    }
+    
+    section {
+        background-color: #1e1e1e;
+        border-radius: 6px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
+    }
+    
+    h2 {
+        color: #f5f5f5;
+        margin-top: 0;
+        margin-bottom: 15px;
+        font-size: 1.2rem;
+    }
+    
+    .metrics-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+    }
+    
+    .metric-card {
+        background-color: #2a2a2a;
+        border-radius: 4px;
+        padding: 15px;
+        text-align: center;
+    }
+    
+    .metric-card h3 {
+        font-size: 1rem;
+        color: #bdbdbd;
+        margin-top: 0;
+        margin-bottom: 10px;
+    }
+    
+    .metric-card p {
+        font-size: 1.5rem;
+        color: #ffffff;
+        margin: 0;
+        font-weight: bold;
+    }
+    
+    .management-header {
+        margin-bottom: 20px;
+    }
+    
+    .header-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+    
+    .mode-toggle {
+        margin-left: 20px;
+    }
+    
+    .toggle-button {
+        background-color: #555;
+        color: white;
+        text-decoration: none;
+        display: inline-block;
+        padding: 6px 12px;
+        border-radius: 4px;
+        font-size: 0.9rem;
+        transition: background-color 0.2s;
+    }
+    
+    .toggle-button:hover {
+        background-color: #777;
+    }
+    
+    .filters-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: flex-end;
+    }
+    
+    .filter-group {
+        display: flex;
+        flex-direction: column;
+        min-width: 180px;
+    }
+    
+    .filter-group label {
+        font-size: 0.85rem;
+        color: #bdbdbd;
+        margin-bottom: 5px;
+    }
+    
+    select, input {
+        background-color: #333;
+        color: #fff;
+        border: 1px solid #555;
+        border-radius: 4px;
+        padding: 8px 10px;
+        font-size: 0.9rem;
+    }
+    
+    .primary-button, .secondary-button {
+        padding: 8px 16px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: 500;
+        font-size: 0.9rem;
+        transition: background-color 0.2s;
+    }
+    
+    .primary-button {
+        background-color: #007bff;
+        color: white;
+    }
+    
+    .primary-button:hover {
+        background-color: #0069d9;
+    }
+    
+    .secondary-button {
+        background-color: #6c757d;
+        color: white;
+        text-decoration: none;
+        display: inline-block;
+    }
+    
+    .secondary-button:hover {
+        background-color: #5a6268;
+    }
+    
+    .status-indicator {
+        display: inline-block;
+        margin-left: 10px;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        font-weight: 500;
+    }
+    
+    .status-indicator.archived {
+        background-color: #ff9800;
+        color: white;
+    }
+    
+    table.data-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+        color: #e0e0e0;
+    }
+    
+    table.data-table th {
+        background-color: #2a2a2a;
+        padding: 10px;
+        text-align: left;
+        font-weight: 500;
+        font-size: 0.9rem;
+        position: sticky;
+        top: 0;
+    }
+    
+    table.data-table td {
+        padding: 10px;
+        border-bottom: 1px solid #3a3a3a;
+        font-size: 0.9rem;
+    }
+    
+    table.data-table tbody tr:hover {
+        background-color: rgba(255, 255, 255, 0.05);
+    }
+    
+    .batch-controls {
+        margin: 15px 0;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    
+    .health-indicator {
+        display: inline-block;
+        padding: 3px 8px;
+        border-radius: 3px;
+        font-size: 0.8rem;
+        font-weight: 500;
+    }
+    
+    .health-green {
+        background-color: #4caf50;
+        color: white;
+    }
+    
+    .health-yellow {
+        background-color: #ff9800;
+        color: white;
+    }
+    
+    .health-red {
+        background-color: #f44336;
+        color: white;
+    }
+    
+    .alert-count {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #f44336;
+        color: white;
+        min-width: 24px;
+        height: 24px;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: bold;
+    }
+    
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+    }
+    
+    .modal-content {
+        background-color: #2a2a2a;
+        margin: 10% auto;
+        padding: 20px;
+        border-radius: 6px;
+        width: 80%;
+        max-width: 600px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+    
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+    
+    .modal-header h3 {
+        margin: 0;
+        color: #f5f5f5;
+    }
+    
+    .close-button {
+        background: none;
+        border: none;
+        color: #bdbdbd;
+        font-size: 1.5rem;
+        cursor: pointer;
+    }
+    
+    .tag-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #333;
+        padding: 8px 12px;
+        border-radius: 4px;
+        margin-bottom: 8px;
+    }
+    
+    .tag-name {
+        color: #e0e0e0;
+    }
+    
+    .delete-tag-btn {
+        background-color: #f44336;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        padding: 3px 8px;
+        cursor: pointer;
+        font-size: 0.8rem;
+    }
+    
+    .delete-tag-btn:hover {
+        background-color: #d32f2f;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .metrics-grid {
+            grid-template-columns: 1fr 1fr;
+        }
+        
+        .filter-group {
+            min-width: 100%;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .metrics-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
 <script>
     // Global variables
     let allModels = [];
+    let viewingArchived = {% if request.query_params.get('view') == 'archived' %}true{% else %}false{% endif %}; // Set based on URL parameter
+    
+    // Check URL parameters on page load to determine what to display
+    function checkURLParams() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const viewParam = urlParams.get('view');
+        
+        console.log('URL parameter "view" =', viewParam);
+        
+        if (viewParam === 'archived') {
+            console.log('URL parameter indicates we should load archived models');
+            viewingArchived = true;
+            loadArchivedModels();
+            // Update UI to show we're viewing archived models
+            const archiveButton = document.getElementById('archive-button');
+            if (archiveButton) {
+                archiveButton.textContent = 'View Active';
+            }
+        } else {
+            console.log('No specific view parameter, loading active models by default');
+            viewingArchived = false;
+            loadAllModels();
+        }
+    }
     
     document.addEventListener('DOMContentLoaded', function() {
-        // Load all models
-        loadAllModels();
+        // Check URL parameters first before loading models
+        checkURLParams();
+        
+        // Load the appropriate models based on the URL parameter
+        if (viewingArchived) {
+            console.log('Loading archived models based on URL parameter');
+            loadArchivedModels();
+        } else {
+            console.log('Loading active models based on URL parameter');
+            loadAllModels();
+        }
+        
+        // Debug: check if toggle-archive-btn exists
+        const archiveToggleBtn = document.getElementById('toggle-archive-btn');
+        console.log('Archive Toggle Button found:', archiveToggleBtn);
         
         // Set up event listeners
         document.getElementById('select-all-models').addEventListener('change', selectAllModels);
@@ -214,6 +611,30 @@
             const tag = prompt('Enter tag to apply:');
             if (tag) {
                 applyBatchOperation('apply_tag', { tag: tag });
+            }
+        });
+        
+        // Manage Tags button
+        document.getElementById('manage-tags-btn').addEventListener('click', function() {
+            showTagsManagementModal();
+        });
+        
+        // Manage Groups button
+        document.getElementById('manage-groups-btn').addEventListener('click', function() {
+            showGroupsManagementModal();
+        });
+        
+        // Tags Management Modal
+        document.getElementById('close-tags-modal').addEventListener('click', function() {
+            document.getElementById('tags-modal').style.display = 'none';
+        });
+        
+        document.getElementById('create-tag-btn').addEventListener('click', function() {
+            const tagName = document.getElementById('tag-name').value;
+            const tagColor = document.getElementById('tag-color').value;
+            
+            if (tagName && tagColor) {
+                createTag(tagName, tagColor);
             }
         });
     });
@@ -340,8 +761,8 @@
         ).length;
         
         // Update the UI
-        document.getElementById('avg-accuracy').textContent = avgAccuracy.toFixed(2);
-        document.getElementById('avg-drift').textContent = avgDrift.toFixed(2);
+        document.getElementById('fleet-accuracy').textContent = avgAccuracy.toFixed(2);
+        document.getElementById('fleet-drift').textContent = avgDrift.toFixed(2);
         document.getElementById('models-with-alerts').textContent = modelsWithAlerts;
         document.getElementById('healthy-models').textContent = healthyModels;
     }
@@ -415,7 +836,7 @@
         };
         
         // Send request to the server
-        fetch('/api/monitoring/models/batch', {
+        fetch('/models/batch', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -486,5 +907,303 @@
         const statusLower = status.toLowerCase();
         return `<div class="health-indicator health-${statusLower}">${status}</div>`;
     }
+    
+    function showTagsManagementModal() {
+        // Load existing tags when the modal is opened
+        loadTags();
+        // Show the modal
+        document.getElementById('tags-modal').style.display = 'block';
+    }
+    
+    function loadArchivedModels() {
+        // Load archived models from the server
+        console.log('Loading archived models from /api/monitoring/models/archived');
+        fetch('/api/monitoring/models/archived')
+            .then(response => {
+                console.log('Archived models response received:', response);
+                return response.json();
+            })
+            .then(models => {
+                console.log('Archived models data:', models);
+                allModels = models;
+                displayModels(models);
+            })
+            .catch(error => {
+                console.error('Error loading archived models:', error);
+                document.getElementById('models-table-body').innerHTML = 
+                    `<tr><td colspan="9">Error loading archived models: ${error.message}</td></tr>`;
+            });
+    }
+    
+    function handleArchiveToggle() {
+        console.log("Archive toggle button clicked");
+        if (viewingArchived) {
+            console.log("Switching to active models");
+            // Switch to active models
+            fetch('/api/monitoring/models')
+                .then(function(response) {
+                    return response.json();
+                })
+                .then(function(data) {
+                    console.log('Active data received', data);
+                    alert('Successfully loaded ' + data.length + ' active models!');
+                    
+                    // Attempt to display the models using existing function
+                    if (typeof displayModels === 'function') {
+                        displayModels(data);
+                        this.textContent = 'View Archived';
+                    } else {
+                        alert('ERROR: displayModels function not available');
+                        // Fallback - create a basic display
+                        const tableBody = document.getElementById('models-table-body');
+                        if (tableBody) {
+                            let html = '';
+                            data.forEach(function(model) {
+                                html += '<tr><td>' + model.name + '</td><td>ACTIVE</td></tr>';
+                            });
+                            tableBody.innerHTML = html;
+                        }
+                    }
+                })
+                .catch(function(error) {
+                    console.error('Error fetching active models', error);
+                    alert('Error fetching active models: ' + error.message);
+                });
+                
+            viewingArchived = false;
+        } else {
+            console.log("Switching to archived models");
+            // Switch to archived models
+            loadArchivedModels();
+        }
+    }
+    
+    function showGroupsManagementModal() {
+        // This function would open a modal for managing model groups
+        console.log('Showing groups management modal');
+        alert('Groups management modal not implemented yet');
+    }
+    
+    function createTag(tagName, tagColor) {
+        // Send request to the server to create a new tag
+        fetch('/api/monitoring/tags', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                name: tagName,
+                color: tagColor
+            })
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.status === 'success') {
+                // Clear the form fields
+                document.getElementById('tag-name').value = '';
+                
+                // Create a proper tag object for display
+                const newTag = {
+                    id: result.id,
+                    name: tagName,
+                    color: tagColor
+                };
+                
+                // Add the new tag to the list
+                addTagToList(newTag);
+                
+                // Show success message
+                alert(`Tag "${tagName}" created successfully`);
+            } else {
+                alert(`Error: ${result.message}`);
+            }
+        })
+        .catch(error => {
+            console.error(`Error creating tag:`, error);
+            alert(`Error creating tag: ${error.message}`);
+        });
+    }
+    
+    function loadTags() {
+        // Load all tags from the server
+        fetch('/api/monitoring/tags')
+            .then(response => response.json())
+            .then(tags => {
+                const tagsList = document.getElementById('tags-list');
+                tagsList.innerHTML = '';
+                
+                tags.forEach(tag => {
+                    addTagToList(tag);
+                });
+            })
+            .catch(error => {
+                console.error(`Error loading tags:`, error);
+                alert(`Error loading tags: ${error.message}`);
+            });
+    }
+    
+    function addTagToList(tag) {
+        const tagsList = document.getElementById('tags-list');
+        
+        // Create tag element
+        const tagElement = document.createElement('div');
+        tagElement.className = 'tag-item';
+        tagElement.dataset.tagId = tag.id;
+        
+        // Create tag display
+        const tagDisplay = document.createElement('span');
+        tagDisplay.className = 'tag-display';
+        tagDisplay.style.backgroundColor = tag.color;
+        tagDisplay.textContent = tag.name;
+        
+        // Create buttons container
+        const buttonContainer = document.createElement('div');
+        buttonContainer.className = 'tag-buttons';
+        
+        // Create edit button
+        const editButton = document.createElement('button');
+        editButton.className = 'edit-tag-btn';
+        editButton.textContent = 'Edit';
+        editButton.addEventListener('click', function() {
+            editTag(tag.id, tag.name, tag.color);
+        });
+        
+        // Create delete button
+        const deleteButton = document.createElement('button');
+        deleteButton.className = 'delete-tag-btn';
+        deleteButton.textContent = 'Delete';
+        deleteButton.addEventListener('click', function() {
+            if (confirm(`Are you sure you want to delete the tag "${tag.name}"?`)) {
+                deleteTag(tag.id);
+            }
+        });
+        
+        // Append to button container
+        buttonContainer.appendChild(editButton);
+        buttonContainer.appendChild(deleteButton);
+        
+        // Append to tag element
+        tagElement.appendChild(tagDisplay);
+        tagElement.appendChild(buttonContainer);
+        
+        // Append to tags list
+        tagsList.appendChild(tagElement);
+    }
+    
+    function editTag(tagId, currentName, currentColor) {
+        // Prompt user for new tag details
+        const newName = prompt('Enter new tag name:', currentName);
+        if (!newName) return; // User cancelled
+        
+        const newColor = prompt('Enter new tag color (blue, green, red, orange, purple):', currentColor);
+        if (!newColor) return; // User cancelled
+        
+        // Send request to update the tag
+        fetch(`/api/monitoring/tags/${tagId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                name: newName,
+                color: newColor
+            })
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.status === 'success') {
+                alert('Tag updated successfully');
+                loadTags(); // Reload all tags to reflect changes
+            } else {
+                alert(`Error: ${result.message}`);
+            }
+        })
+        .catch(error => {
+            console.error(`Error updating tag:`, error);
+            alert(`Error updating tag: ${error.message}`);
+        });
+    }
+    
+    function deleteTag(tagId) {
+        // Send request to delete the tag
+        fetch(`/api/monitoring/tags/${tagId}`, {
+            method: 'DELETE'
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.status === 'success') {
+                alert('Tag deleted successfully');
+                
+                // Remove the tag element from the list
+                const tagElement = document.querySelector(`.tag-item[data-tag-id="${tagId}"]`);
+                if (tagElement) {
+                    tagElement.remove();
+                }
+            } else {
+                alert(`Error: ${result.message}`);
+            }
+        })
+        .catch(error => {
+            console.error(`Error deleting tag:`, error);
+            alert(`Error deleting tag: ${error.message}`);
+        });
+    }
+</script>
+<script>
+// This script executes after the page loads and is separate from other JavaScript
+// to avoid conflicts or errors elsewhere affecting our button
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('EMERGENCY SCRIPT: Setting up archive button');
+    
+    // Get a reference to our button
+    const archiveButton = document.getElementById('archive-button');
+    
+    if (archiveButton) {
+        console.log('EMERGENCY SCRIPT: Archive button found', archiveButton);
+        
+        // Add a click handler directly
+        archiveButton.onclick = function() {
+            console.log('EMERGENCY SCRIPT: Archive button clicked!');
+            alert('Archive button clicked! Will attempt to fetch archived models...');
+            
+            // Try to fetch archived models
+            fetch('/api/monitoring/models/archived')
+                .then(function(response) {
+                    return response.json();
+                })
+                .then(function(data) {
+                    console.log('EMERGENCY SCRIPT: Archived data received', data);
+                    alert('Successfully loaded ' + data.length + ' archived models!');
+                    
+                    // Attempt to display the models using existing function
+                    if (typeof displayModels === 'function') {
+                        displayModels(data);
+                        this.textContent = 'View Active';
+                    } else {
+                        alert('ERROR: displayModels function not available');
+                        // Fallback - create a basic display
+                        const tableBody = document.getElementById('models-table-body');
+                        if (tableBody) {
+                            let html = '';
+                            data.forEach(function(model) {
+                                html += '<tr><td>' + model.name + '</td><td>ARCHIVED</td></tr>';
+                            });
+                            tableBody.innerHTML = html;
+                        }
+                    }
+                })
+                .catch(function(error) {
+                    console.error('EMERGENCY SCRIPT: Error fetching archived models', error);
+                    alert('Error fetching archived models: ' + error.message);
+                });
+                
+            return false;
+        };
+        
+        console.log('EMERGENCY SCRIPT: Click handler attached');
+    } else {
+        console.error('EMERGENCY SCRIPT: Archive button not found in DOM!');
+    }
+});
 </script>
 {% endblock %}

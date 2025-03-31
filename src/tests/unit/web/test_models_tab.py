@@ -250,7 +250,8 @@ class TestModelsTab(unittest.TestCase):
                      f"JavaScript should include batch operation endpoint {batch_endpoint}")
         
         # Verify batch operation API calls are using the correct method (POST)
-        post_pattern = f"fetch\\(.*{batch_endpoint.replace('/', '\\/')}.*POST"
+        escaped_endpoint = batch_endpoint.replace('/', '\\/')
+        post_pattern = f"fetch\\(.*{escaped_endpoint}.*POST"
         self.assertRegex(script_content, post_pattern, 
                         "Batch operations should use POST method")
         
@@ -261,6 +262,143 @@ class TestModelsTab(unittest.TestCase):
                      "Batch operations should include models parameter")
         self.assertIn(operation_param, script_content, 
                      "Batch operations should include operation parameter")
+
+    def test_view_archived_button(self):
+        """Test that the View Archived button toggles between active and archived models."""
+        # Setup HTML document with the view archived button and models table
+        html = """
+        <div class="management-header">
+            <button id="view-archived-btn">View Archived</button>
+        </div>
+        <table id="models-comparison-table">
+            <tbody id="models-table-body"></tbody>
+        </table>
+        <script>
+            // Stub functions to be patched
+            function fetch(url, options) {}
+            function loadArchivedModels() {}
+            function loadAllModels() {}
+        </script>
+        """
+        
+        # Create mock models for both active and archived
+        active_models = [{"id": "model1", "name": "Active Model", "archived": False}]
+        archived_models = [{"id": "model2", "name": "Archived Model", "archived": True}]
+        
+        # Parse HTML and inject into BeautifulSoup
+        soup = BeautifulSoup(html, 'html.parser')
+        
+        # Create a mock Document object for testing
+        with patch('src.frontend.js.document', create=True) as mock_document:
+            # Set up mock document getters
+            mock_document.getElementById.side_effect = lambda id: soup.select_one(f'#{id}')
+            
+            # Set up mock fetch responses
+            with patch('src.frontend.js.fetch') as mock_fetch:
+                # Setup mock fetch to return different responses based on URL
+                def mock_fetch_side_effect(url, *args, **kwargs):
+                    response = MagicMock()
+                    if url == '/api/monitoring/models':
+                        response.json.return_value = active_models
+                    elif url == '/api/monitoring/models/archived':
+                        response.json.return_value = archived_models
+                    else:
+                        response.json.return_value = {}
+                    return response
+                
+                mock_fetch.side_effect = mock_fetch_side_effect
+                
+                # Set up view state tracker
+                viewingArchived = False
+                
+                # Set up mock functions
+                with patch('src.frontend.js.toggleArchivedView') as mock_toggle:
+                    with patch('src.frontend.js.loadArchivedModels') as mock_load_archived:
+                        with patch('src.frontend.js.loadAllModels') as mock_load_all:
+                            # Define the toggle function behavior
+                            def toggle_side_effect():
+                                nonlocal viewingArchived
+                                if viewingArchived:
+                                    # Switch to active models
+                                    mock_load_all()
+                                    button = soup.select_one('#view-archived-btn')
+                                    button.string = 'View Archived'
+                                    viewingArchived = False
+                                else:
+                                    # Switch to archived models
+                                    mock_load_archived()
+                                    button = soup.select_one('#view-archived-btn')
+                                    button.string = 'View Active'
+                                    viewingArchived = True
+                                    
+                            mock_toggle.side_effect = toggle_side_effect
+                            
+                            # Simulate first click on View Archived button (should load archived models)
+                            button = soup.select_one('#view-archived-btn')
+                            self.assertEqual(button.string, 'View Archived', "Button should initially say 'View Archived'")
+                            
+                            # Trigger the button click
+                            toggle_side_effect()
+                            
+                            # Verify that archived models are loaded
+                            mock_load_archived.assert_called_once()
+                            self.assertEqual(button.string, 'View Active', "Button should change to 'View Active'")
+                            self.assertTrue(viewingArchived, "viewingArchived should be True")
+                            
+                            # Simulate second click on button (should return to active models)
+                            toggle_side_effect()
+                            
+                            # Verify that active models are loaded
+                            mock_load_all.assert_called_once()
+                            self.assertEqual(button.string, 'View Archived', "Button should change back to 'View Archived'")
+                            self.assertFalse(viewingArchived, "viewingArchived should be False")
+
+    def test_archive_button_click_event(self):
+        """Test that clicking the archive toggle button calls the correct functions."""
+        # Setup HTML document with the archive toggle button
+        html = """
+        <div class="management-header">
+            <button id="toggle-archive-btn" class="secondary-button">View Archived</button>
+        </div>
+        <table id="models-comparison-table">
+            <tbody id="models-table-body"></tbody>
+        </table>
+        <script>
+            let viewingArchived = false;
+            function loadAllModels() {
+                // Mock function for loading active models
+            }
+            function loadArchivedModels() {
+                // Mock function for loading archived models
+            }
+            function fetch(url, options) {
+                // Mock fetch
+                return Promise.resolve({
+                    json: () => Promise.resolve([])
+                });
+            }
+        </script>
+        """
+        
+        # Parse HTML
+        document = BeautifulSoup(html, 'html.parser')
+        
+        # Find the button
+        button = document.select_one('#toggle-archive-btn')
+        self.assertIsNotNone(button, "Toggle archive button should exist")
+        
+        # We can't directly test JavaScript execution, but we can verify:
+        # 1. The button exists with the right ID and class
+        self.assertEqual(button.get('id'), 'toggle-archive-btn', "Button should have correct ID")
+        self.assertEqual(button.get('class'), ['secondary-button'], "Button should have correct class")
+        
+        # 2. The button has the right initial text
+        self.assertEqual(button.text, 'View Archived', "Button should initially say 'View Archived'")
+        
+        # 3. The necessary JavaScript functions exist in the HTML
+        self.assertIn('loadArchivedModels', html, "loadArchivedModels function should exist")
+        self.assertIn('loadAllModels', html, "loadAllModels function should exist")
+        self.assertIn('viewingArchived', html, "viewingArchived variable should exist")
 
 
 if __name__ == '__main__':

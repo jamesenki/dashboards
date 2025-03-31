@@ -143,6 +143,11 @@ def create_dashboard_api(monitoring_service: ModelMonitoringService = None) -> F
         """Get all monitored models."""
         return app.state.monitoring_service.get_monitored_models()
     
+    @app.get("/models/archived")
+    async def get_archived_models():
+        """Get all archived models."""
+        return app.state.monitoring_service.get_archived_models()
+    
     @app.get("/models/{model_id}/versions")
     async def get_model_versions(model_id: str = Path(..., description="ID of the model")):
         """Get all versions of a model."""
@@ -300,23 +305,44 @@ def create_dashboard_api(monitoring_service: ModelMonitoringService = None) -> F
         # Otherwise return as plain text
         return report
     
-    # Keep the original endpoints for backward compatibility
-    @app.get("/api/monitoring/models")
-    async def get_models_legacy():
-        """Get all monitored models (legacy endpoint)."""
-        return await get_models()
+    # Tag Management Endpoints
+    @app.get("/tags")
+    async def get_tags():
+        """Get all tags."""
+        return app.state.monitoring_service.get_tags()
     
-    @app.get("/api/monitoring/models/{model_id}/versions")
-    async def get_model_versions_legacy(model_id: str = Path(..., description="ID of the model")):
-        """Get all versions of a model (legacy endpoint)."""
-        return await get_model_versions(model_id)
+    @app.post("/tags", status_code=201)
+    async def create_tag(tag_data: dict):
+        """Create a new tag."""
+        # Validate required fields
+        if not tag_data.get("name"):
+            raise HTTPException(status_code=400, detail="Tag name is required")
+            
+        return app.state.monitoring_service.create_tag(
+            name=tag_data.get("name"),
+            color=tag_data.get("color", "blue")
+        )
     
-    @app.get("/api/monitoring/models/{model_id}/versions/{model_version}/metrics")
-    async def get_model_metrics_legacy(
-        model_id: str = Path(..., description="ID of the model"),
-        model_version: str = Path(..., description="Version of the model")
+    @app.put("/tags/{tag_id}")
+    async def update_tag(
+        tag_id: str = Path(..., description="ID of the tag to update"),
+        tag_data: dict = None
     ):
-        """Get metrics for a specific model version (legacy endpoint)."""
-        return await get_model_metrics(model_id, model_version)
+        """Update an existing tag."""
+        # Validate required fields
+        if not tag_data:
+            raise HTTPException(status_code=400, detail="Tag data is required")
+            
+        return app.state.monitoring_service.update_tag(
+            tag_id=tag_id,
+            name=tag_data.get("name"),
+            color=tag_data.get("color")
+        )
     
+    @app.delete("/tags/{tag_id}")
+    async def delete_tag(tag_id: str = Path(..., description="ID of the tag to delete")):
+        """Delete a tag."""
+        app.state.monitoring_service.delete_tag(tag_id)
+        return {"status": "success", "message": "Tag deleted"}
+        
     return app

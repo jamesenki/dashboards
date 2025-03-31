@@ -31,6 +31,13 @@ class ModelMonitoringService:
         """
         self.db = db
         self.notification_service = notification_service or NotificationService()
+        # Initialize in-memory tag storage for testing
+        self.tags = {
+            "tag1": {"id": "tag1", "name": "production", "color": "green"},
+            "tag2": {"id": "tag2", "name": "development", "color": "blue"},
+            "tag3": {"id": "tag3", "name": "testing", "color": "orange"},
+            "tag4": {"id": "tag4", "name": "deprecated", "color": "red"}
+        }
     
     def record_model_metrics(self, model_id: str, model_version: str, 
                            metrics: Dict[str, float], timestamp: datetime = None) -> str:
@@ -149,12 +156,67 @@ class ModelMonitoringService:
             {
                 'id': 'water-heater-model-1',
                 'name': 'Water Heater Prediction Model',
-                'versions': ['1.0', '1.1', '1.2']
+                'versions': ['1.0', '1.1', '1.2'],
+                'archived': False,
+                'metrics': {
+                    'accuracy': 0.92,
+                    'drift_score': 0.03,
+                    'health_status': 'GREEN'
+                },
+                'alert_count': 0,
+                'tags': ['production', 'iot']
             },
             {
                 'id': 'anomaly-detection-1',
                 'name': 'Anomaly Detection Model',
-                'versions': ['0.9', '1.0']
+                'versions': ['0.9', '1.0'],
+                'archived': False,
+                'metrics': {
+                    'accuracy': 0.88,
+                    'drift_score': 0.07,
+                    'health_status': 'YELLOW'
+                },
+                'alert_count': 2,
+                'tags': ['development', 'testing']
+            }
+        ]
+    
+    def get_archived_models(self) -> List[Dict[str, Any]]:
+        """
+        Get a list of all archived models.
+        
+        Returns:
+            List of archived model information
+        """
+        # Return mock data for testing/development when database isn't fully available
+        return [
+            {
+                'id': 'legacy-water-heater-model',
+                'name': 'Legacy Water Heater Model',
+                'versions': ['0.5', '0.8'],
+                'archived': True,
+                'archived_date': '2025-01-15',
+                'metrics': {
+                    'accuracy': 0.78,
+                    'drift_score': 0.15,
+                    'health_status': 'RED'
+                },
+                'alert_count': 5,
+                'tags': ['deprecated', 'legacy']
+            },
+            {
+                'id': 'prototype-anomaly-detection',
+                'name': 'Prototype Anomaly Detection',
+                'versions': ['0.3', '0.4'],
+                'archived': True,
+                'archived_date': '2024-11-20',
+                'metrics': {
+                    'accuracy': 0.72,
+                    'drift_score': 0.21,
+                    'health_status': 'RED'
+                },
+                'alert_count': 8,
+                'tags': ['deprecated', 'prototype']
             }
         ]
     
@@ -164,7 +226,7 @@ class ModelMonitoringService:
         
         Args:
             models (list): List of model IDs to apply the operation to
-            operation (str): Operation to apply ('enable-monitoring', 'disable-monitoring', 'archive', etc.)
+            operation (str): Operation to apply ('enable_monitoring', 'disable_monitoring', 'archive', etc.)
             params (dict, optional): Additional parameters for the operation
             
         Returns:
@@ -180,7 +242,7 @@ class ModelMonitoringService:
         params = params or {}
         
         # Process different operations
-        if operation == "enable-monitoring":
+        if operation == "enable_monitoring":
             # Enable monitoring for specified models
             # In a real implementation, this would update the database
             return {
@@ -190,7 +252,7 @@ class ModelMonitoringService:
                 "message": f"Monitoring enabled for {len(models)} models"
             }
             
-        elif operation == "disable-monitoring":
+        elif operation == "disable_monitoring":
             # Disable monitoring for specified models
             return {
                 "status": "success",
@@ -208,18 +270,51 @@ class ModelMonitoringService:
                 "message": f"{len(models)} models archived"
             }
             
-        elif operation == "apply-tag":
-            # Apply a tag to specified models
-            tag = params.get("tag", "")
+        elif operation == "apply_tag":
+            # Apply tag to specified models
+            tag = params.get("tag")
             if not tag:
-                return {"status": "error", "message": "No tag specified for apply-tag operation"}
+                return {"status": "error", "message": "No tag specified"}
                 
+            # In a real implementation, this would update the tags in the database
+            # For now, we'll mock it with a success response
             return {
                 "status": "success",
                 "operation": operation,
                 "models": models,
                 "tag": tag,
                 "message": f"Tag '{tag}' applied to {len(models)} models"
+            }
+            
+        elif operation == "remove_tag":
+            # Remove tag from specified models
+            tag = params.get("tag")
+            if not tag:
+                return {"status": "error", "message": "No tag specified"}
+                
+            # In a real implementation, this would remove the tag from the database
+            return {
+                "status": "success",
+                "operation": operation,
+                "models": models,
+                "tag": tag,
+                "message": f"Tag '{tag}' removed from {len(models)} models"
+            }
+            
+        elif operation == "manage_tags":
+            # Manage tags for specified models
+            tags = params.get("tags")
+            if not tags:
+                return {"status": "error", "message": "No tags specified"}
+                
+            # In a real implementation, this would update the tags in the database
+            # For now, we'll mock it with a success response
+            return {
+                "status": "success",
+                "operation": operation,
+                "models": models,
+                "tags": tags,
+                "message": f"Tags '{', '.join(tags)}' managed for {len(models)} models"
             }
             
         else:
@@ -665,3 +760,90 @@ class ModelMonitoringService:
             return json.dumps(metrics, indent=2)
         else:
             raise ValueError(f"Unsupported format: {format}")
+
+    # Tag Management Methods
+    def get_tags(self) -> List[Dict[str, Any]]:
+        """
+        Get all tags.
+        
+        Returns:
+            List of tags
+        """
+        # Return all tags from in-memory storage
+        return list(self.tags.values())
+    
+    def create_tag(self, name: str, color: str = "blue") -> Dict[str, Any]:
+        """
+        Create a new tag.
+        
+        Args:
+            name: Name of the tag
+            color: Color of the tag
+            
+        Returns:
+            Dictionary with created tag details
+        """
+        # Generate a unique ID for the tag
+        import uuid
+        tag_id = str(uuid.uuid4())
+        
+        # Add to in-memory storage
+        tag = {"id": tag_id, "name": name, "color": color}
+        self.tags[tag_id] = tag
+        
+        # Return the created tag
+        return {
+            "status": "success",
+            "id": tag_id,
+            "name": name,
+            "color": color,
+            "message": f"Tag '{name}' created successfully"
+        }
+    
+    def update_tag(self, tag_id: str, name: str = None, color: str = None) -> Dict[str, Any]:
+        """
+        Update an existing tag.
+        
+        Args:
+            tag_id: ID of the tag to update
+            name: New name for the tag (optional)
+            color: New color for the tag (optional)
+            
+        Returns:
+            Dictionary with updated tag details
+        """
+        # Check if tag exists
+        if tag_id not in self.tags:
+            return {
+                "status": "error",
+                "message": f"Tag with ID {tag_id} not found"
+            }
+            
+        # Update the tag in memory
+        tag = self.tags[tag_id]
+        
+        if name is not None:
+            tag["name"] = name
+            
+        if color is not None:
+            tag["color"] = color
+            
+        # Return success response
+        return {
+            "status": "success",
+            "id": tag_id,
+            "name": tag["name"],
+            "color": tag["color"],
+            "message": "Tag updated successfully"
+        }
+    
+    def delete_tag(self, tag_id: str) -> None:
+        """
+        Delete a tag.
+        
+        Args:
+            tag_id: ID of the tag to delete
+        """
+        # Delete from in-memory storage if it exists
+        if tag_id in self.tags:
+            del self.tags[tag_id]
