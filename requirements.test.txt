@@ -5,7 +5,7 @@ httpx==0.28.1
 pytest-mock==3.11.1
 
 # ML and security testing dependencies
-mlflow==2.8.0
+mlflow==2.20.3
 numpy==1.26.4
 pyarrow==13.0.0
 scikit-learn==1.6.1
