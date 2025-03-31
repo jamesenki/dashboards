@@ -1,5 +1,5 @@
 # Core dependencies for Secure Model Loader functionality
-mlflow==2.8.0
+mlflow==2.20.3
 pyarrow==13.0.0
 
 # Web API dependencies
