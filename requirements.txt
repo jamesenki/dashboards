@@ -1,6 +1,6 @@
 # Core dependencies for Secure Model Loader functionality
 mlflow==2.8.0
-pyarrow==13.0.0
+pyarrow==14.0.1
 
 # Web API dependencies
 fastapi==0.115.12
