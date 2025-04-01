@@ -36,6 +36,8 @@ from src.api.vending_machine_realtime_operations import router as vending_machin
 from src.api.operations_router_db import router as operations_db_router
 # Web UI routes
 from src.web.routes import router as web_router
+# Debug routes for development
+from src.routes.debug_routes import router as debug_router
 # Database initialization
 from src.db.migration import initialize_db
 
@@ -115,6 +117,8 @@ api_router.include_router(ice_cream_machine_operations_api_router)
 api_router.include_router(vending_machine_realtime_operations_api_router)
 # Include database-backed operations router
 api_router.include_router(operations_db_router)
+# Include debug routes
+api_router.include_router(debug_router)
 
 # Include API router and web router
 app.include_router(api_router)

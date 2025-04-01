@@ -1,10 +1,12 @@
 import unittest
+import pytest
 from unittest.mock import MagicMock, patch
 import sqlite3
 import os
 import json
 import uuid
 from datetime import datetime
+import asyncio
 
 from src.monitoring.model_monitoring_service import ModelMonitoringService
 from src.monitoring.alerts import AlertRule, AlertSeverity
@@ -70,7 +72,8 @@ class TestAlertPersistence(unittest.TestCase):
         self.cursor.close()
         self.conn.close()
     
-    def test_create_and_persist_alert_rule(self):
+    @pytest.mark.asyncio
+    async def test_create_and_persist_alert_rule(self):
         """Test creating an alert rule and ensuring it's persisted."""
         # Create a test alert rule
         model_id = "test-model"
@@ -83,7 +86,7 @@ class TestAlertPersistence(unittest.TestCase):
         description = "Test alert description"
         
         # Create the rule with the correct parameter order
-        rule_id = self.service.create_alert_rule(
+        rule_id = await self.service.create_alert_rule(
             model_id, 
             model_version, 
             rule_name, 
@@ -98,7 +101,7 @@ class TestAlertPersistence(unittest.TestCase):
         self.assertIsNotNone(rule_id)
         
         # Retrieve the rules and verify our rule is there
-        rules = self.service.get_alert_rules(model_id, model_version)
+        rules = await self.service.get_alert_rules(model_id, model_version)
         
         # Check persistence
         self.assertEqual(len(rules), 1)
@@ -111,11 +114,12 @@ class TestAlertPersistence(unittest.TestCase):
         
         # Verify rule persists after service recreation
         new_service = ModelMonitoringService(db=self.db_mock)
-        rules_after_recreation = new_service.get_alert_rules(model_id, model_version)
+        rules_after_recreation = await new_service.get_alert_rules(model_id, model_version)
         self.assertEqual(len(rules_after_recreation), 1)
         self.assertEqual(rules_after_recreation[0]["id"], rule_id)
     
-    def test_delete_alert_rule(self):
+    @pytest.mark.asyncio
+    async def test_delete_alert_rule(self):
         """Test deleting an alert rule."""
         # Create a test alert rule
         model_id = "test-model"
@@ -128,7 +132,7 @@ class TestAlertPersistence(unittest.TestCase):
         description = "Test alert description"
         
         # Create the rule with the correct parameter order
-        rule_id = self.service.create_alert_rule(
+        rule_id = await self.service.create_alert_rule(
             model_id, 
             model_version, 
             rule_name, 
@@ -140,17 +144,17 @@ class TestAlertPersistence(unittest.TestCase):
         )
         
         # Verify the rule was created
-        rules_before = self.service.get_alert_rules(model_id, model_version)
+        rules_before = await self.service.get_alert_rules(model_id, model_version)
         self.assertEqual(len(rules_before), 1)
         
         # Delete the rule
-        self.service.delete_alert_rule(rule_id)
+        await self.service.delete_alert_rule(rule_id)
         
         # Verify the rule was deleted
-        rules_after = self.service.get_alert_rules(model_id, model_version)
+        rules_after = await self.service.get_alert_rules(model_id, model_version)
         self.assertEqual(len(rules_after), 0)
         
         # Verify deletion persists after service recreation
         new_service = ModelMonitoringService(db=self.db_mock)
-        rules_after_recreation = new_service.get_alert_rules(model_id, model_version)
+        rules_after_recreation = await new_service.get_alert_rules(model_id, model_version)
         self.assertEqual(len(rules_after_recreation), 0)

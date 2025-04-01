@@ -7,7 +7,7 @@ import pytest
 import os
 import pandas as pd
 import numpy as np
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock, patch, mock_open
 from datetime import datetime, timedelta
 
 from src.mlops.feature_store import FeatureStore
@@ -161,20 +161,22 @@ class TestMLOpsPipelineIntegration:
                 self.model_registry.get_active_model = MagicMock(side_effect=mock_get_model)
                 
                 # 3. Make a prediction with mocked model loading
-                with patch('joblib.load') as mock_joblib_load:
+                with patch('pickle.load') as mock_pickle_load:
                     # Create mock model
                     mock_model = MagicMock()
                     mock_model.predict.return_value = np.array([1])  # Predict failure
                     mock_model.predict_proba.return_value = np.array([[0.2, 0.8]])  # 80% probability
-                    mock_joblib_load.return_value = mock_model
+                    mock_pickle_load.return_value = mock_model
                     
-                    # Create prediction service with our mocks
-                    prediction_service = PredictionService(
-                        db=self.db_mock,
-                        model_registry=self.model_registry,
-                        feature_store=self.feature_store,
-                        feedback_service=self.feedback_service
-                    )
+                    # Also patch open to prevent actual file access
+                    with patch('builtins.open', new_callable=mock_open()):
+                        # Create prediction service with our mocks
+                        prediction_service = PredictionService(
+                            db=self.db_mock,
+                            model_registry=self.model_registry,
+                            feature_store=self.feature_store,
+                            feedback_service=self.feedback_service
+                        )
                     
                     # Make prediction
                     prediction = prediction_service.predict(

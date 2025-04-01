@@ -199,6 +199,7 @@
 {% endblock %}
 
 {% block scripts %}
+<script src="/static/js/model-source-indicator.js"></script>
 <style>
     /* Dark Theme Base Styles */
     .monitoring-dashboard {
@@ -874,11 +875,16 @@
             const row = document.createElement('tr');
             row.dataset.modelId = model.id;
             
+            // Add data-source attribute for visual indicators
+            if (model.data_source) {
+                row.dataset.source = model.data_source;
+            }
+            
             row.innerHTML = `
                 <td>
                     <input type="checkbox" class="model-select" data-model-id="${model.id}">
                 </td>
-                <td>${model.name || model.id}</td>
+                <td>${model.name || model.id} ${model.data_source === 'mock' ? '<span class="data-source-badge">(mock)</span>' : ''}</td>
                 <td>${latestVersion || 'N/A'}</td>
                 <td>${model.metrics ? model.metrics.accuracy.toFixed(2) : 'N/A'}</td>
                 <td>${model.metrics ? model.metrics.drift_score.toFixed(2) : 'N/A'}</td>

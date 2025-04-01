@@ -8,7 +8,7 @@ from unittest.mock import MagicMock, patch
 import json
 from bs4 import BeautifulSoup
 from fastapi.testclient import TestClient
-from your_app import app  # Import your FastAPI app
+from src.main import app  # Import the FastAPI app
 
 
 class TestModelsTab(unittest.TestCase):
