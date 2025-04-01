@@ -5,7 +5,13 @@
    - Automated model retraining based on feedback patterns
    - Model monitoring dashboard to track performance metrics
    - Feature drift detection to identify when models need retraining
+   ## Further future steps
    - A/B testing framework to compare model performance in production
+   - Feedback interfaces
+   - Model registry
+   - Automated training pipeline
+   - Model performance monitoring
+   - Feature store
 
 ## Current State Assessment
 
@@ -215,4 +221,3 @@ The MLOps components will integrate with the existing prediction API endpoints t
 13. **Model Logging**: Implement model logging to ensure that models are not malicious.
 14. **Model Logging**: Implement model logging to ensure that models are not malicious.
 15. **Model Logging**: Implement model logging to ensure that models are not malicious.
-    

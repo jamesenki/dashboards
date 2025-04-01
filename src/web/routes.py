@@ -109,3 +109,13 @@ async def get_model_monitoring_dashboard(request: Request):
 async def get_model_monitoring_models(request: Request):
     """Render the model monitoring models tab"""
     return templates.TemplateResponse("model-monitoring/models.html", {"request": request})
+
+@router.get("/model-monitoring/alerts", response_class=HTMLResponse)
+async def get_model_monitoring_alerts(request: Request):
+    """Render the model monitoring alerts tab"""
+    return templates.TemplateResponse("model-monitoring/alerts.html", {"request": request})
+
+@router.get("/model-monitoring/reports", response_class=HTMLResponse)
+async def get_model_monitoring_reports(request: Request):
+    """Render the model monitoring reports tab"""
+    return templates.TemplateResponse("model-monitoring/reports.html", {"request": request})
