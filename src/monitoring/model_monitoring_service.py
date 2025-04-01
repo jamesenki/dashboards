@@ -300,6 +300,16 @@ class ModelMonitoringService:
         """
         return await self.get_models()
         
+    async def get_archived_models(self) -> tuple[List[Dict[str, Any]], bool]:
+        """
+        Get a list of all archived models with mock indicator.
+        
+        Returns:
+            Tuple of (list of archived model information, is_mock_data flag)
+        """
+        # Using the same pattern as get_models
+        return await self.metrics_repository.get_archived_models()
+        
     async def get_alert_rules(self, model_id: str = None, model_version: str = None) -> tuple[List[Dict[str, Any]], bool]:
         """
         Get alert rules for a model or all models with mock indicator.
@@ -314,7 +324,25 @@ class ModelMonitoringService:
         # Note: model_version is not used in the current implementation since alert rules
         # are associated with models, not specific versions. We include it to match the API
         # expectations.
-        return await self.metrics_repository.get_alert_rules(model_id)
+        try:
+            # Call the repository method and handle different return formats
+            result = await self.metrics_repository.get_alert_rules(model_id)
+            
+            # Following TDD principles, adapt to match expected interface
+            if isinstance(result, tuple) and len(result) == 2:
+                # If we got a tuple with two elements, it's (rules, is_mock)
+                return result
+            elif isinstance(result, list):
+                # If we got just a list, assume it's real data
+                return result, False
+            else:
+                # Unexpected result type, return empty with mock flag
+                logger.warning(f"Unexpected result type from get_alert_rules: {type(result)}")
+                return [], True
+        except Exception as e:
+            # If there's an error, return empty results with mock flag
+            logger.error(f"Error getting alert rules: {str(e)}")
+            return [], True
         
     async def create_alert_rule(self, model_id: str, model_version: str = None,
                           rule_name: str = None, metric_name: str = None,
@@ -697,8 +725,26 @@ class ModelMonitoringService:
             # This is the path taken in tests - return mock data from the test setup
             return [], True
         else:
-            # Use repository for real implementation
-            return await self.metrics_repository.get_triggered_alerts(model_id, model_version)
+            try:
+                # Use repository for real implementation
+                # The adapter method might return just alerts or (alerts, is_mock)
+                result = await self.metrics_repository.get_triggered_alerts(model_id, model_version)
+                
+                # Handle different return types based on TDD principles
+                if isinstance(result, tuple) and len(result) == 2:
+                    # If we got a tuple with two elements, it's (alerts, is_mock)
+                    return result
+                elif isinstance(result, list):
+                    # If we got just a list, assume it's real data
+                    return result, False
+                else:
+                    # Unexpected result type, return empty with mock flag
+                    logger.warning(f"Unexpected result type from get_triggered_alerts: {type(result)}")
+                    return [], True
+            except Exception as e:
+                # If there's an error, return empty results with mock flag
+                logger.error(f"Error getting triggered alerts: {str(e)}")
+                return [], True
             
     async def apply_batch_operation(self, models: List[str], operation: str, params: Dict[str, Any] = None) -> Dict[str, Any]:
         """

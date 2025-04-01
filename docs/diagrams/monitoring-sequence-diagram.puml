@@ -1,0 +1,60 @@
+@startuml Monitoring Alerts Sequence
+title IoTSphere Model Monitoring & Alerts Sequence
+
+actor "Data Scientist" as user
+participant "Frontend (Browser)" as frontend
+participant "Dashboard API" as api
+participant "Monitoring Service" as service
+participant "Metrics Repository" as repo
+database "SQLite Database" as db
+
+== Alert Creation Flow ==
+user -> frontend: Configure alert rule
+frontend -> api: POST /api/monitoring/alert_rules
+api -> service: create_alert_rule()
+service -> repo: create_alert_rule()
+repo -> db: INSERT INTO alert_rules
+db --> repo: Success
+repo --> service: Rule created
+service --> api: Rule created
+api --> frontend: 200 OK, Rule details
+frontend --> user: Show success message
+
+== Alert Triggering Flow ==
+note over db: Metric exceeds threshold
+service -> repo: check_alert_rules()
+repo -> db: SELECT FROM alert_rules
+db --> repo: Active rules
+repo -> db: SELECT FROM model_metrics
+db --> repo: Latest metrics
+repo -> repo: Compare metrics to rule conditions
+note right of repo: Alert condition met
+repo -> db: INSERT INTO alert_events
+db --> repo: Success
+repo --> service: Alert triggered
+
+== Alert Display Flow ==
+user -> frontend: View alerts dashboard
+frontend -> api: GET /api/monitoring/alerts
+api -> service: get_alerts()
+service -> repo: get_alerts()
+repo -> db: SELECT FROM alert_events JOIN alert_rules
+db --> repo: Alert data
+repo --> service: Format alerts
+service --> api: Format for frontend
+api --> frontend: Alerts JSON
+frontend --> user: Display alerts
+
+== Alert Resolution Flow ==
+user -> frontend: Resolve alert
+frontend -> api: PUT /api/monitoring/alerts/{id}
+api -> service: resolve_alert()
+service -> repo: resolve_alert()
+repo -> db: UPDATE alert_events SET resolved=true
+db --> repo: Success
+repo --> service: Updated alert
+service --> api: Success response
+api --> frontend: 200 OK
+frontend --> user: Show alert as resolved
+
+@enduml

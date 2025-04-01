@@ -284,6 +284,223 @@ class SQLiteDatabase:
             return results[0]
         return None
 
+    def get_models(self):
+        """
+        Get a list of all active models with their latest metrics.
+        
+        Returns:
+            List of model information
+        """
+        # Forward to SQLiteModelMetricsRepository
+        try:
+            # Get all active model info
+            models_query = """
+            SELECT 
+                id, name, archived
+            FROM 
+                models
+            WHERE
+                archived = 0
+            ORDER BY
+                name
+            """
+            models_data = self.fetch_all(models_query)
+            
+            # Prepare result list
+            result = []
+            
+            for model in models_data:
+                model_id = model['id']
+                
+                # Get versions for this model
+                versions_query = """
+                SELECT DISTINCT model_version 
+                FROM model_metrics 
+                WHERE model_id = ?
+                ORDER BY model_version
+                """
+                versions_data = self.fetch_all(versions_query, (model_id,))
+                versions = [v['model_version'] for v in versions_data]
+                
+                # Get latest metrics for this model
+                latest_metrics_query = """
+                SELECT 
+                    m1.metric_name, m1.metric_value
+                FROM 
+                    model_metrics m1
+                INNER JOIN (
+                    SELECT 
+                        model_id, MAX(timestamp) as max_timestamp
+                    FROM 
+                        model_metrics
+                    WHERE 
+                        model_id = ?
+                    GROUP BY 
+                        model_id
+                ) m2 ON m1.model_id = m2.model_id AND m1.timestamp = m2.max_timestamp
+                WHERE 
+                    m1.model_id = ?
+                """
+                latest_metrics_data = self.fetch_all(latest_metrics_query, (model_id, model_id))
+                
+                # Convert list of metrics to a dictionary
+                metrics = {}
+                for metric in latest_metrics_data:
+                    metrics[metric['metric_name']] = metric['metric_value']
+                
+                # Get alert count for this model
+                alert_count_query = """
+                SELECT 
+                    COUNT(*) as count
+                FROM 
+                    alert_events
+                WHERE 
+                    model_id = ?
+                """
+                alert_count_data = self.fetch_one(alert_count_query, (model_id,))
+                alert_count = alert_count_data['count'] if alert_count_data else 0
+                
+                # Get tags for this model
+                tags_query = """
+                SELECT 
+                    tag
+                FROM 
+                    model_tags
+                WHERE 
+                    model_id = ?
+                ORDER BY 
+                    tag
+                """
+                tags_data = self.fetch_all(tags_query, (model_id,))
+                tags = [t['tag'] for t in tags_data]
+                
+                # Build model info
+                model_info = {
+                    'id': model_id,
+                    'name': model['name'],
+                    'versions': versions,
+                    'metrics': metrics,
+                    'alert_count': alert_count,
+                    'tags': tags,
+                    'archived': False,
+                    'data_source': 'database'  # Explicitly mark as from database
+                }
+                
+                result.append(model_info)
+                
+            return result
+        except Exception as e:
+            logger.error(f"Error in SQLiteDatabase.get_models: {str(e)}")
+            raise
+    
+    def get_archived_models(self):
+        """
+        Get a list of all archived models with their latest metrics.
+        
+        Returns:
+            List of archived model information
+        """
+        try:
+            # Get all archived model info
+            models_query = """
+            SELECT 
+                id, name, archived
+            FROM 
+                models
+            WHERE
+                archived = 1
+            ORDER BY
+                name
+            """
+            models_data = self.fetch_all(models_query)
+            
+            # Prepare result list
+            result = []
+            
+            for model in models_data:
+                model_id = model['id']
+                
+                # Get versions for this model
+                versions_query = """
+                SELECT DISTINCT model_version 
+                FROM model_metrics 
+                WHERE model_id = ?
+                ORDER BY model_version
+                """
+                versions_data = self.fetch_all(versions_query, (model_id,))
+                versions = [v['model_version'] for v in versions_data]
+                
+                # Get latest metrics for this model (same logic as get_models)
+                latest_metrics_query = """
+                SELECT 
+                    m1.metric_name, m1.metric_value
+                FROM 
+                    model_metrics m1
+                INNER JOIN (
+                    SELECT 
+                        model_id, MAX(timestamp) as max_timestamp
+                    FROM 
+                        model_metrics
+                    WHERE 
+                        model_id = ?
+                    GROUP BY 
+                        model_id
+                ) m2 ON m1.model_id = m2.model_id AND m1.timestamp = m2.max_timestamp
+                WHERE 
+                    m1.model_id = ?
+                """
+                latest_metrics_data = self.fetch_all(latest_metrics_query, (model_id, model_id))
+                
+                # Convert list of metrics to a dictionary
+                metrics = {}
+                for metric in latest_metrics_data:
+                    metrics[metric['metric_name']] = metric['metric_value']
+                
+                # Get alert count for this model
+                alert_count_query = """
+                SELECT 
+                    COUNT(*) as count
+                FROM 
+                    alert_events
+                WHERE 
+                    model_id = ?
+                """
+                alert_count_data = self.fetch_one(alert_count_query, (model_id,))
+                alert_count = alert_count_data['count'] if alert_count_data else 0
+                
+                # Get tags for this model
+                tags_query = """
+                SELECT 
+                    tag
+                FROM 
+                    model_tags
+                WHERE 
+                    model_id = ?
+                ORDER BY 
+                    tag
+                """
+                tags_data = self.fetch_all(tags_query, (model_id,))
+                tags = [t['tag'] for t in tags_data]
+                
+                # Build model info
+                model_info = {
+                    'id': model_id,
+                    'name': model['name'],
+                    'versions': versions,
+                    'metrics': metrics,
+                    'alert_count': alert_count,
+                    'tags': tags,
+                    'archived': True,
+                    'data_source': 'database'  # Explicitly mark as from database
+                }
+                
+                result.append(model_info)
+                
+            return result
+        except Exception as e:
+            logger.error(f"Error in SQLiteDatabase.get_archived_models: {str(e)}")
+            raise
+    
     def populate_test_data(self):
         """
         Populate the database with test data for development and testing.
@@ -467,3 +684,185 @@ class SQLiteDatabase:
         
         self.commit()
         logger.info("Test data population complete")
+    
+    # Add database adapter methods required by SQLiteModelMetricsRepository
+    def get_models(self):
+        """
+        Get a list of all models with their latest metrics.
+        
+        Returns:
+            List of model information
+        """
+        # Get all model info
+        models_query = """
+        SELECT 
+            id, name, archived
+        FROM 
+            models
+        ORDER BY
+            name
+        """
+        models_data = self.fetch_all(models_query)
+        
+        # Prepare result list
+        result = []
+        
+        for model in models_data:
+            model_id = model['id']
+            
+            # Get versions for this model
+            versions_query = """
+            SELECT DISTINCT model_version 
+            FROM model_metrics 
+            WHERE model_id = ?
+            ORDER BY model_version
+            """
+            versions_data = self.fetch_all(versions_query, (model_id,))
+            versions = [v['model_version'] for v in versions_data]
+            
+            # Get latest metrics for this model
+            latest_metrics_query = """
+            SELECT 
+                m1.metric_name, m1.metric_value
+            FROM 
+                model_metrics m1
+            INNER JOIN (
+                SELECT 
+                    model_id, MAX(timestamp) as max_timestamp
+                FROM 
+                    model_metrics
+                WHERE 
+                    model_id = ?
+                GROUP BY 
+                    model_id
+            ) m2 ON m1.model_id = m2.model_id AND m1.timestamp = m2.max_timestamp
+            WHERE 
+                m1.model_id = ?
+            """
+            metrics_data = self.fetch_all(latest_metrics_query, (model_id, model_id))
+            
+            metrics = {}
+            for metric in metrics_data:
+                metrics[metric['metric_name']] = metric['metric_value']
+            
+            # Count active alerts
+            alerts_query = """
+            SELECT COUNT(*) as alert_count
+            FROM alert_events
+            WHERE model_id = ? AND resolved = 0
+            """
+            alert_data = self.fetch_one(alerts_query, (model_id,))
+            alert_count = alert_data['alert_count'] if alert_data else 0
+            
+            # Get tags for this model
+            tags_query = """
+            SELECT t.name
+            FROM model_tags t
+            JOIN model_tag_assignments a ON t.id = a.tag_id
+            WHERE a.model_id = ?
+            """
+            tags_data = self.fetch_all(tags_query, (model_id,))
+            tags = [t['name'] for t in tags_data]
+            
+            # Assemble model info with data_source = 'database' explicitly set
+            model_info = {
+                'id': model_id,
+                'name': model['name'],
+                'versions': versions,
+                'archived': bool(model['archived']),
+                'metrics': metrics,
+                'alert_count': alert_count,
+                'tags': tags,
+                'data_source': 'database'  # Explicitly mark as database source
+            }
+            
+            result.append(model_info)
+            
+        return result
+        
+    def get_latest_metrics(self, model_id, model_version):
+        """
+        Get the most recent metrics for a model.
+        
+        Args:
+            model_id: ID of the model
+            model_version: Version of the model
+            
+        Returns:
+            Dictionary of the latest metrics by name
+        """
+        query = """
+        SELECT 
+            m1.metric_name, m1.metric_value, m1.timestamp
+        FROM 
+            model_metrics m1
+        INNER JOIN (
+            SELECT 
+                metric_name, MAX(timestamp) as max_timestamp
+            FROM 
+                model_metrics
+            WHERE 
+                model_id = ? AND model_version = ?
+            GROUP BY 
+                metric_name
+        ) m2 ON m1.metric_name = m2.metric_name AND m1.timestamp = m2.max_timestamp
+        WHERE 
+            m1.model_id = ? AND m1.model_version = ?
+        """
+        
+        params = (model_id, model_version, model_id, model_version)
+        results = self.fetch_all(query, params)
+        
+        # Format results
+        metrics = {}
+        for record in results:
+            metrics[record['metric_name']] = record['metric_value']
+            
+        return metrics
+    
+    def get_alert_rules(self, model_id=None):
+        """
+        Get alert rules for a model or all models.
+        
+        Args:
+            model_id: Optional model ID to filter by
+            
+        Returns:
+            List of alert rules
+        """
+        if model_id:
+            query = """
+            SELECT 
+                id, rule_name, metric_name, threshold, operator, severity, description, is_active,
+                created_at, updated_at
+            FROM 
+                alert_rules
+            WHERE 
+                model_id = ? OR model_id IS NULL
+            ORDER BY
+                created_at DESC
+            """
+            params = (model_id,)
+        else:
+            query = """
+            SELECT 
+                id, rule_name, metric_name, threshold, operator, severity, description, is_active,
+                created_at, updated_at
+            FROM 
+                alert_rules
+            ORDER BY
+                created_at DESC
+            """
+            params = ()
+            
+        # Execute query
+        results = self.fetch_all(query, params)
+        
+        # Format results
+        rules = []
+        for record in results:
+            rule = dict(record)
+            rule['is_active'] = bool(rule['is_active'])
+            rules.append(rule)
+            
+        return rules

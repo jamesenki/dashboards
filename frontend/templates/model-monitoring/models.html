@@ -112,51 +112,7 @@
             </div>
         </div>
         
-        <!-- Monitoring Status Section -->
-        <div id="monitoring-status" class="monitoring-status-container" style="display: none;">
-            <h3>Monitoring Status</h3>
-            <div class="status-details">
-                <div class="status-section">
-                    <h4>System Status</h4>
-                    <div class="status-item">
-                        <span class="status-label">Status:</span>
-                        <span class="status-value" id="monitoring-status-value">Active</span>
-                    </div>
-                    <div class="status-item">
-                        <span class="status-label">Last Check:</span>
-                        <span class="status-value" id="monitoring-last-check">Just now</span>
-                    </div>
-                    <div class="status-item">
-                        <span class="status-label">Uptime:</span>
-                        <span class="status-value" id="monitoring-uptime">0 days</span>
-                    </div>
-                </div>
-
-                <div class="status-section">
-                    <h4>Performance Metrics</h4>
-                    <div class="status-item">
-                        <span class="status-label">Avg Response Time:</span>
-                        <span class="status-value" id="avg-response-time">120ms</span>
-                    </div>
-                    <div class="status-item">
-                        <span class="status-label">Drift Alerts:</span>
-                        <span class="status-value" id="drift-alerts">0</span>
-                    </div>
-                </div>
-                
-                <div class="status-section">
-                    <h4>Summary</h4>
-                    <div class="status-item">
-                        <span class="status-label">Models Monitored:</span>
-                        <span class="status-value" id="models-monitored-count">0</span>
-                    </div>
-                    <div class="status-item">
-                        <span class="status-label">Health Index:</span>
-                        <span class="status-value" id="health-index">100%</span>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <!-- Monitoring Status Section - removed from here and added as modal at the bottom -->
         
         <!-- Models comparison table - needed for functionality -->
         <div class="table-container">
@@ -679,23 +635,32 @@
     document.addEventListener('DOMContentLoaded', function() {
         console.log('DOM loaded, initializing models page');
         
+        // Initialize modals first to ensure all event handlers are properly set up
+        initializeModals();
+        
         // Check URL parameters for view=archived
         const urlParams = new URLSearchParams(window.location.search);
         const viewParam = urlParams.get('view');
         console.log('URL parameter "view" =', viewParam);
         
-        if (viewParam === 'archived') {
-            console.log('URL parameter indicates we should load archived models');
-            viewingArchived = true;
-            loadArchivedModels();
-        } else {
-            console.log('No specific view parameter, loading active models by default');
-            viewingArchived = false;
-            loadAllModels();
-        }
-        
         // Set up event handlers for buttons
         setupEventHandlers();
+        
+        try {
+            if (viewParam === 'archived') {
+                console.log('URL parameter indicates we should load archived models');
+                viewingArchived = true;
+                loadArchivedModels();
+            } else {
+                console.log('No specific view parameter, loading active models by default');
+                viewingArchived = false;
+                loadAllModels();
+            }
+        } catch (error) {
+            console.error('Error during page initialization:', error);
+            document.getElementById('models-table-body').innerHTML = 
+                `<tr><td colspan="9">Error initializing page: ${error.message}</td></tr>`;
+        }
     });
     
     function setupEventHandlers() {
@@ -777,8 +742,30 @@
     
     function initializeModals() {
         console.log('Initializing modals');
-        // Initialize tags modal
-        tagsModal = document.getElementById('tags-modal');
+        
+        // Initialize all modals with close buttons
+        document.querySelectorAll('.close-modal').forEach(closeBtn => {
+            closeBtn.addEventListener('click', function() {
+                const modalId = this.dataset.modal;
+                const modal = document.getElementById(modalId);
+                if (modal) {
+                    console.log(`Closing modal: ${modalId}`);
+                    modal.style.display = 'none';
+                }
+            });
+        });
+        
+        // Close modals when clicking outside the modal content
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', function(event) {
+                if (event.target === this) {
+                    this.style.display = 'none';
+                }
+            });
+        });
+        
+        // Initialize tags modal specific functionality
+        const tagsModal = document.getElementById('tags-modal');
         if (tagsModal) {
             console.log('Tags modal found, setting up handlers');
             const closeTagsModalBtn = document.getElementById('close-tags-modal');
@@ -803,12 +790,26 @@
         } else {
             console.error('Tags modal element not found in the DOM');
         }
+        
+        // ESC key to close any open modal
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                document.querySelectorAll('.modal').forEach(modal => {
+                    if (modal.style.display !== 'none') {
+                        modal.style.display = 'none';
+                    }
+                });
+            }
+        });
     }
     
     function loadAllModels() {
         fetch('/api/monitoring/models')
             .then(response => response.json())
-            .then(models => {
+            .then(data => {
+                console.log('API response data:', data);
+                // Check if the response has the expected structure
+                const models = Array.isArray(data) ? data : (data.models || []);
                 allModels = models;
                 displayModels(models);
                 calculateFleetMetrics(models);
@@ -828,8 +829,10 @@
                 console.log('Archived models response received:', response);
                 return response.json();
             })
-            .then(models => {
-                console.log('Archived models data:', models);
+            .then(data => {
+                console.log('Archived models data:', data);
+                // Check if the response has the expected structure
+                const models = Array.isArray(data) ? data : (data.models || []);
                 allModels = models;
                 displayModels(models);
                 calculateFleetMetrics(models);
@@ -884,13 +887,13 @@
                 <td>
                     <input type="checkbox" class="model-select" data-model-id="${model.id}">
                 </td>
-                <td>${model.name || model.id} ${model.data_source === 'mock' ? '<span class="data-source-badge">(mock)</span>' : ''}</td>
+                <td>${model.name || model.id} ${model.data_source && model.data_source === 'mock' ? '<span class="data-source-badge">(mock)</span>' : ''}</td>
                 <td>${latestVersion || 'N/A'}</td>
-                <td>${model.metrics ? model.metrics.accuracy.toFixed(2) : 'N/A'}</td>
-                <td>${model.metrics ? model.metrics.drift_score.toFixed(2) : 'N/A'}</td>
+                <td>${model.metrics && model.metrics.accuracy !== null && model.metrics.accuracy !== undefined ? model.metrics.accuracy.toFixed(2) : 'N/A'}</td>
+                <td>${model.metrics && model.metrics.drift_score !== null && model.metrics.drift_score !== undefined ? model.metrics.drift_score.toFixed(2) : 'N/A'}</td>
                 <td>
-                    <div class="health-indicator health-${model.metrics ? model.metrics.health_status.toLowerCase() : 'unknown'}">
-                        ${model.metrics ? model.metrics.health_status : 'Unknown'}
+                    <div class="health-indicator health-${model.metrics && model.metrics.health_status ? model.metrics.health_status.toLowerCase() : 'unknown'}">
+                        ${model.metrics && model.metrics.health_status ? model.metrics.health_status : 'Unknown'}
                     </div>
                 </td>
                 <td>${model.alert_count || 0}</td>
@@ -1088,15 +1091,23 @@
         
         // For demo purposes, we'll simulate API calls with immediate feedback
         if (operation === 'enable_monitoring') {
-            // Show the monitoring status section
+            // Show the monitoring status modal
             const monitoringStatus = document.getElementById('monitoring-status');
             if (monitoringStatus) {
-                monitoringStatus.style.display = 'block';
-                // Update current time for last check
+                // First update the content values
                 const lastCheck = document.getElementById('monitoring-last-check');
                 if (lastCheck) {
                     lastCheck.textContent = new Date().toLocaleTimeString();
                 }
+                
+                // Update models monitored count
+                const modelsMonitoredCount = document.getElementById('models-monitored-count');
+                if (modelsMonitoredCount) {
+                    modelsMonitoredCount.textContent = selectedModels.length;
+                }
+                
+                // Then show the modal
+                monitoringStatus.style.display = 'flex'; // Using flex for the modal display
             }
             
             // Update selected rows to show monitoring enabled
@@ -1562,6 +1573,57 @@
         });
     }
 </script>
+
+<!-- Monitoring Status Modal -->
+<div id="monitoring-status" class="modal" style="display: none; z-index: 2000;">
+    <div class="modal-content" style="background-color: #000000 !important; border: 1px solid #333 !important; color: #f0f0f0 !important;">
+        <div class="modal-header">
+            <h3>Monitoring Status</h3>
+            <span class="close-modal" data-modal="monitoring-status">&times;</span>
+        </div>
+        <div class="status-details">
+            <div class="status-section" style="background-color: #111111 !important; border: 1px solid #222222 !important; color: #f8f8f8 !important;">
+                <h4 style="color: #ffffff !important; font-weight: 600 !important;">System Status</h4>
+                <div class="status-item">
+                    <span class="status-label" style="color: #e0e0e0 !important;">Status:</span>
+                    <span class="status-value" id="monitoring-status-value" style="color: #4caf50 !important; font-weight: 600 !important;">Active</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label" style="color: #e0e0e0 !important;">Last Check:</span>
+                    <span class="status-value" id="monitoring-last-check" style="color: #ffffff !important;">Just now</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label" style="color: #e0e0e0 !important;">Uptime:</span>
+                    <span class="status-value" id="monitoring-uptime" style="color: #ffffff !important;">0 days</span>
+                </div>
+            </div>
+
+            <div class="status-section" style="background-color: #111111 !important; border: 1px solid #222222 !important; color: #f8f8f8 !important;">
+                <h4 style="color: #ffffff !important; font-weight: 600 !important;">Performance Metrics</h4>
+                <div class="status-item">
+                    <span class="status-label" style="color: #e0e0e0 !important;">Avg Response Time:</span>
+                    <span class="status-value" id="avg-response-time" style="color: #ffffff !important;">120ms</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label" style="color: #e0e0e0 !important;">Drift Alerts:</span>
+                    <span class="status-value" id="drift-alerts" style="color: #ffffff !important;">0</span>
+                </div>
+            </div>
+            
+            <div class="status-section" style="background-color: #111111 !important; border: 1px solid #222222 !important; color: #f8f8f8 !important;">
+                <h4 style="color: #ffffff !important; font-weight: 600 !important;">Summary</h4>
+                <div class="status-item">
+                    <span class="status-label" style="color: #e0e0e0 !important;">Models Monitored:</span>
+                    <span class="status-value" id="models-monitored-count" style="color: #ffffff !important;">0</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label" style="color: #e0e0e0 !important;">Health Index:</span>
+                    <span class="status-value" id="health-index" style="color: #4caf50 !important; font-weight: 600 !important;">100%</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- Tags Management Modal -->
 <div id="tags-modal" class="modal" style="display: none;">

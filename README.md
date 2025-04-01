@@ -19,6 +19,7 @@ This README provides high-level information about the project. For detailed docu
 - [Architecture Overview](./docs/architecture-overview.md) - High-level system architecture and component interaction
 - [Database Configuration](./docs/database_configuration.md) - PostgreSQL and TimescaleDB integration details
 - [Predictions Plan](./docs/predictionsplan.md) - Machine learning features for water heater monitoring
+- [Monitoring & Alerts Architecture](./docs/monitoring-alerts-architecture.md) - ML model monitoring and alerts system
 
 ### Architecture Decision Records
 - [ADR-001: Angular to Python/JS Migration](./docs/adr/001-angular-to-python-js-migration.md) - Rationale for platform migration

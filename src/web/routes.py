@@ -100,6 +100,17 @@ async def get_edit_vending_machine_form(request: Request, machine_id: str = Path
         "machine_id": machine_id
     })
 
+# Add monitoring dashboard routes
+@router.get("/monitoring", response_class=HTMLResponse)
+async def get_monitoring_dashboard(request: Request):
+    """Render the model monitoring dashboard page"""
+    return templates.TemplateResponse("model-monitoring/dashboard.html", {"request": request})
+
+@router.get("/monitoring/alerts", response_class=HTMLResponse)
+async def get_monitoring_alerts(request: Request):
+    """Render the model monitoring alerts page"""
+    return templates.TemplateResponse("model-monitoring/alerts.html", {"request": request})
+
 @router.get("/model-monitoring", response_class=HTMLResponse)
 async def get_model_monitoring_dashboard(request: Request):
     """Render the model monitoring dashboard"""

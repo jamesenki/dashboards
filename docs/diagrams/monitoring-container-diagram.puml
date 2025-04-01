@@ -1,0 +1,19 @@
+@startuml Container Diagram
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+Person(user, "Data Scientist", "Monitors model performance")
+System_Boundary(iotsphere, "IoTSphere Platform") {
+    Container(web_app, "Web Application", "HTML, CSS, JavaScript", "Provides monitoring UI")
+    Container(api_server, "API Server", "Python, FastAPI", "Processes monitoring data and alerts")
+    ContainerDb(database, "SQLite Database", "SQLite", "Stores model metrics and alerts")
+}
+
+System_Ext(mlModels, "ML Models", "Deployed machine learning models")
+
+Rel(user, web_app, "Views dashboards and manages alerts", "HTTPS")
+Rel(web_app, api_server, "Makes API calls", "HTTP/JSON")
+Rel(api_server, database, "Reads/writes data", "SQL")
+Rel(mlModels, api_server, "Sends metrics", "HTTP/JSON")
+Rel(api_server, user, "Notifies about issues", "Email/SMS")
+
+@enduml

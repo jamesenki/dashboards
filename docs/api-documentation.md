@@ -522,6 +522,169 @@ Example message:
 }
 ```
 
+## Model Monitoring API
+
+These endpoints provide access to machine learning model monitoring data, metrics, and alerts.
+
+### Get Monitored Models
+
+```
+GET /api/monitoring/models
+```
+
+**Response:**
+```json
+[
+  {
+    "id": "water-heater-model-1",
+    "model_name": "Water Heater Prediction Model",
+    "version": "1.0.0",
+    "data_source": "database",
+    "description": "Predicts water heater performance and maintenance needs"
+  },
+  {
+    "id": "energy-consumption-forecaster-1",
+    "model_name": "Energy Consumption Forecaster",
+    "version": "1.0.0",
+    "data_source": "database",
+    "description": "Predicts energy consumption patterns for water heaters"
+  }
+]
+```
+
+### Get Model Metrics
+
+```
+GET /api/monitoring/models/{model_id}/versions/{model_version}/metrics
+```
+
+**Response:**
+```json
+[
+  {
+    "name": "accuracy",
+    "value": 0.92,
+    "timestamp": "2025-03-26T14:15:00Z"
+  },
+  {
+    "name": "inference_time_ms",
+    "value": 128.5,
+    "timestamp": "2025-03-26T14:15:00Z"
+  }
+]
+```
+
+### Get Model Alerts
+
+```
+GET /api/monitoring/alerts
+```
+
+**Query Parameters:**
+- `model_id` (optional): Filter by model ID
+- `severity` (optional): Filter by severity (e.g., "warning", "critical")
+- `status` (optional): Filter by status (e.g., "active", "resolved")
+
+**Response:**
+```json
+[
+  {
+    "id": "test-alert-20250401173444",
+    "rule_id": "test-rule-20250401173444",
+    "model_id": "water-heater-model-1",
+    "model_name": "Water Heater Prediction Model",
+    "version": "1.0.0",
+    "metric": "energy_consumption",
+    "threshold": 0.85,
+    "value": 0.95,
+    "severity": "warning",
+    "timestamp": "2025-04-01T17:34:46.760192",
+    "status": "active"
+  }
+]
+```
+
+### Create Alert Rule
+
+```
+POST /api/monitoring/alert_rules
+```
+
+**Request Body:**
+```json
+{
+  "model_id": "water-heater-model-1",
+  "metric_name": "energy_consumption",
+  "threshold": 0.85,
+  "condition": "ABOVE",
+  "severity": "WARNING"
+}
+```
+
+**Response:**
+```json
+{
+  "id": "test-rule-20250401173444",
+  "model_id": "water-heater-model-1",
+  "metric_name": "energy_consumption",
+  "threshold": 0.85,
+  "condition": "ABOVE",
+  "severity": "WARNING",
+  "created_at": "2025-04-01T17:34:45",
+  "active": true
+}
+```
+
+### Get Alert Rules
+
+```
+GET /api/monitoring/alert_rules
+```
+
+**Query Parameters:**
+- `model_id` (optional): Filter by model ID
+- `active` (optional): Filter by active status (true/false)
+
+**Response:**
+```json
+[
+  {
+    "id": "test-rule-20250401173444",
+    "model_id": "water-heater-model-1",
+    "metric_name": "energy_consumption",
+    "threshold": 0.85,
+    "condition": "ABOVE",
+    "severity": "WARNING",
+    "created_at": "2025-04-01T17:34:45",
+    "active": true
+  }
+]
+```
+
+### Update Alert Status
+
+```
+PUT /api/monitoring/alerts/{alert_id}
+```
+
+**Request Body:**
+```json
+{
+  "status": "resolved",
+  "resolution_notes": "Issue addressed by adjusting model parameters"
+}
+```
+
+**Response:**
+```json
+{
+  "id": "test-alert-20250401173444",
+  "status": "resolved",
+  "resolved_at": "2025-04-01T18:15:00Z",
+  "resolution_notes": "Issue addressed by adjusting model parameters"
+}
+```
+
 ## Further Assistance
 
 For additional support with the API:

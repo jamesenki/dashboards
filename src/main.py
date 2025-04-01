@@ -6,6 +6,7 @@ import uvicorn
 import socket
 from fastapi import FastAPI, APIRouter, Request, Response
 from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware
 from pathlib import Path
@@ -98,10 +99,13 @@ app.add_middleware(
     max_age=600,
 )
 
-# Mount static files
+# Mount static files and set up templates
 project_root = Path(__file__).parent.parent
 static_dir = project_root / "frontend/static"
+templates_dir = project_root / "frontend/templates"
+
 app.mount("/static", StaticFiles(directory=static_dir), name="static")
+templates = Jinja2Templates(directory=templates_dir)
 
 # Create API router with prefix
 api_router = APIRouter(prefix="/api")
@@ -124,13 +128,35 @@ api_router.include_router(debug_router)
 app.include_router(api_router)
 app.include_router(web_router)
 
+# Monitoring dashboard routes are defined in src/web/routes.py
+
 # Include router for model monitoring dashboard
 from src.monitoring.dashboard_api import create_dashboard_api
 from src.monitoring.model_monitoring_service import ModelMonitoringService
-from src.db.database import Database
+from src.monitoring.model_metrics_repository import ModelMetricsRepository
+from src.db.real_database import SQLiteDatabase
+from src.db.adapters.sqlite_model_metrics import SQLiteModelMetricsRepository
+from src.db.initialize_db import initialize_database
+import os
+import logging
 
-monitoring_db = Database()  # Create a database instance for monitoring
-monitoring_service = ModelMonitoringService(monitoring_db)
+# Use the correct database implementation based on TDD principles
+database_path = "data/iotsphere.db"
+db = SQLiteDatabase(database_path)
+logging.info(f"Using SQLite database at {database_path}")
+
+# Create the repository chain for model monitoring
+sqlite_repo = SQLiteModelMetricsRepository(db=db)
+
+# Use environment variable to determine if we should use mock data
+use_mock_data = os.environ.get('USE_MOCK_DATA', 'False').lower() in ('true', '1', 't')
+logging.info(f"USE_MOCK_DATA set to '{os.environ.get('USE_MOCK_DATA', 'False')}', interpreted as {use_mock_data}")
+
+# Create the model metrics repository with the SQL adapter
+metrics_repository = ModelMetricsRepository(sql_repo=sqlite_repo, test_mode=False)
+
+# Create the monitoring service with our repository
+monitoring_service = ModelMonitoringService(metrics_repository=metrics_repository)
 model_monitoring_api = create_dashboard_api(monitoring_service)
 app.mount("/api/monitoring", model_monitoring_api)
 

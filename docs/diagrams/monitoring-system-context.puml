@@ -1,0 +1,12 @@
+@startuml System Context
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+Person(user, "Data Scientist", "Monitors model performance")
+System(iotsphere, "IoTSphere Platform", "Provides ML model monitoring and alert capabilities")
+System_Ext(mlModels, "ML Models", "Deployed machine learning models")
+
+Rel(user, iotsphere, "Views dashboards and manages alerts")
+Rel(mlModels, iotsphere, "Sends performance metrics")
+Rel(iotsphere, user, "Notifies about model issues")
+
+@enduml
