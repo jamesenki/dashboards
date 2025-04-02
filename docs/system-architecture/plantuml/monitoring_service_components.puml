@@ -1,0 +1,44 @@
+@startuml Monitoring Service Components
+!include <C4/C4_Component>
+
+title "Monitoring Service Components"
+
+Container(apiServer, "API Server", "Node.js/Express", "Routes monitoring requests")
+Container(messageQueue, "Message Queue", "RabbitMQ", "Provides message queuing")
+Container_Boundary(monitoringService, "Monitoring Service") {
+    Component(dataProcessor, "Data Processor", "Node.js", "Processes incoming device data and metrics")
+    Component(alertEngine, "Alert Engine", "Node.js", "Detects anomalies and generates alerts")
+    Component(analyticsEngine, "Analytics Engine", "Node.js", "Performs data analytics and trend analysis")
+    Component(reportGenerator, "Report Generator", "Node.js", "Generates reports and visualizations")
+    Component(notificationManager, "Notification Manager", "Node.js", "Manages and dispatches notifications")
+    Component(subscriptionManager, "Subscription Manager", "Node.js", "Manages user alert subscriptions")
+}
+
+ContainerDb(timeseriesDB, "Time Series Database", "InfluxDB", "Stores historical device data")
+Container(modelMonitoringService, "Model Monitoring Service", "Python/Flask", "Monitors ML models")
+
+System_Ext(notificationChannels, "Notification Channels", "Email, SMS, Push Notifications")
+
+Rel(apiServer, dataProcessor, "Sends data queries to", "JSON/HTTP")
+Rel(apiServer, alertEngine, "Manages alert rules via", "JSON/HTTP")
+Rel(apiServer, analyticsEngine, "Requests analytics from", "JSON/HTTP")
+Rel(apiServer, reportGenerator, "Requests reports from", "JSON/HTTP")
+Rel(apiServer, notificationManager, "Configures notifications via", "JSON/HTTP")
+Rel(apiServer, subscriptionManager, "Manages subscriptions via", "JSON/HTTP")
+
+Rel(messageQueue, dataProcessor, "Streams device data to", "AMQP")
+Rel(dataProcessor, timeseriesDB, "Stores processed data in", "InfluxDB API")
+Rel(dataProcessor, alertEngine, "Forwards data for analysis")
+
+Rel(alertEngine, timeseriesDB, "Queries historical data from", "InfluxDB API")
+Rel(alertEngine, notificationManager, "Triggers notifications via")
+Rel(alertEngine, modelMonitoringService, "Forwards model-related alerts to", "JSON/HTTP")
+
+Rel(analyticsEngine, timeseriesDB, "Reads from", "InfluxDB API")
+Rel(reportGenerator, timeseriesDB, "Queries data from", "InfluxDB API")
+
+Rel(notificationManager, subscriptionManager, "Checks subscriptions via")
+Rel(notificationManager, notificationChannels, "Sends notifications through", "API Calls")
+
+LAYOUT_WITH_LEGEND()
+@enduml

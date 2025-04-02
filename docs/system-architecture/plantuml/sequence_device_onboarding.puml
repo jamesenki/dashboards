@@ -1,0 +1,50 @@
+@startuml Device Onboarding Sequence
+title "Device Onboarding Sequence"
+
+actor "Platform Admin" as admin
+participant "Web Application" as webApp
+participant "API Server" as apiServer
+participant "Device Management Service" as deviceService
+participant "Provisioning Manager" as provisionMgr
+participant "Device Registry" as deviceRegistry
+database "Operational Database" as database
+participant "Configuration Manager" as configMgr
+participant "IoT Device" as device
+
+admin -> webApp: Initiates device onboarding
+webApp -> apiServer: POST /api/devices/provision
+apiServer -> deviceService: forwardProvisionRequest()
+deviceService -> provisionMgr: provisionDevice(deviceInfo)
+
+provisionMgr -> deviceRegistry: createDevice(deviceInfo)
+deviceRegistry -> database: save(deviceDocument)
+database --> deviceRegistry: deviceId
+deviceRegistry --> provisionMgr: deviceId
+
+provisionMgr -> configMgr: createDefaultConfiguration(deviceId)
+configMgr -> database: save(defaultConfig)
+database --> configMgr: ok
+configMgr --> provisionMgr: configId
+
+provisionMgr -> deviceRegistry: generateSecrets(deviceId)
+deviceRegistry -> database: storeSecrets(deviceSecrets)
+database --> deviceRegistry: ok
+deviceRegistry --> provisionMgr: deviceCredentials
+
+provisionMgr --> deviceService: provisioningPackage
+deviceService --> apiServer: provisioningPackage
+apiServer --> webApp: provisioningPackage
+
+webApp --> admin: Display provisioning details
+admin -> device: Apply provisioning package (manual)
+device -> deviceService: Connect with credentials
+deviceService -> deviceRegistry: verifyCredentials(deviceId)
+deviceRegistry -> database: lookup(deviceId)
+database --> deviceRegistry: deviceSecrets
+deviceRegistry --> deviceService: isValid
+
+deviceService -> database: updateStatus(deviceId, "connected")
+database --> deviceService: ok
+deviceService --> device: connectionConfirmed
+
+@enduml

@@ -1,0 +1,252 @@
+# IoTSphere Default Configuration
+# This file contains the default configuration for the IoTSphere platform.
+# Values defined here can be overridden by environment variables.
+
+# Application Settings
+app:
+  name: "IoTSphere"
+  environment: "development"  # Options: development, testing, production
+  debug: true
+  log_level: "INFO"           # Options: DEBUG, INFO, WARNING, ERROR, CRITICAL
+
+# API Configuration
+api:
+  title: "IoTSphere API"
+  version: "v1"
+  
+  # API Endpoint Paths
+  endpoints:
+    base: "/api"
+    docs: "/api/docs"         # Swagger UI endpoint
+    redoc: "/api/redoc"       # ReDoc endpoint
+    openapi: "/api/openapi.json"
+  
+  # CORS Configuration
+  cors:
+    allowed_origins: 
+      - "http://localhost:4200"
+      - "http://localhost:8080"
+    allowed_methods: 
+      - "GET"
+      - "POST"
+      - "PUT"
+      - "DELETE"
+      - "OPTIONS"
+      - "HEAD"
+      - "PATCH"
+    allowed_headers: ["*"]
+    allow_credentials: false
+    max_age: 600
+
+# Database Configuration
+database:
+  type: "postgres"            # Options: postgres, sqlite, memory
+  host: "localhost"
+  port: 5432
+  name: "iotsphere"
+  pool_size: 5
+  max_overflow: 10
+  credentials:
+    username: "iotsphere"
+    password: "iotsphere"     # In production, use ${DB_PASSWORD} to reference env var
+  
+  # Connection retry settings
+  retry_attempts: 3
+  retry_delay: 5              # Seconds between retry attempts
+  
+  # Conflict resolution
+  conflict_strategy: "exception"  # Options: exception, update, ignore
+
+# Redis Cache Configuration
+redis:
+  enabled: true
+  host: "localhost"
+  port: 6379
+  db: 0
+  password: null              # Use ${REDIS_PASSWORD} in production
+  key_prefix: "iotsphere:"
+  default_ttl: 3600           # Default TTL in seconds
+
+# Services Configuration
+services:
+  # Monitoring Service
+  monitoring:
+    enabled: true
+    metrics_retention_days: 30
+    base_path: "/api/monitoring"
+    endpoints:
+      alerts: "/alerts"
+      metrics: "/metrics"
+      reports: "/reports"
+      dashboard: "/dashboard"
+    
+    # Alert Configuration
+    alerts:
+      enabled: true
+      check_interval: 300     # Check interval in seconds
+      notification_channels:
+        email: true
+        slack: false
+        webhook: false
+    
+    # Model Health Monitoring
+    model_health:
+      enabled: true
+      drift_threshold: 0.15   # Alert if drift exceeds this value
+      accuracy_threshold: 0.85  # Alert if accuracy falls below this value
+  
+  # Predictions Service
+  predictions:
+    enabled: true
+    model_path: "./models"
+    base_path: "/api/predictions"
+    endpoints:
+      forecast: "/forecast"
+      maintenance: "/maintenance"
+      anomaly: "/anomaly"
+      batch: "/batch"
+    
+    # Model Configuration
+    models:
+      maintenance_prediction:
+        enabled: true
+        version: "latest"     # or specific version
+        threshold: 0.75
+      anomaly_detection:
+        enabled: true
+        version: "latest"
+        sensitivity: 0.8
+  
+  # Device Management Service
+  device_management:
+    enabled: true
+    base_path: "/api/devices"
+    default_poll_interval: 300  # Default poll interval in seconds
+    
+    # Device Types Configuration
+    device_types:
+      water_heater:
+        enabled: true
+        endpoints:
+          status: "/status"
+          metrics: "/metrics"
+          settings: "/settings"
+      vending_machine:
+        enabled: true
+        endpoints:
+          status: "/status"
+          inventory: "/inventory"
+          operations: "/operations"
+
+# Frontend Configuration
+frontend:
+  assets_path: "./static"
+  default_theme: "light"      # Options: light, dark
+  page_size: 20
+  table_refresh_interval: 30  # Seconds
+  chart_refresh_interval: 60  # Seconds
+  dashboard_layout:
+    alerts_panel: true
+    metrics_panel: true
+    operations_panel: true
+    predictions_panel: true
+
+# Testing & Development
+testing:
+  # Mock Data Configuration
+  mocks:
+    enabled: false            # Set to true to use mock data instead of real data
+    data_path: "./mocks"      # Path to mock data files
+    response_delay_ms: 200    # Simulate network delay for API calls (milliseconds)
+    
+    # Mock Data Categories
+    categories:
+      models:
+        path: "models"
+        file_type: "json"    # Accepts json or yaml
+      devices:
+        path: "devices"
+        file_type: "yaml"
+      metrics:
+        path: "metrics"
+        file_type: "json"
+    
+    # Per-Service Mock Configuration
+    services:
+      device_data: true
+      metrics: true
+      predictions: true
+  
+  # Test Database
+  test_database:
+    type: "sqlite"
+    path: ":memory:"          # In-memory database for tests
+  
+  # Test Coverage
+  coverage:
+    minimum_percentage: 85    # Minimum test coverage percentage required
+
+# Security Configuration
+security:
+  # Authentication
+  auth:
+    enabled: true
+    token_expiration: 3600    # Token expiration time in seconds
+    refresh_token_expiration: 604800  # 7 days
+    password_hash_algorithm: "bcrypt"
+    
+    # OAuth Settings
+    oauth:
+      enabled: false
+      providers:
+        google: false
+        github: false
+    
+    # Rate Limiting
+    rate_limit:
+      enabled: true
+      requests_per_minute: 60
+  
+  # HTTPS Configuration
+  https:
+    enabled: false            # Set to true in production
+    cert_path: "./certs/server.crt"
+    key_path: "./certs/server.key"
+
+# Observability
+observability:
+  # Logging Configuration
+  logging:
+    format: "json"            # Options: json, text
+    file_path: "./logs/iotsphere.log"
+    rotation:
+      max_size_mb: 10
+      backup_count: 5
+    
+    # Log Levels Per Component
+    levels:
+      api: "INFO"
+      database: "WARNING"
+      predictions: "INFO"
+    
+  # Metrics Collection
+  metrics:
+    enabled: true
+    prometheus_endpoint: "/metrics"
+    collection_interval: 15   # Seconds
+    
+  # Distributed Tracing
+  tracing:
+    enabled: false
+    exporter: "jaeger"
+    sampling_rate: 0.1        # Sample 10% of requests
+
+# File Storage
+storage:
+  type: "local"               # Options: local, s3
+  local_path: "./data"
+  s3:
+    bucket: "iotsphere-data"
+    region: "us-east-1"
+    access_key: null          # Use ${AWS_ACCESS_KEY} in environment
+    secret_key: null          # Use ${AWS_SECRET_KEY} in environment

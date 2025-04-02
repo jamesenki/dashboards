@@ -1,0 +1,33 @@
+@startuml API Server Components
+!include <C4/C4_Component>
+
+title "API Server Components"
+
+Container(webApp, "Web Application", "Angular", "Provides the user interface")
+Container_Boundary(apiServer, "API Server") {
+    Component(apiGateway, "API Gateway", "Express.js", "Routes requests to appropriate microservices and handles cross-cutting concerns")
+    Component(authService, "Authentication Service", "JWT/Passport.js", "Handles user authentication and access control")
+    Component(deviceApi, "Device API", "Express Router", "Provides endpoints for device management operations")
+    Component(dataApi, "Data API", "Express Router", "Provides endpoints for querying device data and metrics")
+    Component(userApi, "User API", "Express Router", "Provides endpoints for user management and preferences")
+}
+
+Container(deviceService, "Device Management Service", "Node.js", "Handles device management operations")
+Container(monitoringService, "Monitoring Service", "Node.js", "Processes device data and alerts")
+ContainerDb(database, "Operational Database", "MongoDB", "Stores user and device data")
+
+Rel(webApp, apiGateway, "Makes API calls to", "JSON/HTTPS")
+
+Rel(apiGateway, authService, "Validates requests through")
+Rel(apiGateway, deviceApi, "Routes device-related requests to")
+Rel(apiGateway, dataApi, "Routes data-related requests to")
+Rel(apiGateway, userApi, "Routes user-related requests to")
+
+Rel(deviceApi, deviceService, "Forwards device operations to", "JSON/HTTP")
+Rel(dataApi, monitoringService, "Retrieves device data from", "JSON/HTTP")
+Rel(userApi, database, "Reads from and writes to", "MongoDB Driver")
+
+Rel(authService, database, "Validates credentials against", "MongoDB Driver")
+
+LAYOUT_WITH_LEGEND()
+@enduml

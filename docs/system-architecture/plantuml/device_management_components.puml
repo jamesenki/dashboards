@@ -1,0 +1,36 @@
+@startuml Device Management Components
+!include <C4/C4_Component>
+
+title "Device Management Service Components"
+
+Container(apiServer, "API Server", "Node.js/Express", "Routes device management requests")
+Container_Boundary(deviceService, "Device Management Service") {
+    Component(deviceRegistry, "Device Registry", "Node.js", "Manages device registrations and metadata")
+    Component(configManager, "Configuration Manager", "Node.js", "Manages device configurations")
+    Component(firmwareService, "Firmware Update Service", "Node.js", "Handles firmware updates and versioning")
+    Component(provisionManager, "Provisioning Manager", "Node.js", "Manages device onboarding and provisioning")
+    Component(deviceController, "Device Controller", "Node.js", "Executes commands on devices")
+    Component(mqttClient, "MQTT Client", "MQTT.js", "Communicates with devices over MQTT")
+}
+
+Container(database, "Operational Database", "MongoDB", "Stores device configurations")
+Container(messageQueue, "Message Queue", "RabbitMQ", "Handles asynchronous communication")
+System_Ext(devices, "IoT Devices", "Connected devices")
+
+Rel(apiServer, deviceRegistry, "Creates, reads, updates, deletes devices", "JSON/HTTP")
+Rel(apiServer, configManager, "Manages device configurations", "JSON/HTTP")
+Rel(apiServer, firmwareService, "Initiates firmware updates", "JSON/HTTP")
+Rel(apiServer, provisionManager, "Provisions new devices", "JSON/HTTP")
+Rel(apiServer, deviceController, "Sends commands to devices", "JSON/HTTP")
+
+Rel(deviceRegistry, database, "Reads from and writes to", "MongoDB Driver")
+Rel(configManager, database, "Stores configurations in", "MongoDB Driver")
+Rel(firmwareService, database, "Manages firmware metadata in", "MongoDB Driver")
+Rel(provisionManager, database, "Stores provisioning data in", "MongoDB Driver")
+
+Rel(deviceController, mqttClient, "Sends commands through")
+Rel(mqttClient, messageQueue, "Publishes and subscribes to", "MQTT over AMQP")
+Rel(messageQueue, devices, "Communicates with", "MQTT")
+
+LAYOUT_WITH_LEGEND()
+@enduml

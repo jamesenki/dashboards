@@ -1,0 +1,32 @@
+# IoTSphere Development Environment Configuration
+# This file contains overrides for the development environment
+
+app:
+  environment: "development"
+  debug: true
+  log_level: "DEBUG"
+
+database:
+  # Use local database for development
+  host: "localhost"
+  port: 5432
+  name: "iotsphere_dev"
+
+# Enable mock data for quicker development
+testing:
+  mocks:
+    enabled: true
+
+# Development-specific service settings
+services:
+  # Increase poll interval for development to reduce load
+  device_management:
+    default_poll_interval: 60
+
+observability:
+  logging:
+    file_path: "./logs/iotsphere.dev.log"
+    levels:
+      api: "DEBUG"
+      database: "DEBUG"
+      predictions: "DEBUG"

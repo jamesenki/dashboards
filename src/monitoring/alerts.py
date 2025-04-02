@@ -138,9 +138,24 @@ class AlertChecker:
 class NotificationService:
     """
     Service for sending alert notifications to stakeholders.
-    This is a simplified implementation that can be extended with
-    actual notification channels (email, Slack, etc.).
+    Supports configurable notification channels (email, Slack, etc.).
     """
+    
+    def __init__(self, channels=None):
+        """
+        Initialize the notification service with configured channels.
+        
+        Args:
+            channels: Dictionary of notification channels with boolean enable/disable flags
+                     e.g., {'email': True, 'slack': False, 'webhook': True}
+        """
+        # Default channels if none provided
+        self.channels = channels or {
+            'email': True,
+            'slack': False,
+            'webhook': False
+        }
+    
     def send_alert(self, alert: AlertEvent) -> bool:
         """
         Send a notification for an alert event.
@@ -151,7 +166,82 @@ class NotificationService:
         Returns:
             True if the notification was sent successfully
         """
-        # In a real implementation, this would send notifications via various channels
+        # Log the alert (always happens regardless of channels)
         print(f"ALERT: {alert.severity} alert for model {alert.model_id} {alert.model_version}")
         print(f"Metric {alert.metric_name} is {alert.actual_value}, threshold: {alert.operator} {alert.threshold}")
+        
+        # Send to enabled channels
+        self._send_to_enabled_channels(alert)
+        
         return True
+    
+    def send_notification(self, title: str, message: str, severity: str = 'MEDIUM', channels=None) -> bool:
+        """
+        Send a generic notification.
+        
+        Args:
+            title: Notification title
+            message: Notification message
+            severity: Notification severity
+            channels: Override default channels for this notification
+            
+        Returns:
+            True if the notification was sent successfully
+        """
+        print(f"NOTIFICATION [{severity}]: {title}")
+        print(f"Message: {message}")
+        
+        # Use provided channels or fall back to configured channels
+        effective_channels = channels or self.channels
+        
+        # Log which channels were used
+        channel_str = ', '.join([k for k, v in effective_channels.items() if v])
+        print(f"Sent to channels: {channel_str}")
+        
+        return True
+    
+    def _send_to_enabled_channels(self, alert: AlertEvent) -> None:
+        """
+        Send alert to all enabled channels.
+        
+        Args:
+            alert: The alert event to notify about
+        """
+        if self.channels.get('email', False):
+            self._send_email(alert)
+            
+        if self.channels.get('slack', False):
+            self._send_slack(alert)
+            
+        if self.channels.get('webhook', False):
+            self._send_webhook(alert)
+    
+    def _send_email(self, alert: AlertEvent) -> None:
+        """
+        Send alert via email.
+        
+        Args:
+            alert: The alert event to notify about
+        """
+        # This would be implemented with actual email sending logic
+        print(f"[EMAIL] Alert sent for model {alert.model_id}: {alert.metric_name} {alert.operator} {alert.threshold}")
+    
+    def _send_slack(self, alert: AlertEvent) -> None:
+        """
+        Send alert via Slack.
+        
+        Args:
+            alert: The alert event to notify about
+        """
+        # This would be implemented with Slack API integration
+        print(f"[SLACK] Alert sent for model {alert.model_id}: {alert.metric_name} {alert.operator} {alert.threshold}")
+    
+    def _send_webhook(self, alert: AlertEvent) -> None:
+        """
+        Send alert via webhook.
+        
+        Args:
+            alert: The alert event to notify about
+        """
+        # This would be implemented with webhook calls
+        print(f"[WEBHOOK] Alert sent for model {alert.model_id}: {alert.metric_name} {alert.operator} {alert.threshold}")

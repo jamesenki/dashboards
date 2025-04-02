@@ -1,0 +1,36 @@
+@startuml Model Monitoring Components
+!include <C4/C4_Component>
+
+title "Model Monitoring Dashboard Components"
+
+Container(monitoringService, "Monitoring Service", "Node.js", "Processes device data and alerts")
+Container_Boundary(modelMonitoring, "Model Monitoring Service") {
+    Component(modelRegistry, "Model Registry", "Python/Flask", "Maintains metadata about deployed ML models")
+    Component(metricCollector, "Metric Collector", "Python", "Collects performance metrics from deployed models")
+    Component(driftDetector, "Drift Detector", "Python/scikit-learn", "Detects data and concept drift in models")
+    Component(performanceMonitor, "Performance Monitor", "Python", "Tracks model performance metrics over time")
+    Component(dashboardAPI, "Dashboard API", "Flask", "Exposes HTTP endpoints for dashboard functionality")
+}
+
+Container(webApp, "Web Application", "Angular", "Provides the user interface")
+ContainerDb(timeseriesDB, "Time Series Database", "InfluxDB", "Stores model metrics")
+
+Rel(monitoringService, modelRegistry, "Registers models with", "JSON/HTTP")
+Rel(monitoringService, dashboardAPI, "Requests model status from", "JSON/HTTP")
+
+Rel(modelRegistry, metricCollector, "Tells what metrics to collect for")
+Rel(metricCollector, performanceMonitor, "Forwards metrics to")
+Rel(metricCollector, driftDetector, "Provides data to")
+
+Rel(metricCollector, timeseriesDB, "Stores metrics in", "InfluxDB API")
+Rel(performanceMonitor, timeseriesDB, "Reads metrics from", "InfluxDB API")
+Rel(driftDetector, timeseriesDB, "Reads historical data from", "InfluxDB API")
+
+Rel(performanceMonitor, dashboardAPI, "Provides metrics to")
+Rel(driftDetector, dashboardAPI, "Reports drift alerts to")
+Rel(modelRegistry, dashboardAPI, "Provides model metadata to")
+
+Rel(webApp, dashboardAPI, "Gets model monitoring data from", "JSON/HTTPS")
+
+LAYOUT_WITH_LEGEND()
+@enduml

@@ -1,0 +1,117 @@
+# Sample mock data for water heater devices
+# This YAML file follows our configuration-driven mock data approach
+
+devices:
+  - id: "wh-residential-001"
+    name: "Residential Water Heater 001"
+    type: "water_heater"
+    model: "Residential 50 Gallon"
+    status: "operational"
+    installation_date: "2024-06-15"
+    last_maintenance: "2025-01-10"
+    location:
+      building: "Residential Building A"
+      room: "Utility Room"
+      address: "123 Main St, Anytown, US"
+      coordinates:
+        latitude: 40.7128
+        longitude: -74.0060
+    telemetry:
+      temperature: 142.5
+      pressure: 55.2
+      flow_rate: 7.8
+      power_consumption: 3.2
+      efficiency: 0.85
+    maintenance:
+      next_scheduled: "2025-07-10"
+      predicted_issues:
+        - component: "heating_element"
+          probability: 0.12
+          severity: "low"
+        - component: "temperature_sensor"
+          probability: 0.05
+          severity: "low"
+    alerts: []
+
+  - id: "wh-residential-002"
+    name: "Residential Water Heater 002"
+    type: "water_heater"
+    model: "Residential 40 Gallon"
+    status: "warning"
+    installation_date: "2023-11-20"
+    last_maintenance: "2024-11-30"
+    location:
+      building: "Residential Building B"
+      room: "Basement"
+      address: "456 Oak St, Anytown, US"
+      coordinates:
+        latitude: 40.7130
+        longitude: -74.0062
+    telemetry:
+      temperature: 158.3
+      pressure: 62.7
+      flow_rate: 6.2
+      power_consumption: 4.1
+      efficiency: 0.79
+    maintenance:
+      next_scheduled: "2025-05-30"
+      predicted_issues:
+        - component: "thermostat"
+          probability: 0.35
+          severity: "medium"
+        - component: "pressure_valve"
+          probability: 0.28
+          severity: "medium"
+    alerts:
+      - id: "alert-wh-002-001"
+        timestamp: "2025-03-30T08:15:23Z"
+        type: "temperature_high"
+        message: "Temperature exceeds normal operating range"
+        severity: "warning"
+        acknowledged: false
+
+  - id: "wh-commercial-001"
+    name: "Commercial Water Heater 001"
+    type: "water_heater"
+    model: "Commercial 100 Gallon"
+    status: "maintenance_required"
+    installation_date: "2023-08-05"
+    last_maintenance: "2024-08-10"
+    location:
+      building: "Hotel Grand"
+      room: "Mechanical Room B3"
+      address: "789 Broadway, Anytown, US"
+      coordinates:
+        latitude: 40.7135
+        longitude: -74.0070
+    telemetry:
+      temperature: 147.2
+      pressure: 48.9
+      flow_rate: 12.5
+      power_consumption: 7.8
+      efficiency: 0.72
+    maintenance:
+      next_scheduled: "2025-04-15"
+      predicted_issues:
+        - component: "heating_element"
+          probability: 0.67
+          severity: "high"
+        - component: "anode_rod"
+          probability: 0.82
+          severity: "high"
+        - component: "drain_valve"
+          probability: 0.45
+          severity: "medium"
+    alerts:
+      - id: "alert-wh-c001-001"
+        timestamp: "2025-03-25T14:32:11Z"
+        type: "efficiency_low"
+        message: "Efficiency below acceptable threshold"
+        severity: "warning"
+        acknowledged: true
+      - id: "alert-wh-c001-002"
+        timestamp: "2025-04-01T06:45:09Z"
+        type: "maintenance_due"
+        message: "Scheduled maintenance due in 14 days"
+        severity: "info"
+        acknowledged: false

@@ -1,0 +1,54 @@
+# IoTSphere Testing Environment Configuration
+# This file contains overrides for the testing environment
+
+app:
+  environment: "testing"
+  debug: false
+  log_level: "INFO"
+
+database:
+  # Use dedicated test database
+  host: "localhost"
+  port: 5432
+  name: "iotsphere_test"
+  
+  # Use in-memory SQLite for faster tests when appropriate
+  # Uncomment to enable:
+  # type: "sqlite"
+  # path: ":memory:"
+
+# Configure testing-specific settings
+testing:
+  # Use mock data for controlled test environments
+  mocks:
+    enabled: true
+    # No delay in tests for faster execution
+    response_delay_ms: 0
+  
+  # Increase test coverage requirements for testing environment
+  coverage:
+    minimum_percentage: 90
+
+# Ensure all services are enabled for comprehensive testing
+services:
+  monitoring:
+    enabled: true
+  predictions:
+    enabled: true
+  device_management:
+    # Faster poll interval for testing
+    default_poll_interval: 10
+
+# Test-specific observability settings
+observability:
+  logging:
+    file_path: "./logs/iotsphere.test.log"
+    levels:
+      api: "INFO"
+      database: "WARNING"
+      predictions: "INFO"
+  
+  # Enable metrics for performance testing
+  metrics:
+    enabled: true
+    collection_interval: 5  # Seconds

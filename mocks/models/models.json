@@ -1,0 +1,94 @@
+{
+  "models": [
+    {
+      "id": "water-heater-model-1",
+      "name": "Water Heater Prediction Model",
+      "description": "Predicts maintenance needs for water heaters",
+      "type": "regression",
+      "versions": ["1.0.0", "1.1.0", "1.2.0"],
+      "current_version": "1.2.0",
+      "created_at": "2024-09-15T10:30:00Z",
+      "updated_at": "2025-03-01T14:45:00Z",
+      "tags": ["production", "water-heater"],
+      "metrics": {
+        "accuracy": 0.92,
+        "drift_score": 0.03,
+        "health_status": "GREEN"
+      },
+      "alert_count": 0,
+      "is_archived": false
+    },
+    {
+      "id": "anomaly-detection-1",
+      "name": "Anomaly Detection Model",
+      "description": "Detects anomalies in device operation data",
+      "type": "classification",
+      "versions": ["0.9.0", "1.0.0"],
+      "current_version": "1.0.0",
+      "created_at": "2024-10-05T09:15:00Z",
+      "updated_at": "2025-02-15T11:30:00Z",
+      "tags": ["production", "anomaly"],
+      "metrics": {
+        "accuracy": 0.88,
+        "drift_score": 0.05,
+        "health_status": "GREEN"
+      },
+      "alert_count": 0,
+      "is_archived": false
+    },
+    {
+      "id": "lifecycle-predictor-1",
+      "name": "Lifecycle Prediction Model",
+      "description": "Predicts remaining useful life of components",
+      "type": "regression",
+      "versions": ["0.8.0", "0.9.0", "1.0.0"],
+      "current_version": "1.0.0",
+      "created_at": "2024-11-10T13:45:00Z",
+      "updated_at": "2025-01-20T16:30:00Z",
+      "tags": ["testing", "lifecycle"],
+      "metrics": {
+        "accuracy": 0.85,
+        "drift_score": 0.08,
+        "health_status": "YELLOW"
+      },
+      "alert_count": 1,
+      "is_archived": false
+    },
+    {
+      "id": "failure-classification-1",
+      "name": "Failure Classification Model",
+      "description": "Classifies types of device failures",
+      "type": "classification",
+      "versions": ["0.5.0", "0.6.0"],
+      "current_version": "0.6.0",
+      "created_at": "2024-08-20T15:00:00Z",
+      "updated_at": "2025-01-05T09:45:00Z",
+      "tags": ["development", "failure"],
+      "metrics": {
+        "accuracy": 0.78,
+        "drift_score": 0.12,
+        "health_status": "YELLOW"
+      },
+      "alert_count": 2,
+      "is_archived": false
+    },
+    {
+      "id": "temperature-forecaster-1",
+      "name": "Temperature Forecasting Model",
+      "description": "Legacy model for temperature forecasting",
+      "type": "regression",
+      "versions": ["0.1.0", "0.2.0"],
+      "current_version": "0.2.0",
+      "created_at": "2023-12-01T10:00:00Z",
+      "updated_at": "2024-05-15T14:30:00Z",
+      "tags": ["deprecated"],
+      "metrics": {
+        "accuracy": 0.72,
+        "drift_score": 0.25,
+        "health_status": "RED"
+      },
+      "alert_count": 5,
+      "is_archived": true
+    }
+  ]
+}

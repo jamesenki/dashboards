@@ -1,0 +1,35 @@
+@startuml Data Processing and Alerting Sequence
+title "Device Data Processing and Alerting Sequence"
+
+actor "IoT Device" as device
+participant "Message Queue" as messageQueue
+participant "Data Processor" as dataProcessor
+database "Time Series Database" as timeseriesDB
+participant "Alert Engine" as alertEngine
+participant "Notification Manager" as notificationMgr
+participant "Subscription Manager" as subscriptionMgr
+actor "Platform User" as user
+
+device -> messageQueue: Publish telemetry data
+messageQueue -> dataProcessor: Consume message
+
+dataProcessor -> dataProcessor: Validate and normalize data
+dataProcessor -> timeseriesDB: Store processed data
+dataProcessor -> alertEngine: Forward data for analysis
+
+alertEngine -> timeseriesDB: Query historical data
+alertEngine -> alertEngine: Evaluate alert rules
+
+alt Alert threshold exceeded
+    alertEngine -> notificationMgr: triggerAlert(alertData)
+    notificationMgr -> subscriptionMgr: getSubscribers(alertType)
+    subscriptionMgr --> notificationMgr: subscribersList
+    
+    loop for each subscriber
+        notificationMgr -> user: Send notification
+    end
+    
+    notificationMgr -> timeseriesDB: storeAlertEvent()
+end
+
+@enduml

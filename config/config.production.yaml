@@ -1,0 +1,104 @@
+# IoTSphere Production Environment Configuration
+# This file contains overrides for the production environment
+
+app:
+  environment: "production"
+  debug: false
+  log_level: "WARNING"
+
+api:
+  # In production, restrict CORS to specific origins
+  cors:
+    allowed_origins: 
+      - "https://iotsphere.example.com"
+      - "https://admin.iotsphere.example.com"
+    allow_credentials: true
+
+# Use environment variables for sensitive data in production
+database:
+  host: "${DB_HOST}"
+  port: "${DB_PORT}"
+  name: "${DB_NAME}"
+  credentials:
+    username: "${DB_USERNAME}"
+    password: "${DB_PASSWORD}"
+  
+  # Increase connection pool for production load
+  pool_size: 20
+  max_overflow: 30
+  
+  # More robust conflict handling for production
+  conflict_strategy: "exception"
+
+redis:
+  enabled: true
+  host: "${REDIS_HOST}"
+  port: "${REDIS_PORT}"
+  password: "${REDIS_PASSWORD}"
+  
+  # Increase TTL for production caching
+  default_ttl: 7200  # 2 hours
+
+# Disable mock data in production
+testing:
+  mocks:
+    enabled: false
+
+# Production-specific service settings
+services:
+  # Standard polling intervals for production
+  device_management:
+    default_poll_interval: 300  # 5 minutes
+  
+  # More conservative alert thresholds for production
+  monitoring:
+    alerts:
+      enabled: true
+      # More notification channels in production
+      notification_channels:
+        email: true
+        slack: true
+        webhook: true
+    model_health:
+      drift_threshold: 0.1    # More sensitive in production
+      accuracy_threshold: 0.9  # Higher standards in production
+
+# Enable HTTPS in production
+security:
+  https:
+    enabled: true
+    cert_path: "${SSL_CERT_PATH}"
+    key_path: "${SSL_KEY_PATH}"
+  
+  # Stricter rate limiting in production
+  auth:
+    rate_limit:
+      enabled: true
+      requests_per_minute: 30
+
+# Production observability settings
+observability:
+  logging:
+    format: "json"
+    file_path: "/var/log/iotsphere/iotsphere.log"
+    rotation:
+      max_size_mb: 50
+      backup_count: 10
+  
+  # Enable metrics and tracing in production
+  metrics:
+    enabled: true
+    collection_interval: 15
+  
+  tracing:
+    enabled: true
+    sampling_rate: 0.05  # Sample 5% of requests for tracing
+
+# Use S3 for file storage in production
+storage:
+  type: "s3"
+  s3:
+    bucket: "${S3_BUCKET_NAME}"
+    region: "${AWS_REGION}"
+    access_key: "${AWS_ACCESS_KEY}"
+    secret_key: "${AWS_SECRET_KEY}"

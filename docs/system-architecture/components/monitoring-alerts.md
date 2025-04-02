@@ -1,0 +1,84 @@
+# IoTSphere Monitoring & Alerts Architecture
+
+## Overview
+
+The IoTSphere Monitoring & Alerts system provides a comprehensive solution for tracking model performance metrics, detecting anomalies, and alerting stakeholders to potential issues. This document describes the architecture and flow of the monitoring alerts subsystem.
+
+## Key Components
+
+### 1. Database Structure
+
+The monitoring system uses a SQLite database with several key tables:
+
+- **models**: Stores information about ML models being monitored
+  - Columns: `id`, `name`, `description`, `created_at`, `updated_at`, `archived`
+- **alert_rules**: Defines conditions that trigger alerts
+  - Columns: `id`, `model_id`, `metric_name`, `threshold`, `condition`, `severity`, `created_at`, `active`
+- **alert_events**: Records instances when alert rules are triggered
+  - Columns: `id`, `rule_id`, `model_id`, `metric_name`, `metric_value`, `severity`, `created_at`, `resolved`, `resolved_at`
+
+### 2. Backend Components
+
+- **ModelMetricsRepository**: Responsible for retrieving model metrics and alert data
+  - Handles database queries and can fall back to mock data when necessary
+  - Implements TDD principles by adapting to expected test behaviors
+- **ModelMonitoringService**: Provides business logic for monitoring operations
+  - Acts as a service layer between the API and data repositories
+- **DashboardAPI**: Exposes HTTP endpoints for monitoring dashboard functionality
+  - Formats data to match frontend expectations
+
+### 3. Frontend Components
+
+- **AlertDashboard**: Displays alerts and their status
+  - Shows active and resolved alerts with severity indicators
+  - Allows filtering and sorting of alerts
+- **MetricCharts**: Visualizes model performance metrics
+  - Displays time-series charts of key metrics
+  - Highlights threshold violations
+
+## Alert Flow
+
+1. Alert rules are defined by users through the web interface
+2. The system continuously evaluates incoming metrics against alert rules
+3. When a threshold is violated, an alert is generated and stored
+4. The alert notification is sent to subscribed users
+5. Users can acknowledge and resolve alerts through the dashboard
+
+## Sequence Diagram
+
+![Alert Processing Sequence](../diagrams/sequence_data_processing.png)
+
+## Implementation Details
+
+### Alert Rule Definition
+
+Alert rules are defined with:
+- A metric name to monitor
+- A threshold value
+- A comparison operator (>, <, =, etc.)
+- A severity level (info, warning, critical)
+
+### Alert Processing
+
+When new metrics are received:
+1. The system retrieves applicable alert rules
+2. Each rule is evaluated against the metric value
+3. If a rule is triggered, an alert event is created
+4. The alert is stored in the database
+5. Notification services are informed
+
+### Alert Resolution
+
+Alerts can be resolved:
+- Automatically when metrics return to normal levels
+- Manually by users through the dashboard interface
+
+## Testing Approach
+
+Following TDD principles, the alert system is developed with comprehensive tests:
+
+1. **Unit Tests**: Test individual components like rule evaluation
+2. **Integration Tests**: Test the interaction between components
+3. **End-to-End Tests**: Test the entire alert flow from trigger to notification
+
+Each test case defines expected behaviors before implementation, ensuring the system meets requirements.

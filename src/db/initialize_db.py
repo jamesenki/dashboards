@@ -8,10 +8,11 @@ import logging
 from pathlib import Path
 
 from src.db.real_database import SQLiteDatabase
+from src.db.schema_migration import force_reset_schema
 
 logger = logging.getLogger(__name__)
 
-def initialize_database(db_path=None, in_memory=False, populate=True):
+def initialize_database(db_path=None, in_memory=False, populate=True, force_reset=False):
     """
     Initialize the database with schema and optionally populate with test data.
     
@@ -19,6 +20,7 @@ def initialize_database(db_path=None, in_memory=False, populate=True):
         db_path: Path to the database file (will be created if it doesn't exist)
         in_memory: If True, create an in-memory database instead of a file
         populate: If True, populate with test data
+        force_reset: If True, force reset schema tables to resolve any issues
         
     Returns:
         Database instance
@@ -41,6 +43,11 @@ def initialize_database(db_path=None, in_memory=False, populate=True):
     
     # Create database instance
     db = SQLiteDatabase(connection_string)
+    
+    # Force reset schema if requested
+    if force_reset:
+        logger.info("Forcing schema reset to ensure database integrity")
+        force_reset_schema(db.connection, db.connection.cursor())
     
     # Populate with test data if requested
     if populate:

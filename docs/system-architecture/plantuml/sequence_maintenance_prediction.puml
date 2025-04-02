@@ -1,0 +1,36 @@
+@startuml Maintenance Prediction Sequence
+title "Maintenance Prediction Sequence"
+
+actor "Platform User" as user
+participant "Web Application" as webApp
+participant "API Server" as apiServer
+participant "Monitoring Service" as monitoringService
+participant "Analytics Engine" as analyticsEngine
+database "Time Series Database" as timeseriesDB
+participant "Model Monitoring Service" as modelMonitoring
+participant "Performance Monitor" as perfMonitor
+participant "Maintenance Predictions Module" as predictionModule
+
+user -> webApp: Open maintenance dashboard
+webApp -> apiServer: GET /api/maintenance/predictions
+apiServer -> monitoringService: getMaintenancePredictions()
+
+monitoringService -> analyticsEngine: generatePredictions(deviceIds)
+analyticsEngine -> timeseriesDB: queryHistoricalData(deviceIds)
+timeseriesDB --> analyticsEngine: deviceHistoricalData
+analyticsEngine -> modelMonitoring: requestPrediction(deviceData)
+
+modelMonitoring -> perfMonitor: evaluateDeviceHealth(deviceData)
+perfMonitor -> predictionModule: predictMaintenance(deviceData)
+predictionModule --> perfMonitor: maintenancePredictions
+perfMonitor --> modelMonitoring: deviceHealthStatus
+
+modelMonitoring --> analyticsEngine: predictionResults
+analyticsEngine --> monitoringService: maintenanceRecommendations
+monitoringService --> apiServer: formattedPredictions
+apiServer --> webApp: predictionResponse
+
+webApp -> webApp: Update maintenance dashboard
+webApp --> user: Display maintenance predictions
+
+@enduml

@@ -35,7 +35,8 @@ class TestAlertConfiguration(unittest.TestCase):
                 "created_at": "2025-03-28T10:00:00Z"
             }
         ]
-        self.mock_service.get_alert_rules.return_value = mock_rules
+        # Return (rules, is_mock) tuple to match ModelMonitoringService implementation
+        self.mock_service.get_alert_rules.return_value = (mock_rules, False)
         
         # Execute test
         response = self.client.get(f"/models/{model_id}/versions/{version}/alerts/rules")
@@ -58,7 +59,8 @@ class TestAlertConfiguration(unittest.TestCase):
             "severity": "MEDIUM",
             "description": "Alert when precision drops below 0.85"
         }
-        self.mock_service.create_alert_rule.return_value = "new-rule-123"
+        # Return (rule_id, is_mock) tuple to match ModelMonitoringService implementation
+        self.mock_service.create_alert_rule.return_value = ("new-rule-123", False)
         
         # Execute test
         response = self.client.post(
@@ -68,7 +70,7 @@ class TestAlertConfiguration(unittest.TestCase):
         
         # Verify response
         self.assertEqual(response.status_code, 201)
-        self.assertEqual(response.json(), {"id": "new-rule-123", "status": "success"})
+        self.assertEqual(response.json(), {"id": "new-rule-123", "status": "success", "is_mock_data": False})
         self.mock_service.create_alert_rule.assert_called_once()
     
     def test_delete_alert_rule(self):

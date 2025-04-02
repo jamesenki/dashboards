@@ -1,0 +1,52 @@
+@startuml Data Architecture
+!include <C4/C4_Container>
+
+title "IoTSphere Data Architecture"
+
+Container(deviceService, "Device Management Service", "Node.js", "Handles device data")
+Container(monitoringService, "Monitoring Service", "Node.js", "Processes device data and alerts")
+Container(analyticsEngine, "Analytics Engine", "Node.js", "Processes data for insights")
+Container(modelMonitoring, "Model Monitoring Service", "Python/Flask", "Monitors ML models")
+
+ContainerDb(operationalDb, "Operational Database", "MongoDB", "Document-based storage")
+Note right of operationalDb
+  Key collections:
+  - Device Collection: Stores device metadata and configuration
+  - User Collection: Stores user information and permissions
+  - Alert Rules Collection: Stores alert configuration
+  - System Settings Collection: Stores system configuration
+end note
+
+ContainerDb(timeseriesDb, "Time Series Database", "InfluxDB", "Time series data storage")
+Note right of timeseriesDb
+  Key measurements:
+  - Telemetry Measurement: Stores device telemetry data
+  - Metrics Measurement: Stores performance metrics
+  - Alerts Measurement: Stores alert events
+  - Model Stats Measurement: Stores ML model performance stats
+end note
+
+Container(blobStorage, "Blob Storage", "AWS S3/Local FileSystem", "Binary storage")
+Note right of blobStorage
+  Key storage objects:
+  - Firmware Blobs: Stores firmware images
+  - Model Blobs: Stores trained ML models
+  - Report Blobs: Stores generated reports
+  - Config Backups: Stores configuration backups
+end note
+
+Rel(deviceService, operationalDb, "Creates and manages device records")
+Rel(deviceService, blobStorage, "Stores and retrieves firmware images")
+
+Rel(monitoringService, timeseriesDb, "Stores and analyzes device telemetry")
+Rel(monitoringService, operationalDb, "Uses alert configurations")
+
+Rel(analyticsEngine, timeseriesDb, "Analyzes historical telemetry")
+Rel(analyticsEngine, blobStorage, "Generates and stores reports")
+
+Rel(modelMonitoring, timeseriesDb, "Records model performance")
+Rel(modelMonitoring, blobStorage, "Manages model artifacts")
+Rel(modelMonitoring, operationalDb, "Associates models with devices")
+
+LAYOUT_WITH_LEGEND()
+@enduml
