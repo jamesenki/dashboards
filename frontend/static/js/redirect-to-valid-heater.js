@@ -5,13 +5,13 @@
 document.addEventListener('DOMContentLoaded', async function() {
     try {
         const api = new ApiClient();
-        
+
         // Get the first available water heater
         const heaters = await api.request('GET', '/water-heaters/');
-        
+
         if (heaters && heaters.length > 0) {
             const firstHeaterId = heaters[0].id;
-            
+
             // Create a button to navigate to a valid water heater
             const container = document.querySelector('.container') || document.body;
             const alertBox = document.createElement('div');
@@ -23,10 +23,10 @@ document.addEventListener('DOMContentLoaded', async function() {
                     View Water Heater ${firstHeaterId}
                 </a>
             `;
-            
+
             // Insert at the top of the container
             container.insertBefore(alertBox, container.firstChild);
-            
+
             console.log(`Ready to navigate to water heater: ${firstHeaterId}`);
         } else {
             console.error('No water heaters found in the system');

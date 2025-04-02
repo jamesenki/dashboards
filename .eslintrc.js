@@ -22,11 +22,11 @@ module.exports = {
     "camelcase": ["error", { "properties": "always" }],
     "max-len": ["error", { "code": 100 }],
     "no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
-    
+
     // Error handling
     "no-console": ["warn", { "allow": ["error", "warn"] }],
     "no-alert": "warn",
-    
+
     // Enforce comments
     "require-jsdoc": ["warn", {
       "require": {
@@ -37,7 +37,7 @@ module.exports = {
         "FunctionExpression": false
       }
     }],
-    
+
     // Enforce modern JavaScript
     "prefer-const": "error",
     "prefer-arrow-callback": "warn",

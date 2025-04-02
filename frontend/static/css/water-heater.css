@@ -12,34 +12,34 @@
   --danger-color: #ef476f;
   --dark-color: #212529;
   --light-color: #f8f9fa;
-  
+
   /* Status colors */
   --status-online: #06d6a0;
   --status-offline: #979797;
   --status-heating: #ff9e00;
   --status-standby: #8338ec;
-  
+
   /* Mode colors */
   --mode-eco: #06d6a0;
   --mode-boost: #ff9e00;
   --mode-off: #979797;
-  
+
   /* Card colors */
   --card-bg: #1e2227;
   --card-header: #282c34;
   --card-shadow: rgba(0, 0, 0, 0.3) 0px 6px 24px 0px, rgba(0, 0, 0, 0.4) 0px 0px 0px 1px;
   --card-border: #353a40;
-  
+
   /* Gauge colors */
   --gauge-bg: #2a2e35;
   --gauge-fill: linear-gradient(90deg, #06d6a0 0%, #ffbe0b 50%, #ef476f 100%);
   --gauge-mask: #1e2227;
-  
+
   /* Text colors */
   --text-primary: #e6e9ed;
   --text-secondary: #9ca3af;
   --text-light: #f8f9fa;
-  
+
   /* Font properties */
   --font-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   --font-heading: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -133,13 +133,13 @@ a:hover {
     flex-direction: row;
     flex-wrap: wrap;
   }
-  
+
   .detail-view .card {
     flex: 1 0 calc(50% - 12px);
     margin-right: 12px;
     margin-bottom: 12px;
   }
-  
+
   .chart-card {
     flex-basis: 100% !important;
     margin-right: 0;

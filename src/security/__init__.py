@@ -6,4 +6,4 @@ This module contains security-related utilities and classes for the IoTSphere pl
 
 from security.secure_model_loader import SecureModelLoader, SecurityException
 
-__all__ = ['SecureModelLoader', 'SecurityException']
+__all__ = ["SecureModelLoader", "SecurityException"]

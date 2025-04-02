@@ -14,7 +14,6 @@ ARCHIVE_DIR = BASE_DIR / "archive"
 FILES_TO_ARCHIVE = [
     # Temporary Test Scripts
     "test_model_monitoring.py",
-    
     # Debug and Fix Scripts
     "data_source_fix.py",
     "test_alerts_db.py",
@@ -25,7 +24,6 @@ FILES_TO_ARCHIVE = [
     "fix_alerts_frontend.py",
     "fix_model_metrics_adapter.py",
     "fix_models_dropdown.py",
-    
     # Redundant Test Files
     "test_data_access_integration.py",
     "test_data_source.py",
@@ -33,29 +31,29 @@ FILES_TO_ARCHIVE = [
     "test_frontend_alerts.py",
     "test_repositories.py",
     "test_water_heater_config.py",
-    
     # One-time Data Manipulation Scripts
     "generate_alert_event.py",
     "insert_alert_event.py",
     "populate_metrics_for_models.py",
     "set_model_health.py",
-    "update_health_status_format.py"
+    "update_health_status_format.py",
 ]
+
 
 def main():
     """Move files to archive directory."""
     # Ensure archive directory exists
     os.makedirs(ARCHIVE_DIR, exist_ok=True)
-    
+
     # Track successful and failed moves
     moved = []
     not_found = []
-    
+
     # Move files to archive
     for filename in FILES_TO_ARCHIVE:
         src_path = BASE_DIR / filename
         dst_path = ARCHIVE_DIR / filename
-        
+
         if src_path.exists():
             try:
                 shutil.move(str(src_path), str(dst_path))
@@ -66,21 +64,22 @@ def main():
         else:
             not_found.append(filename)
             print(f"⚠️ Not found: {filename}")
-    
+
     # Print summary
     print("\n==== Summary ====")
     print(f"✅ Successfully moved: {len(moved)} files")
     print(f"⚠️ Not found: {len(not_found)} files")
-    
+
     if moved:
         print("\nSuccessfully moved files:")
         for file in moved:
             print(f"  - {file}")
-    
+
     if not_found:
         print("\nFiles not found:")
         for file in not_found:
             print(f"  - {file}")
+
 
 if __name__ == "__main__":
     main()

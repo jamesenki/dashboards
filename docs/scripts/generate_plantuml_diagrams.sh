@@ -120,29 +120,29 @@ generate_png() {
     local input_file="$1"
     local output_file="$2"
     local base_name=$(basename "$input_file" .puml)
-    
+
     echo "Generating diagram: $base_name"
-    
+
     # Include the theme in each diagram
     tmp_file="$TEMP_DIR/$base_name.puml"
     echo "@startuml" > "$tmp_file"
     echo "!include $TEMP_DIR/theme.puml" >> "$tmp_file"
     echo "scale 1.5" >> "$tmp_file"
     tail -n +2 "$input_file" >> "$tmp_file"
-    
+
     # Generate PNG
     java -jar "$PLANTUML_JAR" -tpng "$tmp_file" -o "$(dirname "$output_file")"
     if [ $? -ne 0 ]; then
         echo "❌ Failed to generate diagram: $base_name"
         return 1
     fi
-    
+
     # Move output file to the correct location if needed
     generated_file="$TEMP_DIR/$base_name.png"
     if [ -f "$generated_file" ]; then
         mv "$generated_file" "$output_file"
     fi
-    
+
     echo "✅ Generated: $output_file"
     return 0
 }
@@ -151,12 +151,12 @@ generate_png() {
 process_plantuml_files() {
     local success_count=0
     local total_count=0
-    
+
     for puml_file in "$PLANTUML_DIR"/*.puml; do
         if [ -f "$puml_file" ]; then
             base_name=$(basename "$puml_file" .puml)
             output_file="$IMAGES_DIR/$base_name.png"
-            
+
             generate_png "$puml_file" "$output_file"
             if [ $? -eq 0 ]; then
                 ((success_count++))
@@ -164,7 +164,7 @@ process_plantuml_files() {
             ((total_count++))
         fi
     done
-    
+
     echo ""
     echo "Diagram generation complete."
     echo "Successfully generated $success_count out of $total_count diagrams."

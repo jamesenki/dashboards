@@ -55,21 +55,21 @@ class WaterHeaterRepository(ABC):
     @abstractmethod
     async def get_water_heaters(self) -> List[WaterHeater]:
         pass
-    
+
     @abstractmethod
     async def get_water_heater(self, device_id: str) -> Optional[WaterHeater]:
         pass
-    
+
     # Additional methods...
-    
+
     @abstractmethod
     async def get_health_configuration(self) -> Dict[str, Any]:
         pass
-    
+
     @abstractmethod
     async def set_health_configuration(self, config: Dict[str, Dict[str, Any]]) -> None:
         pass
-    
+
     @abstractmethod
     async def get_alert_rules(self) -> List[Dict[str, Any]]:
         pass

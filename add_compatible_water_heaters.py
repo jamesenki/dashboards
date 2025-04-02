@@ -2,11 +2,11 @@
 Script to add sample water heaters to the database using the existing schema.
 """
 import asyncio
-import os
 import logging
+import os
 import sqlite3
-from datetime import datetime
 import uuid
+from datetime import datetime
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -15,13 +15,14 @@ logger = logging.getLogger(__name__)
 # Database path
 DB_PATH = "data/iotsphere.db"
 
+
 async def create_sample_water_heaters():
     """Create sample water heaters with varied data that works with the existing schema."""
     try:
         # Connect to database
         conn = sqlite3.connect(DB_PATH)
         cursor = conn.cursor()
-        
+
         # Sample water heaters with varied but realistic data
         water_heaters = [
             {
@@ -37,7 +38,7 @@ async def create_sample_water_heaters():
                 "status": "HEATING",
                 "efficiency_rating": 92.5,
                 "health_status": "GREEN",
-                "last_seen": datetime.now().isoformat()
+                "last_seen": datetime.now().isoformat(),
             },
             {
                 "id": f"wh-{uuid.uuid4().hex[:8]}",
@@ -52,7 +53,7 @@ async def create_sample_water_heaters():
                 "status": "STANDBY",
                 "efficiency_rating": 88.0,
                 "health_status": "YELLOW",
-                "last_seen": datetime.now().isoformat()
+                "last_seen": datetime.now().isoformat(),
             },
             {
                 "id": f"wh-{uuid.uuid4().hex[:8]}",
@@ -67,7 +68,7 @@ async def create_sample_water_heaters():
                 "status": "HEATING",
                 "efficiency_rating": 95.5,
                 "health_status": "GREEN",
-                "last_seen": datetime.now().isoformat()
+                "last_seen": datetime.now().isoformat(),
             },
             {
                 "id": f"wh-{uuid.uuid4().hex[:8]}",
@@ -82,36 +83,51 @@ async def create_sample_water_heaters():
                 "status": "STANDBY",
                 "efficiency_rating": 85.0,
                 "health_status": "RED",
-                "last_seen": datetime.now().isoformat()
-            }
+                "last_seen": datetime.now().isoformat(),
+            },
         ]
-        
+
         # Add to database
         for heater in water_heaters:
             logger.info(f"Creating water heater: {heater['name']}")
-            cursor.execute("""
+            cursor.execute(
+                """
                 INSERT INTO water_heaters (
-                    id, name, brand, model, type, location, 
-                    current_temperature, target_temperature, mode, status, 
+                    id, name, brand, model, type, location,
+                    current_temperature, target_temperature, mode, status,
                     efficiency_rating, health_status, last_seen
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """, (
-                heater["id"], heater["name"], heater["brand"], heater["model"], 
-                heater["type"], heater["location"], heater["current_temperature"], 
-                heater["target_temperature"], heater["mode"], heater["status"], 
-                heater["efficiency_rating"], heater["health_status"], heater["last_seen"]
-            ))
-        
+            """,
+                (
+                    heater["id"],
+                    heater["name"],
+                    heater["brand"],
+                    heater["model"],
+                    heater["type"],
+                    heater["location"],
+                    heater["current_temperature"],
+                    heater["target_temperature"],
+                    heater["mode"],
+                    heater["status"],
+                    heater["efficiency_rating"],
+                    heater["health_status"],
+                    heater["last_seen"],
+                ),
+            )
+
         # Commit changes
         conn.commit()
         logger.info(f"Added {len(water_heaters)} water heaters to the database")
-        
+
         # Add a health configuration
         # First check if table exists
-        cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='water_heater_health_config'")
+        cursor.execute(
+            "SELECT name FROM sqlite_master WHERE type='table' AND name='water_heater_health_config'"
+        )
         if not cursor.fetchone():
             logger.info("Creating water_heater_health_config table")
-            cursor.execute("""
+            cursor.execute(
+                """
                 CREATE TABLE water_heater_health_config (
                     id TEXT PRIMARY KEY,
                     name TEXT NOT NULL,
@@ -119,8 +135,9 @@ async def create_sample_water_heaters():
                     status TEXT,
                     created_at TEXT
                 )
-            """)
-        
+            """
+            )
+
         # Add health config entries
         health_configs = [
             {
@@ -128,33 +145,42 @@ async def create_sample_water_heaters():
                 "name": "temperature_high",
                 "threshold": 75.0,
                 "status": "RED",
-                "created_at": datetime.now().isoformat()
+                "created_at": datetime.now().isoformat(),
             },
             {
                 "id": str(uuid.uuid4()),
                 "name": "temperature_warning",
                 "threshold": 65.0,
                 "status": "YELLOW",
-                "created_at": datetime.now().isoformat()
-            }
+                "created_at": datetime.now().isoformat(),
+            },
         ]
-        
+
         for config in health_configs:
             logger.info(f"Adding health config: {config['name']}")
-            cursor.execute("""
-                INSERT OR REPLACE INTO water_heater_health_config 
+            cursor.execute(
+                """
+                INSERT OR REPLACE INTO water_heater_health_config
                 (id, name, threshold, status, created_at)
                 VALUES (?, ?, ?, ?, ?)
-            """, (
-                config["id"], config["name"], config["threshold"],
-                config["status"], config["created_at"]
-            ))
-        
+            """,
+                (
+                    config["id"],
+                    config["name"],
+                    config["threshold"],
+                    config["status"],
+                    config["created_at"],
+                ),
+            )
+
         # Add alert rules table if it doesn't exist
-        cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='water_heater_alert_rules'")
+        cursor.execute(
+            "SELECT name FROM sqlite_master WHERE type='table' AND name='water_heater_alert_rules'"
+        )
         if not cursor.fetchone():
             logger.info("Creating water_heater_alert_rules table")
-            cursor.execute("""
+            cursor.execute(
+                """
                 CREATE TABLE water_heater_alert_rules (
                     id TEXT PRIMARY KEY,
                     name TEXT NOT NULL,
@@ -164,8 +190,9 @@ async def create_sample_water_heaters():
                     enabled INTEGER,
                     created_at TEXT
                 )
-            """)
-        
+            """
+            )
+
         # Add a sample alert rule
         alert_rule = {
             "id": str(uuid.uuid4()),
@@ -174,24 +201,31 @@ async def create_sample_water_heaters():
             "severity": "HIGH",
             "message": "Water temperature exceeds safe level",
             "enabled": 1,
-            "created_at": datetime.now().isoformat()
+            "created_at": datetime.now().isoformat(),
         }
-        
+
         logger.info(f"Adding alert rule: {alert_rule['name']}")
-        cursor.execute("""
-            INSERT INTO water_heater_alert_rules 
+        cursor.execute(
+            """
+            INSERT INTO water_heater_alert_rules
             (id, name, condition, severity, message, enabled, created_at)
             VALUES (?, ?, ?, ?, ?, ?, ?)
-        """, (
-            alert_rule["id"], alert_rule["name"], alert_rule["condition"],
-            alert_rule["severity"], alert_rule["message"], alert_rule["enabled"],
-            alert_rule["created_at"]
-        ))
-        
+        """,
+            (
+                alert_rule["id"],
+                alert_rule["name"],
+                alert_rule["condition"],
+                alert_rule["severity"],
+                alert_rule["message"],
+                alert_rule["enabled"],
+                alert_rule["created_at"],
+            ),
+        )
+
         # Commit changes
         conn.commit()
         logger.info("All changes committed to database")
-    
+
     except sqlite3.Error as e:
         logger.error(f"SQLite error: {e}")
     except Exception as e:
@@ -199,8 +233,9 @@ async def create_sample_water_heaters():
     finally:
         if conn:
             conn.close()
-    
+
     logger.info("Done!")
+
 
 if __name__ == "__main__":
     asyncio.run(create_sample_water_heaters())

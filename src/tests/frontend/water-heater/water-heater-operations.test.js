@@ -97,7 +97,7 @@ describe('Gauge Components', () => {
             <div class="status-value">HEATING</div>
           </div>
         </div>
-        
+
         <!-- Gauges -->
         <div class="gauge-grid">
           <!-- Temperature Gauge -->
@@ -108,7 +108,7 @@ describe('Gauge Components', () => {
             </div>
             <div id="temperature-gauge-value" class="gauge-value">68.0°C</div>
           </div>
-          
+
           <!-- Pressure Gauge -->
           <div id="pressure-gauge-panel" class="gauge-panel">
             <div class="gauge-title">Pressure</div>
@@ -117,7 +117,7 @@ describe('Gauge Components', () => {
             </div>
             <div id="pressure-gauge-value" class="gauge-value">2.6 bar</div>
           </div>
-          
+
           <!-- Energy Usage Gauge -->
           <div id="energy-gauge-panel" class="gauge-panel">
             <div class="gauge-title">Energy Usage</div>
@@ -126,7 +126,7 @@ describe('Gauge Components', () => {
             </div>
             <div id="energy-gauge-value" class="gauge-value">1350 W</div>
           </div>
-          
+
           <!-- Flow Rate Gauge -->
           <div id="flow-rate-gauge-panel" class="gauge-panel">
             <div class="gauge-title">Flow Rate</div>
@@ -135,7 +135,7 @@ describe('Gauge Components', () => {
             </div>
             <div id="flow-rate-gauge-value" class="gauge-value">3.5 L/min</div>
           </div>
-          
+
           <!-- Asset Health Gauge -->
           <div id="asset-health-gauge-panel" class="gauge-panel">
             <div class="gauge-title">Asset Health</div>
@@ -160,10 +160,10 @@ describe('Gauge Components', () => {
   test('status cards exist and have correct values', () => {
     const machineStatusCard = document.querySelector('#machine-status-card .status-value');
     const heaterStatusCard = document.querySelector('#heater-status-card .status-value');
-    
+
     expect(machineStatusCard).not.toBeNull();
     expect(machineStatusCard.textContent).toBe('ONLINE');
-    
+
     expect(heaterStatusCard).not.toBeNull();
     expect(heaterStatusCard.textContent).toBe('HEATING');
   });
@@ -182,18 +182,18 @@ describe('Gauge Components', () => {
     const updateGauge = (gaugeId, value, unit, percentage) => {
       const valueElement = document.getElementById(`${gaugeId}-gauge-value`);
       const needleElement = document.getElementById(`${gaugeId}-gauge-needle`);
-      
+
       // Update value display
       if (valueElement) {
         valueElement.textContent = `${typeof value === 'number' ? value.toFixed(1) : value}${unit}`;
       }
-      
+
       // Update needle position (in a real implementation, this would set a CSS transform)
       if (needleElement) {
         // For testing, we'll store the percentage as a data attribute
         needleElement.setAttribute('data-percentage', percentage);
       }
-      
+
       return percentage;
     };
 
@@ -201,7 +201,7 @@ describe('Gauge Components', () => {
     expect(updateGauge('temperature', 72.0, '°C', 71.1)).toBe(71.1);
     expect(document.getElementById('temperature-gauge-value').textContent).toBe('72.0°C');
     expect(document.getElementById('temperature-gauge-needle').getAttribute('data-percentage')).toBe('71.1');
-    
+
     // Test pressure gauge update
     expect(updateGauge('pressure', 3.0, ' bar', 60.0)).toBe(60.0);
     expect(document.getElementById('pressure-gauge-value').textContent).toBe('3.0 bar');
@@ -225,7 +225,7 @@ describe('API Integration', () => {
     };
 
     const dashboardData = await fetchOperationsDashboard('heater-123');
-    
+
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(fetch).toHaveBeenCalledWith('/api/water-heaters/heater-123/operations');
     expect(dashboardData.current_temperature).toBe(68.0);
@@ -233,17 +233,17 @@ describe('API Integration', () => {
     expect(dashboardData.mode).toBe('ECO');
     expect(dashboardData.gauges.temperature.percentage).toBe(62.2);
   });
-  
+
   test('handles API errors gracefully', async () => {
     // Override fetch mock to return an error
-    fetch.mockImplementationOnce(() => 
+    fetch.mockImplementationOnce(() =>
       Promise.resolve({
         ok: false,
         status: 404,
         json: () => Promise.resolve({ detail: "Water heater not found" })
       })
     );
-    
+
     // Mock function with error handling
     const fetchOperationsDashboard = async (heaterId) => {
       try {
@@ -258,7 +258,7 @@ describe('API Integration', () => {
     };
 
     const result = await fetchOperationsDashboard('non-existent');
-    
+
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(result.error).toBe('Error: 404');
   });

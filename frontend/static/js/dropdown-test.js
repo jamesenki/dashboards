@@ -43,7 +43,7 @@
             "name":"PolarDelight - SuperVend e683",
             "location_business_name":"Port Authority Bus Terminal",
             "location_type":"TRANSPORTATION",
-            "sub_location":"DINING_AREA", 
+            "sub_location":"DINING_AREA",
             "location":"South Wing - Laundry Room",
             "status":"OPERATIONAL"
         }
@@ -52,13 +52,13 @@
     // Helper function to get a proper string value (same as in original code)
     function getStringValue(value) {
         if (value === null || value === undefined) return 'Unknown';
-        
+
         // If it's already a string, just return it
         if (typeof value === 'string') return value;
-        
+
         // If it's an object with a value property (like an enum), get that
         if (typeof value === 'object' && value.value) return value.value;
-        
+
         // Otherwise convert to string
         return String(value);
     }
@@ -67,7 +67,7 @@
     const testCases = [
         // Normal case (all fields present)
         machines[0],
-        
+
         // Case with missing fields
         {
             "id":"vm-test1",
@@ -76,7 +76,7 @@
             "location_type":"OFFICE"
             // Missing sub_location
         },
-        
+
         // Case with different data types
         {
             "id":"vm-test2",
@@ -85,7 +85,7 @@
             "location_type": 123,  // Number
             "sub_location": true   // Boolean
         },
-        
+
         // Case with special characters
         {
             "id":"vm-test3",
@@ -97,7 +97,7 @@
     ];
 
     console.log("=== DROPDOWN FORMAT TEST RESULTS ===");
-    
+
     // Process each test case
     testCases.forEach((machine, index) => {
         // Format as in the original function
@@ -107,7 +107,7 @@
             getStringValue(machine.location_type),
             getStringValue(machine.sub_location)
         ].join(' | ');
-        
+
         console.log(`\nTest Case ${index + 1}:`);
         console.log(`Machine ID: ${machine.id}`);
         console.log(`Individual Values:`);
@@ -128,7 +128,7 @@
             getStringValue(machine.location_type),
             getStringValue(machine.sub_location)
         ].join(' | ');
-        
+
         console.log(`${index + 1}. "${displayText}"`);
     });
 })();

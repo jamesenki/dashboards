@@ -28,53 +28,53 @@ stages:
       inputs:
         versionSpec: '3.9'
         addToPath: true
-        
+
     - script: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         pip install black isort flake8 mypy pydocstyle bandit
       displayName: 'Install dependencies'
-      
+
     - script: black --check .
       displayName: 'Check formatting with Black'
-      
+
     - script: isort --check-only --profile black .
       displayName: 'Check import sorting with isort'
-      
+
     - script: flake8 .
       displayName: 'Check PEP 8 compliance with flake8'
-      
+
     - script: mypy src
       displayName: 'Check type hints with mypy'
-      
+
     - script: pydocstyle --convention=google src
       displayName: 'Check docstrings with pydocstyle'
-      
+
     - script: bandit -r src
       displayName: 'Run security checks with bandit'
-      
+
   - job: JavaScriptQuality
     displayName: 'JavaScript Quality Checks'
     steps:
     - task: NodeTool@0
       inputs:
         versionSpec: '16.x'
-        
+
     - script: npm ci
       displayName: 'Install npm dependencies'
-      
+
     - script: npm run lint:js
       displayName: 'Check JavaScript with ESLint'
-      
+
     - script: npm run lint:css
       displayName: 'Check CSS with stylelint'
-      
+
     - script: npm run lint:html
       displayName: 'Check HTML with HTMLHint'
-      
+
     - script: npm run check-format
       displayName: 'Check formatting with Prettier'
-      
+
   - job: SecurityScans
     displayName: 'Security Scans'
     steps:
@@ -82,25 +82,25 @@ stages:
       inputs:
         versionSpec: '3.9'
         addToPath: true
-        
+
     - script: |
         python -m pip install --upgrade pip
         pip install bandit safety
       displayName: 'Install Python security tools'
-      
+
     - script: bandit -r src
       displayName: 'Run Python security checks with bandit'
-      
+
     - script: safety check -r requirements.txt
       displayName: 'Check Python dependencies with safety'
-      
+
     - task: NodeTool@0
       inputs:
         versionSpec: '16.x'
-        
+
     - script: npm ci
       displayName: 'Install npm dependencies'
-      
+
     - script: npm audit
       displayName: 'Check npm dependencies'
       continueOnError: true # npm audit can be too strict sometimes
@@ -116,37 +116,37 @@ stages:
       inputs:
         versionSpec: '3.9'
         addToPath: true
-        
+
     - script: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         pip install pytest pytest-cov
       displayName: 'Install dependencies'
-      
+
     - script: pytest --cov=src tests/
       displayName: 'Run Python tests with coverage'
-      
+
     - task: PublishCodeCoverageResults@1
       inputs:
         codeCoverageTool: Cobertura
         summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/coverage.xml'
-        
+
   - job: JavaScriptTests
     displayName: 'JavaScript Tests'
     steps:
     - task: NodeTool@0
       inputs:
         versionSpec: '16.x'
-        
+
     - script: npm ci
       displayName: 'Install npm dependencies'
-      
+
     - script: npm run test:unit
       displayName: 'Run JavaScript unit tests'
-      
+
     - script: npm run test:coverage
       displayName: 'Run JavaScript tests with coverage'
-      
+
     - task: PublishTestResults@2
       inputs:
         testResultsFormat: 'JUnit'

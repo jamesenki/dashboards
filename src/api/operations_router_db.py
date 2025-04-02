@@ -7,9 +7,11 @@ from typing import Dict, List, Optional
 from fastapi import APIRouter, Depends, HTTPException
 
 from src.db.adapters.operations_cache import OperationsDashboardCache
-from src.db.adapters.redis_cache import get_redis_cache, RedisCache
+from src.db.adapters.redis_cache import RedisCache, get_redis_cache
 from src.db.repository import DeviceRepository
-from src.services.vending_machine_operations_service_db import VendingMachineOperationsServiceDB
+from src.services.vending_machine_operations_service_db import (
+    VendingMachineOperationsServiceDB,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -18,7 +20,7 @@ router = APIRouter()
 
 def get_operations_service(
     device_repo: DeviceRepository = Depends(),
-    redis_cache: RedisCache = Depends(get_redis_cache)
+    redis_cache: RedisCache = Depends(get_redis_cache),
 ) -> VendingMachineOperationsServiceDB:
     """Dependency for getting operations service with database backing."""
     ops_cache = OperationsDashboardCache(redis_cache)
@@ -28,7 +30,7 @@ def get_operations_service(
 @router.get("/vending-machines/{vm_id}/operations/realtime")
 async def get_vm_realtime_operations(
     vm_id: str,
-    service: VendingMachineOperationsServiceDB = Depends(get_operations_service)
+    service: VendingMachineOperationsServiceDB = Depends(get_operations_service),
 ):
     """
     Get real-time operations data for a vending machine.
@@ -46,11 +48,11 @@ async def get_vm_realtime_operations(
 @router.get("/ice-cream-machines/{machine_id}/operations")
 async def get_ice_cream_operations(
     machine_id: str,
-    service: VendingMachineOperationsServiceDB = Depends(get_operations_service)
+    service: VendingMachineOperationsServiceDB = Depends(get_operations_service),
 ):
     """
     Get real-time operations data for an ice cream machine.
-    This uses the same database as vending machines but formats the data 
+    This uses the same database as vending machines but formats the data
     to match the original Angular implementation.
     """
     try:
@@ -64,7 +66,7 @@ async def get_ice_cream_operations(
 
 @router.get("/ice-cream-machines/fleet/operations")
 async def get_fleet_operations(
-    service: VendingMachineOperationsServiceDB = Depends(get_operations_service)
+    service: VendingMachineOperationsServiceDB = Depends(get_operations_service),
 ):
     """
     Get fleet-wide operations overview for all machines.
@@ -80,7 +82,7 @@ async def get_fleet_operations(
 async def update_vm_operations(
     vm_id: str,
     update_data: Dict,
-    service: VendingMachineOperationsServiceDB = Depends(get_operations_service)
+    service: VendingMachineOperationsServiceDB = Depends(get_operations_service),
 ):
     """
     Update operational data for a vending machine.

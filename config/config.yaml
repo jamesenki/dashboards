@@ -13,20 +13,20 @@ app:
 api:
   title: "IoTSphere API"
   version: "v1"
-  
+
   # API Endpoint Paths
   endpoints:
     base: "/api"
     docs: "/api/docs"         # Swagger UI endpoint
     redoc: "/api/redoc"       # ReDoc endpoint
     openapi: "/api/openapi.json"
-  
+
   # CORS Configuration
   cors:
-    allowed_origins: 
+    allowed_origins:
       - "http://localhost:4200"
       - "http://localhost:8080"
-    allowed_methods: 
+    allowed_methods:
       - "GET"
       - "POST"
       - "PUT"
@@ -49,11 +49,11 @@ database:
   credentials:
     username: "iotsphere"
     password: "iotsphere"     # In production, use ${DB_PASSWORD} to reference env var
-  
+
   # Connection retry settings
   retry_attempts: 3
   retry_delay: 5              # Seconds between retry attempts
-  
+
   # Conflict resolution
   conflict_strategy: "exception"  # Options: exception, update, ignore
 
@@ -82,7 +82,7 @@ services:
       metrics: "/metrics"
       reports: "/reports"
       dashboard: "/dashboard"
-    
+
     # Alert Configuration
     alerts:
       enabled: true
@@ -91,7 +91,7 @@ services:
         email: true
         slack: false
         webhook: false
-    
+
     # Model Health Monitoring
     model_health:
       enabled: true
@@ -112,7 +112,7 @@ services:
       - id: "tag4"
         name: "deprecated"
         color: "red"
-  
+
   # Predictions Service
   predictions:
     enabled: true
@@ -123,7 +123,7 @@ services:
       maintenance: "/maintenance"
       anomaly: "/anomaly"
       batch: "/batch"
-    
+
     # Model Configuration
     models:
       maintenance_prediction:
@@ -134,13 +134,13 @@ services:
         enabled: true
         version: "latest"
         sensitivity: 0.8
-  
+
   # Device Management Service
   device_management:
     enabled: true
     base_path: "/api/devices"
     default_poll_interval: 300  # Default poll interval in seconds
-    
+
     # Device Types Configuration
     device_types:
       water_heater:
@@ -176,7 +176,7 @@ testing:
     enabled: false            # Set to true to use mock data instead of real data
     data_path: "./mocks"      # Path to mock data files
     response_delay_ms: 200    # Simulate network delay for API calls (milliseconds)
-    
+
     # Mock Data Categories
     categories:
       models:
@@ -188,18 +188,18 @@ testing:
       metrics:
         path: "metrics"
         file_type: "json"
-    
+
     # Per-Service Mock Configuration
     services:
       device_data: true
       metrics: true
       predictions: true
-  
+
   # Test Database
   test_database:
     type: "sqlite"
     path: ":memory:"          # In-memory database for tests
-  
+
   # Test Coverage
   coverage:
     minimum_percentage: 85    # Minimum test coverage percentage required
@@ -212,19 +212,19 @@ security:
     token_expiration: 3600    # Token expiration time in seconds
     refresh_token_expiration: 604800  # 7 days
     password_hash_algorithm: "bcrypt"
-    
+
     # OAuth Settings
     oauth:
       enabled: false
       providers:
         google: false
         github: false
-    
+
     # Rate Limiting
     rate_limit:
       enabled: true
       requests_per_minute: 60
-  
+
   # HTTPS Configuration
   https:
     enabled: false            # Set to true in production
@@ -240,19 +240,19 @@ observability:
     rotation:
       max_size_mb: 10
       backup_count: 5
-    
+
     # Log Levels Per Component
     levels:
       api: "INFO"
       database: "WARNING"
       predictions: "INFO"
-    
+
   # Metrics Collection
   metrics:
     enabled: true
     prometheus_endpoint: "/metrics"
     collection_interval: 15   # Seconds
-    
+
   # Distributed Tracing
   tracing:
     enabled: false

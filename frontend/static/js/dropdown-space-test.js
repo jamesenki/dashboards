@@ -25,19 +25,19 @@
     // Helper function to get a proper string value (same as in original code)
     function getStringValue(value) {
         if (value === null || value === undefined) return 'Unknown';
-        
+
         // If it's already a string, just return it
         if (typeof value === 'string') return value;
-        
+
         // If it's an object with a value property (like an enum), get that
         if (typeof value === 'object' && value.value) return value.value;
-        
+
         // Otherwise convert to string
         return String(value);
     }
 
     console.log("=== UPDATED DROPDOWN FORMAT (SPACES) ===");
-    
+
     // Process machines with the updated format (spaces instead of pipes)
     machines.forEach((machine, index) => {
         // Updated format: spaces instead of pipes
@@ -47,7 +47,7 @@
             getStringValue(machine.location_type),
             getStringValue(machine.sub_location)
         ].join(' ');
-        
+
         console.log(`\nMachine ${index + 1}:`);
         console.log(`Machine ID: ${machine.id}`);
         console.log(`Individual Values:`);
@@ -73,10 +73,10 @@
             "name":"Name With Multiple Words",
             "location_business_name": null,
             "location_type":"OFFICE",
-            "sub_location":"HALLWAY" 
+            "sub_location":"HALLWAY"
         }
     ];
-    
+
     console.log("\n=== SPECIAL CASES WITH SPACES ===");
     specialCases.forEach((machine, index) => {
         const displayText = [
@@ -85,7 +85,7 @@
             getStringValue(machine.location_type),
             getStringValue(machine.sub_location)
         ].join(' ');
-        
+
         console.log(`\nSpecial Case ${index + 1}:`);
         console.log(`Formatted Output (with spaces):`);
         console.log(`"${displayText}"`);

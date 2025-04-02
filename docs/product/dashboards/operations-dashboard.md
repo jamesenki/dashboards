@@ -96,7 +96,7 @@ The Remote Operations Cockpit provides real-time operational status including:
 
 1. **Current Status Indicators**:
    - Machine Status (Online/Offline)
-   - POD Code 
+   - POD Code
    - Cup Detection status
    - Door status (POD bin and customer)
 

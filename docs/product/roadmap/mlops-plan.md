@@ -57,24 +57,24 @@ From our work with the codebase, we can see that:
 ```python
 class PredictionFeedbackService:
     """Service for collecting feedback on prediction accuracy"""
-    
-    def record_prediction_outcome(self, prediction_id: str, actual_outcome: dict, 
+
+    def record_prediction_outcome(self, prediction_id: str, actual_outcome: dict,
                                  feedback_source: str):
         """
         Record the actual outcome related to a prediction
-        
+
         Args:
             prediction_id: ID of the prediction to associate feedback with
             actual_outcome: What actually happened (compared to prediction)
             feedback_source: Source of feedback (technician, sensor, user)
         """
         # Implementation to store feedback in database
-        
-    def record_user_feedback(self, prediction_id: str, feedback_rating: int, 
+
+    def record_user_feedback(self, prediction_id: str, feedback_rating: int,
                            comments: str = None):
         """
         Record subjective user feedback on prediction quality
-        
+
         Args:
             prediction_id: ID of the prediction
             feedback_rating: Rating (1-5) of prediction accuracy
@@ -88,20 +88,20 @@ class PredictionFeedbackService:
 ```python
 class MLModelRegistry:
     """Registry for managing ML model versions and deployments"""
-    
-    def register_model(self, model_name: str, model_version: str, 
+
+    def register_model(self, model_name: str, model_version: str,
                      model_artifacts_path: str, metadata: dict = None):
         """Register a new model version"""
         # Implementation
-        
+
     def get_active_model(self, model_name: str, device_type: str = None):
         """Get currently active model for a prediction type"""
         # Implementation
-        
+
     def promote_model_to_production(self, model_name: str, model_version: str):
         """Promote a specific model version to production"""
         # Implementation
-        
+
     def rollback_model(self, model_name: str, to_version: str = None):
         """Rollback to previous version or specific version"""
         # Implementation
@@ -112,18 +112,18 @@ class MLModelRegistry:
 ```python
 class ModelTrainingPipeline:
     """Pipeline for automated model training"""
-    
-    def trigger_model_training(self, model_name: str, 
+
+    def trigger_model_training(self, model_name: str,
                              training_data_start_date: datetime = None,
                              training_data_end_date: datetime = None):
         """Trigger training for a specific model"""
         # Implementation
-        
-    def schedule_regular_training(self, model_name: str, 
+
+    def schedule_regular_training(self, model_name: str,
                                 schedule: str = "monthly"):
         """Set up regular training schedule"""
         # Implementation
-        
+
     def evaluate_model_performance(self, model_name: str, model_version: str,
                                  test_dataset_id: str = None):
         """Evaluate model performance on test dataset"""
@@ -135,17 +135,17 @@ class ModelTrainingPipeline:
 ```python
 class ModelPerformanceMonitor:
     """Monitor deployed model performance"""
-    
-    def track_prediction_metrics(self, prediction_type: str, 
+
+    def track_prediction_metrics(self, prediction_type: str,
                                metrics: dict, timestamp: datetime):
         """Record performance metrics for a prediction type"""
         # Implementation
-        
+
     def detect_model_drift(self, model_name: str):
         """Detect if model performance is degrading over time"""
         # Implementation
-        
-    def generate_performance_report(self, model_name: str = None, 
+
+    def generate_performance_report(self, model_name: str = None,
                                   time_period: str = "last_month"):
         """Generate performance report for stakeholders"""
         # Implementation
@@ -156,23 +156,23 @@ class ModelPerformanceMonitor:
 ```python
 class FeatureStore:
     """Centralized repository for ML features"""
-    
-    def store_device_features(self, device_id: str, features: dict, 
+
+    def store_device_features(self, device_id: str, features: dict,
                             timestamp: datetime):
         """Store features for a device at a point in time"""
         # Implementation
-        
-    def get_training_dataset(self, feature_names: list, 
+
+    def get_training_dataset(self, feature_names: list,
                            start_date: datetime, end_date: datetime,
                            device_type: str = None):
         """Get dataset for training"""
         # Implementation
-        
-    def get_device_features(self, device_id: str, 
+
+    def get_device_features(self, device_id: str,
                           feature_names: list = None,
                           time_range: tuple = None):
         """Get features for a specific device"""
-        # Implementation    
+        # Implementation
 ```
 
 ## Integration with Existing System

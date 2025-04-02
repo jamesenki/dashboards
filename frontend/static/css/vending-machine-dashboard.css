@@ -553,7 +553,7 @@ body.vending-machine-page main {
   .gauge-grid, .bottom-panels {
     grid-template-columns: repeat(2, 1fr);
   }
-  
+
   .machine-column {
     width: 200px;
   }
@@ -563,13 +563,13 @@ body.vending-machine-page main {
   .dashboard-layout {
     flex-direction: column;
   }
-  
+
   .machine-column {
     width: 100%;
     border-right: none;
     border-bottom: 1px solid #333;
   }
-  
+
   .status-bar {
     overflow-x: auto;
   }
@@ -579,11 +579,11 @@ body.vending-machine-page main {
   .gauge-grid, .bottom-panels {
     grid-template-columns: 1fr;
   }
-  
+
   .status-bar {
     flex-direction: column;
   }
-  
+
   .dashboard-tabs {
     overflow-x: auto;
   }

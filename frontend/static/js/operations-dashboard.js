@@ -9,7 +9,7 @@
 function initializeGauges() {
   // Get all gauge containers
   const gaugeContainers = document.querySelectorAll('.gauge-container');
-  
+
   // Add needle element to each gauge
   gaugeContainers.forEach(gauge => {
     // Create and append needle if it doesn't exist yet
@@ -18,7 +18,7 @@ function initializeGauges() {
       needle.className = 'gauge-needle';
       gauge.appendChild(needle);
     }
-    
+
     // Get the gauge value and update position
     const value = parseFloat(gauge.getAttribute('data-value'));
     updateGaugePosition(gauge.id, value);
@@ -33,13 +33,13 @@ function initializeGauges() {
 function updateGaugePosition(gaugeId, percentValue) {
   const gauge = document.getElementById(gaugeId);
   if (!gauge) return;
-  
+
   const needle = gauge.querySelector('.gauge-needle');
   if (!needle) return;
-  
+
   // Convert percentage to degrees (0% = -90deg, 100% = 90deg)
   const degrees = -90 + (percentValue * 1.8);
-  
+
   // Apply rotation
   needle.style.transform = `rotate(${degrees}deg)`;
 }
@@ -53,9 +53,9 @@ function updateInventoryData(inventoryData) {
     console.warn('Invalid inventory data received:', inventoryData);
     return;
   }
-  
+
   console.log('Updating inventory data:', inventoryData);
-  
+
   // Map of flavor names to their corresponding inventory items in the DOM
   const inventoryItemMap = {};
   document.querySelectorAll('.inventory-item').forEach(item => {
@@ -64,27 +64,27 @@ function updateInventoryData(inventoryData) {
       inventoryItemMap[label.textContent.trim()] = item;
     }
   });
-  
+
   // Update each inventory item
   inventoryData.forEach(item => {
     const domItem = inventoryItemMap[item.name];
     if (!domItem) return;
-    
+
     const level = item.level || 0;
     const maxCapacity = item.max_capacity || 100;
     const percentage = Math.min(100, (level / maxCapacity) * 100);
-    
+
     // Update value display
     const valueElement = domItem.querySelector('.inventory-value');
     if (valueElement) {
       valueElement.textContent = `${level}/${maxCapacity}`;
     }
-    
+
     // Update bar width
     const bar = domItem.querySelector('.inventory-bar');
     if (bar) {
       bar.style.width = `${percentage}%`;
-      
+
       // Update color based on level
       bar.className = 'inventory-bar';
       if (percentage <= 20) {
@@ -103,24 +103,24 @@ function updateInventoryData(inventoryData) {
  */
 function updateInventoryBars() {
   const inventoryBars = document.querySelectorAll('.inventory-bar');
-  
+
   inventoryBars.forEach(bar => {
     const container = bar.parentElement;
     const item = container.parentElement;
     const valueElement = item.querySelector('.inventory-value');
-    
+
     if (valueElement) {
       const valueText = valueElement.textContent;
       const match = valueText.match(/(\d+)[\/](\d+)/);
-      
+
       if (match && match[1] && match[2]) {
         const value = parseInt(match[1], 10);
         const maxValue = parseInt(match[2], 10);
         const percentage = Math.min(100, (value / maxValue) * 100);
-        
+
         // Animate width change
         bar.style.width = `${percentage}%`;
-        
+
         // Add color based on inventory level
         if (percentage <= 20) {
           bar.style.background = 'linear-gradient(to right, #e74c3c, #e74c3c)';
@@ -140,14 +140,14 @@ function updateInventoryBars() {
 function enhanceStatusIndicators() {
   // Style status values based on class
   const statusValues = document.querySelectorAll('.status-value');
-  
+
   statusValues.forEach(status => {
     // Add pulsing effect to statuses that need attention
-    if (status.classList.contains('offline') || 
+    if (status.classList.contains('offline') ||
         status.classList.contains('door-open') ||
         status.textContent.includes('Warning') ||
         status.textContent.includes('No')) {
-      
+
       status.classList.add('pulse-attention');
     }
   });
@@ -159,7 +159,7 @@ function enhanceStatusIndicators() {
 function setupDashboardInteractions() {
   // Make panels expandable on click
   const panels = document.querySelectorAll('.gauge-panel, .status-panel, .inventory-item');
-  
+
   panels.forEach(panel => {
     panel.addEventListener('click', function() {
       // Toggle expanded class
@@ -186,11 +186,11 @@ function setupAutoRefresh(machineId, interval = 30000) {
         clearInterval(refreshInterval);
         return;
       }
-      
+
       // Refresh the data
       loadRealtimeOperationsData(machineId);
     }, interval);
-    
+
     // Store the interval ID so it can be cleared when switching tabs
     window.activeRefreshInterval = refreshInterval;
   } else if (window.activeRefreshInterval) {
@@ -209,7 +209,7 @@ function initializeOperationsDashboard() {
   updateInventoryBars();
   enhanceStatusIndicators();
   setupDashboardInteractions();
-  
+
   // Get current machine ID for auto-refresh
   const machineSelector = document.getElementById('machine-selector');
   if (machineSelector && machineSelector.value) {
@@ -223,18 +223,18 @@ function initializeOperationsDashboard() {
  */
 function loadRealtimeOperationsData(machineId) {
   if (!machineId) return;
-  
+
   // Show loading state
   const statusItems = document.querySelectorAll('.status-value');
   statusItems.forEach(item => {
     item.textContent = 'Loading...';
   });
-  
+
   // Fetch data from API
   console.log(`Fetching operations data from: /api/ice-cream-machines/${machineId}/operations`);
   // Try to use MachineService if available, otherwise make direct fetch
   let dataPromise;
-  
+
   if (window.MachineService && typeof window.MachineService.getOperationsData === 'function') {
     console.log('Using MachineService to get operations data');
     dataPromise = window.MachineService.getOperationsData(machineId);
@@ -249,13 +249,13 @@ function loadRealtimeOperationsData(machineId) {
         return response.json();
       });
   }
-  
+
   dataPromise.then(data => {
     console.log('Operations data received:', data);
     // Update loading indicators with real data
     updateStatusIndicators(data);
     updateGaugeValues(data);
-    
+
     // Update inventory data
     if (data && data.ice_cream_inventory) {
       console.log('Updating inventory with:', data.ice_cream_inventory);
@@ -271,7 +271,7 @@ function loadRealtimeOperationsData(machineId) {
       ];
       updateInventoryData(defaultInventory);
     }
-    
+
     // Initialize components with new data
     setTimeout(() => {
       initializeGauges();
@@ -296,29 +296,29 @@ function updateStatusIndicators(data) {
   const cupDetectStatus = document.querySelector('.status-item:nth-child(3) .status-value');
   const podBinStatus = document.querySelector('.status-item:nth-child(4) .status-value');
   const customerDoorStatus = document.querySelector('.status-item:nth-child(5) .status-value');
-  
+
   // Update with real data if available
   if (data && data.status) {
     if (machineStatus) {
       machineStatus.textContent = data.status.machine || 'Online';
       machineStatus.className = 'status-value ' + (data.status.machine === 'Online' ? 'online' : 'offline');
     }
-    
+
     if (podCodeStatus) {
       podCodeStatus.textContent = data.status.pod_code || 'OK';
       podCodeStatus.className = 'status-value ' + (data.status.pod_code === 'OK' ? 'online' : 'offline');
     }
-    
+
     if (cupDetectStatus) {
       cupDetectStatus.textContent = data.status.cup_detect || 'Present';
       cupDetectStatus.className = 'status-value ' + (data.status.cup_detect === 'Present' ? 'online' : 'offline');
     }
-    
+
     if (podBinStatus) {
       podBinStatus.textContent = data.status.pod_bin || 'Closed';
       podBinStatus.className = 'status-value ' + (data.status.pod_bin === 'Closed' ? 'online' : 'offline');
     }
-    
+
     if (customerDoorStatus) {
       customerDoorStatus.textContent = data.status.customer_door || 'Closed';
       customerDoorStatus.className = 'status-value ' + (data.status.customer_door === 'Closed' ? 'online' : 'offline');
@@ -342,7 +342,7 @@ function updateGaugeValues(data) {
         assetHealthValue.textContent = data.gauges.asset_health_display || '75%';
       }
     }
-    
+
     // Freezer Temperature gauge
     const freezerTempGauge = document.getElementById('freezer-temp-gauge');
     if (freezerTempGauge && data.gauges.freezer_temp) {
@@ -352,7 +352,7 @@ function updateGaugeValues(data) {
         freezerTempValue.textContent = data.gauges.freezer_temp_display || '5 °F';
       }
     }
-    
+
     // Dispense Force gauge
     const dispenseForceGauge = document.getElementById('dispense-force-gauge');
     if (dispenseForceGauge && data.gauges.dispense_force) {
@@ -362,7 +362,7 @@ function updateGaugeValues(data) {
         dispenseForceValue.textContent = data.gauges.dispense_force_display || '48 lb';
       }
     }
-    
+
     // Cycle Time gauge
     const cycleTimeGauge = document.getElementById('cycle-time-gauge');
     if (cycleTimeGauge && data.gauges.cycle_time) {
@@ -385,7 +385,7 @@ function setErrorState() {
     item.textContent = 'Error';
     item.className = 'status-value offline';
   });
-  
+
   // Update gauge values to show default
   document.querySelectorAll('.gauge-value').forEach(gauge => {
     gauge.textContent = 'N/A';
@@ -405,7 +405,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
   });
-  
+
   // Initialize with default machine if available
   const machineSelector = document.getElementById('machine-selector');
   if (machineSelector && machineSelector.value) {

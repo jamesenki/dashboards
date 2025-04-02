@@ -23,18 +23,18 @@
     background-color: #1e1e1e;
     color: #ffffff;
   }
-  
+
   .dark-theme h2, .dark-theme h3 {
     color: #ffffff;
   }
-  
+
   /* Tab content container - parent for all tab contents */
   .tab-content-container {
     position: relative;
     width: 100%;
     overflow: hidden;
   }
-  
+
   /* Fix for tab display issues - ensure only one tab is visible at a time */
   .tab-content {
     display: none;
@@ -51,14 +51,14 @@
     /* Use containment for better isolation */
     contain: content;
   }
-  
+
   .tab-content.active {
     display: block;
     visibility: visible;
     opacity: 1;
     z-index: 10;
   }
-  
+
   /* Force proper isolation for inactive tabs - extreme measures */
   .tab-content-hidden {
     position: absolute !important;
@@ -76,43 +76,43 @@
     max-width: 0 !important;
     transform: translateX(-10000px) !important;
   }
-  
+
   /* Fix for tab button state */
   .tab-btn {
     opacity: 0.7;
     transition: opacity 0.3s;
   }
-  
+
   .tab-btn.active {
     opacity: 1;
     font-weight: bold;
     border-bottom: 2px solid #007bff;
   }
-  
+
   /* Fix for content positioning - prevent stacking */
   .tab-content-container {
     position: relative;
   }
-  
+
   .operations-dashboard {
     background-color: #1e1e1e;
     color: #ffffff;
     padding: 15px;
   }
-  
+
   .operations-dashboard h2,
   .operations-dashboard h3 {
     color: #ffffff;
     margin-bottom: 10px;
   }
-  
+
   .status-grid {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     gap: 10px;
     margin-bottom: 15px;
   }
-  
+
   .status-item {
     background-color: #333;
     border-radius: 5px;
@@ -120,30 +120,30 @@
     text-align: center;
     box-shadow: 0 1px 2px rgba(0,0,0,0.2);
   }
-  
+
   .status-label {
     font-size: 0.9em;
     margin-bottom: 5px;
     color: #aaa;
   }
-  
+
   .status-value {
     font-weight: bold;
     font-size: 1.1em;
   }
-  
+
   .status-value.online {
     color: #2ecc71;
   }
-  
+
   .status-value.offline {
     color: #e74c3c;
   }
-  
+
   .status-value.warning {
     color: #f39c12;
   }
-  
+
   /* Gauge styling */
   .gauge-grid {
     display: grid;
@@ -151,7 +151,7 @@
     gap: 15px;
     margin-top: 15px;
   }
-  
+
   .gauge-container {
     position: relative;
     width: 140px;
@@ -162,20 +162,20 @@
     border-radius: 140px 140px 0 0;
     border: 2px solid #444;
   }
-  
+
   .gauge-container::before {
     content: '';
     position: absolute;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, 
-        rgba(255, 0, 0, 0.3) 0%, 
-        rgba(255, 255, 0, 0.3) 50%, 
+    background: linear-gradient(90deg,
+        rgba(255, 0, 0, 0.3) 0%,
+        rgba(255, 255, 0, 0.3) 50%,
         rgba(0, 255, 0, 0.3) 100%);
     opacity: 0.5;
     border-radius: 140px 140px 0 0;
   }
-  
+
   .gauge-needle {
     position: absolute;
     bottom: 0;
@@ -190,7 +190,7 @@
     box-shadow: 0 0 4px rgba(255, 109, 0, 0.7);
     border-radius: 4px 4px 0 0;
   }
-  
+
   .gauge-needle::after {
     content: '';
     position: absolute;
@@ -204,7 +204,7 @@
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
     z-index: 11;
   }
-  
+
   .gauge-panel {
     border: 1px solid #444;
     border-radius: 8px;
@@ -212,7 +212,7 @@
     background-color: #222;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   }
-  
+
   .gauge-title {
     text-align: center;
     font-weight: bold;
@@ -220,7 +220,7 @@
     color: #ddd;
     font-size: 16px;
   }
-  
+
   .gauge-value {
     text-align: center;
     font-size: 22px;
@@ -228,14 +228,14 @@
     margin-top: 10px;
     color: #4fd1c5;
   }
-  
+
   /* Tab styling */
   .tab-navigation {
     display: flex;
     margin-bottom: 20px;
     border-bottom: 1px solid #444;
   }
-  
+
   .tab-btn {
     padding: 10px 20px;
     background-color: #2d2d2d;
@@ -246,24 +246,24 @@
     cursor: pointer;
     margin-right: 2px;
   }
-  
+
   .tab-btn.active {
     background-color: #3d3d3d;
     color: #fff;
     border-bottom: 3px solid #4fd1c5;
   }
-  
+
   .tab-content {
     display: none;
     padding: 20px;
     background-color: #1e1e1e;
     border-radius: 0 0 5px 5px;
   }
-  
+
   .tab-content.active {
     display: block;
   }
-  
+
   .error-message {
     background-color: #e74c3c;
     color: white;
@@ -292,19 +292,19 @@
     <button id="predictions-tab-btn" class="tab-btn">Predictions</button>
     <button id="history-tab-btn" class="tab-btn">History</button>
   </div>
-  
+
   <!-- Tab Content -->
   <div class="tab-content-container">
     <!-- Details Tab Content -->
     <div id="details-content" class="tab-content active">
       <div id="water-heater-detail"></div>
     </div>
-    
+
     <!-- Operations Tab Content -->
     <div id="operations-content" class="tab-content">
       <div id="water-heater-operations-dashboard"></div>
     </div>
-    
+
     <!-- Predictions Tab Content -->
     <div id="predictions-content" class="tab-content">
       <div id="water-heater-predictions-dashboard">
@@ -318,7 +318,7 @@
               </button>
             </div>
           </div>
-          
+
           <div class="prediction-content">
             <div id="lifespan-loading" class="text-center py-4">
               <div class="spinner-border text-primary" role="status">
@@ -326,12 +326,12 @@
               </div>
               <p class="mt-2">Analyzing water heater lifespan...</p>
             </div>
-            
+
             <div id="lifespan-error" class="alert alert-warning" style="display: none;">
               <i class="fas fa-exclamation-triangle"></i>
               <span id="lifespan-error-message">Unable to generate lifespan prediction at this time.</span>
             </div>
-            
+
             <!-- Lifespan Prediction Card -->
             <div id="lifespan-prediction-card" class="prediction-card" style="display: none;">
               <!-- Lifespan Score Header -->
@@ -347,7 +347,7 @@
                   <p class="prediction-summary" id="lifespan-summary">Analyzing remaining lifespan...</p>
                 </div>
               </div>
-              
+
               <!-- Main Grid Container for Content -->
               <div class="lifespan-grid-container">
                 <!-- Left Column: Lifespan Details -->
@@ -373,7 +373,7 @@
                       </div>
                     </div>
                   </div>
-                  
+
                   <!-- Contributing Factors -->
                   <div class="factors-container grid-card">
                     <h5><i class="fas fa-list-ul"></i> Contributing Factors</h5>
@@ -382,7 +382,7 @@
                     </ul>
                   </div>
                 </div>
-                
+
                 <!-- Right Column: Recommended Actions -->
                 <div class="lifespan-grid-column">
                   <div class="lifespan-actions-card grid-card">
@@ -407,7 +407,7 @@
               </button>
             </div>
           </div>
-          
+
           <div class="prediction-content">
             <!-- Loading State -->
             <div id="anomaly-loading" class="text-center py-4">
@@ -416,13 +416,13 @@
               </div>
               <p class="mt-2">Analyzing system for anomalies...</p>
             </div>
-            
+
             <!-- Error State -->
             <div id="anomaly-error" class="alert alert-warning" style="display: none;">
               <i class="fas fa-exclamation-triangle"></i>
               <span id="anomaly-error-message">Unable to perform anomaly detection at this time.</span>
             </div>
-            
+
             <!-- Anomaly Detection Card -->
             <div id="anomaly-detection-card" class="prediction-card" style="display: none;">
               <!-- Anomaly Status Header -->
@@ -439,7 +439,7 @@
                   <span id="anomaly-confidence" class="confidence-indicator">95% confidence</span>
                 </div>
               </div>
-              
+
               <!-- Main Grid Container for Content -->
               <div class="anomaly-grid-container">
                 <!-- Left Column: Detected Anomalies -->
@@ -451,7 +451,7 @@
                     </div>
                   </div>
                 </div>
-                
+
                 <!-- Right Column: Trend Analysis and Recommendations -->
                 <div class="anomaly-grid-column">
                   <!-- Trend Analysis -->
@@ -461,7 +461,7 @@
                       <!-- Will be populated by JavaScript -->
                     </div>
                   </div>
-                  
+
                   <!-- Recommendations -->
                   <div class="anomaly-recommendations-card grid-card">
                     <h5><i class="fas fa-lightbulb"></i> Recommended Actions</h5>
@@ -485,7 +485,7 @@
               </button>
             </div>
           </div>
-          
+
           <div class="prediction-content">
             <!-- Loading State -->
             <div id="usage-loading" class="text-center py-4">
@@ -494,13 +494,13 @@
               </div>
               <p class="mt-2">Analyzing usage patterns...</p>
             </div>
-            
+
             <!-- Error State -->
             <div id="usage-error" class="alert alert-warning" style="display: none;">
               <i class="fas fa-exclamation-triangle"></i>
               <span id="usage-error-message">Unable to analyze usage patterns at this time.</span>
             </div>
-            
+
             <!-- Usage Patterns Card -->
             <div id="usage-patterns-card" class="prediction-card" style="display: none;">
               <!-- Usage Classification Header with Visual Badge -->
@@ -513,7 +513,7 @@
                   <p id="usage-summary" class="usage-summary">Analysis of recent usage patterns shows normal operational behavior.</p>
                 </div>
               </div>
-              
+
               <!-- Main Grid Container for Content -->
               <div class="usage-grid-container">
                 <!-- Left Column: Component Impacts -->
@@ -525,7 +525,7 @@
                     </div>
                   </div>
                 </div>
-                
+
                 <!-- Right Column: Optimization Recommendations -->
                 <div class="usage-grid-column">
                   <div class="optimization-recommendations-card grid-card">
@@ -550,7 +550,7 @@
               </button>
             </div>
           </div>
-          
+
           <div class="prediction-content">
             <!-- Loading State -->
             <div id="multi-factor-loading" class="text-center py-4">
@@ -559,13 +559,13 @@
               </div>
               <p class="mt-2">Calculating multi-factor health score...</p>
             </div>
-            
+
             <!-- Error State -->
             <div id="multi-factor-error" class="alert alert-warning" style="display: none;">
               <i class="fas fa-exclamation-triangle"></i>
               <span id="multi-factor-error-message">Unable to generate multi-factor analysis at this time.</span>
             </div>
-            
+
             <!-- Multi-Factor Card -->
             <div id="multi-factor-card" class="prediction-card" style="display: none;">
               <!-- Health Score Header -->
@@ -583,7 +583,7 @@
                   <p id="multi-factor-summary" class="health-summary">Your water heater is operating within optimal parameters.</p>
                 </div>
               </div>
-              
+
               <!-- Main Grid Container for Content -->
               <div class="multi-factor-grid-container">
                 <!-- Left Column -->
@@ -595,14 +595,14 @@
                       <!-- Will be populated by JavaScript -->
                     </div>
                   </div>
-                  
+
                   <!-- Environmental Impact -->
                   <div class="environmental-impact-card grid-card">
                     <h5><i class="fas fa-leaf"></i> Environmental Impact</h5>
                     <p id="environmental-impact-text" class="impact-text">The current operational pattern has a moderate environmental impact.</p>
                   </div>
                 </div>
-                
+
                 <!-- Right Column -->
                 <div class="multi-factor-grid-column">
                   <!-- Component Interactions -->
@@ -614,13 +614,13 @@
                   </div>
                 </div>
               </div>
-              
+
               <!-- Overall Evaluation -->
               <div class="overall-evaluation">
                 <h5>Overall Evaluation</h5>
                 <p id="overall-evaluation-text" class="evaluation-text">Based on all factors analyzed, this water heater is performing at 85% of optimal efficiency.</p>
               </div>
-              
+
               <!-- Recommendations -->
               <div class="recommendations-section">
                 <h5>Recommended Actions</h5>
@@ -633,12 +633,12 @@
         </div>
       </div>
     </div>
-    
+
     <!-- History Tab Content -->
     <div id="history-content" class="tab-content">
       <div id="water-heater-history-dashboard">
         <div id="history-error" class="error-message"></div>
-        
+
         <div class="dashboard-controls">
           <h2>Historical Data</h2>
           <div class="day-selector-container">
@@ -647,7 +647,7 @@
             <button class="day-selector" data-days="30">Last 30 Days</button>
           </div>
         </div>
-        
+
         <div class="chart-section">
           <div class="chart-panel">
             <div class="chart-loading">
@@ -659,7 +659,7 @@
             </div>
           </div>
         </div>
-        
+
         <div class="chart-section">
           <div class="chart-panel">
             <div class="chart-loading">
@@ -671,7 +671,7 @@
             </div>
           </div>
         </div>
-        
+
         <div class="chart-section">
           <div class="chart-panel">
             <div class="chart-loading">
@@ -695,17 +695,17 @@
     // Get heater ID from URL
     const urlParts = window.location.pathname.split('/');
     const heaterId = urlParts[urlParts.length - 1];
-    
+
     console.log('Water Heater Detail page loaded with ID:', heaterId);
-    
+
     // Check if we have a valid heater ID
     if (!heaterId || heaterId === '' || heaterId === 'water-heaters') {
         console.error('Invalid heater ID from URL:', heaterId);
-        document.getElementById('water-heater-detail').innerHTML = 
+        document.getElementById('water-heater-detail').innerHTML =
             '<div class="error-message">Error: Invalid water heater ID. Please return to the <a href="/water-heaters">water heater list</a>.</div>';
         return;
     }
-    
+
     // Set up data loading state trackers
     window.dataLoadingState = {
       detail: false,
@@ -713,27 +713,27 @@
       history: false,
       predictions: false
     };
-    
+
     // Initialize details view with proper error handling
     try {
         window.waterHeaterDetail = new WaterHeaterDetail('water-heater-detail', heaterId);
         window.dataLoadingState.detail = true;
     } catch (error) {
         console.error('Failed to initialize water heater detail component:', error);
-        document.getElementById('water-heater-detail').innerHTML = 
+        document.getElementById('water-heater-detail').innerHTML =
             `<div class="error-message">Error initializing water heater detail view: ${error.message}</div>`;
     }
-    
+
     // Pre-initialize all dashboards to start data loading
     // Initialize predictions dashboard immediately on page load
     if (!window.waterHeaterPredictionsDashboard) {
       console.log('Pre-initializing predictions dashboard');
       window.waterHeaterPredictionsDashboard = new WaterHeaterPredictionsDashboard('water-heater-predictions-dashboard', heaterId);
     }
-    
+
     // Store water heater ID in body data attribute for components to access
     document.body.setAttribute('data-heater-id', heaterId);
-    
+
     // Initialize TabManager if available
     if (window.tabManager && !window.tabManager.initialized) {
       console.log('Initializing TabManager from detail.html');
@@ -741,21 +741,21 @@
     } else if (!window.tabManager) {
       console.error('TabManager not available - ensure tab-manager.js is loaded first');
     }
-    
+
     // Listen for tab change events directly
     document.addEventListener('tabmanager:tabchanged', (event) => {
       const tabId = event.detail.newTabId;
       const previousTabId = event.detail.previousTabId;
       console.log(`Tab changed to: ${tabId} (previous: ${previousTabId || 'none'})`);
-      
+
       // Load data for the newly activated tab
       loadTabData(tabId);
     });
-    
+
     // If we're in a test environment, we want to default to the predictions tab
     const isTestEnvironment = window.location.href.includes('localhost:8006');
     const defaultTab = isTestEnvironment ? 'predictions' : 'details';
-    
+
     // If there's no hash in the URL, activate the default tab
     if (!window.location.hash && defaultTab) {
       setTimeout(() => {
@@ -765,7 +765,7 @@
         }
       }, 100);
     }
-    
+
     /**
      * Helper function to make test elements visible for testing purposes
      * This is primarily used for the prediction tab to ensure test visibility
@@ -774,24 +774,24 @@
       // Function to check if predictions tab is active and make elements visible
       const visibilityCheck = () => {
         // Only make prediction elements visible if on the predictions tab
-        if (window.location.hash === '#predictions' || 
+        if (window.location.hash === '#predictions' ||
             document.getElementById('predictions-tab-btn')?.classList.contains('active')) {
           console.log('On predictions tab - ensuring prediction cards are visible for testing');
-          
+
           // Make elements visible for testing if the dashboard exists
-          if (window.waterHeaterPredictionsDashboard && 
+          if (window.waterHeaterPredictionsDashboard &&
               typeof window.waterHeaterPredictionsDashboard.makeElementsVisibleForTests === 'function') {
             window.waterHeaterPredictionsDashboard.makeElementsVisibleForTests();
           }
         }
       };
-      
+
       // Try multiple times to ensure visibility - important for testing
       setTimeout(visibilityCheck, 500);
       setTimeout(visibilityCheck, 1000);
       setTimeout(visibilityCheck, 2000);
     }
-    
+
     /**
      * Initialize or load dashboards when a tab is activated
      * This function is called by the TabManager when a tab changes
@@ -799,7 +799,7 @@
      */
     function loadTabData(tabName) {
       console.log(`Loading data for tab: ${tabName}`);
-      
+
       // Handle the specific tab initialization
       if (tabName === 'operations') {
         // Initialize operations dashboard if not already done
@@ -807,7 +807,7 @@
           console.log('Initializing operations dashboard');
           window.waterHeaterOperationsDashboard = new WaterHeaterOperationsDashboard(heaterId, 'operations-content');
           window.dataLoadingState.operations = true;
-          
+
           // Register the operations dashboard with the tab manager
           if (window.tabManager && window.waterHeaterOperationsDashboard) {
             window.tabManager.registerComponent('operations', window.waterHeaterOperationsDashboard, 'operations-dashboard');
@@ -820,13 +820,13 @@
           console.log('Initializing history dashboard');
           window.waterHeaterHistoryDashboard = new WaterHeaterHistoryDashboard(heaterId);
           window.dataLoadingState.history = true;
-          
+
           // Register the history dashboard with the tab manager
           if (window.tabManager && window.waterHeaterHistoryDashboard) {
             window.tabManager.registerComponent('history', window.waterHeaterHistoryDashboard, 'history-dashboard');
           }
         }
-        
+
         // Check if the history dashboard implements the reload method
         // This is part of the TabManager component interface for reloading data when a tab is activated
         if (window.waterHeaterHistoryDashboard && typeof window.waterHeaterHistoryDashboard.reload === 'function') {
@@ -839,12 +839,12 @@
           console.log('Initializing predictions dashboard');
           window.waterHeaterPredictionsDashboard = new WaterHeaterPredictionsDashboard('water-heater-predictions-dashboard', heaterId);
           window.dataLoadingState.predictions = true;
-          
+
           // Register the predictions dashboard with the tab manager
           if (window.tabManager && window.waterHeaterPredictionsDashboard) {
             window.tabManager.registerComponent('predictions', window.waterHeaterPredictionsDashboard, 'predictions-dashboard');
           }
-          
+
           // Wait for dashboard to initialize, then do sequential reload
           setTimeout(() => {
             if (window.waterHeaterPredictionsDashboard) {
@@ -858,7 +858,7 @@
           console.log('Predictions tab activated - starting sequential reload of prediction cards');
           window.waterHeaterPredictionsDashboard.sequentialReload();
         }
-        
+
         // Add specific logic to ensure test visibility ONLY when on predictions tab
         setTimeout(() => {
           if (window.waterHeaterPredictionsDashboard && tabName === 'predictions') {
@@ -866,7 +866,7 @@
             window.waterHeaterPredictionsDashboard.makeElementsVisibleForTests();
           }
         }, 1000);
-        
+
         // Attempt multiple times to ensure visibility (for robustness) ONLY when on predictions tab
         setTimeout(() => {
           if (window.waterHeaterPredictionsDashboard && tabName === 'predictions') {
@@ -878,7 +878,7 @@
         console.log('Details tab activated');
       }
     }
-  
+
     // Initialize any components that should be loaded immediately
     // Predictions dashboard is loaded on page load to start fetching data
     if (!window.waterHeaterPredictionsDashboard) {

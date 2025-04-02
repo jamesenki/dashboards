@@ -14,7 +14,7 @@ database:
 services:
   water_heater:
     use_mock_data: false  # Try to use real database first, but fallback allowed
-  
+
   # Development specific monitoring settings
   monitoring:
     use_mock_data: false  # Try to use real database first
@@ -23,7 +23,7 @@ services:
     model_health:
       drift_threshold: 0.20   # More permissive drift threshold for development
       accuracy_threshold: 0.80  # More permissive accuracy threshold for development
-    
+
   predictions:
     model_cache_ttl: 300  # Cache prediction models for 5 minutes in development
     enable_development_models: true

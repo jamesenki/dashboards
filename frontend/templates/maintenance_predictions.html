@@ -8,7 +8,7 @@
             </button>
         </div>
     </div>
-    
+
     <div class="prediction-list">
         <div id="prediction-loading" class="text-center py-4">
             <div class="spinner-border text-primary" role="status">
@@ -16,17 +16,17 @@
             </div>
             <p class="mt-2">Analyzing maintenance needs...</p>
         </div>
-        
+
         <div id="prediction-error" class="alert alert-warning" style="display: none;">
             <i class="fas fa-exclamation-triangle"></i>
             <span id="prediction-error-message">Unable to generate predictions at this time.</span>
         </div>
-        
+
         <div id="prediction-empty" class="text-center py-4" style="display: none;">
             <i class="fas fa-check-circle text-success fa-3x"></i>
             <p class="mt-2">No maintenance actions required at this time.</p>
         </div>
-        
+
         <div id="prediction-results" style="display: none;">
             <!-- Component Failure Prediction Card -->
             <div class="prediction-card" id="component-failure-card">
@@ -45,7 +45,7 @@
                 </div>
                 <div class="prediction-actions" id="component-failure-actions"></div>
             </div>
-            
+
             <!-- Descaling Requirement Prediction Card -->
             <div class="prediction-card" id="descaling-requirement-card">
                 <div class="prediction-card-header">
@@ -76,7 +76,7 @@
                 </div>
                 <div class="prediction-actions" id="descaling-requirement-actions"></div>
             </div>
-            
+
             <!-- Action Timeline -->
             <div class="prediction-card" id="action-timeline-card">
                 <div class="prediction-card-header">

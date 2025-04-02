@@ -29,7 +29,7 @@ async def add_device(
     # Set last_seen to now if device is online
     if device.status == DeviceStatus.ONLINE:
         device.last_seen = datetime.now()
-    
+
     return await repo.create_device(device)
 
 
@@ -55,7 +55,7 @@ async def update_device_by_id(
     # Update last_seen if status is being changed to online
     if "status" in device_data and device_data["status"] == DeviceStatus.ONLINE:
         device_data["last_seen"] = datetime.now()
-    
+
     device = await repo.update_device(device_id, device_data)
     if not device:
         raise HTTPException(status_code=404, detail="Device not found")
@@ -100,7 +100,7 @@ async def get_device_readings(
     device = await repo.get_device(device_id)
     if not device:
         raise HTTPException(status_code=404, detail="Device not found")
-    
+
     return await repo.get_device_readings(
         device_id=device_id,
         metric_name=metric,

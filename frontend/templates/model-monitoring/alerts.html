@@ -11,34 +11,34 @@
         background-color: #000000 !important;
         color: #e1e1e1 !important;
     }
-        
+
         .alert-severity-critical {
             color: #ff5252;
             font-weight: bold;
         }
-        
+
         .alert-severity-warning {
             color: #ffbb33;
             font-weight: bold;
         }
-        
+
         .alert-severity-info {
             color: #33b5e5;
             font-weight: bold;
         }
-        
+
         .alert-status-active {
             color: #ff5252;
         }
-        
+
         .alert-status-acknowledged {
             color: #ffbb33;
         }
-        
+
         .alert-status-resolved {
             color: #4CAF50;
         }
-        
+
         #alerts-table {
             width: 100%;
             border-collapse: collapse;
@@ -47,23 +47,23 @@
             border-radius: 5px;
             overflow: hidden;
         }
-        
+
         #alerts-table th,
         #alerts-table td {
             padding: 12px 15px;
             text-align: left;
             border-bottom: 1px solid #333;
         }
-        
+
         #alerts-table thead {
             background-color: #111111;
             color: #ffffff;
         }
-        
+
         #alerts-table tbody tr:hover {
             background-color: #222222;
         }
-        
+
         #filter-controls {
             display: flex;
             flex-wrap: wrap;
@@ -73,7 +73,7 @@
             background-color: #111111;
             border-radius: 5px;
         }
-        
+
         #filter-controls select {
             background-color: #111111;
             color: #e1e1e1;
@@ -81,18 +81,18 @@
             border-radius: 4px;
             padding: 8px 12px;
         }
-        
+
         .filter-group {
             display: flex;
             flex-direction: column;
             gap: 5px;
         }
-        
+
         .filter-group label {
             font-size: 0.9rem;
             color: #bbb;
         }
-        
+
         .alert-action-btn {
             background-color: #222;
             color: #e1e1e1;
@@ -103,11 +103,11 @@
             cursor: pointer;
             font-size: 0.8rem;
         }
-        
+
         .alert-action-btn:hover {
             background-color: #333;
         }
-        
+
         /* Alert details modal styling */
         #alert-details-modal {
             display: none;
@@ -121,7 +121,7 @@
             justify-content: center;
             align-items: center;
         }
-        
+
         .alert-details-content {
             background-color: #000000;
             color: #e1e1e1;
@@ -132,7 +132,7 @@
             max-height: 90vh;
             overflow-y: auto;
         }
-        
+
         .alert-details-header {
             display: flex;
             justify-content: space-between;
@@ -141,16 +141,16 @@
             border-bottom: 1px solid #333;
             background-color: #111111;
         }
-        
+
         .alert-details-header h2 {
             margin: 0;
             color: #ffffff;
         }
-        
+
         .alert-details-body {
             padding: 20px;
         }
-        
+
         .alert-details-group {
             margin-bottom: 15px;
             padding: 10px;
@@ -158,18 +158,18 @@
             border-radius: 4px;
             border: 1px solid #222;
         }
-        
+
         .alert-metric-value {
             font-size: 1.5rem;
             color: #ff5252;
             font-weight: bold;
         }
-        
+
         .alert-metric-threshold {
             font-size: 1.25rem;
             color: #bbb;
         }
-        
+
         .alert-details-footer {
             display: flex;
             justify-content: flex-end;
@@ -177,7 +177,7 @@
             padding: 15px;
             border-top: 1px solid #333;
         }
-        
+
         .no-alerts-message {
             text-align: center;
             padding: 30px;
@@ -197,11 +197,11 @@
 {% endblock %}
 
 {% block content %}
-            
+
             <div id="alerts-container">
                 <h2>Model Alerts</h2>
                 <p>Review and manage alerts across all monitored models.</p>
-                
+
                 <div id="filter-controls">
                     <div class="filter-group">
                         <label for="severity-filter">Severity:</label>
@@ -212,7 +212,7 @@
                             <option value="info">Info</option>
                         </select>
                     </div>
-                    
+
                     <div class="filter-group">
                         <label for="status-filter">Status:</label>
                         <select id="status-filter" onchange="filterAlerts()">
@@ -222,7 +222,7 @@
                             <option value="resolved">Resolved</option>
                         </select>
                     </div>
-                    
+
                     <div class="filter-group">
                         <label for="model-filter">Model:</label>
                         <select id="model-filter" onchange="filterAlerts()">
@@ -230,7 +230,7 @@
                             <!-- Will be populated dynamically -->
                         </select>
                     </div>
-                    
+
                     <div class="filter-group">
                         <label for="date-range">Time Range:</label>
                         <select id="date-range" onchange="filterAlerts()">
@@ -241,7 +241,7 @@
                         </select>
                     </div>
                 </div>
-                
+
                 <table id="alerts-table">
                     <thead>
                         <tr>
@@ -260,7 +260,7 @@
                         <!-- Will be populated dynamically -->
                     </tbody>
                 </table>
-                
+
                 <!-- Alert details modal -->
                 <div id="alert-details-modal">
                     <div class="alert-details-content">
@@ -286,33 +286,33 @@
         // Global state
         let allAlerts = [];
         let selectedAlert = null;
-        
+
         // Document ready
         document.addEventListener('DOMContentLoaded', function() {
             loadAlerts();
         });
-        
+
         // Load all alerts from the API
         function loadAlerts() {
             // Show loading indicator
             document.getElementById('alerts-tbody').innerHTML = '<tr><td colspan="9" style="text-align: center;">Loading alerts...</td></tr>';
-            
+
             fetch(`/api/monitoring/alerts`)
                 .then(response => response.json())
                 .then(alerts => {
                     allAlerts = alerts;
-                    
+
                     // Populate model filter dropdown
                     populateModelFilter(alerts);
-                    
+
                     // Display alerts
                     displayAlerts(alerts);
                 })
                 .catch(error => {
                     console.error('Error loading alerts:', error);
-                    document.getElementById('alerts-tbody').innerHTML = 
+                    document.getElementById('alerts-tbody').innerHTML =
                         '<tr><td colspan="9" style="text-align: center; color: #ff5252;">Error loading alerts. Please try again.</td></tr>';
-                    
+
                     // For demonstration, load sample data if API fails
                     setTimeout(() => {
                         const sampleAlerts = getSampleAlertData();
@@ -322,16 +322,16 @@
                     }, 1000);
                 });
         }
-        
+
         // Display alerts in the table
         function displayAlerts(alerts) {
             const tbody = document.getElementById('alerts-tbody');
-            
+
             if (!alerts || alerts.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="9" class="no-alerts-message">No alerts found matching the current filters.</td></tr>';
                 return;
             }
-            
+
             let html = '';
             alerts.forEach(alert => {
                 html += `
@@ -352,39 +352,39 @@
                     </tr>
                 `;
             });
-            
+
             tbody.innerHTML = html;
         }
-        
+
         // Format metric names for display
         function formatMetricName(metric) {
             return metric.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
         }
-        
+
         // Format timestamp for display
         function formatTimestamp(timestamp) {
             const date = new Date(timestamp);
             return date.toLocaleString();
         }
-        
+
         // Populate model filter dropdown
         function populateModelFilter(alerts) {
             const modelFilter = document.getElementById('model-filter');
-            
+
             // Clear existing options except the first one
             while (modelFilter.options.length > 1) {
                 modelFilter.remove(1);
             }
-            
+
             // Get unique models
             const uniqueModels = [...new Set(alerts.map(alert => alert.model_id))];
             const modelNames = {};
-            
+
             // Get model names
             alerts.forEach(alert => {
                 modelNames[alert.model_id] = alert.model_name;
             });
-            
+
             // Add model options
             uniqueModels.forEach(modelId => {
                 const option = document.createElement('option');
@@ -393,36 +393,36 @@
                 modelFilter.appendChild(option);
             });
         }
-        
+
         // Filter alerts based on selections
         function filterAlerts() {
             const severityFilter = document.getElementById('severity-filter').value;
             const statusFilter = document.getElementById('status-filter').value;
             const modelFilter = document.getElementById('model-filter').value;
             const dateRangeFilter = document.getElementById('date-range').value;
-            
+
             let filteredAlerts = [...allAlerts];
-            
+
             // Apply severity filter
             if (severityFilter !== 'all') {
                 filteredAlerts = filteredAlerts.filter(alert => alert.severity === severityFilter);
             }
-            
+
             // Apply status filter
             if (statusFilter !== 'all') {
                 filteredAlerts = filteredAlerts.filter(alert => alert.status === statusFilter);
             }
-            
+
             // Apply model filter
             if (modelFilter !== 'all') {
                 filteredAlerts = filteredAlerts.filter(alert => alert.model_id === modelFilter);
             }
-            
+
             // Apply date range filter
             if (dateRangeFilter !== 'all') {
                 const now = new Date();
                 let cutoffDate;
-                
+
                 switch (dateRangeFilter) {
                     case '24h':
                         cutoffDate = new Date(now.getTime() - 24 * 60 * 60 * 1000);
@@ -434,28 +434,28 @@
                         cutoffDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
                         break;
                 }
-                
+
                 filteredAlerts = filteredAlerts.filter(alert => new Date(alert.timestamp) >= cutoffDate);
             }
-            
+
             // Update display
             displayAlerts(filteredAlerts);
         }
-        
+
         // View alert details
         function viewAlertDetails(alertId) {
             selectedAlert = allAlerts.find(alert => alert.id === alertId);
-            
+
             if (!selectedAlert) {
                 console.error(`Alert with ID ${alertId} not found`);
                 return;
             }
-            
+
             // Populate alert details
             const detailsBody = document.getElementById('alert-details-body');
-            
+
             const metricValueColor = selectedAlert.value > selectedAlert.threshold ? '#ff5252' : '#4CAF50';
-            
+
             detailsBody.innerHTML = `
                 <div class="alert-details-group">
                     <h3 style="margin-top: 0; color: #7cc17d;">Alert Information</h3>
@@ -464,14 +464,14 @@
                     <p><strong style="color: #bbb;">Status:</strong> <span class="alert-status-${selectedAlert.status}">${selectedAlert.status}</span></p>
                     <p><strong style="color: #bbb;">Detected:</strong> ${formatTimestamp(selectedAlert.timestamp)}</p>
                 </div>
-                
+
                 <div class="alert-details-group">
                     <h3 style="margin-top: 0; color: #7cc17d;">Model Information</h3>
                     <p><strong style="color: #bbb;">Model:</strong> ${selectedAlert.model_name}</p>
                     <p><strong style="color: #bbb;">Model ID:</strong> ${selectedAlert.model_id}</p>
                     <p><strong style="color: #bbb;">Version:</strong> ${selectedAlert.version}</p>
                 </div>
-                
+
                 <div class="alert-details-group">
                     <h3 style="margin-top: 0; color: #7cc17d;">Metric Details</h3>
                     <p><strong style="color: #bbb;">Metric:</strong> ${formatMetricName(selectedAlert.metric)}</p>
@@ -488,35 +488,35 @@
                     </div>
                 </div>
             `;
-            
+
             // Configure action buttons
             const acknowledgeBtn = document.getElementById('acknowledge-btn');
             const resolveBtn = document.getElementById('resolve-btn');
-            
+
             if (selectedAlert.status === 'active') {
                 acknowledgeBtn.style.display = 'block';
                 acknowledgeBtn.onclick = () => acknowledgeAlert(selectedAlert.id, true);
             } else {
                 acknowledgeBtn.style.display = 'none';
             }
-            
+
             if (selectedAlert.status !== 'resolved') {
                 resolveBtn.style.display = 'block';
                 resolveBtn.onclick = () => resolveAlert(selectedAlert.id, true);
             } else {
                 resolveBtn.style.display = 'none';
             }
-            
+
             // Show modal
             document.getElementById('alert-details-modal').style.display = 'flex';
         }
-        
+
         // Close alert details modal
         function closeAlertDetails() {
             document.getElementById('alert-details-modal').style.display = 'none';
             selectedAlert = null;
         }
-        
+
         // Acknowledge alert
         function acknowledgeAlert(alertId, fromModal = false) {
             // API call to acknowledge alert
@@ -530,10 +530,10 @@
                     const alertIndex = allAlerts.findIndex(alert => alert.id === alertId);
                     if (alertIndex !== -1) {
                         allAlerts[alertIndex].status = 'acknowledged';
-                        
+
                         // Update UI
                         filterAlerts();
-                        
+
                         if (fromModal && selectedAlert) {
                             // If called from modal, close it
                             closeAlertDetails();
@@ -545,15 +545,15 @@
             })
             .catch(error => {
                 console.error('Error acknowledging alert:', error);
-                
+
                 // For demonstration purposes, update UI anyway if API fails
                 const alertIndex = allAlerts.findIndex(alert => alert.id === alertId);
                 if (alertIndex !== -1) {
                     allAlerts[alertIndex].status = 'acknowledged';
-                    
+
                     // Update UI
                     filterAlerts();
-                    
+
                     if (fromModal && selectedAlert) {
                         // If called from modal, close it
                         closeAlertDetails();
@@ -561,7 +561,7 @@
                 }
             });
         }
-        
+
         // Resolve alert
         function resolveAlert(alertId, fromModal = false) {
             // API call to resolve alert
@@ -575,10 +575,10 @@
                     const alertIndex = allAlerts.findIndex(alert => alert.id === alertId);
                     if (alertIndex !== -1) {
                         allAlerts[alertIndex].status = 'resolved';
-                        
+
                         // Update UI
                         filterAlerts();
-                        
+
                         if (fromModal && selectedAlert) {
                             // If called from modal, close it
                             closeAlertDetails();
@@ -590,15 +590,15 @@
             })
             .catch(error => {
                 console.error('Error resolving alert:', error);
-                
+
                 // For demonstration purposes, update UI anyway if API fails
                 const alertIndex = allAlerts.findIndex(alert => alert.id === alertId);
                 if (alertIndex !== -1) {
                     allAlerts[alertIndex].status = 'resolved';
-                    
+
                     // Update UI
                     filterAlerts();
-                    
+
                     if (fromModal && selectedAlert) {
                         // If called from modal, close it
                         closeAlertDetails();
@@ -606,7 +606,7 @@
                 }
             });
         }
-        
+
         // Get sample alert data for testing/demonstration
         function getSampleAlertData() {
             return [

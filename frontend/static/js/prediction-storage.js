@@ -1,6 +1,6 @@
 /**
  * Prediction Storage Service
- * 
+ *
  * Manages the storage and retrieval of water heater predictions.
  * This service handles the persistence of prediction data to the backend
  * and provides methods for retrieving historical predictions.
@@ -118,13 +118,13 @@ class PredictionStorageService {
     try {
       // Get recent historical predictions for comparison
       const historicalPredictions = await this.getHistoricalPredictions(
-        deviceId, 
+        deviceId,
         predictionType,
         { limit: 5 } // Get the 5 most recent predictions
       );
 
       if (!historicalPredictions || historicalPredictions.length === 0) {
-        return { 
+        return {
           hasPrevious: false,
           message: 'No historical data available for comparison'
         };
@@ -143,7 +143,7 @@ class PredictionStorageService {
       return comparisonResult;
     } catch (error) {
       this.logger.error(`Error comparing predictions: ${error.message}`, error);
-      return { 
+      return {
         hasPrevious: false,
         error: error.message,
         message: 'Unable to compare with historical data'
@@ -158,7 +158,7 @@ class PredictionStorageService {
   _calculateTrend(currentPrediction, historicalPredictions, predictionType) {
     // Different prediction types have different key metrics to compare
     let currentValue, previousValue;
-    
+
     switch(predictionType) {
       case 'lifespan-estimation':
         currentValue = currentPrediction.remainingLifePercentage;
@@ -185,8 +185,8 @@ class PredictionStorageService {
     }
 
     const difference = currentValue - previousValue;
-    const percentageChange = previousValue !== 0 
-      ? (difference / Math.abs(previousValue)) * 100 
+    const percentageChange = previousValue !== 0
+      ? (difference / Math.abs(previousValue)) * 100
       : 0;
 
     return {

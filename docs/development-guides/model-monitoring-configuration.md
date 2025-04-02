@@ -262,17 +262,17 @@ def create_alert_rule(db, model_id, model_version, metric_name, threshold, opera
     """Create a new alert rule in the database."""
     rule_id = str(uuid4())
     timestamp = datetime.now().isoformat()
-    
+
     db.execute("""
-    INSERT INTO alert_rules 
-        (id, model_id, model_version, metric_name, threshold, operator, 
-         severity, rule_name, description, created_at, is_active) 
+    INSERT INTO alert_rules
+        (id, model_id, model_version, metric_name, threshold, operator,
+         severity, rule_name, description, created_at, is_active)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """, (
         rule_id, model_id, model_version, metric_name, threshold,
         operator, severity, rule_name, description, timestamp, 1
     ))
-    
+
     return rule_id
 ```
 
@@ -316,12 +316,12 @@ for version in versions:
 health_id = str(uuid4())
 db.execute("""
 INSERT INTO model_health
-    (id, model_id, model_version, health_status, metrics_summary, 
+    (id, model_id, model_version, health_status, metrics_summary,
      drift_status, last_updated, recommendations)
 VALUES (?, ?, ?, ?, ?, ?, ?, ?)
 """, (
-    health_id, model_id, version, "GREEN", 
-    json.dumps(metrics), "normal", timestamp, 
+    health_id, model_id, version, "GREEN",
+    json.dumps(metrics), "normal", timestamp,
     json.dumps(["Initial model deployment"])
 ))
 ```

@@ -59,5 +59,3 @@ To generate architecture diagrams:
 ```bash
 ./docs/scripts/generate_plantuml_diagrams.sh
 ```
-
-

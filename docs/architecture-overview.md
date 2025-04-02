@@ -187,7 +187,7 @@ The Model Monitoring Dashboard provides comprehensive tools for tracking ML mode
 
 The report export system uses a server-side generation approach for reliability and consistency:
 
-- **Backend**: 
+- **Backend**:
   - FastAPI endpoints (`/reports/export/pdf` and `/reports/export/csv`) handle export requests
   - ReportLab library generates professionally formatted PDF reports with charts and tables
   - Python's CSV module creates structured data exports
@@ -237,10 +237,10 @@ The architecture diagrams in this document are written in PlantUML, which allows
    ```bash
    # macOS (using Homebrew)
    brew install graphviz plantuml
-   
+
    # Linux (Ubuntu/Debian)
    sudo apt-get install graphviz plantuml
-   
+
    # Windows
    # Download and install from https://graphviz.org/download/ and https://plantuml.com/download
    ```
@@ -248,7 +248,7 @@ The architecture diagrams in this document are written in PlantUML, which allows
 2. **Visual Studio Code extensions**:
    - Install the "PlantUML" extension by jebbs
    - Install the "Markdown Preview Enhanced" extension
-   
+
 3. **Configure VS Code settings**:
    Add the following to your settings.json (Preferences > Settings > Edit in settings.json):
    ```json

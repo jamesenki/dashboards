@@ -2,8 +2,9 @@
 Tests for the data loading script to ensure proper data transformation and loading.
 """
 import asyncio
-import pytest
 from unittest.mock import AsyncMock, MagicMock, patch
+
+import pytest
 
 from src.db.models import DeviceModel, ReadingModel
 from src.scripts.load_data_to_postgres import load_devices
@@ -24,9 +25,10 @@ def mock_session():
 @pytest.fixture
 def mock_db_session(mock_session):
     """Mock the database session generator."""
+
     async def _get_db_session():
         yield mock_session
-    
+
     return _get_db_session
 
 
@@ -50,18 +52,21 @@ async def test_load_vending_machines(mock_db_session):
                     "power_consumption": 344.8,
                     "door_status": "CLOSED",
                     "cash_level": 122.41,
-                    "sales_count": 3
+                    "sales_count": 3,
                 }
             ],
             products=[{"product_id": "prod-1", "name": "Test Product", "quantity": 10}],
-            __dict__={"id": "test-vm-1", "name": "Test Vending Machine"}
+            __dict__={"id": "test-vm-1", "name": "Test Vending Machine"},
         )
     }
-    
+
     # Mock the jsonable_encoder function
-    with patch('src.scripts.load_data_to_postgres.jsonable_encoder') as mock_encoder, \
-         patch('src.scripts.load_data_to_postgres.get_db_session', return_value=mock_db_session()):
-        
+    with patch(
+        "src.scripts.load_data_to_postgres.jsonable_encoder"
+    ) as mock_encoder, patch(
+        "src.scripts.load_data_to_postgres.get_db_session",
+        return_value=mock_db_session(),
+    ):
         # Mock encoder return value
         mock_encoder.return_value = {
             "id": "test-vm-1",
@@ -78,45 +83,53 @@ async def test_load_vending_machines(mock_db_session):
                     "power_consumption": 344.8,
                     "door_status": "CLOSED",
                     "cash_level": 122.41,
-                    "sales_count": 3
+                    "sales_count": 3,
                 }
             ],
-            "products": [{"product_id": "prod-1", "name": "Test Product", "quantity": 10}]
+            "products": [
+                {"product_id": "prod-1", "name": "Test Product", "quantity": 10}
+            ],
         }
-        
+
         # Run the function
         await load_devices()
-        
+
         # Get the session from generator
         session = next(asyncio.run(mock_db_session().__anext__()))
-        
+
         # Assert that correct models were added to the session
         # 1. DeviceModel for vending machine should be added
         assert session.add.call_count >= 1
-        
+
         # Get the first call arg (should be DeviceModel)
-        device_calls = [call[0][0] for call in session.add.call_args_list 
-                      if isinstance(call[0][0], DeviceModel)]
+        device_calls = [
+            call[0][0]
+            for call in session.add.call_args_list
+            if isinstance(call[0][0], DeviceModel)
+        ]
         assert len(device_calls) == 1
         device = device_calls[0]
-        
+
         # Verify device properties
         assert device.id == "test-vm-1"
         assert device.name == "Test Vending Machine"
         assert device.type == "vending_machine"
         assert device.status == "ONLINE"
         assert "products" in device.properties
-        
+
         # Verify readings were added (5 metrics from one reading)
-        reading_calls = [call[0][0] for call in session.add.call_args_list 
-                       if isinstance(call[0][0], ReadingModel)]
+        reading_calls = [
+            call[0][0]
+            for call in session.add.call_args_list
+            if isinstance(call[0][0], ReadingModel)
+        ]
         assert len(reading_calls) >= 5
-        
+
         # Check at least one temperature reading exists
         temp_readings = [r for r in reading_calls if r.metric_name == "temperature"]
         assert len(temp_readings) >= 1
         assert temp_readings[0].value == 3.5
-        
+
         # Verify session was committed
         session.commit.assert_called_once()
 
@@ -141,17 +154,20 @@ async def test_load_water_heaters(mock_db_session):
                     "temperature": 50.5,
                     "pressure": 2.1,
                     "flow_rate": 5.0,
-                    "power_consumption": 1500.0
+                    "power_consumption": 1500.0,
                 }
             ],
-            __dict__={"id": "test-wh-1", "name": "Test Water Heater"}
+            __dict__={"id": "test-wh-1", "name": "Test Water Heater"},
         )
     }
-    
+
     # Mock the jsonable_encoder function
-    with patch('src.scripts.load_data_to_postgres.jsonable_encoder') as mock_encoder, \
-         patch('src.scripts.load_data_to_postgres.get_db_session', return_value=mock_db_session()):
-        
+    with patch(
+        "src.scripts.load_data_to_postgres.jsonable_encoder"
+    ) as mock_encoder, patch(
+        "src.scripts.load_data_to_postgres.get_db_session",
+        return_value=mock_db_session(),
+    ):
         # Mock encoder return value
         mock_encoder.return_value = {
             "id": "test-wh-1",
@@ -168,43 +184,49 @@ async def test_load_water_heaters(mock_db_session):
                     "temperature": 50.5,
                     "pressure": 2.1,
                     "flow_rate": 5.0,
-                    "power_consumption": 1500.0
+                    "power_consumption": 1500.0,
                 }
-            ]
+            ],
         }
-        
+
         # Run the function
         await load_devices()
-        
+
         # Get the session from generator
         session = next(asyncio.run(mock_db_session().__anext__()))
-        
+
         # Assert that correct models were added to the session
         # 1. DeviceModel for water heater should be added
         assert session.add.call_count >= 1
-        
+
         # Get the calls for DeviceModel
-        device_calls = [call[0][0] for call in session.add.call_args_list 
-                      if isinstance(call[0][0], DeviceModel)]
+        device_calls = [
+            call[0][0]
+            for call in session.add.call_args_list
+            if isinstance(call[0][0], DeviceModel)
+        ]
         assert len(device_calls) == 1
         device = device_calls[0]
-        
+
         # Verify device properties
         assert device.id == "test-wh-1"
         assert device.name == "Test Water Heater"
         assert device.type == "water_heater"
         assert device.status == "ONLINE"
         assert device.properties.get("temperature") == 50.5
-        
+
         # Verify readings were added (4 metrics from one reading)
-        reading_calls = [call[0][0] for call in session.add.call_args_list 
-                       if isinstance(call[0][0], ReadingModel)]
+        reading_calls = [
+            call[0][0]
+            for call in session.add.call_args_list
+            if isinstance(call[0][0], ReadingModel)
+        ]
         assert len(reading_calls) >= 4
-        
+
         # Check at least one temperature reading exists
         temp_readings = [r for r in reading_calls if r.metric_name == "temperature"]
         assert len(temp_readings) >= 1
         assert temp_readings[0].value == 50.5
-        
+
         # Verify session was committed
         session.commit.assert_called_once()

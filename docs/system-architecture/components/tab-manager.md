@@ -32,8 +32,8 @@ Components that register with TabManager should implement:
   reload() {
     // Return true if successful, false if failed
   },
-  
-  // Optional: Called before tab deactivation 
+
+  // Optional: Called before tab deactivation
   beforeDeactivate() {
     // Return true to allow deactivation, false to prevent
   }

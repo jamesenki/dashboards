@@ -62,7 +62,7 @@ IoTSphere supports TimescaleDB for enhanced time-series data performance but wil
    ```bash
    # Run the timescaledb configuration utility
    /opt/homebrew/bin/timescaledb-tune --quiet --yes
-   
+
    # Restart PostgreSQL to apply changes
    brew services restart postgresql@14
    ```
@@ -109,7 +109,7 @@ Possible solutions:
 
 If the application cannot connect to PostgreSQL:
 
-1. Verify PostgreSQL is running: `brew services list` 
+1. Verify PostgreSQL is running: `brew services list`
 2. Check connection details in `src/db/config.py`
 3. Ensure the database and user exist: `psql -l`
 4. Test connection manually: `psql -U iotsphere iotsphere`

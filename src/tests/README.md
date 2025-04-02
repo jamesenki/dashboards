@@ -65,16 +65,16 @@ from src.main import app
 def test_get_all_vending_machines(mock_get_all, test_client):
     # Configure the mock
     mock_get_all.return_value = [your_test_data]
-    
+
     # Create a test client
     client = TestClient(app)
-    
+
     # Make request
     response = client.get("/api/vending-machines")
-    
+
     # Check response
     assert response.status_code == 200
-    
+
     # Verify mock was called
     mock_get_all.assert_called_once()
 ```

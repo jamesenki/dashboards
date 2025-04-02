@@ -21,11 +21,11 @@ class ModelMonitoringService:
     """
     Service for monitoring model performance and detecting issues.
     """
-    
+
     def __init__(self, metrics_repository=None, notification_service=None, db=None):
         """
         Initialize the model monitoring service.
-        
+
         Args:
             metrics_repository: Repository for accessing model metrics data
             notification_service: Service for sending notifications
@@ -33,7 +33,7 @@ class ModelMonitoringService:
         """
         # Store the db parameter directly to match test expectations
         self.db = db
-        
+
         # Handle the case where db is provided but metrics_repository is not
         # This maintains backward compatibility with older tests
         if db is not None and metrics_repository is None:
@@ -49,7 +49,7 @@ class ModelMonitoringService:
             self.metrics_repository = ModelMetricsRepository()
         else:
             self.metrics_repository = metrics_repository
-            
+
         self.notification_service = notification_service or NotificationService()
         # Initialize in-memory tag storage for testing
         self.tags = {
@@ -58,18 +58,18 @@ class ModelMonitoringService:
             "tag3": {"id": "tag3", "name": "testing", "color": "orange"},
             "tag4": {"id": "tag4", "name": "deprecated", "color": "red"}
         }
-    
-    def record_model_metrics(self, model_id: str, model_version: str, 
+
+    def record_model_metrics(self, model_id: str, model_version: str,
                        metrics: Dict[str, float], timestamp: datetime = None) -> str:
         """
         Record performance metrics for a model.
-        
+
         Args:
             model_id: ID of the model
             model_version: Version of the model
             metrics: Dictionary of metric names and values
             timestamp: Optional timestamp (defaults to now)
-            
+
         Returns:
             ID of the recorded metrics
         """
@@ -78,20 +78,20 @@ class ModelMonitoringService:
             # This is the path taken in the test case
             timestamp = timestamp or datetime.now()
             record_id = str(uuid.uuid4())
-            
+
             # Format for SQL params - all metrics in single record
             params = (record_id, model_id, model_version, json.dumps(metrics), timestamp.isoformat())
-            
+
             # Execute the SQL directly as expected by the test
             self.db.execute(
                 "INSERT INTO model_metrics (id, model_id, model_version, metrics, timestamp) "
                 "VALUES (?, ?, ?, ?, ?)",
                 params
             )
-            
+
             # No await needed when directly using db
             self._check_for_alerts_sync(model_id, model_version, metrics)
-            
+
             return record_id
         else:
             # Use repository for real implementation (with async)
@@ -109,40 +109,40 @@ class ModelMonitoringService:
             except RuntimeError:
                 # No event loop found, run the coroutine synchronously
                 return asyncio.run(self._record_model_metrics_async(model_id, model_version, metrics, timestamp))
-    
-    async def _record_model_metrics_async(self, model_id: str, model_version: str, 
+
+    async def _record_model_metrics_async(self, model_id: str, model_version: str,
                                    metrics: Dict[str, float], timestamp: datetime = None) -> str:
         """Async implementation of record_model_metrics"""
         # Use repository to record metrics
         record_id = await self.metrics_repository.record_model_metrics(
             model_id, model_version, metrics, timestamp
         )
-            
+
         # Check for alerts
         await self.check_for_alerts(model_id, model_version, metrics)
-        
+
         return record_id
-        
+
     def _check_for_alerts_sync(self, model_id: str, model_version: str, metrics: Dict[str, float]):
         """Synchronous version of check_for_alerts for direct DB usage"""
         # We need a non-async version for the sync path
         # This is a simplified version that doesn't actually check for alerts
         # in the test case scenario
         pass
-    
-    def get_model_metrics_history(self, model_id: str, model_version: str, 
-                           metric_name: str, start_date: datetime = None, 
+
+    def get_model_metrics_history(self, model_id: str, model_version: str,
+                           metric_name: str, start_date: datetime = None,
                            end_date: datetime = None) -> List[Dict[str, Any]]:
         """
         Get the history of a specific metric for a model.
-        
+
         Args:
             model_id: ID of the model
             model_version: Version of the model
             metric_name: Name of the metric
             start_date: Optional start date for the range
             end_date: Optional end date for the range
-            
+
         Returns:
             List of metric records
         """
@@ -151,26 +151,26 @@ class ModelMonitoringService:
             # Format dates for SQL query
             start_str = start_date.isoformat() if start_date else None
             end_str = end_date.isoformat() if end_date else None
-            
+
             # Create SQL query condition
             conditions = ["model_id = ?", "model_version = ?"]
             params = [model_id, model_version]
-            
+
             if metric_name:
                 conditions.append("metric_name = ?")
                 params.append(metric_name)
-                
+
             if start_str:
                 conditions.append("timestamp >= ?")
                 params.append(start_str)
-                
+
             if end_str:
                 conditions.append("timestamp <= ?")
                 params.append(end_str)
-                
+
             # Build the query
             query = "SELECT * FROM model_metrics WHERE " + " AND ".join(conditions) + " ORDER BY timestamp DESC"
-            
+
             # For the test, this will return the mocked value directly
             return self.db.fetch_all(query, tuple(params))
         else:
@@ -189,46 +189,46 @@ class ModelMonitoringService:
             except RuntimeError:
                 # No event loop found, run the coroutine synchronously
                 return asyncio.run(self._get_model_metrics_history_async(model_id, model_version, metric_name, start_date, end_date))
-    
-    async def _get_model_metrics_history_async(self, model_id: str, model_version: str, 
-                                       metric_name: str, start_date: datetime = None, 
+
+    async def _get_model_metrics_history_async(self, model_id: str, model_version: str,
+                                       metric_name: str, start_date: datetime = None,
                                        end_date: datetime = None) -> List[Dict[str, Any]]:
         """Async implementation of get_model_metrics_history"""
         # Use repository to get metric history
         return await self.metrics_repository.get_model_metrics_history(
             model_id, model_version, metric_name, start_date, end_date
         )
-    
+
     async def get_latest_metrics(self, model_id: str, model_version: str) -> List[Dict[str, Any]]:
         """
         Get the most recent metrics for a model.
-        
+
         Args:
             model_id: ID of the model
             model_version: Version of the model
-            
+
         Returns:
             Dictionary of the latest metrics by name
         """
         return await self.metrics_repository.get_latest_metrics(model_id, model_version)
-    
+
     async def get_models(self) -> List[Dict[str, Any]]:
         """
         Get a list of all active models.
-        
+
         Returns:
             List of model information
         """
         return await self.metrics_repository.get_models()
-        
+
     async def get_alert_rules(self, model_id: str = None, model_version: str = None) -> List[Dict[str, Any]]:
         """
         Get alert rules for a model or all models.
-        
+
         Args:
             model_id: Optional model ID to filter by
             model_version: Optional model version (not used in current implementation)
-            
+
         Returns:
             List of alert rules
         """
@@ -236,14 +236,14 @@ class ModelMonitoringService:
         # are associated with models, not specific versions. We include it to match the API
         # expectations.
         return await self.metrics_repository.get_alert_rules(model_id)
-        
+
     async def create_alert_rule(self, model_id: str, model_version: str = None,
                           rule_name: str = None, metric_name: str = None,
                           threshold: float = None, operator: str = None, condition: str = None,
                           severity: str = 'WARNING', description: str = None) -> Dict[str, Any]:
         """
         Create a new alert rule.
-        
+
         Args:
             model_id: ID of the model
             model_version: Version of the model (optional, for compatibility)
@@ -254,13 +254,13 @@ class ModelMonitoringService:
             condition: Alias for operator (deprecated, maintained for backward compatibility)
             severity: Alert severity
             description: Description of the rule (optional, for compatibility)
-            
+
         Returns:
             Created alert rule
         """
         # Prefer operator over condition if provided, otherwise use condition
         effective_condition = operator if operator is not None else condition
-        
+
         # Check if we're in the unit test environment for TestModelMonitoringService
         # We need to carefully check if this is the specific mock and test class
         # without causing side effects in the API or integration tests
@@ -268,33 +268,33 @@ class ModelMonitoringService:
         is_unit_test_mock = False
         try:
             # This will evaluate to True only in the TestModelMonitoringService test
-            is_unit_test_mock = (self.db is not None and 
-                               isinstance(self.db, MagicMock) and 
+            is_unit_test_mock = (self.db is not None and
+                               isinstance(self.db, MagicMock) and
                                hasattr(self.db, 'execute') and
                                self.db._extract_mock_name() == 'db_mock')
         except (AttributeError, TypeError):
             pass
-        
+
         if is_unit_test_mock:
             # Unit test path - for TestModelMonitoringService
             rule_id = str(uuid.uuid4())
             created_at = datetime.now().isoformat()
-            
+
             # Use model_version and other parameters if provided (for compatibility with tests)
             model_version = model_version or '1.0'
             rule_name = rule_name or f'Rule for {metric_name}'
-            
+
             # Execute the SQL directly as expected by the test
             self.db.execute(
                 "INSERT INTO alert_rules (id, model_id, model_version, rule_name, metric_name, threshold, operator, "
                 "severity, created_at, is_active, description) "
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                (rule_id, model_id, model_version, rule_name, metric_name, threshold, effective_condition, 
+                (rule_id, model_id, model_version, rule_name, metric_name, threshold, effective_condition,
                  severity, created_at, 1, description)
             )
-            
+
             return rule_id
-        
+
         # Standard path for API and all other cases
         return await self.metrics_repository.create_alert_rule(
             model_id=model_id,
@@ -306,7 +306,7 @@ class ModelMonitoringService:
             rule_name=rule_name,
             description=description
         )
-    
+
     async def _create_alert_rule_async(self, model_id: str, model_version: str = None,
                                rule_name: str = None, metric_name: str = None,
                                threshold: float = None, condition: str = None,
@@ -324,39 +324,39 @@ class ModelMonitoringService:
             description=description
         )
 
-        
+
     async def delete_alert_rule(self, rule_id: str) -> bool:
         """
         Delete an alert rule by its ID.
-        
+
         Args:
             rule_id: ID of the alert rule to delete
-            
+
         Returns:
             True if the rule was deleted successfully, False otherwise
         """
         return await self.metrics_repository.delete_alert_rule(rule_id)
-        
-    async def record_alert_event(self, rule_id: str, model_id: str, 
+
+    async def record_alert_event(self, rule_id: str, model_id: str,
                          metric_name: str, metric_value: float,
                          severity: str = 'WARNING') -> Dict[str, Any]:
         """
         Record an alert event.
-        
+
         Args:
             rule_id: ID of the alert rule
             model_id: ID of the model
             metric_name: Name of the metric
             metric_value: Value that triggered the alert
             severity: Alert severity
-            
+
         Returns:
             Created alert event
         """
         event = await self.metrics_repository.record_alert_event(
             rule_id, model_id, metric_name, metric_value, severity
         )
-        
+
         # Send notification
         self.notification_service.send_alert(
             model_id=model_id,
@@ -364,38 +364,38 @@ class ModelMonitoringService:
             metric_value=metric_value,
             severity=severity
         )
-        
+
         return event
-        
-    async def check_for_alerts(self, model_id: str, model_version: str, 
+
+    async def check_for_alerts(self, model_id: str, model_version: str,
                         metrics: Dict[str, float]) -> List[Dict[str, Any]]:
         """
         Check metrics against alert rules and trigger alerts if needed.
-        
+
         Args:
             model_id: ID of the model
             model_version: Version of the model
             metrics: Dictionary of metric names and values
-            
+
         Returns:
             List of triggered alerts
         """
         # Get alert rules for this model
         rules = await self.get_alert_rules(model_id)
         triggered_alerts = []
-        
+
         # Check each rule against the provided metrics
         for rule in rules:
             metric_name = rule['metric_name']
-            
+
             # Skip if the metric isn't in the provided metrics
             if metric_name not in metrics:
                 continue
-                
+
             metric_value = metrics[metric_name]
             threshold = rule['threshold']
             condition = rule['condition']
-            
+
             # Check if the alert condition is met
             alert_triggered = False
             if condition == 'ABOVE' and metric_value > threshold:
@@ -404,7 +404,7 @@ class ModelMonitoringService:
                 alert_triggered = True
             elif condition == 'EQUAL' and metric_value == threshold:
                 alert_triggered = True
-                
+
             # Record an alert event if triggered
             if alert_triggered:
                 alert = await self.record_alert_event(
@@ -415,78 +415,78 @@ class ModelMonitoringService:
                     severity=rule['severity']
                 )
                 triggered_alerts.append(alert)
-                
+
         return triggered_alerts
-        
-    async def calculate_drift(self, model_id: str, model_version: str, 
+
+    async def calculate_drift(self, model_id: str, model_version: str,
                        reference_data: Dict[str, Any], current_data: Dict[str, Any]) -> Dict[str, float]:
         """
         Calculate drift between reference and current data.
-        
+
         Args:
             model_id: ID of the model
             model_version: Version of the model
             reference_data: Reference data (baseline)
             current_data: Current data to compare
-            
+
         Returns:
             Dictionary of drift metrics
         """
         # This would have a more sophisticated implementation in a real system
         drift_metrics = {}
-        
+
         # Calculate basic statistical drift for each feature
         if 'features' in reference_data and 'features' in current_data:
             for feature in reference_data['features']:
                 if feature in current_data['features']:
                     ref_val = reference_data['features'][feature]
                     curr_val = current_data['features'][feature]
-                    
+
                     # Simple relative difference as drift metric
                     if isinstance(ref_val, (int, float)) and isinstance(curr_val, (int, float)) and ref_val != 0:
                         drift = abs(curr_val - ref_val) / abs(ref_val)
                         drift_metrics[f"{feature}_drift"] = drift
-        
+
         # Calculate overall drift score (average of individual drifts)
         if drift_metrics:
             drift_metrics['overall_drift'] = sum(drift_metrics.values()) / len(drift_metrics)
         else:
             drift_metrics['overall_drift'] = 0.0
-            
+
         # Record the drift metrics
         await self.record_model_metrics(model_id, model_version, drift_metrics)
-        
+
         return drift_metrics
-        
+
     # Tag Management Methods
     def get_tags(self) -> List[Dict[str, Any]]:
         """
         Get all tags.
-        
+
         Returns:
             List of tags
         """
         # Return all tags from in-memory storage
         return list(self.tags.values())
-    
+
     def create_tag(self, name: str, color: str = "blue") -> Dict[str, Any]:
         """
         Create a new tag.
-        
+
         Args:
             name: Name of the tag
             color: Color of the tag
-            
+
         Returns:
             Dictionary with created tag details
         """
         # Generate a unique ID for the tag
         tag_id = str(uuid.uuid4())
-        
+
         # Add to in-memory storage
         tag = {"id": tag_id, "name": name, "color": color}
         self.tags[tag_id] = tag
-        
+
         # Return the created tag
         return {
             "status": "success",
@@ -495,16 +495,16 @@ class ModelMonitoringService:
             "color": color,
             "message": f"Tag '{name}' created successfully"
         }
-    
+
     def update_tag(self, tag_id: str, name: str = None, color: str = None) -> Dict[str, Any]:
         """
         Update an existing tag.
-        
+
         Args:
             tag_id: ID of the tag to update
             name: New name for the tag (optional)
             color: New color for the tag (optional)
-            
+
         Returns:
             Dictionary with updated tag details
         """
@@ -514,16 +514,16 @@ class ModelMonitoringService:
                 "status": "error",
                 "message": f"Tag with ID {tag_id} not found"
             }
-            
+
         # Update the tag in memory
         tag = self.tags[tag_id]
-        
+
         if name is not None:
             tag["name"] = name
-            
+
         if color is not None:
             tag["color"] = color
-            
+
         # Return success response
         return {
             "status": "success",
@@ -532,14 +532,14 @@ class ModelMonitoringService:
             "color": tag["color"],
             "message": "Tag updated successfully"
         }
-    
+
     def delete_tag(self, tag_id: str) -> Dict[str, Any]:
         """
         Delete a tag.
-        
+
         Args:
             tag_id: ID of the tag to delete
-            
+
         Returns:
             Dictionary with delete status
         """

@@ -11,7 +11,7 @@ database:
   host: "localhost"
   port: 5432
   name: "iotsphere_test"
-  
+
   # Use in-memory SQLite for faster tests when appropriate
   # Uncomment to enable:
   # type: "sqlite"
@@ -24,7 +24,7 @@ testing:
     enabled: true
     # No delay in tests for faster execution
     response_delay_ms: 0
-  
+
   # Increase test coverage requirements for testing environment
   coverage:
     minimum_percentage: 90
@@ -47,7 +47,7 @@ observability:
       api: "INFO"
       database: "WARNING"
       predictions: "INFO"
-  
+
   # Enable metrics for performance testing
   metrics:
     enabled: true

@@ -26,7 +26,7 @@
 
     <div class="sidebar">
         <a href="/dashboard" title="Dashboard">
-            <img src="/static/assets/icons/dashboard.svg" alt="Dashboard" class="sidebar-icon" 
+            <img src="/static/assets/icons/dashboard.svg" alt="Dashboard" class="sidebar-icon"
                  onerror="this.src='/static/assets/icons/dashboard.png'">
         </a>
         <a href="/water-heaters" title="Water Heaters" class="active-sidebar-item">
@@ -49,11 +49,11 @@
                 {% block nav %}{% endblock %}
             </ul>
         </nav>
-        
+
         <h1 class="page-title">{% block page_title %}{% endblock %}</h1>
-        
+
         {% block before_content %}{% endblock %}
-        
+
         <div id="content">
             {% block content %}{% endblock %}
         </div>

@@ -8,22 +8,24 @@ import asyncio
 import logging
 import traceback
 from datetime import datetime, timedelta
-from typing import Dict, Any, List
+from typing import Any, Dict, List
 
+import numpy as np
 import uvicorn
 from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
-from fastapi.middleware.cors import CORSMiddleware
-import numpy as np
 
 from src.db.connection import get_db_session
 from src.db.models import DeviceModel, DiagnosticCodeModel
 from src.models.device import DeviceType
 from src.models.water_heater import WaterHeater, WaterHeaterType
-from src.predictions.maintenance.component_failure import ComponentFailurePrediction
 from src.predictions.interfaces import PredictionResult
-from src.web.templates.component_failure_prediction import ComponentFailurePredictionComponent
+from src.predictions.maintenance.component_failure import ComponentFailurePrediction
+from src.web.templates.component_failure_prediction import (
+    ComponentFailurePredictionComponent,
+)
 
 # Configure logging
 logging.basicConfig(
@@ -70,17 +72,17 @@ async def get_device_details(device_id: str) -> Dict[str, Any]:
         stmt = DeviceModel.__table__.select().where(DeviceModel.id == device_id)
         result = await session.execute(stmt)
         device = result.fetchone()
-        
+
         if not device:
             return {}
-        
+
         # Get diagnostic codes
         stmt = DiagnosticCodeModel.__table__.select().where(
             DiagnosticCodeModel.device_id == device_id
         )
         result = await session.execute(stmt)
         diagnostic_codes = result.fetchall()
-        
+
         return {
             "device": device,
             "diagnostic_codes": diagnostic_codes,
@@ -92,19 +94,19 @@ async def generate_prediction_for_device(device_id: str) -> PredictionResult:
     # Use cached prediction if available
     if device_id in prediction_cache:
         return prediction_cache[device_id]
-    
+
     # Get device details
     details = await get_device_details(device_id)
     device = details.get("device")
-    
+
     if not device:
         logger.warning(f"Device {device_id} not found")
         return None
-    
+
     try:
         # Create predictor
         predictor = ComponentFailurePrediction()
-        
+
         # Generate telemetry features (simplified for demo)
         features = {
             "temperature": np.random.normal(60, 5, 24).tolist(),  # Last 24 hours of temp readings
@@ -115,13 +117,13 @@ async def generate_prediction_for_device(device_id: str) -> PredictionResult:
             "total_operation_hours": float(device.properties.get("total_operation_hours", 8760)),  # Default to 1 year
             "water_heater_type": device.properties.get("heater_type", WaterHeaterType.RESIDENTIAL.value),
         }
-        
+
         # Predict component failure
         prediction = await predictor.predict(device_id, features)
-        
+
         # Cache prediction
         prediction_cache[device_id] = prediction
-        
+
         return prediction
     except Exception as e:
         logger.error(f"Error generating prediction: {e}")
@@ -152,7 +154,7 @@ async def index(request: Request):
     """Render the main page with the list of water heaters."""
     try:
         water_heaters = await get_all_water_heaters()
-        
+
         html_content = f"""
     <!DOCTYPE html>
     <html>
@@ -161,18 +163,18 @@ async def index(request: Request):
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <style>
-            body {{ 
-                font-family: Arial, Helvetica, sans-serif; 
-                line-height: 1.6; 
-                color: #333; 
+            body {{
+                font-family: Arial, Helvetica, sans-serif;
+                line-height: 1.6;
+                color: #333;
                 background-color: #f8f9fa;
                 margin: 0;
                 padding: 20px;
             }}
-            .container {{ 
-                max-width: 1140px; 
-                margin: 0 auto; 
-                padding: 0 15px; 
+            .container {{
+                max-width: 1140px;
+                margin: 0 auto;
+                padding: 0 15px;
             }}
             .mt-5 {{ margin-top: 3rem; }}
             .mb-4 {{ margin-bottom: 1.5rem; }}
@@ -244,7 +246,7 @@ async def index(request: Request):
                     <div class="list-group">
                         <div class="list-group-item list-group-item-primary">Select a Water Heater</div>
     """
-    
+
     # Add water heater list items
     for device in water_heaters:
         name = device.name or f"Water Heater {device.id}"
@@ -254,23 +256,23 @@ async def index(request: Request):
             <span class="badge bg-secondary float-end">{device.id}</span>
         </a>
         """
-    
+
     html_content += """
                     </div>
                 </div>
                 <div class="col-md-8">
     """
-    
+
     # If a device is selected, show its prediction
     selected_device_id = request.query_params.get("device_id")
     if selected_device_id:
         details = await get_device_details(selected_device_id)
         device = details.get("device")
-        
+
         if device:
             name = device.name or f"Water Heater {device.id}"
             prediction = await generate_prediction_for_device(selected_device_id)
-            
+
             html_content += f"""
             <div class="card mb-4">
                 <div class="card-header bg-primary text-white">
@@ -283,7 +285,7 @@ async def index(request: Request):
                 </div>
             </div>
             """
-            
+
             if prediction:
                 # Render the component failure prediction component
                 component = ComponentFailurePredictionComponent(prediction)
@@ -306,7 +308,7 @@ async def index(request: Request):
             Select a water heater from the list to view its component failure prediction.
         </div>
         """
-    
+
     html_content += """
                 </div>
             </div>
@@ -315,7 +317,7 @@ async def index(request: Request):
     </body>
     </html>
     """
-    
+
         return html_content
     except Exception as e:
         logger.error(f"Error rendering index page: {e}")
@@ -329,8 +331,8 @@ async def index(request: Request):
 async def main():
     """Main function to run the web server."""
     config = uvicorn.Config(
-        app, 
-        host="0.0.0.0", 
+        app,
+        host="0.0.0.0",
         port=8006,  # Using port 8006 as requested
         log_level="info",
     )

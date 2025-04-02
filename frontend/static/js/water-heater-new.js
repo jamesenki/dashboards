@@ -37,7 +37,7 @@ class WaterHeaterList {
   async init() {
     try {
       await this.loadHeaters();
-      
+
       // Validate that we have proper data before rendering
       if (this.heaters && Array.isArray(this.heaters) && this.heaters.length > 0) {
         console.log('Successfully loaded water heaters, rendering...');
@@ -60,7 +60,7 @@ class WaterHeaterList {
   async loadHeaters() {
     try {
       console.log('Fetching water heaters from API...');
-      
+
       // If the regular API call fails, try a direct fetch as a fallback
       let response;
       try {
@@ -68,11 +68,11 @@ class WaterHeaterList {
         console.log('API response from client:', response);
       } catch (apiError) {
         console.warn('API client request failed, trying direct fetch:', apiError);
-        
+
         // Direct fetch fallback
         const apiHost = window.location.hostname;
         const apiUrl = `http://${apiHost}:8006/api/water-heaters/`;
-        
+
         const directResponse = await fetch(apiUrl, {
           method: 'GET',
           headers: {
@@ -80,15 +80,15 @@ class WaterHeaterList {
           },
           mode: 'cors'
         });
-        
+
         if (!directResponse.ok) {
           throw new Error(`Direct API fetch failed: ${directResponse.status} ${directResponse.statusText}`);
         }
-        
+
         response = await directResponse.json();
         console.log('Direct fetch response:', response);
       }
-      
+
       // Validate the response format
       if (response && Array.isArray(response)) {
         // Clean/normalize data - filter out any invalid entries
@@ -99,7 +99,7 @@ class WaterHeaterList {
           }
           return isValid;
         }).map(heater => this.normalizeHeaterData(heater));
-        
+
         console.log('Processed heaters:', this.heaters);
       } else {
         console.error('Invalid API response format, expected array but got:', typeof response);
@@ -109,7 +109,7 @@ class WaterHeaterList {
     } catch (error) {
       console.error('Error loading water heaters:', error);
       console.error('Error details:', error.message, error.stack);
-      
+
       // Try to load some mock data as a last resort
       this.loadMockData();
       throw error;
@@ -124,7 +124,7 @@ class WaterHeaterList {
         <h2>Water Heaters</h2>
         <a href="/water-heaters/new" class="btn btn-primary">Add New</a>
       </div>
-      
+
       <div class="dashboard">
         ${this.heaters.map(heater => this.renderHeaterCard(heater)).join('')}
       </div>
@@ -146,7 +146,7 @@ class WaterHeaterList {
       });
     }, 100);
   }
-  
+
   /**
    * Load mock data as a fallback when API fails
    */
@@ -212,17 +212,17 @@ class WaterHeaterList {
       readings: Array.isArray(heater.readings) ? heater.readings : []
     };
   }
-  
+
   renderHeaterCard(heater) {
     if (!heater) {
       console.error('Attempted to render undefined heater');
       return '';
     }
-    
+
     const statusClass = heater.status.toLowerCase() === 'online' ? 'status-online' : 'status-offline';
     const heaterStatusClass = heater.heater_status.toLowerCase() === 'heating' ? 'status-heating' : 'status-standby';
     const modeClass = `mode-${heater.mode}`;
-    
+
     // Calculate the gauge rotation based on temperature
     const minTemp = heater.min_temperature || 40;
     const maxTemp = heater.max_temperature || 85;
@@ -230,7 +230,7 @@ class WaterHeaterList {
     const currentTempPercent = Math.min(100, Math.max(0, ((heater.current_temperature - minTemp) / tempRange) * 100));
     // Convert percentage to gauge rotation (0% = -120deg, 100% = 120deg)
     const gaugeRotation = -120 + (currentTempPercent * 2.4);
-    
+
     return `
       <div id="heater-${heater.id}" class="card heater-card" style="cursor: pointer;">
         <div class="card-header">
@@ -251,7 +251,7 @@ class WaterHeaterList {
             <div class="gauge-value">${formatTemperature(heater.current_temperature)}</div>
           </div>
           <div class="gauge-label">${heater.name}</div>
-          
+
           <div class="heater-details">
             <div class="target-temp">
               Target: ${formatTemperature(heater.target_temperature)}
@@ -267,7 +267,7 @@ class WaterHeaterList {
 
   renderEmpty() {
     if (!this.container) return;
-    
+
     this.container.innerHTML = `
       <div class="page-header">
         <h2>Water Heaters</h2>
@@ -314,12 +314,12 @@ class WaterHeaterDetail {
         console.error('Container element not found:', this.containerId);
         return;
       }
-      
+
       // Show loading state
       this.container.innerHTML = '<div class="loading">Loading water heater details...</div>';
-      
+
       await this.loadHeater();
-      
+
       if (this.heater) {
         console.log('Successfully loaded heater data:', this.heater);
         this.render();
@@ -337,7 +337,7 @@ class WaterHeaterDetail {
   async loadHeater() {
     try {
       console.log('Attempting to load water heater with ID:', this.heaterId);
-      
+
       // First try using the API client
       try {
         this.heater = await api.getWaterHeater(this.heaterId);
@@ -346,12 +346,12 @@ class WaterHeaterDetail {
       } catch (apiError) {
         console.warn('API client request failed, trying direct fetch fallback:', apiError);
       }
-      
+
       // Fallback: Try direct fetch if API client fails
       const apiHost = window.location.hostname;
       const apiPort = '8006';
       const apiUrl = `http://${apiHost}:${apiPort}/api/water-heaters/${this.heaterId}`;
-      
+
       console.log('Attempting direct fetch from:', apiUrl);
       const response = await fetch(apiUrl, {
         method: 'GET',
@@ -360,14 +360,14 @@ class WaterHeaterDetail {
         },
         mode: 'cors'
       });
-      
+
       if (!response.ok) {
         throw new Error(`Direct API fetch failed: ${response.status} ${response.statusText}`);
       }
-      
+
       this.heater = await response.json();
       console.log('Successfully loaded heater via direct fetch:', this.heater);
-      
+
       // If we still don't have valid heater data, try mock data as last resort
       if (!this.heater || !this.heater.id) {
         console.warn('Invalid heater data received, falling back to mock data');
@@ -380,7 +380,7 @@ class WaterHeaterDetail {
       throw error;
     }
   }
-  
+
   loadMockData() {
     console.log('Loading mock water heater data as fallback');
     this.heater = {
@@ -435,7 +435,7 @@ class WaterHeaterDetail {
       // Use the specific updateMode API method instead of updateWaterHeater
       await api.updateMode(this.heaterId, mode);
       this.heater.mode = mode;
-      
+
       // Update UI
       document.getElementById('mode-display').textContent = mode;
       document.querySelectorAll('.mode-btn').forEach(btn => {
@@ -460,7 +460,7 @@ class WaterHeaterDetail {
         <h2>${this.heater.name}</h2>
         <a href="/water-heaters/${this.heaterId}/edit" class="btn">Edit</a>
       </div>
-      
+
       <div class="dashboard detail-view">
         <div class="card status-card">
           <div class="card-header">
@@ -499,7 +499,7 @@ class WaterHeaterDetail {
             </div>
           </div>
         </div>
-        
+
         <div class="card controls-card">
           <div class="card-header">
             <h3>Controls</h3>
@@ -508,16 +508,16 @@ class WaterHeaterDetail {
             <div class="control-section">
               <h4>Temperature</h4>
               <div class="temperature-slider">
-                <input type="range" id="temp-slider" 
-                  min="${this.heater.min_temperature}" 
-                  max="${this.heater.max_temperature}" 
-                  step="0.5" 
+                <input type="range" id="temp-slider"
+                  min="${this.heater.min_temperature}"
+                  max="${this.heater.max_temperature}"
+                  step="0.5"
                   value="${this.heater.target_temperature}">
                 <div class="slider-value">${formatTemperature(this.heater.target_temperature)}</div>
               </div>
               <button id="set-temp-btn" class="btn btn-primary">Set Temperature</button>
             </div>
-            
+
             <div class="control-section">
               <h4>Mode</h4>
               <div class="mode-controls">
@@ -528,7 +528,7 @@ class WaterHeaterDetail {
             </div>
           </div>
         </div>
-        
+
         <div class="card chart-card">
           <div class="card-header">
             <h3>Temperature History</h3>
@@ -565,7 +565,7 @@ class WaterHeaterDetail {
 
     // Get the last 24 readings or all if less than 24
     const readings = this.heater.readings.slice(-24);
-    
+
     return readings.map(reading => ({
       x: new Date(reading.timestamp),
       y: reading[metric]
@@ -586,7 +586,7 @@ class WaterHeaterDetail {
     chartContainer.appendChild(canvas);
 
     const ctx = canvas.getContext('2d');
-    
+
     // Draw a simple line chart
     ctx.strokeStyle = '#3a86ff';
     ctx.lineWidth = 2;
@@ -604,21 +604,21 @@ class WaterHeaterDetail {
     const min = Math.min(...points) - 5;
     const max = Math.max(...points) + 5;
     const range = max - min;
-    
+
     // Draw the line
     points.forEach((point, index) => {
       const x = (index / (points.length - 1)) * canvas.width;
       const y = canvas.height - ((point - min) / range) * canvas.height * 0.8;
-      
+
       if (index === 0) {
         ctx.moveTo(x, y);
       } else {
         ctx.lineTo(x, y);
       }
     });
-    
+
     ctx.stroke();
-    
+
     // Draw axes
     ctx.strokeStyle = '#333';
     ctx.lineWidth = 1;
@@ -626,7 +626,7 @@ class WaterHeaterDetail {
     ctx.moveTo(0, canvas.height - 20);
     ctx.lineTo(canvas.width, canvas.height - 20);
     ctx.stroke();
-    
+
     // Draw axis labels
     ctx.fillStyle = '#b0b0b0';
     ctx.font = '10px Arial';
@@ -691,7 +691,7 @@ class WaterHeaterForm {
         // Create new
         result = await api.createWaterHeater(formData);
       }
-      
+
       // Navigate to detail page
       window.location.href = `/water-heaters/${result.id}`;
     } catch (error) {
@@ -706,7 +706,7 @@ class WaterHeaterForm {
     const isEdit = !!this.heaterId;
     const title = isEdit ? 'Edit Water Heater' : 'Add New Water Heater';
     const submitLabel = isEdit ? 'Update' : 'Create';
-    
+
     // Use existing values if editing
     const name = isEdit && this.heater ? this.heater.name : '';
     const targetTemp = isEdit && this.heater ? this.heater.target_temperature : 45;
@@ -719,7 +719,7 @@ class WaterHeaterForm {
         <a href="/water-heaters" class="btn btn-primary">Back to List</a>
         <h2>${title}</h2>
       </div>
-      
+
       <div class="card form-card">
         <div class="card-body">
           <form id="heater-form">
@@ -727,25 +727,25 @@ class WaterHeaterForm {
               <label for="name">Name</label>
               <input type="text" id="name" name="name" class="form-control" value="${name}" required>
             </div>
-            
+
             <div class="form-group">
               <label for="target_temperature">Target Temperature (°C)</label>
-              <input type="number" id="target_temperature" name="target_temperature" 
+              <input type="number" id="target_temperature" name="target_temperature"
                 class="form-control" value="${targetTemp}" min="30" max="85" step="0.5" required>
             </div>
-            
+
             <div class="form-group">
               <label for="min_temperature">Minimum Temperature (°C)</label>
-              <input type="number" id="min_temperature" name="min_temperature" 
+              <input type="number" id="min_temperature" name="min_temperature"
                 class="form-control" value="${minTemp}" min="30" max="50" step="0.5" required>
             </div>
-            
+
             <div class="form-group">
               <label for="max_temperature">Maximum Temperature (°C)</label>
-              <input type="number" id="max_temperature" name="max_temperature" 
+              <input type="number" id="max_temperature" name="max_temperature"
                 class="form-control" value="${maxTemp}" min="50" max="85" step="0.5" required>
             </div>
-            
+
             <div class="form-group">
               <label for="mode">Mode</label>
               <select id="mode" name="mode" class="form-control" required>
@@ -754,7 +754,7 @@ class WaterHeaterForm {
                 <option value="${MODES.OFF}" ${mode === MODES.OFF ? 'selected' : ''}>Off</option>
               </select>
             </div>
-            
+
             <div class="form-actions">
               <button type="submit" class="btn btn-primary">${submitLabel}</button>
               <a href="/water-heaters" class="btn">Cancel</a>
@@ -767,7 +767,7 @@ class WaterHeaterForm {
     // Add form submission handler
     document.getElementById('heater-form')?.addEventListener('submit', (e) => {
       e.preventDefault();
-      
+
       const formData = {
         name: document.getElementById('name').value,
         target_temperature: parseFloat(document.getElementById('target_temperature').value),
@@ -775,7 +775,7 @@ class WaterHeaterForm {
         min_temperature: parseFloat(document.getElementById('min_temperature').value),
         max_temperature: parseFloat(document.getElementById('max_temperature').value)
       };
-      
+
       this.saveHeater(formData);
     });
   }

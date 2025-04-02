@@ -8,13 +8,13 @@ Container_Boundary(webApp, "Web Application") {
     Component(apiClient, "API Client", "Angular", "Abstracts backend communication with standardized interfaces")
     Component(tabManager, "Tab Manager", "Angular", "Manages component lifecycle and navigation")
     Component(eventBus, "Event Bus", "Angular", "Implements pub/sub pattern for loose coupling between components")
-    
+
     Component(deviceModule, "Device Management Module", "Angular", "Manages device lifecycle and configuration")
     Component(monitoringModule, "Monitoring Module", "Angular", "Visualizes device metrics and status")
     Component(analyticsDashboard, "Analytics Dashboard", "Angular", "Provides data analysis and visualization")
     Component(alertsModule, "Alerts Module", "Angular", "Displays and manages alerts")
     Component(maintenanceModule, "Maintenance Predictions Module", "Angular", "Shows maintenance predictions and health indicators")
-    
+
     Component(authModule, "Auth Module", "Angular", "Handles authentication and authorization")
     Component(sharedModule, "Shared Module", "Angular", "Provides reusable components and utilities")
     Component(layoutModule, "Layout Module", "Angular", "Manages application layout and responsiveness")
@@ -30,7 +30,7 @@ Rel(alertsModule, apiServer, "Manages alerts via", "JSON/HTTPS")
 Rel(maintenanceModule, apiServer, "Gets predictions via", "JSON/HTTPS")
 
 Rel(deviceModule, coreModule, "Registers with")
-Rel(monitoringModule, coreModule, "Registers with") 
+Rel(monitoringModule, coreModule, "Registers with")
 Rel(analyticsDashboard, coreModule, "Registers with")
 Rel(alertsModule, coreModule, "Registers with")
 Rel(maintenanceModule, coreModule, "Registers with")

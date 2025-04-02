@@ -630,11 +630,11 @@
     flex-direction: column;
     align-items: flex-start;
   }
-  
+
   [class$="-grid-container"] {
     grid-template-columns: 1fr;
   }
-  
+
   .health-score-badge,
   .anomaly-status-badge,
   .lifespan-gauge-container,
@@ -642,7 +642,7 @@
     margin-bottom: 15px;
     align-self: center;
   }
-  
+
   .health-summary-container,
   .anomaly-info,
   .lifespan-summary-container,

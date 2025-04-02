@@ -1,6 +1,6 @@
 /**
  * IoTSphere Debug and Logging Utilities
- * 
+ *
  * A centralized debugging and diagnostic system for the IoTSphere application.
  * This module provides consistent error handling, logging, and diagnostic tools
  * for all components of the application.
@@ -23,25 +23,25 @@ const LogLevel = {
 const DebugConfig = {
   // Current log level - only messages at this level or higher are displayed
   logLevel: LogLevel.INFO,
-  
+
   // Whether to add timestamps to logs
   showTimestamps: true,
-  
+
   // Whether to include component names in logs
   showComponent: true,
-  
+
   // Send logs to remote service (when configured)
   remoteLogging: false,
-  
+
   // URL for remote logging service
   remoteLoggingUrl: null,
-  
+
   // Generate stack traces for errors
   includeStackTrace: true,
-  
+
   // Store logs in memory for debug panel
   storeLogsLocally: true,
-  
+
   // Maximum number of log entries to keep in memory
   maxLocalLogEntries: 1000
 };
@@ -51,7 +51,7 @@ const DebugConfig = {
  */
 const LogStore = {
   entries: [],
-  
+
   /**
    * Add a log entry to the store
    */
@@ -64,35 +64,35 @@ const LogStore = {
         message,
         data
       });
-      
+
       // Trim if we exceed max entries
       if (this.entries.length > DebugConfig.maxLocalLogEntries) {
         this.entries.shift();
       }
     }
   },
-  
+
   /**
    * Get all log entries
    */
   getEntries() {
     return [...this.entries];
   },
-  
+
   /**
    * Clear all log entries
    */
   clear() {
     this.entries = [];
   },
-  
+
   /**
    * Get logs for a specific component
    */
   getEntriesForComponent(component) {
     return this.entries.filter(entry => entry.component === component);
   },
-  
+
   /**
    * Get logs at or above a certain level
    */
@@ -112,27 +112,27 @@ class Logger {
   constructor(componentName) {
     this.componentName = componentName || 'Unknown';
   }
-  
+
   /**
    * Format a log message with optional timestamp and component name
    */
   formatMessage(message) {
     let formattedMessage = '';
-    
+
     if (DebugConfig.showTimestamps) {
       const now = new Date();
       const timeString = now.toISOString().split('T')[1].split('.')[0];
       formattedMessage += `[${timeString}] `;
     }
-    
+
     if (DebugConfig.showComponent) {
       formattedMessage += `[${this.componentName}] `;
     }
-    
+
     formattedMessage += message;
     return formattedMessage;
   }
-  
+
   /**
    * Log a debug message
    */
@@ -142,7 +142,7 @@ class Logger {
       LogStore.addEntry(LogLevel.DEBUG, this.componentName, message, data);
     }
   }
-  
+
   /**
    * Log an info message
    */
@@ -152,7 +152,7 @@ class Logger {
       LogStore.addEntry(LogLevel.INFO, this.componentName, message, data);
     }
   }
-  
+
   /**
    * Log a warning message
    */
@@ -162,14 +162,14 @@ class Logger {
       LogStore.addEntry(LogLevel.WARN, this.componentName, message, data);
     }
   }
-  
+
   /**
    * Log an error message
    */
   error(message, error) {
     if (DebugConfig.logLevel <= LogLevel.ERROR) {
       console.error(this.formatMessage(message), error || '');
-      
+
       // Add stack trace if available and configured
       let errorData = error;
       if (DebugConfig.includeStackTrace && error instanceof Error) {
@@ -179,23 +179,23 @@ class Logger {
           name: error.name
         };
       }
-      
+
       LogStore.addEntry(LogLevel.ERROR, this.componentName, message, errorData);
-      
+
       // Send to remote logging if enabled
       if (DebugConfig.remoteLogging && DebugConfig.remoteLoggingUrl) {
         this.sendRemoteLog(LogLevel.ERROR, message, errorData);
       }
     }
   }
-  
+
   /**
    * Log a critical error message
    */
   critical(message, error) {
     if (DebugConfig.logLevel <= LogLevel.CRITICAL) {
       console.error(this.formatMessage(`CRITICAL: ${message}`), error || '');
-      
+
       // Add stack trace if available
       let errorData = error;
       if (DebugConfig.includeStackTrace && error instanceof Error) {
@@ -205,16 +205,16 @@ class Logger {
           name: error.name
         };
       }
-      
+
       LogStore.addEntry(LogLevel.CRITICAL, this.componentName, message, errorData);
-      
+
       // Always send critical errors to remote logging if enabled
       if (DebugConfig.remoteLogging && DebugConfig.remoteLoggingUrl) {
         this.sendRemoteLog(LogLevel.CRITICAL, message, errorData);
       }
     }
   }
-  
+
   /**
    * Send a log to the remote logging service
    * @param {number} level - Log level
@@ -223,7 +223,7 @@ class Logger {
    */
   async sendRemoteLog(level, message, data) {
     if (!DebugConfig.remoteLoggingUrl) return;
-    
+
     try {
       await fetch(DebugConfig.remoteLoggingUrl, {
         method: 'POST',
@@ -279,7 +279,7 @@ const Diagnostics = {
   async testApiConnectivity() {
     const logger = new Logger('Diagnostics');
     logger.info('Testing API connectivity...');
-    
+
     try {
       const response = await fetch('/api/health-check');
       if (response.ok) {
@@ -294,7 +294,7 @@ const Diagnostics = {
       return false;
     }
   },
-  
+
   /**
    * Test water heater API specifically
    */
@@ -303,7 +303,7 @@ const Diagnostics = {
     // Get the server hostname and port for direct API access
     const apiHost = window.location.hostname;
     const apiUrl = `http://${apiHost}:8006/api/water-heaters/`;
-    
+
     console.log('Fetching water heaters directly from:', apiUrl);
     const response = await fetch(apiUrl, {
       method: 'GET',
@@ -313,22 +313,22 @@ const Diagnostics = {
       mode: 'cors'
     });
     console.log('Response status:', response.status, response.statusText);
-    
+
     if (response.ok) {
       const data = await response.json();
       console.log('Water heaters data:', data);
       console.log('First water heater:', data[0]);
-      
+
       // Check data structure for potential issues
       if (data && Array.isArray(data)) {
         console.log('Received array of', data.length, 'water heaters');
-        
+
         // Check for required properties
         const firstItem = data[0];
         if (firstItem) {
           const expectedProps = ['id', 'name', 'type', 'status', 'current_temperature', 'target_temperature', 'mode', 'heater_status'];
           const missingProps = expectedProps.filter(prop => firstItem[prop] === undefined);
-          
+
           if (missingProps.length > 0) {
             console.error('Missing required properties:', missingProps);
           } else {

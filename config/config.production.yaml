@@ -9,7 +9,7 @@ app:
 api:
   # In production, restrict CORS to specific origins
   cors:
-    allowed_origins: 
+    allowed_origins:
       - "https://iotsphere.example.com"
       - "https://admin.iotsphere.example.com"
     allow_credentials: true
@@ -22,11 +22,11 @@ database:
   credentials:
     username: "${DB_USERNAME}"
     password: "${DB_PASSWORD}"
-  
+
   # Increase connection pool for production load
   pool_size: 20
   max_overflow: 30
-  
+
   # More robust conflict handling for production
   conflict_strategy: "exception"
 
@@ -35,7 +35,7 @@ redis:
   host: "${REDIS_HOST}"
   port: "${REDIS_PORT}"
   password: "${REDIS_PASSWORD}"
-  
+
   # Increase TTL for production caching
   default_ttl: 7200  # 2 hours
 
@@ -49,7 +49,7 @@ services:
   # Standard polling intervals for production
   device_management:
     default_poll_interval: 300  # 5 minutes
-  
+
   # More conservative alert thresholds for production
   monitoring:
     alerts:
@@ -69,7 +69,7 @@ security:
     enabled: true
     cert_path: "${SSL_CERT_PATH}"
     key_path: "${SSL_KEY_PATH}"
-  
+
   # Stricter rate limiting in production
   auth:
     rate_limit:
@@ -84,12 +84,12 @@ observability:
     rotation:
       max_size_mb: 50
       backup_count: 10
-  
+
   # Enable metrics and tracing in production
   metrics:
     enabled: true
     collection_interval: 15
-  
+
   tracing:
     enabled: true
     sampling_rate: 0.05  # Sample 5% of requests for tracing

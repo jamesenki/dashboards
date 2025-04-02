@@ -7,11 +7,11 @@ Following our TDD principles, we're maintaining backward compatibility while
 adding support for externalized, configurable data sources.
 """
 import logging
-from typing import Dict, List, Any, Optional, Union
 from datetime import datetime
+from typing import Any, Dict, List, Optional, Union
 
-from src.monitoring.model_monitoring_service import ModelMonitoringService
 from src.api.data_access import data_access
+from src.monitoring.model_monitoring_service import ModelMonitoringService
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -20,29 +20,29 @@ logger = logging.getLogger(__name__)
 class ModelMonitoringServiceSync:
     """
     Synchronous wrapper for ModelMonitoringService that integrates with the DataAccessLayer.
-    
+
     This class provides synchronous versions of the ModelMonitoringService methods,
     making them easier to use from non-async contexts like the API layer.
     """
-    
+
     def __init__(self, monitoring_service=None):
         """
         Initialize the synchronous model monitoring service.
-        
+
         Args:
             monitoring_service: Optional ModelMonitoringService instance
         """
         self.monitoring_service = monitoring_service or ModelMonitoringService(
             data_access_layer=data_access
         )
-        
+
     def get_model_details(self, model_id: str) -> Dict[str, Any]:
         """
         Get detailed information about a model.
-        
+
         Args:
             model_id: The ID of the model
-            
+
         Returns:
             Dictionary with model details
         """
@@ -51,7 +51,7 @@ class ModelMonitoringServiceSync:
             model = data_access.get_model_by_id(model_id)
             if model is not None:
                 return model
-        
+
         # Fall back to generating dummy model details
         return {
             "id": model_id,
@@ -61,13 +61,13 @@ class ModelMonitoringServiceSync:
             "created_at": datetime.now().isoformat(),
             "updated_at": datetime.now().isoformat(),
             "type": "classification",
-            "status": "active"
+            "status": "active",
         }
-        
+
     def get_all_models(self) -> List[Dict[str, Any]]:
         """
         Get a list of all available models.
-        
+
         Returns:
             List of model dictionaries with basic information
         """
@@ -76,7 +76,7 @@ class ModelMonitoringServiceSync:
             models = data_access.get_models()
             if models:
                 return models
-        
+
         # Fall back to generating dummy models
         return [
             {
@@ -84,24 +84,24 @@ class ModelMonitoringServiceSync:
                 "name": "Model 1",
                 "version": "1.0.0",
                 "type": "classification",
-                "status": "active"
+                "status": "active",
             },
             {
                 "id": "model2",
                 "name": "Model 2",
                 "version": "1.1.0",
                 "type": "regression",
-                "status": "active"
-            }
+                "status": "active",
+            },
         ]
-        
+
     def get_model_metrics(self, model_id: str) -> Dict[str, Any]:
         """
         Get metrics for a specific model.
-        
+
         Args:
             model_id: The ID of the model
-            
+
         Returns:
             Dictionary containing model metrics
         """
@@ -110,7 +110,7 @@ class ModelMonitoringServiceSync:
             metrics = data_access.get_model_metrics(model_id)
             if metrics:
                 return metrics
-        
+
         # Fall back to generating dummy metrics
         return {
             "metrics_history": [
@@ -121,19 +121,19 @@ class ModelMonitoringServiceSync:
                         "precision": 0.82,
                         "recall": 0.83,
                         "f1_score": 0.82,
-                        "drift_score": 0.07
-                    }
+                        "drift_score": 0.07,
+                    },
                 }
             ]
         }
-        
+
     def get_model_alerts(self, model_id: Optional[str] = None) -> List[Dict[str, Any]]:
         """
         Get alerts for a specific model or all models.
-        
+
         Args:
             model_id: Optional ID of the model to get alerts for
-            
+
         Returns:
             List of alert dictionaries
         """
@@ -142,7 +142,7 @@ class ModelMonitoringServiceSync:
             alerts = data_access.get_model_alerts(model_id)
             if alerts is not None:
                 return alerts
-        
+
         # Fall back to generating dummy alerts
         if model_id:
             return [
@@ -154,7 +154,7 @@ class ModelMonitoringServiceSync:
                     "threshold": 0.85,
                     "actual_value": 0.82,
                     "message": "Accuracy below threshold",
-                    "severity": "MEDIUM"
+                    "severity": "MEDIUM",
                 }
             ]
         else:
@@ -167,7 +167,7 @@ class ModelMonitoringServiceSync:
                     "threshold": 0.85,
                     "actual_value": 0.82,
                     "message": "Accuracy below threshold",
-                    "severity": "MEDIUM"
+                    "severity": "MEDIUM",
                 },
                 {
                     "id": "alert-model2-1",
@@ -177,21 +177,26 @@ class ModelMonitoringServiceSync:
                     "threshold": 0.15,
                     "actual_value": 0.18,
                     "message": "Drift score exceeds threshold",
-                    "severity": "HIGH"
-                }
+                    "severity": "HIGH",
+                },
             ]
-            
-    def record_model_metrics(self, model_id: str, model_version: str, 
-                       metrics: Dict[str, float], timestamp: datetime = None) -> str:
+
+    def record_model_metrics(
+        self,
+        model_id: str,
+        model_version: str,
+        metrics: Dict[str, float],
+        timestamp: datetime = None,
+    ) -> str:
         """
         Record performance metrics for a model.
-        
+
         Args:
             model_id: ID of the model
             model_version: Version of the model
             metrics: Dictionary of metric names and values
             timestamp: Optional timestamp (defaults to now)
-            
+
         Returns:
             ID of the recorded metrics
         """

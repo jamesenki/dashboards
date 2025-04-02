@@ -145,10 +145,10 @@ Example:
 def get_vending_machine_by_id(machine_id: str) -> Optional[VendingMachine]:
     """
     Retrieve a vending machine by its ID.
-    
+
     Args:
         machine_id: The unique identifier of the vending machine
-        
+
     Returns:
         The VendingMachine object if found, None otherwise
     """
@@ -173,16 +173,16 @@ Example:
 function updateInventoryDisplay(inventoryItems) {
     const container = document.getElementById('inventory-container');
     if (!container) return;
-    
+
     // Clear current inventory
     container.innerHTML = '';
-    
+
     // Handle empty inventory case
     if (!inventoryItems || inventoryItems.length === 0) {
         container.innerHTML = '<div class="no-data-message">No inventory data available</div>';
         return;
     }
-    
+
     // Create inventory items
     inventoryItems.forEach(item => {
         // Implementation details...
@@ -216,10 +216,10 @@ def test_get_vending_machine_by_id():
     machine = VendingMachine(id=machine_id, name="Test Machine")
     db.session.add(machine)
     db.session.commit()
-    
+
     # Act
     result = get_vending_machine_by_id(machine_id)
-    
+
     # Assert
     assert result is not None
     assert result.id == machine_id
@@ -241,26 +241,26 @@ describe('updateInventoryDisplay function', () => {
     beforeEach(() => {
         document.body.innerHTML = '<div id="inventory-container"></div>';
     });
-    
+
     test('should display inventory items correctly', () => {
         // Arrange
         const mockInventory = [
             { name: 'Vanilla', level: 80, max_capacity: 100 }
         ];
-        
+
         // Act
         updateInventoryDisplay(mockInventory);
-        
+
         // Assert
         const container = document.getElementById('inventory-container');
         expect(container.innerHTML).toContain('Vanilla');
         expect(container.innerHTML).toContain('80/100');
     });
-    
+
     test('should handle empty inventory', () => {
         // Act
         updateInventoryDisplay([]);
-        
+
         // Assert
         const container = document.getElementById('inventory-container');
         expect(container.innerHTML).toContain('No inventory data available');
@@ -296,10 +296,10 @@ When implementing or modifying dashboard features, follow this TDD process:
        history_service = WaterHeaterHistoryService()
        heater_id = "test-heater-123"
        days = 7
-       
+
        # Act
        result = await history_service.get_temperature_history(heater_id, days)
-       
+
        # Assert
        assert "labels" in result
        assert "datasets" in result
@@ -313,10 +313,10 @@ When implementing or modifying dashboard features, follow this TDD process:
        heater = await self.water_heater_service.get_water_heater(heater_id)
        if not heater:
            raise Exception(f"Water heater with ID {heater_id} not found")
-            
+
        # Process readings to create chart data
        # ...implementation code here...
-       
+
        return {
            "labels": timestamp_labels,
            "datasets": [{
@@ -341,16 +341,16 @@ def test_end_to_end_consistency():
     # Get a water heater ID from the system
     water_heaters = client.get("/api/water-heaters/").json()
     heater_id = water_heaters[0]["id"]
-    
+
     # Test details endpoint
     details = client.get(f"/api/water-heaters/{heater_id}").json()
-    
+
     # Test operations endpoint
     operations = client.get(f"/api/water-heaters/{heater_id}/operations").json()
-    
+
     # Test history endpoint
     history = client.get(f"/api/water-heaters/{heater_id}/history").json()
-    
+
     # Verify consistency across all three views
     assert details["id"] == heater_id
     # Additional assertions...
@@ -376,7 +376,7 @@ class MyDashboard {
     // Register with TabManager
     window.tabManager.registerComponent('my-tab', this, 'my-dashboard');
   }
-  
+
   // Called when tab is activated
   reload() {
     try {

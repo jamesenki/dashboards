@@ -12,21 +12,21 @@ class DBSettings(BaseSettings):
     DB_USER: str = "iotsphere"
     DB_PASSWORD: str = "iotsphere"
     DB_NAME: str = "iotsphere"
-    
+
     # Control whether to show database connection errors
     SUPPRESS_DB_CONNECTION_ERRORS: bool = False
-    
+
     # Redis cache settings
     REDIS_ENABLED: bool = True
     REDIS_HOST: str = "localhost"
     REDIS_PORT: int = 6379
     REDIS_DB: int = 0
     REDIS_PASSWORD: Optional[str] = None
-    
+
     # Connection pool settings
     DB_POOL_SIZE: int = 5
     DB_MAX_OVERFLOW: int = 10
-    
+
     class Config:
         env_file = ".env"
         case_sensitive = True

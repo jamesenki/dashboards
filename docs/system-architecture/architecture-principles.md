@@ -98,13 +98,13 @@ Ensure comprehensive monitoring:
 - **Operational Data**: MongoDB for flexible document-based storage
 - **Time Series Data**: InfluxDB for telemetry and metric storage
 - **Caching**: Redis for distributed caching
-- **Database Patterns**: 
+- **Database Patterns**:
   * Apply Command Query Responsibility Segregation (CQRS) for complex domains
   * Use database-per-service when appropriate
 
 ### API Standards
 
-- **RESTful Conventions**: 
+- **RESTful Conventions**:
   * Follow REST resource naming conventions
   * Use appropriate HTTP methods (GET, POST, PUT, DELETE)
   * Return appropriate status codes

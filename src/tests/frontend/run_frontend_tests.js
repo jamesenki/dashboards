@@ -1,6 +1,6 @@
 /**
  * Frontend Test Runner for IoTSphere
- * 
+ *
  * This script sets up a testing environment for frontend JavaScript components
  * and runs the test suite using Jest.
  */
@@ -40,7 +40,7 @@ global.Chart = {
 // Mock the water heater prediction functions
 global.window.renderUsageClassification = jest.fn((data, container) => {
   const div = document.getElementById('usage-classification');
-  if (!data?.usage_patterns?.raw_details?.usage_classification || 
+  if (!data?.usage_patterns?.raw_details?.usage_classification ||
       Object.keys(data?.usage_patterns?.raw_details?.usage_classification || {}).length === 0) {
     div.innerHTML = '<p class="no-data-message">No usage classification data available</p>';
   } else {
@@ -50,7 +50,7 @@ global.window.renderUsageClassification = jest.fn((data, container) => {
 
 global.window.renderComponentImpacts = jest.fn((data, container) => {
   const div = document.getElementById('component-impacts');
-  if (!data?.usage_patterns?.raw_details?.impact_on_components || 
+  if (!data?.usage_patterns?.raw_details?.impact_on_components ||
       Object.keys(data?.usage_patterns?.raw_details?.impact_on_components || {}).length === 0) {
     div.innerHTML = '<p class="no-data-message">No component impact data available</p>';
   } else {
@@ -60,7 +60,7 @@ global.window.renderComponentImpacts = jest.fn((data, container) => {
 
 global.window.renderOptimizationRecommendations = jest.fn((data, container) => {
   const div = document.getElementById('optimization-recommendations');
-  if (!data?.usage_patterns?.raw_details?.optimization_recommendations || 
+  if (!data?.usage_patterns?.raw_details?.optimization_recommendations ||
       (data?.usage_patterns?.raw_details?.optimization_recommendations || []).length === 0) {
     div.innerHTML = '<p class="no-data-message">No optimization recommendations available</p>';
   } else {
@@ -70,7 +70,7 @@ global.window.renderOptimizationRecommendations = jest.fn((data, container) => {
 
 global.window.renderAnomalyDetails = jest.fn((data, container) => {
   const div = document.getElementById('anomaly-details');
-  if (!data?.anomaly_detection?.raw_details?.detected_anomalies || 
+  if (!data?.anomaly_detection?.raw_details?.detected_anomalies ||
       (data?.anomaly_detection?.raw_details?.detected_anomalies || []).length === 0) {
     div.innerHTML = '<p class="no-data-message">No anomalies detected</p>';
   } else {
@@ -80,17 +80,17 @@ global.window.renderAnomalyDetails = jest.fn((data, container) => {
 
 global.window.renderWaterHeaterRecommendations = jest.fn((data, container) => {
   const div = document.getElementById('recommendations-container');
-  
+
   // Add section header
   const header = document.createElement('h3');
   header.className = 'prediction-section-header';
   header.textContent = 'Recommended Actions';
   div.appendChild(header);
-  
+
   // Add recommendations from all prediction types
   const types = ['usage_patterns', 'anomaly_detection', 'multi_factor'];
   let hasRecommendations = false;
-  
+
   types.forEach(type => {
     if (data[type] && data[type].recommended_actions && data[type].recommended_actions.length > 0) {
       data[type].recommended_actions.forEach(action => {
@@ -102,7 +102,7 @@ global.window.renderWaterHeaterRecommendations = jest.fn((data, container) => {
       });
     }
   });
-  
+
   if (!hasRecommendations) {
     div.innerHTML += '<p class="no-data-message">No recommendations available</p>';
   }

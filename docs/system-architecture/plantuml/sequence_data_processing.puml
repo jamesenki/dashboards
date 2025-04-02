@@ -24,11 +24,11 @@ alt Alert threshold exceeded
     alertEngine -> notificationMgr: triggerAlert(alertData)
     notificationMgr -> subscriptionMgr: getSubscribers(alertType)
     subscriptionMgr --> notificationMgr: subscribersList
-    
+
     loop for each subscriber
         notificationMgr -> user: Send notification
     end
-    
+
     notificationMgr -> timeseriesDB: storeAlertEvent()
 end
 

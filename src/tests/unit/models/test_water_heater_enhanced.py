@@ -1,19 +1,23 @@
 """
 Test module for enhanced water heater model with type and diagnostic codes.
 """
-import pytest
 from datetime import datetime
 from typing import List, Optional
 
-from src.models.device import DeviceType, DeviceStatus
+import pytest
+
+from src.models.device import DeviceStatus, DeviceType
+from src.models.water_heater import (
+    WaterHeaterDiagnosticCode,  # This will be added to the model
+)
+from src.models.water_heater import WaterHeaterType  # This will be added to the model
 from src.models.water_heater import (
     WaterHeater,
     WaterHeaterMode,
-    WaterHeaterStatus,
     WaterHeaterReading,
-    WaterHeaterType,  # This will be added to the model
-    WaterHeaterDiagnosticCode  # This will be added to the model
+    WaterHeaterStatus,
 )
+
 
 @pytest.mark.tdd_red
 def test_water_heater_type():
@@ -34,7 +38,7 @@ def test_water_heater_type():
         efficiency_rating=0.95,
         max_temperature=85.0,
     )
-    
+
     # Create a residential water heater
     residential_heater = WaterHeater(
         id="wh-res-001",
@@ -51,14 +55,15 @@ def test_water_heater_type():
         efficiency_rating=0.90,
         max_temperature=75.0,
     )
-    
+
     # Verify types are correctly set
     assert commercial_heater.heater_type == WaterHeaterType.COMMERCIAL
     assert residential_heater.heater_type == WaterHeaterType.RESIDENTIAL
-    
+
     # Verify other properties specific to each type
     assert commercial_heater.max_temperature == 85.0
     assert residential_heater.max_temperature == 75.0
+
 
 @pytest.mark.tdd_red
 def test_water_heater_diagnostic_codes():
@@ -77,7 +82,7 @@ def test_water_heater_diagnostic_codes():
         heater_type=WaterHeaterType.COMMERCIAL,
         diagnostic_codes=[],  # New field for tracking active diagnostic codes
     )
-    
+
     # Add diagnostic codes
     heater.add_diagnostic_code(
         WaterHeaterDiagnosticCode(
@@ -85,37 +90,38 @@ def test_water_heater_diagnostic_codes():
             description="High temperature warning",
             severity="Warning",
             timestamp=datetime.now(),
-            active=True
+            active=True,
         )
     )
-    
+
     heater.add_diagnostic_code(
         WaterHeaterDiagnosticCode(
             code="C006",
             description="Control board communication error",
             severity="Warning",
             timestamp=datetime.now(),
-            active=True
+            active=True,
         )
     )
-    
+
     # Check that diagnostic codes were added
     assert len(heater.diagnostic_codes) == 2
     assert heater.diagnostic_codes[0].code == "C001"
     assert heater.diagnostic_codes[1].code == "C006"
-    
+
     # Resolve a diagnostic code
     heater.resolve_diagnostic_code("C001")
-    
+
     # Check that code is marked as inactive but still in history
     assert len(heater.diagnostic_codes) == 2
     assert not heater.diagnostic_codes[0].active
     assert heater.diagnostic_codes[1].active
-    
+
     # Check active diagnostic codes method
     active_codes = heater.get_active_diagnostic_codes()
     assert len(active_codes) == 1
     assert active_codes[0].code == "C006"
+
 
 @pytest.mark.tdd_red
 def test_water_heater_specification_link():
@@ -132,9 +138,9 @@ def test_water_heater_specification_link():
         mode=WaterHeaterMode.ECO,
         heater_status=WaterHeaterStatus.HEATING,
         heater_type=WaterHeaterType.COMMERCIAL,
-        specification_link="/docs/specifications/water_heaters/commercial.md"  # New field
+        specification_link="/docs/specifications/water_heaters/commercial.md",  # New field
     )
-    
+
     # Create a residential water heater
     residential_heater = WaterHeater(
         id="wh-res-001",
@@ -147,9 +153,15 @@ def test_water_heater_specification_link():
         mode=WaterHeaterMode.ECO,
         heater_status=WaterHeaterStatus.HEATING,
         heater_type=WaterHeaterType.RESIDENTIAL,
-        specification_link="/docs/specifications/water_heaters/residential.md"  # New field
+        specification_link="/docs/specifications/water_heaters/residential.md",  # New field
     )
-    
+
     # Verify specification links are correctly set
-    assert commercial_heater.specification_link == "/docs/specifications/water_heaters/commercial.md"
-    assert residential_heater.specification_link == "/docs/specifications/water_heaters/residential.md"
+    assert (
+        commercial_heater.specification_link
+        == "/docs/specifications/water_heaters/commercial.md"
+    )
+    assert (
+        residential_heater.specification_link
+        == "/docs/specifications/water_heaters/residential.md"
+    )

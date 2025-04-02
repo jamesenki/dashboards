@@ -13,7 +13,7 @@
   --chart-green: #38b000;
   --chart-yellow: #ffbe0b;
   --chart-red: #ff006e;
-  
+
   /* Gauge colors */
   --gauge-red: #f44336;
   --gauge-yellow: #ffc107;
@@ -474,15 +474,15 @@ select.form-control {
     padding: 10px;
     justify-content: center;
   }
-  
+
   .sidebar-icon {
     margin: 0 10px;
   }
-  
+
   .main-content {
     margin-left: 0;
   }
-  
+
   .dashboard {
     grid-template-columns: 1fr;
   }

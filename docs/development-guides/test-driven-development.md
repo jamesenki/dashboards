@@ -44,7 +44,7 @@ def test_sentiment_classifier():
     classifier = SentimentClassifier()
     positive_text = "I love this product, it's amazing!"
     assert classifier.predict(positive_text) > 0.8  # Should predict positive with high confidence
-    
+
     negative_text = "This is terrible, I hate it."
     assert classifier.predict(negative_text) < 0.2  # Should predict negative with high confidence
 ```
@@ -119,7 +119,7 @@ def test_text_classifier_prediction():
     classifier = TextClassifier(categories=['sports', 'politics'])
     sports_text = "The team won the championship with a last-minute goal"
     politics_text = "The senate will vote on the new bill tomorrow"
-    
+
     assert classifier.predict(sports_text) == 'sports'
     assert classifier.predict(politics_text) == 'politics'
 ```
@@ -132,12 +132,12 @@ class TextClassifier:
         self.vectorizer = CountVectorizer()
         self.model = MultinomialNB()
         self._is_trained = False
-        
+
     def train(self, texts, labels):
         X = self.vectorizer.fit_transform(texts)
         self.model.fit(X, labels)
         self._is_trained = True
-        
+
     def predict(self, text):
         if not self._is_trained:
             # For test purposes only, predict based on keywords
@@ -146,7 +146,7 @@ class TextClassifier:
             elif 'senate' in text or 'vote' in text or 'bill' in text:
                 return 'politics'
             return self.categories[0]
-            
+
         X = self.vectorizer.transform([text])
         return self.model.predict(X)[0]
 ```
@@ -159,19 +159,19 @@ class TextClassifier:
         self.vectorizer = TfidfVectorizer(stop_words='english')
         self.model = LinearSVC()
         self._is_trained = False
-        
+
     def train(self, texts, labels):
         X = self.vectorizer.fit_transform(texts)
         self.model.fit(X, labels)
         self._is_trained = True
-        
+
     def predict(self, text):
         if not self._is_trained:
             raise ValueError("Model must be trained before prediction")
-            
+
         X = self.vectorizer.transform([text])
         return self.model.predict(X)[0]
-        
+
     def evaluate(self, test_texts, test_labels):
         X_test = self.vectorizer.transform(test_texts)
         predictions = self.model.predict(X_test)

@@ -67,13 +67,13 @@ Use Google-style docstrings for functions, classes, and modules:
 def calculate_average_temperature(readings: List[float]) -> float:
     """
     Calculate the average temperature from a list of readings.
-    
+
     Args:
         readings: A list of temperature readings in Celsius
-        
+
     Returns:
         The average temperature
-        
+
     Raises:
         ValueError: If the readings list is empty
     """
@@ -132,11 +132,11 @@ function getInventoryStatus(current, max) {
   const value = Number(current) || 0;
   const capacity = Number(max) || 100;
   const percentage = Math.max(0, Math.min(100, (value / capacity) * 100));
-  
+
   // Determine status based on percentage thresholds
   let statusClass = 'inventory-status-ok';
   let statusText = 'OK';
-  
+
   if (percentage <= 20) {
     statusClass = 'inventory-status-critical';
     statusText = 'Critical';
@@ -144,7 +144,7 @@ function getInventoryStatus(current, max) {
     statusClass = 'inventory-status-low';
     statusText = 'Low';
   }
-  
+
   return { percentage, statusClass, statusText };
 }
 ```
@@ -243,14 +243,14 @@ async function fetchMachineData(machineId) {
 
 ```sql
 -- Good
-SELECT user_id, username, email 
-FROM user 
-WHERE status = 'active' 
+SELECT user_id, username, email
+FROM user
+WHERE status = 'active'
 ORDER BY created_at DESC;
 
 -- Avoid
-SELECT * 
-FROM users 
+SELECT *
+FROM users
 WHERE status = 'active';
 ```
 
@@ -271,10 +271,10 @@ def test_get_vending_machine_by_id_returns_correct_machine():
     expected_machine = VendingMachine(id=machine_id, name="Test Machine")
     db.session.add(expected_machine)
     db.session.commit()
-    
+
     # Act
     result = get_vending_machine_by_id(machine_id)
-    
+
     # Assert
     assert result is not None
     assert result.id == machine_id
@@ -289,16 +289,16 @@ describe('updateInventoryDisplay', () => {
     // Set up DOM for testing
     document.body.innerHTML = '<div id="inventory-container"></div>';
   });
-  
+
   test('displays inventory items with correct format', () => {
     // Arrange
     const inventoryItems = [
       { name: 'Vanilla', level: 80, max_capacity: 100 }
     ];
-    
+
     // Act
     updateInventoryDisplay(inventoryItems);
-    
+
     // Assert
     const container = document.getElementById('inventory-container');
     expect(container.innerHTML).toContain('Vanilla');
@@ -330,7 +330,7 @@ describe('updateInventoryDisplay', () => {
 ### Sample Review Comment
 
 ```
-[Suggestion] Consider using a more descriptive variable name than 'data' here. 
+[Suggestion] Consider using a more descriptive variable name than 'data' here.
 Perhaps 'operationsData' or 'machineMetrics' would better convey its purpose.
 ```
 
@@ -385,7 +385,7 @@ Example:
 ```
 feat(operations): add real-time inventory tracking
 
-Implement real-time inventory tracking on the operations dashboard with 
+Implement real-time inventory tracking on the operations dashboard with
 visual indicators for inventory levels and automatic updating.
 
 Closes #123

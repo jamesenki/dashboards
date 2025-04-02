@@ -50,7 +50,7 @@ The SQLite implementation uses these tables:
    - water_heater_id (FOREIGN KEY)
    - temperature, pressure, energy_usage, flow_rate
    - timestamp
-  
+
 3. **water_heater_diagnostic_codes**: Stores error codes and diagnostic information
    - id (PRIMARY KEY)
    - water_heater_id (FOREIGN KEY)

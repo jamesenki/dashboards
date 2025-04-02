@@ -473,16 +473,16 @@
   .inventory-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .gauge-panel {
     padding: 10px;
   }
-  
+
   .gauge-container {
     width: 120px;
     height: 60px;
   }
-  
+
   .gauge-needle {
     height: 55px;
   }

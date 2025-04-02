@@ -9,7 +9,7 @@ This directory contains tests for the model monitoring dashboard functionality o
 The `test_model_monitoring_service.py` file tests the core functionality for tracking and analyzing model performance metrics:
 
 - Recording model performance metrics
-- Retrieving metric history 
+- Retrieving metric history
 - Creating alert rules for metric thresholds
 - Checking for triggered alerts
 - Calculating model drift between versions

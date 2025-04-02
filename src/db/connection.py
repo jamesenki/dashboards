@@ -1,14 +1,14 @@
-import logging
 import importlib.util
+import logging
 import sys
-from typing import AsyncGenerator, Optional, Dict, Any, Union
+from typing import Any, AsyncGenerator, Dict, Optional, Union
 
 from sqlalchemy import NullPool, text
 
 # Check if required packages are available
-HAS_GREENLET = importlib.util.find_spec('greenlet') is not None
-HAS_ASYNCPG = importlib.util.find_spec('asyncpg') is not None
-HAS_AIOSQLITE = importlib.util.find_spec('aiosqlite') is not None
+HAS_GREENLET = importlib.util.find_spec("greenlet") is not None
+HAS_ASYNCPG = importlib.util.find_spec("asyncpg") is not None
+HAS_AIOSQLITE = importlib.util.find_spec("aiosqlite") is not None
 
 # Only import these if greenlet is available to avoid errors
 if HAS_GREENLET:
@@ -20,9 +20,15 @@ if HAS_GREENLET:
     )
 else:
     # Create dummy classes for type hints when greenlet is not available
-    class AsyncEngine: pass
-    class AsyncSession: pass
-    class async_sessionmaker: pass
+    class AsyncEngine:
+        pass
+
+    class AsyncSession:
+        pass
+
+    class async_sessionmaker:
+        pass
+
     create_async_engine = None
 
 from src.db.config import db_settings, get_db_url
@@ -37,24 +43,30 @@ async_session_factory: Optional[async_sessionmaker] = None
 def get_engine() -> Optional[AsyncEngine]:
     """Get or create SQLAlchemy engine with proper error handling."""
     global engine
-    
+
     if engine is None:
         # Check if required dependencies are installed
         if not HAS_GREENLET:
-            logger.error("The greenlet library is required for async database operations. Using in-memory fallback.")
+            logger.error(
+                "The greenlet library is required for async database operations. Using in-memory fallback."
+            )
             # Force memory mode when greenlet is not available
             db_settings.DB_TYPE = "memory"
             return None
-        
+
         # Handle specific database types and their dependencies
         if db_settings.DB_TYPE == "postgres" and not HAS_ASYNCPG:
-            logger.error("The asyncpg library is required for PostgreSQL. Falling back to SQLite.")
+            logger.error(
+                "The asyncpg library is required for PostgreSQL. Falling back to SQLite."
+            )
             db_settings.DB_TYPE = "sqlite"
-        
+
         if db_settings.DB_TYPE == "sqlite" and not HAS_AIOSQLITE:
-            logger.error("The aiosqlite library is required for SQLite. Using in-memory fallback.")
+            logger.error(
+                "The aiosqlite library is required for SQLite. Using in-memory fallback."
+            )
             db_settings.DB_TYPE = "memory"
-            
+
         try:
             url = get_db_url()
             if db_settings.DB_TYPE == "memory":
@@ -69,7 +81,9 @@ def get_engine() -> Optional[AsyncEngine]:
                 )
             logger.info(f"Created database engine for {db_settings.DB_TYPE}")
         except Exception as e:
-            logger.error(f"Failed to create database engine: {str(e)}. Using in-memory fallback.")
+            logger.error(
+                f"Failed to create database engine: {str(e)}. Using in-memory fallback."
+            )
             db_settings.DB_TYPE = "memory"
             try:
                 url = get_db_url()
@@ -77,32 +91,34 @@ def get_engine() -> Optional[AsyncEngine]:
             except Exception as inner_e:
                 logger.critical(f"Critical database error: {str(inner_e)}")
                 return None
-    
+
     return engine
 
 
 def get_session_factory() -> Optional[async_sessionmaker]:
     """Get or create AsyncSession factory with proper error handling."""
     global async_session_factory
-    
+
     if async_session_factory is None:
         if not HAS_GREENLET:
             logger.error("Cannot create session factory: greenlet library is missing.")
             return None
-            
+
         try:
             engine = get_engine()
             if engine is None:
-                logger.error("Cannot create session factory: engine initialization failed.")
+                logger.error(
+                    "Cannot create session factory: engine initialization failed."
+                )
                 return None
-                
+
             async_session_factory = async_sessionmaker(
                 engine, expire_on_commit=False, class_=AsyncSession
             )
         except Exception as e:
             logger.error(f"Failed to create session factory: {str(e)}")
             return None
-            
+
     return async_session_factory
 
 
@@ -112,13 +128,15 @@ async def get_db_session() -> AsyncGenerator[Union[AsyncSession, None], None]:
         logger.warning("Database session unavailable: greenlet library is missing.")
         yield None
         return
-        
+
     session_factory = get_session_factory()
     if session_factory is None:
-        logger.warning("Database session unavailable: session factory initialization failed.")
+        logger.warning(
+            "Database session unavailable: session factory initialization failed."
+        )
         yield None
         return
-    
+
     try:
         session = session_factory()
         try:

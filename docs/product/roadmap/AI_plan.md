@@ -173,10 +173,10 @@ def test_maintenance_prediction_model():
     model = MaintenancePredictionModel()
     machine_id = "test-machine-123"
     historical_data = load_test_data(machine_id)
-    
+
     # Act
     prediction = model.predict_next_maintenance(machine_id)
-    
+
     # Assert
     assert isinstance(prediction.days_until_maintenance, int)
     assert 0 <= prediction.days_until_maintenance <= 365
@@ -208,16 +208,16 @@ def test_maintenance_prediction_model():
 ```python
 def test_vending_machine_training_data_quality():
     data = load_vending_machine_training_data()
-    
+
     # Test data completeness
     assert not data.isna().any().any(), "Data contains missing values"
-    
+
     # Test data sufficiency
     assert len(data) >= 1000, "Insufficient training examples"
-    
+
     # Test class balance
     assert data['maintenance_needed'].value_counts().min() >= 100, "Insufficient examples of maintenance events"
-    
+
     # Test feature distributions
     assert 0 < data['temperature'].mean() < 40, "Temperature values outside expected range"
     assert 0 < data['power_consumption'].mean() < 500, "Power consumption outside expected range"
@@ -230,19 +230,19 @@ def test_energy_optimization_model_performance():
     # Arrange
     model = EnergyOptimizationModel()
     X_test, y_test = load_energy_test_data()
-    
+
     # Act
     predictions = model.predict(X_test)
     mae = mean_absolute_error(y_test, predictions)
-    
+
     # Assert
     assert mae <= 15.0, f"Model MAE ({mae}) exceeds maximum threshold of 15.0 watts"
-    
+
     # Test again after running
     X_test_modified = add_noise(X_test)
     predictions_modified = model.predict(X_test_modified)
     mae_modified = mean_absolute_error(y_test, predictions_modified)
-    
+
     # Verify robustness to noise
     assert mae_modified <= 25.0, "Model is not robust to noisy inputs"
 ```
@@ -254,14 +254,14 @@ def test_sales_prediction_model_robustness():
     # Arrange
     model = SalesPredictionModel()
     test_inputs = load_test_sales_data()
-    
+
     # Act: Test with perturbed inputs
     perturbed_inputs = test_inputs.copy()
     perturbed_inputs["temperature"] = perturbed_inputs["temperature"] + 2.0  # 2 degrees higher
-    
+
     original_predictions = model.predict(test_inputs)
     perturbed_predictions = model.predict(perturbed_inputs)
-    
+
     # Assert
     rmse = np.sqrt(mean_squared_error(original_predictions, perturbed_predictions))
     assert rmse < 50.0, "Model predictions change too dramatically with small input changes"

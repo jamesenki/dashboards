@@ -43,7 +43,7 @@ class VendingMachineList {
   async init() {
     try {
       await this.loadMachines();
-      
+
       // Validate that we have proper data before rendering
       if (this.machines && Array.isArray(this.machines) && this.machines.length > 0) {
         console.log('Successfully loaded vending machines, rendering...');
@@ -65,7 +65,7 @@ class VendingMachineList {
   async loadMachines() {
     try {
       console.log('Fetching vending machines from API...');
-      
+
       // Try API call with fallback to direct fetch
       let response;
       try {
@@ -77,13 +77,13 @@ class VendingMachineList {
         }
       } catch (apiError) {
         console.warn('API client request failed, trying direct fetch:', apiError);
-        
+
         // Direct fetch fallback
         // Always use localhost:8006 for the API server
         const apiHost = 'localhost';
         // Fix the endpoint to handle redirects - use no trailing slash
         const apiUrl = `http://${apiHost}:8006/api/vending-machines`;
-        
+
         const directResponse = await fetch(apiUrl, {
           method: 'GET',
           headers: {
@@ -92,15 +92,15 @@ class VendingMachineList {
           mode: 'cors',
           redirect: 'follow' // Explicitly follow redirects
         });
-        
+
         if (!directResponse.ok) {
           throw new Error(`Direct API fetch failed: ${directResponse.status} ${directResponse.statusText}`);
         }
-        
+
         response = await directResponse.json();
         console.log('Direct fetch response:', response);
       }
-      
+
       // Validate the response format
       if (response && Array.isArray(response)) {
         // Clean/normalize data - filter out any invalid entries
@@ -111,7 +111,7 @@ class VendingMachineList {
           }
           return isValid;
         }).map(machine => this.normalizeMachineData(machine));
-        
+
         console.log('Processed machines:', this.machines);
       } else {
         console.error('Invalid API response format, expected array but got:', typeof response);
@@ -121,7 +121,7 @@ class VendingMachineList {
     } catch (error) {
       console.error('Error loading vending machines:', error);
       console.error('Error details:', error.message, error.stack);
-      
+
       // Try to load some mock data as a last resort
       this.loadMockData();
       throw error;
@@ -136,7 +136,7 @@ class VendingMachineList {
         <h2>Vending Machines</h2>
         <a href="/vending-machines/new" class="btn btn-primary">Add New</a>
       </div>
-      
+
       <div class="dashboard">
         ${this.machines.map(machine => this.renderMachineCard(machine)).join('')}
       </div>
@@ -152,13 +152,13 @@ class VendingMachineList {
 
   renderEmpty() {
     if (!this.container) return;
-    
+
     this.container.innerHTML = `
       <div class="page-header">
         <h2>Vending Machines</h2>
         <a href="/vending-machines/new" class="btn btn-primary">Add New</a>
       </div>
-      
+
       <div class="empty-state">
         <div class="empty-icon">📦</div>
         <h3>No Vending Machines Found</h3>
@@ -169,13 +169,13 @@ class VendingMachineList {
 
   renderError(message) {
     if (!this.container) return;
-    
+
     this.container.innerHTML = `
       <div class="page-header">
         <h2>Vending Machines</h2>
         <a href="/vending-machines/new" class="btn btn-primary">Add New</a>
       </div>
-      
+
       <div class="error-state">
         <div class="error-icon">⚠️</div>
         <h3>Something Went Wrong</h3>
@@ -261,16 +261,16 @@ class VendingMachineList {
       }
     ].map(machine => this.normalizeMachineData(machine));
   }
-  
+
   renderMachineCard(machine) {
     // Get inventory count
     const totalProducts = machine.products?.length || 0;
     const totalItems = machine.products?.reduce((sum, p) => sum + (p.quantity || 0), 0) || 0;
     const capacityPercentage = machine.total_capacity ? Math.min(100, Math.round((totalItems / machine.total_capacity) * 100)) : 0;
-    
+
     // Get cash level
     const cashPercentage = machine.cash_capacity ? Math.min(100, Math.round((machine.current_cash / machine.cash_capacity) * 100)) : 0;
-    
+
     // Determine status classes
     const statusClass = {
       'OPERATIONAL': 'status-success',
@@ -278,10 +278,10 @@ class VendingMachineList {
       'RESTOCKING': 'status-info',
       'OUT_OF_ORDER': 'status-danger'
     }[machine.machine_status] || 'status-secondary';
-    
+
     // Get last reading info
     const lastReading = machine.last_reading || {};
-    
+
     return `
       <div id="machine-${machine.id}" class="device-card ${statusClass}">
         <div class="device-card-header">
@@ -296,7 +296,7 @@ class VendingMachineList {
             </div>
           </div>
         </div>
-        
+
         <div class="device-card-body">
           <div class="device-info">
             <div class="info-row">
@@ -312,7 +312,7 @@ class VendingMachineList {
               <span class="info-value">${formatTemperature(machine.temperature)}</span>
             </div>
           </div>
-          
+
           <div class="device-metrics">
             <div class="metric">
               <div class="metric-title">Cash Level</div>
@@ -321,7 +321,7 @@ class VendingMachineList {
               </div>
               <div class="metric-value">${formatCurrency(machine.current_cash)}</div>
             </div>
-            
+
             <div class="metric">
               <div class="metric-title">Inventory</div>
               <div class="progress-bar">
@@ -331,7 +331,7 @@ class VendingMachineList {
             </div>
           </div>
         </div>
-        
+
         <div class="device-card-footer">
           <div class="last-updated">Last updated: ${formatDate(lastReading.timestamp || new Date())}</div>
           <button class="btn btn-sm btn-primary">Details</button>
@@ -339,7 +339,7 @@ class VendingMachineList {
       </div>
     `;
   }
-  
+
   normalizeMachineData(machine) {
     // Create a copy with all required fields properly initialized
     return {
@@ -355,8 +355,8 @@ class VendingMachineList {
       total_capacity: machine.total_capacity || 50,
       products: Array.isArray(machine.products) ? machine.products : [],
       readings: Array.isArray(machine.readings) ? machine.readings : [],
-      last_reading: machine.readings && machine.readings.length > 0 ? 
-        machine.readings[machine.readings.length - 1] : 
+      last_reading: machine.readings && machine.readings.length > 0 ?
+        machine.readings[machine.readings.length - 1] :
         (machine.last_reading || null)
     };
   }
@@ -378,7 +378,7 @@ class VendingMachineDetail {
   async init() {
     try {
       await this.loadMachine();
-      
+
       if (this.machine) {
         this.render();
         this.initCharts();
@@ -396,7 +396,7 @@ class VendingMachineDetail {
     try {
       let response;
       const apiUrl = `/api/vending-machines/${this.machineId}`;
-      
+
       try {
         // Use the API client if available
         if (typeof api !== 'undefined' && api.getVendingMachine) {
@@ -406,11 +406,11 @@ class VendingMachineDetail {
         }
       } catch (apiError) {
         console.warn('API client request failed, trying direct fetch:', apiError);
-        
+
         // Direct fetch fallback
         const apiHost = window.location.hostname;
         const directUrl = `http://${apiHost}:8006${apiUrl}`;
-        
+
         const directResponse = await fetch(directUrl, {
           method: 'GET',
           headers: {
@@ -418,14 +418,14 @@ class VendingMachineDetail {
           },
           mode: 'cors'
         });
-        
+
         if (!directResponse.ok) {
           throw new Error(`Direct API fetch failed: ${directResponse.status} ${directResponse.statusText}`);
         }
-        
+
         response = await directResponse.json();
       }
-      
+
       if (response && response.id) {
         this.machine = this.normalizeMachineData(response);
         console.log('Loaded machine detail:', this.machine);
@@ -492,16 +492,16 @@ class VendingMachineDetail {
   render() {
     if (!this.container || !this.machine) return;
 
-    const lastReading = this.machine.readings && this.machine.readings.length > 0 ? 
+    const lastReading = this.machine.readings && this.machine.readings.length > 0 ?
       this.machine.readings[this.machine.readings.length - 1] : {};
-    
+
     const statusClass = {
       'OPERATIONAL': 'status-success',
       'LOW_PRODUCT': 'status-warning',
       'RESTOCKING': 'status-info',
       'OUT_OF_ORDER': 'status-danger'
     }[this.machine.machine_status] || 'status-secondary';
-    
+
     this.container.innerHTML = `
       <div class="device-detail ${statusClass}">
         <div class="device-header">
@@ -587,10 +587,10 @@ class VendingMachineDetail {
       </div>
     `;
   }
-  
+
   renderError(message) {
     if (!this.container) return;
-    
+
     this.container.innerHTML = `
       <div class="error-state">
         <div class="error-icon">⚠️</div>
@@ -600,12 +600,12 @@ class VendingMachineDetail {
       </div>
     `;
   }
-  
+
   renderProductList() {
     if (!this.machine.products || !this.machine.products.length) {
       return `<div class="empty-inventory">No products in inventory. Add products to get started.</div>`;
     }
-    
+
     return this.machine.products.map(product => {
       // Calculate stock status
       let stockStatus = 'normal';
@@ -614,7 +614,7 @@ class VendingMachineDetail {
       } else if (product.quantity < 3) {
         stockStatus = 'low';
       }
-      
+
       return `
         <div class="inventory-row ${stockStatus}" data-product-id="${product.product_id}">
           <div class="inventory-col product-id">${product.product_id}</div>
@@ -630,19 +630,19 @@ class VendingMachineDetail {
       `;
     }).join('');
   }
-  
+
   renderActivityList() {
     if (!this.machine.readings || !this.machine.readings.length) {
       return `<div class="empty-activity">No recent activity available.</div>`;
     }
-    
+
     // Show last 10 readings
     const recentReadings = this.machine.readings.slice(-10).reverse();
-    
+
     return recentReadings.map(reading => {
       const doorStatus = reading.door_status === 'OPEN' ? 'opened' : 'closed';
       const salesInfo = reading.sales_count ? `${reading.sales_count} sales registered` : '';
-      
+
       return `
         <div class="activity-item">
           <div class="activity-time">${formatDate(reading.timestamp)}</div>
@@ -656,14 +656,14 @@ class VendingMachineDetail {
       `;
     }).join('');
   }
-  
+
   initCharts() {
     // Initialize temperature chart if Chart.js is available
     if (typeof Chart !== 'undefined' && this.machine.readings && this.machine.readings.length > 0) {
       const ctx = document.getElementById('temperature-chart');
       if (ctx) {
         const readings = this.machine.readings.slice(-24); // Last 24 readings
-        
+
         const data = {
           labels: readings.map(r => {
             const date = new Date(r.timestamp);
@@ -678,7 +678,7 @@ class VendingMachineDetail {
             tension: 0.2
           }]
         };
-        
+
         this.temperatureChart = new Chart(ctx, {
           type: 'line',
           data: data,
@@ -705,14 +705,14 @@ class VendingMachineDetail {
       }
     }
   }
-  
+
   setupEventListeners() {
     // Add product button
     const addProductBtn = document.getElementById('add-product-btn');
     if (addProductBtn) {
       addProductBtn.addEventListener('click', () => this.openAddProductModal());
     }
-    
+
     // Product quantity adjustment buttons
     const adjustBtns = document.querySelectorAll('.product-adjust-btn');
     adjustBtns.forEach(btn => {
@@ -720,18 +720,18 @@ class VendingMachineDetail {
         const action = e.target.dataset.action;
         const productRow = e.target.closest('.inventory-row');
         const productId = productRow.dataset.productId;
-        
+
         const quantityChange = action === 'increase' ? 1 : -1;
         this.updateProductQuantity(productId, quantityChange);
       });
     });
   }
-  
+
   async updateProductQuantity(productId, quantityChange) {
     try {
       const apiUrl = `/api/vending-machines/${this.machineId}/products/${productId}/quantity`;
       const data = { quantity_change: quantityChange };
-      
+
       // Try to use API client if available
       let response;
       try {
@@ -742,11 +742,11 @@ class VendingMachineDetail {
         }
       } catch (apiError) {
         console.warn('API client request failed, trying direct fetch:', apiError);
-        
+
         // Direct fetch fallback
         const apiHost = window.location.hostname;
         const directUrl = `http://${apiHost}:8006${apiUrl}`;
-        
+
         const directResponse = await fetch(directUrl, {
           method: 'PUT',
           headers: {
@@ -756,14 +756,14 @@ class VendingMachineDetail {
           body: JSON.stringify(data),
           mode: 'cors'
         });
-        
+
         if (!directResponse.ok) {
           throw new Error(`Direct API fetch failed: ${directResponse.status} ${directResponse.statusText}`);
         }
-        
+
         response = await directResponse.json();
       }
-      
+
       // Update the machine data and re-render
       if (response && response.id) {
         this.machine = this.normalizeMachineData(response);
@@ -776,12 +776,12 @@ class VendingMachineDetail {
       alert('Failed to update product quantity. Please try again.');
     }
   }
-  
+
   openAddProductModal() {
     // In a full implementation, this would open a modal for adding a new product
     alert('Add product functionality would be implemented here');
   }
-  
+
   normalizeMachineData(machine) {
     // Create a copy with all required fields properly initialized
     return {
@@ -799,8 +799,8 @@ class VendingMachineDetail {
       total_capacity: machine.total_capacity || 50,
       products: Array.isArray(machine.products) ? machine.products : [],
       readings: Array.isArray(machine.readings) ? machine.readings : [],
-      last_reading: machine.readings && machine.readings.length > 0 ? 
-        machine.readings[machine.readings.length - 1] : 
+      last_reading: machine.readings && machine.readings.length > 0 ?
+        machine.readings[machine.readings.length - 1] :
         (machine.last_reading || null)
     };
   }
@@ -834,7 +834,7 @@ class VendingMachineForm {
     try {
       let response;
       const apiUrl = `/api/vending-machines/${this.machineId}`;
-      
+
       try {
         // Use the API client if available
         if (typeof api !== 'undefined' && api.getVendingMachine) {
@@ -844,11 +844,11 @@ class VendingMachineForm {
         }
       } catch (apiError) {
         console.warn('API client request failed, trying direct fetch:', apiError);
-        
+
         // Direct fetch fallback
         const apiHost = window.location.hostname;
         const directUrl = `http://${apiHost}:8006${apiUrl}`;
-        
+
         const directResponse = await fetch(directUrl, {
           method: 'GET',
           headers: {
@@ -856,14 +856,14 @@ class VendingMachineForm {
           },
           mode: 'cors'
         });
-        
+
         if (!directResponse.ok) {
           throw new Error(`Direct API fetch failed: ${directResponse.status} ${directResponse.statusText}`);
         }
-        
+
         response = await directResponse.json();
       }
-      
+
       if (response && response.id) {
         this.machine = response;
         console.log('Loaded machine for editing:', this.machine);
@@ -880,12 +880,12 @@ class VendingMachineForm {
   async saveMachine(formData) {
     try {
       const isEditing = !!this.machineId;
-      const apiUrl = isEditing ? 
-        `/api/vending-machines/${this.machineId}` : 
+      const apiUrl = isEditing ?
+        `/api/vending-machines/${this.machineId}` :
         '/api/vending-machines';
-      
+
       const method = isEditing ? 'PATCH' : 'POST';
-      
+
       // Try to use API client if available
       let response;
       try {
@@ -902,11 +902,11 @@ class VendingMachineForm {
         }
       } catch (apiError) {
         console.warn('API client request failed, trying direct fetch:', apiError);
-        
+
         // Direct fetch fallback
         const apiHost = window.location.hostname;
         const directUrl = `http://${apiHost}:8006${apiUrl}`;
-        
+
         const directResponse = await fetch(directUrl, {
           method: method,
           headers: {
@@ -916,14 +916,14 @@ class VendingMachineForm {
           body: JSON.stringify(formData),
           mode: 'cors'
         });
-        
+
         if (!directResponse.ok) {
           throw new Error(`Direct API fetch failed: ${directResponse.status} ${directResponse.statusText}`);
         }
-        
+
         response = await directResponse.json();
       }
-      
+
       if (response && response.id) {
         // Redirect to the detail page for the saved machine
         window.location.href = `/vending-machines/${response.id}`;
@@ -939,82 +939,82 @@ class VendingMachineForm {
 
   render() {
     if (!this.container) return;
-    
+
     const isEditing = !!this.machineId;
     const title = isEditing ? 'Edit Vending Machine' : 'Add New Vending Machine';
-    
+
     this.container.innerHTML = `
       <div class="form-container">
         <h2>${title}</h2>
         <form id="vending-machine-form">
           <div class="form-group">
             <label for="name">Name</label>
-            <input type="text" id="name" name="name" class="form-control" required 
+            <input type="text" id="name" name="name" class="form-control" required
               value="${isEditing && this.machine ? this.machine.name : ''}">
           </div>
-          
+
           <div class="form-group">
             <label for="location">Location</label>
-            <input type="text" id="location" name="location" class="form-control" 
+            <input type="text" id="location" name="location" class="form-control"
               value="${isEditing && this.machine ? this.machine.location || '' : ''}">
           </div>
-          
+
           <div class="form-group">
             <label for="model_number">Model Number</label>
-            <input type="text" id="model_number" name="model_number" class="form-control" 
+            <input type="text" id="model_number" name="model_number" class="form-control"
               value="${isEditing && this.machine ? this.machine.model_number || '' : ''}">
           </div>
-          
+
           <div class="form-group">
             <label for="serial_number">Serial Number</label>
-            <input type="text" id="serial_number" name="serial_number" class="form-control" 
+            <input type="text" id="serial_number" name="serial_number" class="form-control"
               value="${isEditing && this.machine ? this.machine.serial_number || '' : ''}">
           </div>
-          
+
           <div class="form-group">
             <label for="temperature">Temperature (°C)</label>
-            <input type="number" id="temperature" name="temperature" step="0.1" class="form-control" 
+            <input type="number" id="temperature" name="temperature" step="0.1" class="form-control"
               value="${isEditing && this.machine && this.machine.temperature !== null ? this.machine.temperature : '4.0'}">
           </div>
-          
+
           <div class="form-group">
             <label for="total_capacity">Total Capacity</label>
-            <input type="number" id="total_capacity" name="total_capacity" class="form-control" 
+            <input type="number" id="total_capacity" name="total_capacity" class="form-control"
               value="${isEditing && this.machine ? this.machine.total_capacity || '50' : '50'}">
           </div>
-          
+
           <div class="form-group">
             <label for="cash_capacity">Cash Capacity</label>
-            <input type="number" id="cash_capacity" name="cash_capacity" step="0.01" class="form-control" 
+            <input type="number" id="cash_capacity" name="cash_capacity" step="0.01" class="form-control"
               value="${isEditing && this.machine ? this.machine.cash_capacity || '500.00' : '500.00'}">
           </div>
-          
+
           ${isEditing ? `
           <div class="form-group">
             <label for="current_cash">Current Cash</label>
-            <input type="number" id="current_cash" name="current_cash" step="0.01" class="form-control" 
+            <input type="number" id="current_cash" name="current_cash" step="0.01" class="form-control"
               value="${this.machine ? this.machine.current_cash || '0.00' : '0.00'}">
           </div>
-          
+
           <div class="form-group">
             <label for="machine_status">Status</label>
             <select id="machine_status" name="machine_status" class="form-control">
-              ${Object.entries(MACHINE_STATUS).map(([value, label]) => 
+              ${Object.entries(MACHINE_STATUS).map(([value, label]) =>
                 `<option value="${value}" ${this.machine && this.machine.machine_status === value ? 'selected' : ''}>${label}</option>`
               ).join('')}
             </select>
           </div>
-          
+
           <div class="form-group">
             <label for="mode">Mode</label>
             <select id="mode" name="mode" class="form-control">
-              ${Object.entries(MACHINE_MODES).map(([value, label]) => 
+              ${Object.entries(MACHINE_MODES).map(([value, label]) =>
                 `<option value="${value}" ${this.machine && this.machine.mode === value ? 'selected' : ''}>${label}</option>`
               ).join('')}
             </select>
           </div>
           ` : ''}
-          
+
           <div class="form-actions">
             <button type="submit" class="btn btn-primary">Save</button>
             <a href="${isEditing ? `/vending-machines/${this.machineId}` : '/vending-machines'}" class="btn btn-secondary">Cancel</a>
@@ -1022,7 +1022,7 @@ class VendingMachineForm {
         </form>
       </div>
     `;
-    
+
     // Set up form submission handler
     const form = document.getElementById('vending-machine-form');
     if (form) {
@@ -1032,10 +1032,10 @@ class VendingMachineForm {
       });
     }
   }
-  
+
   handleFormSubmit(form) {
     const formData = {};
-    
+
     // Get form field values
     formData.name = form.elements.name.value.trim();
     formData.location = form.elements.location.value.trim() || null;
@@ -1044,21 +1044,21 @@ class VendingMachineForm {
     formData.temperature = parseFloat(form.elements.temperature.value) || null;
     formData.total_capacity = parseInt(form.elements.total_capacity.value) || null;
     formData.cash_capacity = parseFloat(form.elements.cash_capacity.value) || null;
-    
+
     if (this.machineId) {
       // Additional fields for editing
       formData.current_cash = parseFloat(form.elements.current_cash.value) || null;
       formData.machine_status = form.elements.machine_status.value;
       formData.mode = form.elements.mode.value;
     }
-    
+
     // Save the vending machine
     this.saveMachine(formData);
   }
-  
+
   renderError(message) {
     if (!this.container) return;
-    
+
     this.container.innerHTML = `
       <div class="error-state">
         <div class="error-icon">⚠️</div>

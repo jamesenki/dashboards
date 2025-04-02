@@ -3,8 +3,9 @@ Tests for the Model Monitoring Dashboard UI component.
 """
 import unittest
 from unittest.mock import MagicMock, patch
-from fastapi.testclient import TestClient
+
 from fastapi import FastAPI
+from fastapi.testclient import TestClient
 
 from src.web.routes import router
 from src.web.templates.model_monitoring_dashboard import ModelMonitoringDashboard
@@ -36,14 +37,18 @@ class TestModelMonitoringDashboard(unittest.TestCase):
         """Test dashboard with metrics data."""
         # Setup mock data
         mock_service.get_monitored_models.return_value = [
-            {"id": "model1", "name": "Water Heater Prediction Model", "versions": ["1.0", "1.1"]}
+            {
+                "id": "model1",
+                "name": "Water Heater Prediction Model",
+                "versions": ["1.0", "1.1"],
+            }
         ]
         mock_service.get_latest_metrics.return_value = {
             "accuracy": 0.95,
             "precision": 0.92,
-            "recall": 0.91
+            "recall": 0.91,
         }
-        
+
         dashboard = ModelMonitoringDashboard(monitoring_service=mock_service)
         html = dashboard.render()
         self.assertIn("Water Heater Prediction Model", html)

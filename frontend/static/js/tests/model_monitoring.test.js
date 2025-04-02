@@ -84,7 +84,7 @@ describe('Model Monitoring Dashboard', () => {
         </div>
       </div>
     `;
-    
+
     // Mock fetch responses
     global.fetch.mockImplementation((url) => {
       if (url === '/api/monitoring/models') {
@@ -113,16 +113,16 @@ describe('Model Monitoring Dashboard', () => {
           json: () => Promise.resolve({ status: 'success' })
         });
       }
-      
+
       return Promise.reject(new Error('Not found'));
     });
   });
-  
+
   afterEach(() => {
     // Clean up
     jest.clearAllMocks();
   });
-  
+
   // Load the actual code
   const loadModelMonitoringCode = () => {
     // Here we would normally load the actual JavaScript code
@@ -130,26 +130,26 @@ describe('Model Monitoring Dashboard', () => {
     window.allModels = [];
     window.viewingArchived = false;
     window.tagsModal = document.getElementById('tags-modal');
-    
+
     window.setupEventHandlers = () => {
       // Set up event handlers
       const enableMonitoringBtn = document.getElementById('enable-monitoring');
       if (enableMonitoringBtn) {
         enableMonitoringBtn.addEventListener('click', () => window.applyBatchOperation('enable_monitoring'));
       }
-      
+
       const manageTagsBtn = document.getElementById('manage-tags-btn');
       if (manageTagsBtn) {
         manageTagsBtn.addEventListener('click', window.showTagsManagementModal);
       }
-      
+
       const viewButtons = document.querySelectorAll('.action-btn.view-btn');
       viewButtons.forEach(button => {
         button.addEventListener('click', function() {
           window.viewModel(this.dataset.modelId);
         });
       });
-      
+
       const editButtons = document.querySelectorAll('.action-btn.edit-btn');
       editButtons.forEach(button => {
         button.addEventListener('click', function() {
@@ -157,95 +157,95 @@ describe('Model Monitoring Dashboard', () => {
         });
       });
     };
-    
+
     window.applyBatchOperation = (operation, params = {}) => {
       const selectedModels = Array.from(document.querySelectorAll('.model-select:checked'))
         .map(checkbox => checkbox.dataset.modelId);
-      
+
       if (selectedModels.length === 0) {
         return false;
       }
-      
+
       if (operation === 'enable_monitoring') {
         const monitoringStatus = document.getElementById('monitoring-status');
         if (monitoringStatus) {
           monitoringStatus.style.display = 'block';
         }
       }
-      
+
       return true;
     };
-    
+
     window.showTagsManagementModal = () => {
       if (window.tagsModal) {
         window.tagsModal.style.display = 'block';
       }
     };
-    
+
     window.viewModel = (modelId) => {
       const modelDetailView = document.createElement('div');
       modelDetailView.id = 'model-detail-view';
       document.body.appendChild(modelDetailView);
     };
-    
+
     window.editModel = (modelId) => {
       const modelEditView = document.createElement('div');
       modelEditView.id = 'model-edit-view';
       document.body.appendChild(modelEditView);
     };
-    
+
     // Initialize
     window.setupEventHandlers();
   };
-  
+
   // Tests
   test('Enable monitoring should show monitoring status', () => {
     loadModelMonitoringCode();
-    
+
     // Select a model
     const checkbox = document.querySelector('.model-select');
     checkbox.checked = true;
-    
+
     // Click enable monitoring
     const enableBtn = document.getElementById('enable-monitoring');
     enableBtn.click();
-    
+
     // Check if monitoring status is visible
     const monitoringStatus = document.getElementById('monitoring-status');
     expect(monitoringStatus.style.display).toBe('block');
   });
-  
+
   test('Manage tags button should open tags modal', () => {
     loadModelMonitoringCode();
-    
+
     // Click manage tags button
     const manageTagsBtn = document.getElementById('manage-tags-btn');
     manageTagsBtn.click();
-    
+
     // Check if tags modal is visible
     const tagsModal = document.getElementById('tags-modal');
     expect(tagsModal.style.display).toBe('block');
   });
-  
+
   test('View button should create model detail view', () => {
     loadModelMonitoringCode();
-    
+
     // Click view button
     const viewBtn = document.querySelector('.action-btn.view-btn');
     viewBtn.click();
-    
+
     // Check if model detail view was created
     const modelDetailView = document.getElementById('model-detail-view');
     expect(modelDetailView).not.toBeNull();
   });
-  
+
   test('Edit button should create model edit view', () => {
     loadModelMonitoringCode();
-    
+
     // Click edit button
     const editBtn = document.querySelector('.action-btn.edit-btn');
     editBtn.click();
-    
+
     // Check if model edit view was created
     const modelEditView = document.getElementById('model-edit-view');
     expect(modelEditView).not.toBeNull();

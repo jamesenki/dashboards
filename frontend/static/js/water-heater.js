@@ -99,7 +99,7 @@ class WaterHeaterList {
     const statusClass = heater.status.toLowerCase() === 'online' ? 'status-online' : 'status-offline';
     const heaterStatusClass = heater.heater_status.toLowerCase() === 'heating' ? 'status-heating' : 'status-standby';
     const modeClass = `mode-${heater.mode}`;
-    
+
     // Calculate the gauge rotation based on temperature
     const minTemp = heater.min_temperature || 40;
     const maxTemp = heater.max_temperature || 85;
@@ -107,7 +107,7 @@ class WaterHeaterList {
     const currentTempPercent = Math.min(100, Math.max(0, ((heater.current_temperature - minTemp) / tempRange) * 100));
     // Convert percentage to gauge rotation (0% = -120deg, 100% = 120deg)
     const gaugeRotation = -120 + (currentTempPercent * 2.4);
-    
+
     return `
       <div id="heater-${heater.id}" class="card heater-card" style="cursor: pointer;">
         <div class="card-header">
@@ -128,7 +128,7 @@ class WaterHeaterList {
             <div class="gauge-value">${formatTemperature(heater.current_temperature)}</div>
           </div>
           <div class="gauge-label">${heater.name}</div>
-          
+
           <div class="heater-details">
             <div class="target-temp">
               Target: ${formatTemperature(heater.target_temperature)}
@@ -214,7 +214,7 @@ class WaterHeaterDetail {
   async updateMode(mode) {
     try {
       this.heater = await api.updateMode(this.heaterId, mode);
-      
+
       // Update UI with new mode
       const modeOptions = document.querySelectorAll('.mode-option');
       modeOptions.forEach(option => {
@@ -227,7 +227,7 @@ class WaterHeaterDetail {
       // Also update heater status display
       const statusIndicator = document.getElementById('heater-status-indicator');
       const statusText = document.getElementById('heater-status-text');
-      
+
       statusIndicator.className = 'status-indicator';
       statusIndicator.classList.add(
         this.heater.heater_status.toLowerCase() === 'heating' ? 'status-heating' : 'status-standby'
@@ -257,10 +257,10 @@ class WaterHeaterDetail {
             ${this.heater.status}
           </div>
         </div>
-        
+
         <div class="card-body">
           <div class="heater-status">
-            <h3>Status: 
+            <h3>Status:
               <span id="heater-status-indicator" class="status-indicator ${heaterStatusClass}"></span>
               <span id="heater-status-text">${STATUS_LABELS[this.heater.heater_status]}</span>
             </h3>
@@ -269,15 +269,15 @@ class WaterHeaterDetail {
           <div class="temperature-display">
             ${formatTemperature(this.heater.current_temperature)}
           </div>
-          
+
           <div class="temperature-control">
             <h3>Target Temperature: <span id="target-temp-value">${formatTemperature(this.heater.target_temperature)}</span></h3>
             <div class="slider-container">
-              <input type="range" min="${this.heater.min_temperature}" max="${this.heater.max_temperature}" 
+              <input type="range" min="${this.heater.min_temperature}" max="${this.heater.max_temperature}"
                 value="${this.heater.target_temperature}" class="slider" id="temp-slider" step="0.5">
             </div>
           </div>
-          
+
           <div class="mode-control">
             <h3>Mode</h3>
             <div class="mode-selector">
@@ -292,7 +292,7 @@ class WaterHeaterDetail {
               </div>
             </div>
           </div>
-          
+
           <div class="metrics-section">
             <h3>Metrics</h3>
             <div class="metrics-grid">
@@ -314,7 +314,7 @@ class WaterHeaterDetail {
               </div>
             </div>
           </div>
-          
+
           <div class="readings-section">
             <h3>Temperature History</h3>
             <div class="readings-chart" id="temp-chart"></div>
@@ -329,7 +329,7 @@ class WaterHeaterDetail {
       tempSlider.addEventListener('input', (e) => {
         document.getElementById('target-temp-value').textContent = `${e.target.value}°C`;
       });
-      
+
       tempSlider.addEventListener('change', (e) => {
         this.updateTemperature(parseFloat(e.target.value));
       });
@@ -348,12 +348,12 @@ class WaterHeaterDetail {
     if (!this.heater || !this.heater.readings || this.heater.readings.length === 0) {
       return null;
     }
-    
+
     // Sort readings by timestamp in descending order
     const sortedReadings = [...this.heater.readings].sort((a, b) => {
       return new Date(b.timestamp) - new Date(a.timestamp);
     });
-    
+
     // Return the value from the latest reading
     return sortedReadings[0][metric];
   }
@@ -375,7 +375,7 @@ class WaterHeaterDetail {
 
     // For a simple implementation, we'll use a placeholder message
     // In a real implementation, you would use a library like Chart.js
-    document.getElementById('temp-chart').innerHTML = 
+    document.getElementById('temp-chart').innerHTML =
       `<div class="chart-placeholder">
         Temperature chart would be displayed here.
         Data points: ${tempData.length}
@@ -435,7 +435,7 @@ class WaterHeaterForm {
   async saveHeater(formData) {
     try {
       let result;
-      
+
       if (this.heaterId) {
         // Update existing heater (not implemented in API yet)
         alert('Editing existing heaters is not supported yet.');
@@ -444,7 +444,7 @@ class WaterHeaterForm {
         // Create new heater
         result = await api.createWaterHeater(formData);
       }
-      
+
       // Navigate to the detail page for the created/updated heater
       window.location.href = `/water-heaters/${result.id}`;
     } catch (error) {
@@ -459,7 +459,7 @@ class WaterHeaterForm {
     const isEdit = !!this.heaterId;
     const title = isEdit ? 'Edit Water Heater' : 'Add New Water Heater';
     const submitLabel = isEdit ? 'Update' : 'Create';
-    
+
     // Use existing values if editing
     const name = isEdit ? this.heater.name : '';
     const targetTemp = isEdit ? this.heater.target_temperature : 45;
@@ -479,25 +479,25 @@ class WaterHeaterForm {
               <label for="name">Name</label>
               <input type="text" id="name" name="name" class="form-control" value="${name}" required>
             </div>
-            
+
             <div class="form-group">
               <label for="target_temperature">Target Temperature (°C)</label>
-              <input type="number" id="target_temperature" name="target_temperature" 
+              <input type="number" id="target_temperature" name="target_temperature"
                 class="form-control" value="${targetTemp}" min="30" max="85" step="0.5" required>
             </div>
-            
+
             <div class="form-group">
               <label for="min_temperature">Minimum Temperature (°C)</label>
-              <input type="number" id="min_temperature" name="min_temperature" 
+              <input type="number" id="min_temperature" name="min_temperature"
                 class="form-control" value="${minTemp}" min="30" max="50" step="0.5" required>
             </div>
-            
+
             <div class="form-group">
               <label for="max_temperature">Maximum Temperature (°C)</label>
-              <input type="number" id="max_temperature" name="max_temperature" 
+              <input type="number" id="max_temperature" name="max_temperature"
                 class="form-control" value="${maxTemp}" min="50" max="85" step="0.5" required>
             </div>
-            
+
             <div class="form-group">
               <label for="mode">Mode</label>
               <select id="mode" name="mode" class="form-control" required>
@@ -506,7 +506,7 @@ class WaterHeaterForm {
                 <option value="${MODES.OFF}" ${mode === MODES.OFF ? 'selected' : ''}>Off</option>
               </select>
             </div>
-            
+
             <div class="form-actions">
               <button type="submit" class="btn btn-primary">${submitLabel}</button>
               <a href="/water-heaters" class="btn">Cancel</a>
@@ -519,7 +519,7 @@ class WaterHeaterForm {
     // Add form submission handler
     document.getElementById('heater-form')?.addEventListener('submit', (e) => {
       e.preventDefault();
-      
+
       const formData = {
         name: document.getElementById('name').value,
         target_temperature: parseFloat(document.getElementById('target_temperature').value),
@@ -527,7 +527,7 @@ class WaterHeaterForm {
         min_temperature: parseFloat(document.getElementById('min_temperature').value),
         max_temperature: parseFloat(document.getElementById('max_temperature').value)
       };
-      
+
       this.saveHeater(formData);
     });
   }

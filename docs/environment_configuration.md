@@ -50,7 +50,7 @@ The system will automatically try to use the configured database first and will 
 2. If a service-specific setting is explicitly set to use mock data:
    - `services.water_heater.use_mock_data` is set to `true`
    - `services.monitoring.use_mock_data` is set to `true`
-   
+
 Additionally, each service can have its own fallback configuration:
    - `services.monitoring.fallback_to_mock` controls whether the model monitoring service should fall back to mock data when database access fails
 
@@ -95,7 +95,7 @@ services:
   water_heater:
     use_mock_data: false
     data_retention_days: 90
-    
+
   predictions:
     model_cache_ttl: 3600
     enable_development_models: false

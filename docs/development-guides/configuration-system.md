@@ -171,14 +171,14 @@ def test_database_connection_with_config(monkeypatch):
     # Arrange: Set up test configuration
     monkeypatch.setenv("IOTSPHERE_DATABASE_HOST", "testdb")
     monkeypatch.setenv("IOTSPHERE_DATABASE_PORT", "5433")
-    
+
     # Force config reload to pick up environment changes
     from src.config import config
     config.reload()
-    
+
     # Act: Create database connection using configuration
     db = create_database_connection(config)
-    
+
     # Assert: Verify connection uses configured values
     assert db.host == "testdb"
     assert db.port == 5433

@@ -207,13 +207,13 @@ print_header "CODE QUALITY CHECK SUMMARY"
 
 if [ "$BLACK_FAILED" = true ] || [ "$ISORT_FAILED" = true ] || [ "$FLAKE8_FAILED" = true ] || [ "$MYPY_FAILED" = true ] || [ "$PYDOCSTYLE_FAILED" = true ] || [ "$BANDIT_FAILED" = true ] || [ "$ESLINT_FAILED" = true ] || [ "$STYLELINT_FAILED" = true ] || [ "$HTMLHINT_FAILED" = true ] || [ "$PRETTIER_FAILED" = true ]; then
   print_error "Some checks failed. See above for details."
-  
+
   echo -e "\nQuick fixes:"
   echo "1. Fix Python formatting: black ."
   echo "2. Fix import sorting: isort --profile black ."
   echo "3. Fix JavaScript formatting: npm run format"
   echo -e "\nOr run the comprehensive fixer: python tools/code-quality/check_code_quality.py --fix"
-  
+
   exit 1
 else
   print_success "All code quality checks passed!"

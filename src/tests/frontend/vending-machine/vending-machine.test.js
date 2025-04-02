@@ -80,19 +80,19 @@ describe('Temperature Gauge', () => {
       const max = 50;
       const percentage = ((temperature - min) / (max - min)) * 100;
       const gaugeValue = document.querySelector('#temperature-gauge-panel .gauge-value');
-      
+
       // Update gauge value
       if (gaugeValue) {
         gaugeValue.textContent = `${temperature.toFixed(1)}°F`;
       }
-      
+
       return percentage;
     };
 
     // Test with different temperature values
     expect(updateTemperatureGauge(32)).toBe(64);
     expect(document.querySelector('#temperature-gauge-panel .gauge-value').textContent).toBe('32.0°F');
-    
+
     expect(updateTemperatureGauge(10)).toBe(20);
     expect(document.querySelector('#temperature-gauge-panel .gauge-value').textContent).toBe('10.0°F');
   });
@@ -114,7 +114,7 @@ describe('API Integration', () => {
     };
 
     const machineData = await fetchMachineData('vm-106c55e5');
-    
+
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(fetch).toHaveBeenCalledWith('/api/vending-machines/vm-106c55e5');
     expect(machineData.id).toBe('vm-106c55e5');

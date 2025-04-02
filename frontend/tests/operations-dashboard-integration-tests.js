@@ -1,6 +1,6 @@
 /**
  * Operations Dashboard Integration Tests
- * 
+ *
  * This test suite validates the end-to-end functionality of the operations dashboard, focusing on:
  * 1. Machine dropdown population from API
  * 2. Machine selection and data loading
@@ -55,25 +55,25 @@ const mockElements = {
     innerHTML: '',
     appendChild: jest.fn(option => mockElements['machine-selector'].options.push(option))
   },
-  
+
   // Gauge containers
   'asset-health-gauge': { id: 'asset-health-gauge', getAttribute: () => '85', querySelector: () => ({ style: {} }) },
   'freezer-temp-gauge': { id: 'freezer-temp-gauge', getAttribute: () => '-15', querySelector: () => ({ style: {} }) },
   'dispense-force-gauge': { id: 'dispense-force-gauge', getAttribute: () => '35', querySelector: () => ({ style: {} }) },
   'cycle-time-gauge': { id: 'cycle-time-gauge', getAttribute: () => '18', querySelector: () => ({ style: {} }) },
-  
+
   // Gauge values
   'asset-health-value': { textContent: '' },
   'freezer-temp-value': { textContent: '', style: {} },
   'dispense-force-value': { textContent: '' },
   'cycle-time-value': { textContent: '' },
-  
+
   // Status cards
   'machine-status-card': { querySelector: () => ({ textContent: '' }) },
   'pod-code-card': { querySelector: () => ({ textContent: '' }) },
   'cup-detect-card': { querySelector: () => ({ textContent: '' }) },
   'door-status-card': { querySelector: () => ({ textContent: '' }) },
-  
+
   // Containers
   'inventory-container': { innerHTML: '' },
   'operations-summary-content': { style: { display: 'none' } },
@@ -88,9 +88,9 @@ global.document = {
     if (tag === 'option') {
       return { value: '', textContent: '' };
     }
-    return { 
-      className: '', 
-      textContent: '', 
+    return {
+      className: '',
+      textContent: '',
       innerHTML: '',
       style: {},
       appendChild: jest.fn()
@@ -132,22 +132,22 @@ global.console = {
 function populateMachineDropdown(machines) {
   const dropdown = document.getElementById('machine-selector');
   if (!dropdown) return false;
-  
+
   // Store current value before clearing
   const currentValue = dropdown.value;
-  
+
   // Clear existing options
   dropdown.options = [];
   dropdown.innerHTML = '';
   dropdown.value = ''; // Reset value when repopulating the dropdown
   dropdown.selectedIndex = -1;
-  
+
   // Add default option
   const defaultOption = document.createElement('option');
   defaultOption.textContent = 'Select a Machine';
   defaultOption.value = '';
   dropdown.appendChild(defaultOption);
-  
+
   // Add machine options
   machines.forEach(machine => {
     const option = document.createElement('option');
@@ -155,7 +155,7 @@ function populateMachineDropdown(machines) {
     option.value = machine.id;
     dropdown.appendChild(option);
   });
-  
+
   return true;
 }
 
@@ -203,7 +203,7 @@ async function fetchOperationsData(machineId) {
 function updateOperationsDashboard(data) {
   // Implementation would mirror the actual function in detail.html
   console.log('Updating operations dashboard with data:', data);
-  
+
   // Update gauge values
   const gaugeElements = document.querySelectorAll('.gauge-container');
   gaugeElements.forEach(gauge => {
@@ -222,7 +222,7 @@ function updateOperationsDashboard(data) {
       document.getElementById('cycle-time-value').textContent = '18.3s';
     }
   });
-  
+
   // Update inventory display
   const inventoryContainer = document.getElementById('inventory-container');
   if (inventoryContainer && data.ice_cream_inventory) {
@@ -231,7 +231,7 @@ function updateOperationsDashboard(data) {
       const level = item.level || item.current_level || 0;
       const maxLevel = item.max_capacity || item.max_level || 100;
       const percentage = Math.round((level / maxLevel) * 100);
-      
+
       inventoryHTML += `
         <div class="inventory-item">
           <div class="inventory-header">
@@ -253,13 +253,13 @@ function updateOperationsDashboard(data) {
 function updateGaugePosition(gaugeId, percentValue) {
   const gauge = document.getElementById(gaugeId);
   if (!gauge) return;
-  
+
   const needle = gauge.querySelector('.gauge-needle');
   if (!needle) return;
-  
+
   // Convert percentage to degrees (0% = -90deg, 100% = 90deg)
   const degrees = -90 + (percentValue * 1.8);
-  
+
   // Apply rotation
   needle.style.transform = `rotate(${degrees}deg)`;
 }
@@ -274,58 +274,58 @@ describe('Machine Dropdown Tests', () => {
     mockElements['machine-selector'].selectedIndex = -1;
     window.machineId = null;
   });
-  
+
   test('Machine dropdown is populated with API data', async () => {
     // Mock fetch response
     fetch.mockResolvedValueOnce({
       ok: true,
       json: () => Promise.resolve(mockMachineListResponse)
     });
-    
+
     // Fetch and populate dropdown
     const machines = await fetchMachineList();
     const result = populateMachineDropdown(machines);
-    
+
     // Verify API was called correctly
     expect(fetch).toHaveBeenCalledWith('/api/machines');
-    
+
     // Verify dropdown was populated
     expect(result).toBe(true);
     expect(mockElements['machine-selector'].options.length).toBe(4); // Default + 3 machines
-    
+
     // Verify first option is the default
     expect(mockElements['machine-selector'].options[0].value).toBe('');
     expect(mockElements['machine-selector'].options[0].textContent).toBe('Select a Machine');
-    
+
     // Verify machine options are correctly formatted
     expect(mockElements['machine-selector'].options[1].value).toBe('machine-001');
     expect(mockElements['machine-selector'].options[1].textContent).toBe('Ice Cream Machine 1 (Main Floor)');
   });
-  
+
   test('Empty machine list displays only default option', async () => {
     // Mock empty response
     fetch.mockResolvedValueOnce({
       ok: true,
       json: () => Promise.resolve({ machines: [] })
     });
-    
+
     // Fetch and populate dropdown
     const machines = await fetchMachineList();
     const result = populateMachineDropdown(machines);
-    
+
     // Verify dropdown contains only default option
     expect(result).toBe(true);
     expect(mockElements['machine-selector'].options.length).toBe(1);
     expect(mockElements['machine-selector'].options[0].value).toBe('');
   });
-  
+
   test('API failure is handled gracefully', async () => {
     // Mock failed response
     fetch.mockRejectedValueOnce(new Error('Network error'));
-    
+
     // Attempt to fetch machine list
     const machines = await fetchMachineList();
-    
+
     // Verify empty array is returned on error
     expect(machines).toEqual([]);
     expect(console.error).toHaveBeenCalled();
@@ -338,7 +338,7 @@ describe('Machine Selection Tests', () => {
     mockElements['machine-selector'].options = [];
     populateMachineDropdown(mockMachineListResponse.machines);
   });
-  
+
   test('Selecting machine triggers data loading', async () => {
     // Set up mocks for machine data and operations data
     fetch.mockResolvedValueOnce({
@@ -348,26 +348,26 @@ describe('Machine Selection Tests', () => {
       ok: true,
       json: () => Promise.resolve(mockOperationsDataResponse)
     });
-    
+
     // Simulate dropdown change
     const machineId = 'machine-001';
     window.machineId = machineId;
-    
+
     // Fetch machine data and operations data
     const machineData = await fetchMachineData(machineId);
     const operationsData = await fetchOperationsData(machineId);
-    
+
     // Update UI with operations data
     updateOperationsDashboard(operationsData);
-    
+
     // Verify correct API calls were made
     expect(fetch).toHaveBeenCalledWith(`/api/machines/${machineId}`);
     expect(fetch).toHaveBeenCalledWith(`/api/operations/${machineId}`);
-    
+
     // Verify machine data is correct
     expect(machineData.id).toBe('machine-001');
     expect(machineData.name).toBe('Ice Cream Machine 1');
-    
+
     // Verify operations data is correct
     expect(operationsData.machine_id).toBe('machine-001');
     expect(operationsData.ice_cream_inventory.length).toBe(4);
@@ -384,22 +384,22 @@ describe('Operations Dashboard Display Tests', () => {
     mockElements['cycle-time-value'].textContent = '';
     mockElements['inventory-container'].innerHTML = '';
   });
-  
+
   test('Operations data is correctly displayed as gauges and text', () => {
     updateOperationsDashboard(mockOperationsDataResponse);
-    
+
     // Verify gauge values are updated
     expect(mockElements['asset-health-value'].textContent).toBe('85%');
     expect(mockElements['freezer-temp-value'].textContent).toBe('-15.2°C');
     expect(mockElements['dispense-force-value'].textContent).toBe('35.5 PSI');
     expect(mockElements['cycle-time-value'].textContent).toBe('18.3s');
-    
+
     // Verify inventory container has content
     expect(mockElements['inventory-container'].innerHTML).toContain('inventory-grid');
     expect(mockElements['inventory-container'].innerHTML).toContain('Vanilla');
     expect(mockElements['inventory-container'].innerHTML).toContain('75/100');
   });
-  
+
   test('Handles inconsistent inventory property names', () => {
     // Create test data with mixed property names (the bug we fixed)
     const inconsistentData = {
@@ -410,10 +410,10 @@ describe('Operations Dashboard Display Tests', () => {
         { name: "Strawberry", level: 40 }
       ]
     };
-    
+
     // Should not throw errors with inconsistent property names
     expect(() => updateOperationsDashboard(inconsistentData)).not.toThrow();
-    
+
     // Verify content includes both types of inventory items
     expect(mockElements['inventory-container'].innerHTML).toContain('Vanilla');
     expect(mockElements['inventory-container'].innerHTML).toContain('80/100');
@@ -428,29 +428,29 @@ describe('Drop Down Reload Behavior Tests', () => {
     mockElements['machine-selector'].options = [];
     mockElements['machine-selector'].value = '';
   });
-  
+
   test('Dropdown reloads only when explicitly triggered', async () => {
     // Initial population
     const initialMachines = [
       { id: "machine-001", name: "Initial Machine", location: "Location A", status: "ONLINE" }
     ];
     populateMachineDropdown(initialMachines);
-    
+
     // Simulate user selection
     mockElements['machine-selector'].value = 'machine-001';
     mockElements['machine-selector'].selectedIndex = 1;
-    
+
     // Now reload dropdown with new machines
     const newMachines = [
       { id: "machine-001", name: "Initial Machine", location: "Location A", status: "ONLINE" },
       { id: "machine-002", name: "New Machine", location: "Location B", status: "ONLINE" }
     ];
     populateMachineDropdown(newMachines);
-    
+
     // Verify dropdown was reset (selection is cleared on reload)
     expect(mockElements['machine-selector'].options.length).toBe(3); // Default + 2 machines
     expect(mockElements['machine-selector'].value).toBe(''); // Value reset to default
-    
+
     // In a real implementation, the page would need to be refreshed to preserve selection
   });
 });
@@ -462,12 +462,12 @@ if (typeof describe === 'function') {
 } else {
   // Manual testing
   console.log('Running manual tests...');
-  
+
   // Function to run tests manually if not using Jest
   async function runTests() {
     console.log('=== Testing Machine Dropdown Population ===');
     // Mock tests here
   }
-  
+
   runTests().catch(console.error);
 }

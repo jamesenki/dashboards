@@ -1,6 +1,6 @@
 /**
  * SVG Icon Fallback Handler
- * 
+ *
  * This script checks if SVG icons failed to load and replaces them with PNG icons.
  * It also provides utility functions for dynamic icon management.
  */

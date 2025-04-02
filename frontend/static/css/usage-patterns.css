@@ -234,20 +234,20 @@
     flex-direction: column;
     align-items: flex-start;
   }
-  
+
   .usage-classification-badge {
     margin-bottom: 15px;
     align-self: center;
   }
-  
+
   .usage-summary-container {
     padding-left: 0;
   }
-  
+
   .usage-grid-container {
     grid-template-columns: 1fr;
   }
-  
+
   .grid-card {
     margin-bottom: 15px;
   }

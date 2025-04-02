@@ -18,7 +18,7 @@ Initial implementation of the monitoring alerts system had several issues:
 
 We have implemented a comprehensive monitoring alerts system following Test-Driven Development (TDD) principles:
 
-1. **Data Source Configuration**: 
+1. **Data Source Configuration**:
    - Explicit support for both mock and real data sources
    - Environment variable `USE_MOCK_DATA=False` to use real database data
 

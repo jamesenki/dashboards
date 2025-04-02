@@ -1,6 +1,6 @@
 /**
  * Frontend UI tests for the water heater predictions dashboard
- * 
+ *
  * These tests verify that the UI components correctly handle various data scenarios,
  * including empty sections, missing data, and proper formatting of recommended actions.
  */
@@ -8,7 +8,7 @@
 describe('Water Heater Predictions UI Tests', function() {
   // Mock DOM elements
   let predictionsUI;
-  
+
   beforeEach(function() {
     // Set up test DOM
     document.body.innerHTML = `
@@ -17,7 +17,7 @@ describe('Water Heater Predictions UI Tests', function() {
       <div id="anomaly-error"></div>
       <div id="anomaly-summary"></div>
       <div id="anomaly-recommendations"></div>
-      
+
       <div id="usage-patterns-card"></div>
       <div id="usage-loading"></div>
       <div id="usage-error"></div>
@@ -26,7 +26,7 @@ describe('Water Heater Predictions UI Tests', function() {
       <div id="component-impacts-list"></div>
       <div id="optimization-recommendations-list"></div>
       <div id="usage-recommendations"></div>
-      
+
       <div id="multi-factor-card"></div>
       <div id="multi-factor-loading"></div>
       <div id="multi-factor-error"></div>
@@ -38,7 +38,7 @@ describe('Water Heater Predictions UI Tests', function() {
       <div id="component-interactions-list"></div>
       <div id="overall-evaluation-text"></div>
       <div id="multi-factor-recommendations"></div>
-      
+
       <div id="lifespan-prediction-card"></div>
       <div id="lifespan-loading"></div>
       <div id="lifespan-error"></div>
@@ -47,18 +47,18 @@ describe('Water Heater Predictions UI Tests', function() {
       <div id="lifespan-summary"></div>
       <div id="lifespan-actions-list"></div>
     `;
-    
+
     // Create a new instance of the UI controller
     predictionsUI = new WaterHeaterPredictionsDashboard('device-123');
-    
+
     // Mock the fetch API
     global.fetch = jest.fn();
   });
-  
+
   afterEach(function() {
     jest.resetAllMocks();
   });
-  
+
   /**
    * Test handling of empty or missing data in the Usage Pattern component
    */
@@ -76,25 +76,25 @@ describe('Water Heater Predictions UI Tests', function() {
         optimization_recommendations: []
       }
     };
-    
+
     // Set the data and render
     predictionsUI.usagePatterns = emptyUsageData;
     predictionsUI.usageCardElement = document.getElementById('usage-patterns-card');
     predictionsUI.renderUsagePatterns();
-    
+
     // Verify component impacts shows no-data message
     const impactsList = document.getElementById('component-impacts-list');
     expect(impactsList.innerHTML).toContain('No significant component impacts');
-    
+
     // Verify optimization recommendations shows no-data message
     const optimizationsList = document.getElementById('optimization-recommendations-list');
     expect(optimizationsList.innerHTML).toContain('No optimization recommendations needed');
-    
+
     // Verify recommendations section shows no-data message
     const recommendationsList = document.getElementById('usage-recommendations');
     expect(recommendationsList.innerHTML).toContain('No specific actions recommended');
   });
-  
+
   /**
    * Test that all recommendation sections display correctly with both data and no data
    */
@@ -105,7 +105,7 @@ describe('Water Heater Predictions UI Tests', function() {
       predictionsUI.renderRecommendedActions(predictionType, [], container);
       expect(container.innerHTML).toBe('');
     };
-    
+
     // Test with recommendations
     const testWithRecommendations = function(containerId, predictionType, recommendations) {
       const container = document.getElementById(containerId);
@@ -113,7 +113,7 @@ describe('Water Heater Predictions UI Tests', function() {
       expect(container.children.length).toBeGreaterThan(0);
       expect(container.innerHTML).toContain(recommendations[0].description);
     };
-    
+
     // Sample recommendation
     const sampleRecommendation = {
       action_id: 'test-action-123',
@@ -125,19 +125,19 @@ describe('Water Heater Predictions UI Tests', function() {
       estimated_cost: 50.00,
       estimated_duration: '1 hour'
     };
-    
+
     // Test all recommendation containers
     testNoRecommendations('anomaly-recommendations', 'anomaly', []);
     testNoRecommendations('usage-recommendations', 'usage', []);
     testNoRecommendations('multi-factor-recommendations', 'multi-factor', []);
     testNoRecommendations('lifespan-actions-list', 'lifespan', []);
-    
+
     testWithRecommendations('anomaly-recommendations', 'anomaly', [sampleRecommendation]);
     testWithRecommendations('usage-recommendations', 'usage', [sampleRecommendation]);
     testWithRecommendations('multi-factor-recommendations', 'multi-factor', [sampleRecommendation]);
     testWithRecommendations('lifespan-actions-list', 'lifespan', [sampleRecommendation]);
   });
-  
+
   /**
    * Test handling of null or undefined values in recommendations
    */
@@ -153,11 +153,11 @@ describe('Water Heater Predictions UI Tests', function() {
       estimated_cost: null,
       estimated_duration: undefined
     };
-    
+
     // Render the incomplete recommendation
     const container = document.getElementById('anomaly-recommendations');
     predictionsUI.renderRecommendedActions('anomaly', [incompleteRecommendation], container);
-    
+
     // Verify fallback values are displayed
     expect(container.innerHTML).toContain('No description available');
     expect(container.innerHTML).toContain('No impact description available');

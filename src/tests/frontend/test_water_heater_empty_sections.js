@@ -1,6 +1,6 @@
 /**
  * Frontend tests for empty sections in water heater predictions UI
- * 
+ *
  * These tests verify that the UI handles empty sections gracefully by displaying
  * appropriate fallback messages instead of blank spaces.
  */
@@ -8,7 +8,7 @@
 // Mock implementation of water heater prediction UI functions
 window.renderUsageClassification = (data, container) => {
   const div = document.getElementById('usage-classification');
-  if (!data?.usage_patterns?.raw_details?.usage_classification || 
+  if (!data?.usage_patterns?.raw_details?.usage_classification ||
       Object.keys(data?.usage_patterns?.raw_details?.usage_classification || {}).length === 0) {
     div.innerHTML = '<p class="no-data-message">No usage classification data available</p>';
   } else {
@@ -18,7 +18,7 @@ window.renderUsageClassification = (data, container) => {
 
 window.renderComponentImpacts = (data, container) => {
   const div = document.getElementById('component-impacts');
-  if (!data?.usage_patterns?.raw_details?.impact_on_components || 
+  if (!data?.usage_patterns?.raw_details?.impact_on_components ||
       Object.keys(data?.usage_patterns?.raw_details?.impact_on_components || {}).length === 0) {
     div.innerHTML = '<p class="no-data-message">No component impact data available</p>';
   } else {
@@ -28,7 +28,7 @@ window.renderComponentImpacts = (data, container) => {
 
 window.renderOptimizationRecommendations = (data, container) => {
   const div = document.getElementById('optimization-recommendations');
-  if (!data?.usage_patterns?.raw_details?.optimization_recommendations || 
+  if (!data?.usage_patterns?.raw_details?.optimization_recommendations ||
       (data?.usage_patterns?.raw_details?.optimization_recommendations || []).length === 0) {
     div.innerHTML = '<p class="no-data-message">No optimization recommendations available</p>';
   } else {
@@ -38,7 +38,7 @@ window.renderOptimizationRecommendations = (data, container) => {
 
 window.renderAnomalyDetails = (data, container) => {
   const div = document.getElementById('anomaly-details');
-  if (!data?.anomaly_detection?.raw_details?.detected_anomalies || 
+  if (!data?.anomaly_detection?.raw_details?.detected_anomalies ||
       (data?.anomaly_detection?.raw_details?.detected_anomalies || []).length === 0) {
     div.innerHTML = '<p class="no-data-message">No anomalies detected</p>';
   } else {
@@ -48,17 +48,17 @@ window.renderAnomalyDetails = (data, container) => {
 
 window.renderWaterHeaterRecommendations = (data, container) => {
   const div = document.getElementById('recommendations-container');
-  
+
   // Add section header
   const header = document.createElement('h3');
   header.className = 'prediction-section-header';
   header.textContent = 'Recommended Actions';
   div.appendChild(header);
-  
+
   // Add recommendations from all prediction types
   const types = ['usage_patterns', 'anomaly_detection', 'multi_factor'];
   let hasRecommendations = false;
-  
+
   types.forEach(type => {
     if (data[type] && data[type].recommended_actions && data[type].recommended_actions.length > 0) {
       data[type].recommended_actions.forEach(action => {
@@ -70,7 +70,7 @@ window.renderWaterHeaterRecommendations = (data, container) => {
       });
     }
   });
-  
+
   if (!hasRecommendations) {
     div.innerHTML += '<p class="no-data-message">No recommendations available</p>';
   }
@@ -92,9 +92,9 @@ describe('Water Heater Predictions Empty Sections', () => {
         <div id="recommendations-container"></div>
       </div>
     `;
-    
+
     mockContainer = document.getElementById('water-heater-prediction-container');
-    
+
     // Create a spy on console.error to catch any errors
     jest.spyOn(console, 'error').mockImplementation(() => {});
   });
@@ -124,11 +124,11 @@ describe('Water Heater Predictions Empty Sections', () => {
 
     // Call the render function with empty classification data
     window.renderUsageClassification(mockData, mockContainer);
-    
+
     // Verify that a fallback message is displayed
     const usageClassificationDiv = document.getElementById('usage-classification');
     expect(usageClassificationDiv.innerHTML).toContain('No usage classification data available');
-    
+
     // Verify no console errors were produced
     expect(console.error).not.toHaveBeenCalled();
   });
@@ -153,11 +153,11 @@ describe('Water Heater Predictions Empty Sections', () => {
 
     // Call the render function with empty impact data
     window.renderComponentImpacts(mockData, mockContainer);
-    
+
     // Verify that a fallback message is displayed
     const componentImpactsDiv = document.getElementById('component-impacts');
     expect(componentImpactsDiv.innerHTML).toContain('No component impact data available');
-    
+
     // Verify no console errors were produced
     expect(console.error).not.toHaveBeenCalled();
   });
@@ -182,11 +182,11 @@ describe('Water Heater Predictions Empty Sections', () => {
 
     // Call the render function with empty optimization recommendations
     window.renderOptimizationRecommendations(mockData, mockContainer);
-    
+
     // Verify that a fallback message is displayed
     const optimizationRecommendationsDiv = document.getElementById('optimization-recommendations');
     expect(optimizationRecommendationsDiv.innerHTML).toContain('No optimization recommendations available');
-    
+
     // Verify no console errors were produced
     expect(console.error).not.toHaveBeenCalled();
   });
@@ -211,11 +211,11 @@ describe('Water Heater Predictions Empty Sections', () => {
 
     // Call the render function with empty anomaly data
     window.renderAnomalyDetails(mockData, mockContainer);
-    
+
     // Verify that a fallback message is displayed
     const anomalyDetailsDiv = document.getElementById('anomaly-details');
     expect(anomalyDetailsDiv.innerHTML).toContain('No anomalies detected');
-    
+
     // Verify no console errors were produced
     expect(console.error).not.toHaveBeenCalled();
   });
@@ -260,13 +260,13 @@ describe('Water Heater Predictions Empty Sections', () => {
 
     // Call the render function for recommendations
     window.renderWaterHeaterRecommendations(mockData, mockContainer);
-    
+
     // Verify that recommendations are displayed
     const recommendationsContainer = document.getElementById('recommendations-container');
     expect(recommendationsContainer.innerHTML).toContain('Monitor system performance');
     expect(recommendationsContainer.innerHTML).toContain('Monitor system for any unusual behavior');
     expect(recommendationsContainer.innerHTML).toContain('Perform routine system check');
-    
+
     // Verify no console errors were produced
     expect(console.error).not.toHaveBeenCalled();
   });
@@ -289,15 +289,15 @@ describe('Water Heater Predictions Empty Sections', () => {
 
     // Call the render function
     window.renderWaterHeaterRecommendations(mockData, mockContainer);
-    
+
     // Check for duplicate headers
     const headers = document.querySelectorAll('.prediction-section-header');
-    const recommendationHeaders = Array.from(headers).filter(h => 
+    const recommendationHeaders = Array.from(headers).filter(h =>
       h.textContent.trim().includes('Recommended Actions'));
-    
+
     // There should be only one "Recommended Actions" header
     expect(recommendationHeaders.length).toBe(1);
-    
+
     // Verify no console errors were produced
     expect(console.error).not.toHaveBeenCalled();
   });

@@ -1,6 +1,6 @@
 /**
  * TypeScript declaration file for IoTSphere UI tests
- * 
+ *
  * This file extends global interfaces with properties used in our tests
  * that TypeScript doesn't recognize by default.
  */
@@ -12,10 +12,10 @@ interface Window {
   waterHeaterHistoryDashboard?: any;
   waterHeaterOperationsDashboard?: any;
   waterHeaterDetail?: any;
-  
+
   // Tab manager
   tabManager?: any;
-  
+
   // Data loading state tracker
   dataLoadingState?: {
     detail: boolean;

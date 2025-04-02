@@ -1,6 +1,6 @@
 /**
  * Water Heater Operations Dashboard
- * 
+ *
  * This module manages the operations dashboard for water heaters,
  * displaying real-time operational data including temperature, pressure,
  * energy usage, and flow rate using gauge visualizations.
@@ -15,29 +15,29 @@ class WaterHeaterOperationsDashboard {
     constructor(heaterId, containerId = 'operations-content') {
         this.heaterId = heaterId;
         this.containerId = containerId;
-        
+
         // Root container for scoped element selection
         this.container = document.getElementById(containerId);
         if (!this.container) {
             console.error(`Operations Dashboard: Container element #${this.containerId} not found`);
         }
-        
+
         // Element cache for performance optimization
         this.elements = {};
-        
+
         // Initialize charts container
         this.gauges = {};
-        
+
         // Track initialization state
         this.initialized = false;
-        
+
         // Intervals for cleanup
         this.updateInterval = null;
-        
+
         // Initialize the dashboard
         this.initialize();
     }
-    
+
     /**
      * Get a DOM element within the dashboard's container
      * @param {string} selector - CSS selector for the element
@@ -47,18 +47,18 @@ class WaterHeaterOperationsDashboard {
      */
     getElement(selector, cacheResult = true, cacheKey = null) {
         const key = cacheKey || selector;
-        
+
         // Return cached element if available
         if (this.elements[key]) {
             return this.elements[key];
         }
-        
+
         // Try to find element within container first (scoped)
         let element = null;
         if (this.container) {
             element = this.container.querySelector(selector);
         }
-        
+
         // If not found in container, try document-wide as fallback
         if (!element) {
             // Handle ID selectors specially
@@ -69,15 +69,15 @@ class WaterHeaterOperationsDashboard {
                 element = document.querySelector(selector);
             }
         }
-        
+
         // Cache result if requested
         if (element && cacheResult) {
             this.elements[key] = element;
         }
-        
+
         return element;
     }
-    
+
     /**
      * Get all DOM elements matching a selector within the dashboard's container
      * @param {string} selector - CSS selector for the elements
@@ -88,11 +88,11 @@ class WaterHeaterOperationsDashboard {
         if (this.container) {
             return this.container.querySelectorAll(selector);
         }
-        
+
         // Fallback to document-wide
         return document.querySelectorAll(selector);
     }
-    
+
     /**
      * Initialize the dashboard UI and load data
      */
@@ -101,32 +101,32 @@ class WaterHeaterOperationsDashboard {
             console.error(`Operations Dashboard: Container element #${this.containerId} not found`);
             return;
         }
-        
+
         console.log(`Operations Dashboard: Initializing for water heater ${this.heaterId}`);
-        
+
         // Build dashboard UI structure if not already built
         if (!this.initialized) {
             this.buildDashboardUI();
         }
-        
+
         // Cache frequently accessed elements
         this.cacheElements();
-        
+
         // Load initial data
         try {
             await this.loadDashboardData();
             this.initialized = true;
-            
+
             // Set up periodic updates
             this.setupPeriodicUpdates();
-            
+
             console.log('Operations Dashboard: Initialization complete');
         } catch (error) {
             console.error('Operations Dashboard: Initialization error', error);
             this.showError(`Failed to load dashboard data: ${error.message}`);
         }
     }
-    
+
     /**
      * Cache frequently accessed DOM elements for better performance
      */
@@ -137,19 +137,19 @@ class WaterHeaterOperationsDashboard {
         this.elements.currentTemp = this.getElement('#current-temp-card .status-value');
         this.elements.targetTemp = this.getElement('#target-temp-card .status-value');
         this.elements.modeValue = this.getElement('#mode-card .status-value');
-        
+
         // Gauge elements
         this.elements.temperatureGauge = this.getElement('#temperature-gauge');
         this.elements.pressureGauge = this.getElement('#pressure-gauge');
         this.elements.flowRateGauge = this.getElement('#flow-rate-gauge');
         this.elements.energyGauge = this.getElement('#energy-gauge');
-        
+
         // Error container
         this.elements.errorContainer = this.getElement('#operations-error');
-        
+
         console.log('Operations Dashboard: Cached DOM elements');
     }
-    
+
     /**
      * Build the dashboard UI structure
      */
@@ -157,7 +157,7 @@ class WaterHeaterOperationsDashboard {
         this.container.innerHTML = `
             <div id="operations-dashboard" class="operations-dashboard dark-theme">
                 <h2>Operations Dashboard</h2>
-                
+
                 <!-- Status Cards Section -->
                 <div class="status-section">
                     <h3>Status</h3>
@@ -184,7 +184,7 @@ class WaterHeaterOperationsDashboard {
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Gauges Section -->
                 <div class="operations-section">
                     <h3>Operational Metrics</h3>
@@ -197,7 +197,7 @@ class WaterHeaterOperationsDashboard {
                             </div>
                             <div id="asset-health-gauge-value" class="gauge-value">--</div>
                         </div>
-                        
+
                         <!-- Temperature Gauge -->
                         <div id="temperature-gauge-panel" class="gauge-panel">
                             <div class="gauge-title">Temperature</div>
@@ -206,7 +206,7 @@ class WaterHeaterOperationsDashboard {
                             </div>
                             <div id="temperature-gauge-value" class="gauge-value">--</div>
                         </div>
-                        
+
                         <!-- Pressure Gauge -->
                         <div id="pressure-gauge-panel" class="gauge-panel">
                             <div class="gauge-title">Pressure</div>
@@ -215,7 +215,7 @@ class WaterHeaterOperationsDashboard {
                             </div>
                             <div id="pressure-gauge-value" class="gauge-value">--</div>
                         </div>
-                        
+
                         <!-- Energy Usage Gauge -->
                         <div id="energy-gauge-panel" class="gauge-panel">
                             <div class="gauge-title">Energy Usage</div>
@@ -224,7 +224,7 @@ class WaterHeaterOperationsDashboard {
                             </div>
                             <div id="energy-gauge-value" class="gauge-value">--</div>
                         </div>
-                        
+
                         <!-- Flow Rate Gauge -->
                         <div id="flow-rate-gauge-panel" class="gauge-panel">
                             <div class="gauge-title">Flow Rate</div>
@@ -235,7 +235,7 @@ class WaterHeaterOperationsDashboard {
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Error message container -->
                 <div id="operations-error" class="error-message" style="display: none;">
                     Error loading operations data. Please try again later.
@@ -243,7 +243,7 @@ class WaterHeaterOperationsDashboard {
             </div>
         `;
     }
-    
+
     /**
      * Load dashboard data from the API
      */
@@ -253,7 +253,7 @@ class WaterHeaterOperationsDashboard {
             if (!response.ok) {
                 throw new Error(`API error: ${response.status}`);
             }
-            
+
             const data = await response.json();
             this.updateDashboard(data);
             return data;
@@ -263,7 +263,7 @@ class WaterHeaterOperationsDashboard {
             throw error;
         }
     }
-    
+
     /**
      * Update the dashboard with data
      * @param {Object} data - Dashboard data from API
@@ -273,14 +273,14 @@ class WaterHeaterOperationsDashboard {
             this.showError('No data received from server');
             return;
         }
-        
+
         // Update status cards
         this.updateStatusCards(data);
-        
+
         // Update gauge displays
         this.updateGauges(data);
     }
-    
+
     /**
      * Update status cards with data
      * @param {Object} data - Dashboard data
@@ -288,22 +288,22 @@ class WaterHeaterOperationsDashboard {
     updateStatusCards(data) {
         // Update machine status
         this.updateStatusCard('machine-status', 'Machine Status', data.machine_status);
-        
+
         // Update heater status
         this.updateStatusCard('heater-status', 'Heater Status', data.heater_status);
-        
+
         // Update current temperature
-        this.updateStatusCard('current-temp', 'Current Temp', 
+        this.updateStatusCard('current-temp', 'Current Temp',
             this.formatTemperature(data.current_temperature));
-        
+
         // Update target temperature
-        this.updateStatusCard('target-temp', 'Target Temp', 
+        this.updateStatusCard('target-temp', 'Target Temp',
             this.formatTemperature(data.target_temperature));
-        
+
         // Update mode
         this.updateStatusCard('mode', 'Mode', data.mode);
     }
-    
+
     /**
      * Update a status card with data
      * @param {string} cardId - ID prefix of the card element
@@ -313,14 +313,14 @@ class WaterHeaterOperationsDashboard {
     updateStatusCard(cardId, title, value) {
         const card = document.getElementById(`${cardId}-card`);
         if (!card) return;
-        
+
         const valueElement = card.querySelector('.status-value');
         if (valueElement) {
             valueElement.textContent = value;
-            
+
             // Update classes based on value
             valueElement.classList.remove('online', 'offline', 'warning');
-            
+
             // Add appropriate status class
             if (cardId === 'machine-status') {
                 if (value === 'ONLINE') valueElement.classList.add('online');
@@ -334,7 +334,7 @@ class WaterHeaterOperationsDashboard {
             }
         }
     }
-    
+
     /**
      * Update gauge displays with data
      * @param {Object} data - Dashboard data
@@ -342,48 +342,48 @@ class WaterHeaterOperationsDashboard {
     updateGauges(data) {
         // Get gauge data
         const gauges = data.gauges || {};
-        
+
         // Update temperature gauge
         if (gauges.temperature) {
-            this.updateGauge('temperature', 
-                gauges.temperature.value, 
-                gauges.temperature.unit, 
+            this.updateGauge('temperature',
+                gauges.temperature.value,
+                gauges.temperature.unit,
                 gauges.temperature.percentage);
         }
-        
+
         // Update pressure gauge
         if (gauges.pressure) {
-            this.updateGauge('pressure', 
-                gauges.pressure.value, 
-                gauges.pressure.unit, 
+            this.updateGauge('pressure',
+                gauges.pressure.value,
+                gauges.pressure.unit,
                 gauges.pressure.percentage);
         }
-        
+
         // Update energy usage gauge
         if (gauges.energy_usage) {
-            this.updateGauge('energy', 
-                gauges.energy_usage.value, 
-                gauges.energy_usage.unit, 
+            this.updateGauge('energy',
+                gauges.energy_usage.value,
+                gauges.energy_usage.unit,
                 gauges.energy_usage.percentage);
         }
-        
+
         // Update flow rate gauge
         if (gauges.flow_rate) {
-            this.updateGauge('flow-rate', 
-                gauges.flow_rate.value, 
-                gauges.flow_rate.unit, 
+            this.updateGauge('flow-rate',
+                gauges.flow_rate.value,
+                gauges.flow_rate.unit,
                 gauges.flow_rate.percentage);
         }
-        
+
         // Update asset health gauge
         if (data.asset_health !== undefined) {
-            this.updateGauge('asset-health', 
-                Math.round(data.asset_health), 
-                '%', 
+            this.updateGauge('asset-health',
+                Math.round(data.asset_health),
+                '%',
                 data.asset_health);
         }
     }
-    
+
     /**
      * Update a gauge with data
      * @param {string} gaugeId - ID prefix of the gauge element
@@ -403,24 +403,24 @@ class WaterHeaterOperationsDashboard {
             } else {
                 displayValue = value || '--';
             }
-            
+
             valueElement.textContent = `${displayValue}${unit}`;
         }
-        
+
         // Update gauge needle position
         const needleElement = document.getElementById(`${gaugeId}-gauge-needle`);
         if (needleElement) {
             // Limit percentage to valid range
             const limitedPercentage = Math.max(0, Math.min(100, percentage));
-            
+
             // Convert percentage to angle (0% = -90°, 100% = 90°)
             const angle = -90 + (limitedPercentage * 1.8);
-            
+
             // Apply rotation
             needleElement.style.transform = `rotate(${angle}deg)`;
         }
     }
-    
+
     /**
      * Show error message
      * @param {string} message - Error message to display
@@ -431,7 +431,7 @@ class WaterHeaterOperationsDashboard {
         if (errorElement) {
             errorElement.textContent = message;
             errorElement.style.display = 'block';
-            
+
             // Hide after 5 seconds
             setTimeout(() => {
                 errorElement.style.display = 'none';
@@ -439,18 +439,18 @@ class WaterHeaterOperationsDashboard {
         }
         console.error('Operations Dashboard Error:', message);
     }
-    
+
     /**
      * Setup periodic updates for real-time data
      */
     setupPeriodicUpdates() {
         // Clear any existing interval first
         this.clearUpdateInterval();
-        
+
         // Only set up interval if we're the active tab
         if (window.tabManager && window.tabManager.getActiveTabId() === 'operations') {
             console.log('Operations Dashboard: Setting up periodic updates (30s interval)');
-            
+
             // Update every 30 seconds
             this.updateInterval = setInterval(() => {
                 // Only fetch data if this tab is still active
@@ -466,7 +466,7 @@ class WaterHeaterOperationsDashboard {
             }, 30000);
         }
     }
-    
+
     /**
      * Clear the update interval
      */
@@ -476,7 +476,7 @@ class WaterHeaterOperationsDashboard {
             this.updateInterval = null;
         }
     }
-    
+
     /**
      * Format temperature for display
      * @param {number} temp - Temperature value
@@ -485,16 +485,16 @@ class WaterHeaterOperationsDashboard {
     formatTemperature(temp) {
         return temp !== null && temp !== undefined ? `${temp.toFixed(1)}°C` : 'N/A';
     }
-    
+
     /**
      * Clean up resources (e.g., when component is destroyed)
      */
     destroy() {
         console.log('Operations Dashboard: Cleaning up resources');
-        
+
         // Clear update interval
         this.clearUpdateInterval();
-        
+
         // Clear gauge objects
         Object.values(this.gauges).forEach(gauge => {
             if (gauge && typeof gauge.destroy === 'function') {
@@ -502,18 +502,18 @@ class WaterHeaterOperationsDashboard {
             }
         });
         this.gauges = {};
-        
+
         // Clear element cache
         this.elements = {};
     }
-    
+
     /**
      * TabManager reload method - Called when the Operations tab is activated
      * @returns {boolean} Success status
      */
     reload() {
         console.log('Operations Dashboard: Reload method called by TabManager');
-        
+
         try {
             // Ensure operations content is visible (this should already be handled by TabManager)
             const operationsContent = document.getElementById('operations-content');
@@ -522,11 +522,11 @@ class WaterHeaterOperationsDashboard {
                 operationsContent.style.display = 'block';
                 operationsContent.style.visibility = 'visible';
             }
-            
+
             // Safe initialization check
             const safeInitialized = this.initialized === true;
             console.log(`Operations Dashboard: Initialization status: ${safeInitialized ? 'Initialized' : 'Not initialized'}`);
-            
+
             // Reload dashboard data - this is a defensive implementation
             // that will work even if the initialization state is incorrect
             if (safeInitialized && typeof this.loadDashboardData === 'function') {
@@ -536,7 +536,7 @@ class WaterHeaterOperationsDashboard {
                     console.error('Operations Dashboard: Error reloading data', error);
                     this.showError('Failed to refresh operations data');
                 });
-                
+
                 // Restart periodic updates
                 if (typeof this.setupPeriodicUpdates === 'function') {
                     this.setupPeriodicUpdates();
@@ -552,7 +552,7 @@ class WaterHeaterOperationsDashboard {
                     console.error('Operations Dashboard: Initialize method not found');
                 }
             }
-            
+
             return true; // Indicate successful reload attempt
         } catch (error) {
             console.error('Operations Dashboard: Critical error in reload method:', error);

@@ -24,7 +24,7 @@ class VendingMachine(Base):
     last_maintenance_date = Column(DateTime)
     firmware_version = Column(String(20))
     status = Column(Enum("ONLINE", "OFFLINE", "MAINTENANCE", name="machine_status"))
-    
+
     # Relationships
     readings = relationship("MachineReading", back_populates="machine")
     alerts = relationship("Alert", back_populates="machine")
@@ -45,7 +45,7 @@ class MachineReading(Base):
     reading_type = Column(String(50), nullable=False)
     value = Column(Float, nullable=False)
     unit = Column(String(20))
-    
+
     # Relationships
     machine = relationship("VendingMachine", back_populates="readings")
 ```
@@ -64,7 +64,7 @@ class Inventory(Base):
     current_level = Column(Integer, nullable=False)
     max_capacity = Column(Integer, nullable=False)
     last_updated = Column(DateTime, default=datetime.utcnow, nullable=False)
-    
+
     # Relationships
     machine = relationship("VendingMachine", back_populates="inventory")
     product = relationship("Product")
@@ -125,7 +125,7 @@ class Alert(Base):
     resolved_at = Column(DateTime)
     resolved_by = Column(String(36), ForeignKey("user.id"))
     resolution_notes = Column(Text)
-    
+
     # Relationships
     machine = relationship("VendingMachine", back_populates="alerts")
 ```
@@ -138,8 +138,8 @@ Contains real-time operational data for the Operations Dashboard.
 
 ```python
 class VendingMachineOperationsData:
-    def __init__(self, machine_id, machine_status, pod_code=None, cup_detect=None, 
-                 customer_door=None, dispense_pressure=None, freezer_temperature=None, 
+    def __init__(self, machine_id, machine_status, pod_code=None, cup_detect=None,
+                 customer_door=None, dispense_pressure=None, freezer_temperature=None,
                  cycle_time=None, asset_health=None, ice_cream_inventory=None):
         self.machine_id = machine_id
         self.machine_status = machine_status
@@ -151,7 +151,7 @@ class VendingMachineOperationsData:
         self.cycle_time = cycle_time
         self.asset_health = asset_health
         self.ice_cream_inventory = ice_cream_inventory
-    
+
     def to_dict(self):
         return {
             "machine_id": self.machine_id,
@@ -177,7 +177,7 @@ class GaugeData:
         self.value = value
         self.min = min_value
         self.max = max_value
-    
+
     def to_dict(self):
         return {
             "value": self.value,
@@ -232,7 +232,7 @@ class InventoryItem:
         self.name = name
         self.level = level
         self.max_capacity = max_capacity
-    
+
     def to_dict(self):
         result = {
             "name": self.name,
@@ -389,7 +389,7 @@ The frontend uses JavaScript objects to represent data received from the API and
 ### Operations Dashboard Data Flow
 
 1. **Machine List Request**:
-   - Frontend calls `fetchMachineList()` 
+   - Frontend calls `fetchMachineList()`
    - API endpoint: `GET /api/vending-machines`
    - Response contains list of available machines
 

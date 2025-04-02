@@ -86,7 +86,7 @@ The implementation follows these key patterns:
        FOREIGN KEY (model_id) REFERENCES models(id) ON DELETE CASCADE,
        UNIQUE(model_id, version)
    );
-   
+
    CREATE TABLE model_health (
        id TEXT PRIMARY KEY,
        model_id TEXT NOT NULL,

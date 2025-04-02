@@ -25,24 +25,24 @@ class ApiClient {
     } else {
       endpoint += `?_t=${Date.now()}`;
     }
-    
+
     // Handle endpoint formatting - remove trailing slash if query params exist
     if (endpoint.includes('?')) {
       endpoint = endpoint.replace(/\/$/, '');
-    } 
+    }
     // Otherwise ensure trailing slash for FastAPI compatibility
     else if (!endpoint.endsWith('/')) {
       endpoint = `${endpoint}/`;
     }
-    
+
     // Handle all machine ID formats safely
     if (endpoint.includes('/vending-machines/') || endpoint.includes('/ice-cream-machines/')) {
       console.log('Machine endpoint detected, ensuring ID compatibility');
     }
-    
+
     const url = `${this.baseUrl}${endpoint}`;
     console.log(`Making ${method} request to: ${url}`);
-    
+
     const options = {
       method,
       headers: {
@@ -73,13 +73,13 @@ class ApiClient {
         fetch(url, options),
         timeoutPromise
       ]);
-      
+
       console.log(`Response status: ${response.status} ${response.statusText}`);
-      
+
       // Check for CORS errors
       if (response.type === 'opaque' || response.status === 0) {
         console.error('Possible CORS error - received opaque response');
-        
+
         // Try again with a different mode as fallback
         console.log('Retrying with no-cors mode as fallback');
         const fallbackOptions = {...options, mode: 'no-cors'};
@@ -91,18 +91,18 @@ class ApiClient {
           throw new Error('Unable to access API due to cross-origin restrictions. Please check CORS configuration.');
         }
       }
-      
+
       // Handle non-JSON responses
       const contentType = response.headers.get('content-type');
       if (contentType && contentType.includes('application/json')) {
         const responseData = await response.json();
-        
+
         if (!response.ok) {
           // Handle API errors with more detail
           console.error('API error response:', responseData);
           throw new Error(responseData.detail || `API request failed: ${response.status} ${response.statusText}`);
         }
-        
+
         return responseData;
       } else {
         if (!response.ok) {
@@ -112,20 +112,20 @@ class ApiClient {
       }
     } catch (error) {
       console.error(`API request error for ${url}:`, error);
-      
+
       // Add more helpful debugging for common errors
       if (error.message.includes('NetworkError') || error.message.includes('Failed to fetch')) {
         console.error('Network error detected. This could be due to CORS issues, network connectivity, or the server being down');
         console.log('Trying to reach server at:', this.baseUrl);
       }
-      
+
       // Rethrow with enhanced error message
       throw new Error(`Request failed: ${error.message}. Please check console for details.`);
     }
   }
 
   // Water Heater API methods
-  
+
   /**
    * Get all water heaters
    * @returns {Promise<Array>} - List of water heaters
@@ -239,7 +239,7 @@ class ApiClient {
     // Using the main operations endpoint since we don't have a specific /realtime endpoint
     return this.request('GET', `/ice-cream-machines/${id}/operations`);
   }
-  
+
   /**
    * Get real-time operations data for an ice cream machine
    * @param {string} id - Ice cream machine ID

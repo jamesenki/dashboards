@@ -22,7 +22,7 @@ services:
   water_heater:
     use_mock_data: false  # Always use real database in production
     data_retention_days: 90
-  
+
   # Production specific monitoring settings
   monitoring:
     use_mock_data: false  # Never use mock data in production by default
@@ -38,7 +38,7 @@ services:
     model_health:
       drift_threshold: 0.10   # Stricter threshold in production
       accuracy_threshold: 0.90  # Higher standards in production
-    
+
   predictions:
     model_cache_ttl: 3600  # Cache prediction models for 1 hour in production
     enable_development_models: false
@@ -46,7 +46,7 @@ services:
 security:
   https:
     enabled: true
-  
+
   auth:
     token_expiration: 1800  # 30 minutes in production
 
@@ -57,10 +57,10 @@ observability:
       api: "WARNING"
       database: "WARNING"
       predictions: "INFO"
-  
+
   metrics:
     enabled: true
-    
+
   tracing:
     enabled: true
     sampling_rate: 0.2

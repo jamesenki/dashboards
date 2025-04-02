@@ -83,7 +83,7 @@ services:
     endpoints:
       alerts: "/alerts"
       metrics: "/metrics"
-  
+
   prediction:
     enabled: true
     model_path: "./models"
@@ -177,7 +177,7 @@ from pydantic import BaseModel, Field, validator
 class DatabaseCredentials(BaseModel):
     username: str
     password: str
-    
+
     @validator('password')
     def password_not_empty(cls, v):
         if not v:
@@ -190,7 +190,7 @@ class DatabaseConfig(BaseModel):
     port: int = 5432
     name: str = "iotsphere"
     credentials: DatabaseCredentials
-    
+
     class Config:
         env_prefix = "DB_"
 
@@ -198,7 +198,7 @@ class ApiConfig(BaseModel):
     base_path: str = "/api"
     version: str = "v1"
     cors: CorsConfig = CorsConfig()
-    
+
     class Config:
         env_prefix = "API_"
 
@@ -206,7 +206,7 @@ class AppConfig(BaseModel):
     database: DatabaseConfig
     api: ApiConfig
     # Other configuration sections...
-    
+
     class Config:
         env_file = ".env"
         case_sensitive = True

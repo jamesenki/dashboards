@@ -83,10 +83,10 @@ describe('DeviceStatusComponent', () => {
     // Arrange
     const testDevice = { id: '123', healthScore: 25 };
     component.device = testDevice;
-    
+
     // Act
     fixture.detectChanges();
-    
+
     // Assert
     const statusElement = fixture.nativeElement.querySelector('.status-indicator');
     expect(statusElement.textContent).toContain('Critical');
@@ -110,13 +110,13 @@ describe('DeviceService', () => {
       throwError(errorResponse),
       of({ success: true })
     );
-    
+
     // Act
     service.connectDevice(deviceId).subscribe(
       response => expect(response.success).toBeTrue(),
       error => fail('should not error out')
     );
-    
+
     // Assert
     expect(httpClientSpy.post.calls.count()).toBe(4); // Initial + 3 retries
   });
