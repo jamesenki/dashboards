@@ -72,6 +72,9 @@ services:
   # Monitoring Service
   monitoring:
     enabled: true
+    # Database configuration - follows the standard pattern
+    use_mock_data: false      # Can be overridden by environment files
+    fallback_to_mock: true    # Falls back to mock data if database connection fails
     metrics_retention_days: 30
     base_path: "/api/monitoring"
     endpoints:
@@ -94,6 +97,21 @@ services:
       enabled: true
       drift_threshold: 0.15   # Alert if drift exceeds this value
       accuracy_threshold: 0.85  # Alert if accuracy falls below this value
+
+    # Model tags for categorization
+    tags:
+      - id: "tag1"
+        name: "production"
+        color: "green"
+      - id: "tag2"
+        name: "development"
+        color: "blue"
+      - id: "tag3"
+        name: "testing"
+        color: "orange"
+      - id: "tag4"
+        name: "deprecated"
+        color: "red"
   
   # Predictions Service
   predictions:

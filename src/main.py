@@ -4,6 +4,8 @@ import sys
 import asyncio
 import uvicorn
 import socket
+import argparse
+import logging
 from fastapi import FastAPI, APIRouter, Request, Response
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -17,8 +19,9 @@ if parent_dir not in sys.path:
     sys.path.append(parent_dir)
 
 # Now imports will work both when running from project root or from src/
-# Water heater API endpoints
+# Water heater API endpoints - standard and configurable
 from src.api.water_heater import router as water_heater_api_router
+from src.api.water_heater.configurable_router import router as configurable_water_heater_router
 # Water heater operations API
 from src.api.water_heater_operations import router as water_heater_operations_api_router
 # Water heater history API
@@ -111,6 +114,10 @@ templates = Jinja2Templates(directory=templates_dir)
 api_router = APIRouter(prefix="/api")
 
 # Include routers under the API prefix
+# Use configurable water heater router instead of the standard one
+api_router.include_router(configurable_water_heater_router)
+# Keep original router for backwards compatibility but with a different prefix
+water_heater_api_router.prefix = "/v0/water-heaters"
 api_router.include_router(water_heater_api_router)
 api_router.include_router(water_heater_operations_api_router)
 api_router.include_router(water_heater_history_api_router)
@@ -148,9 +155,10 @@ logging.info(f"Using SQLite database at {database_path}")
 # Create the repository chain for model monitoring
 sqlite_repo = SQLiteModelMetricsRepository(db=db)
 
-# Use environment variable to determine if we should use mock data
-use_mock_data = os.environ.get('USE_MOCK_DATA', 'False').lower() in ('true', '1', 't')
-logging.info(f"USE_MOCK_DATA set to '{os.environ.get('USE_MOCK_DATA', 'False')}', interpreted as {use_mock_data}")
+# Use configuration system to determine if we should use mock data
+from src.config import config
+use_mock_data = config.get('services.water_heater.use_mock_data', False)
+logging.info(f"Using mock data: {use_mock_data}")
 
 # Create the model metrics repository with the SQL adapter
 metrics_repository = ModelMetricsRepository(sql_repo=sqlite_repo, test_mode=False)
@@ -160,32 +168,91 @@ monitoring_service = ModelMonitoringService(metrics_repository=metrics_repositor
 model_monitoring_api = create_dashboard_api(monitoring_service)
 app.mount("/api/monitoring", model_monitoring_api)
 
+def setup_environment_configuration():
+    """Set up environment-based configuration."""
+    from src.config.env_provider import EnvironmentFileProvider
+    from src.config import config as config_service
+    from pathlib import Path
+    import logging
+    
+    # Parse command-line arguments for environment
+    parser = argparse.ArgumentParser(description='IoTSphere Application')
+    parser.add_argument('--env', type=str, default=os.environ.get('APP_ENV', 'development'),
+                      help='Environment (development, staging, production)')
+    args, _ = parser.parse_known_args()
+    
+    # Set APP_ENV environment variable based on arguments
+    os.environ['APP_ENV'] = args.env
+    
+    # Get project root directory
+    project_root = Path(__file__).parent.parent
+    config_dir = project_root / "config"
+    
+    # Create environment file provider
+    env_provider = EnvironmentFileProvider(config_dir, default_env=args.env)
+    
+    # Register provider with config service with high priority (50)
+    config_service.register_provider(env_provider, priority=50)
+    
+    # Log the active environment
+    logging.info(f"Application running in {env_provider.get_environment()} environment")
+    
+    return env_provider.get_environment()
+
 @app.on_event("startup")
 async def startup_event():
     """Initialize database and connections on startup."""
     from src.db.config import db_settings
     import logging
     
+    # Set up environment configuration
+    env = setup_environment_configuration()
+    
     # Initialize database schema
     try:
+        # Use db_settings for backward compatibility
         await initialize_db()
         logging.info("Database initialized successfully")
     except Exception as e:
-        if not db_settings.SUPPRESS_DB_CONNECTION_ERRORS:
+        fallback_enabled = config.get('database.fallback_to_mock', True)
+        if not fallback_enabled and not db_settings.SUPPRESS_DB_CONNECTION_ERRORS:
             logging.error(f"Error initializing database: {e}")
         else:
-            logging.debug(f"Non-critical: Database connection not available: {e}")
+            logging.info(f"Using fallback storage: Database connection not available: {e}")
     
-    # Load data from dummy repository to database
-    try:
-        from src.scripts.load_data_to_postgres import load_devices
-        await load_devices()
-        logging.info("Data loaded to PostgreSQL successfully")
-    except Exception as e:
-        if not db_settings.SUPPRESS_DB_CONNECTION_ERRORS:
-            logging.error(f"Error loading data to PostgreSQL: {e}")
-        else:
-            logging.debug(f"Non-critical: Using in-memory storage with JSON persistence instead of PostgreSQL")
+    # Load data from dummy repository to database if in development mode
+    if env != 'production':
+        try:
+            from src.scripts.load_data_to_postgres import load_devices
+            await load_devices()
+            logging.info("Sample data loaded to database successfully")
+        except Exception as e:
+            if not db_settings.SUPPRESS_DB_CONNECTION_ERRORS:
+                logging.error(f"Error loading sample data: {e}")
+            else:
+                logging.info(f"Using in-memory storage with JSON persistence")
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=8006, reload=True)
+    # Parse command-line arguments
+    parser = argparse.ArgumentParser(description='IoTSphere Application')
+    parser.add_argument('--env', type=str, default=os.environ.get('APP_ENV', 'development'),
+                      help='Environment (development, staging, production)')
+    parser.add_argument('--host', type=str, default='0.0.0.0',
+                      help='Host to bind the server to')
+    parser.add_argument('--port', type=int, default=8006,
+                      help='Port to bind the server to')
+    parser.add_argument('--reload', action='store_true',
+                      help='Enable auto-reload for development')
+    
+    args = parser.parse_args()
+    
+    # Set APP_ENV environment variable
+    os.environ['APP_ENV'] = args.env
+    
+    # Configure logging based on environment
+    log_level = "INFO" if args.env == "production" else "DEBUG"
+    logging.basicConfig(level=log_level)
+    
+    # Run the application
+    reload_enabled = args.reload or args.env == 'development'
+    uvicorn.run("main:app", host=args.host, port=args.port, reload=reload_enabled)

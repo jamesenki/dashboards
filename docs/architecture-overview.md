@@ -27,10 +27,11 @@ This architecture supports TDD through:
 
 ### Backend
 
-1. **Repository Pattern**: Abstracts data access logic
-2. **Service Layer Pattern**: Centralizes business logic
+1. **Repository Pattern**: Abstracts data access logic with configurable implementations (e.g., MockWaterHeaterRepository and SQLiteWaterHeaterRepository)
+2. **Service Layer Pattern**: Centralizes business logic in services with configurable data sources
 3. **Factory Pattern**: Creates complex objects
 4. **Dependency Injection**: Makes services and dependencies more testable
+5. **Configuration Management Pattern**: Externalizes configuration to allow behavior changes without code modification
 
 ### Frontend
 

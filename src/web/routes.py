@@ -39,10 +39,14 @@ async def get_water_heater_detail(request: Request, heater_id: str = Path(...)):
     """Render the water heater detail page"""
     from datetime import datetime
     from fastapi.responses import RedirectResponse
-    from src.utils.dummy_data import dummy_data
+    from src.services.configurable_water_heater_service import ConfigurableWaterHeaterService
+    
+    # Use the ConfigurableWaterHeaterService to check if the water heater exists
+    service = ConfigurableWaterHeaterService()
+    water_heater = await service.get_water_heater(heater_id)
     
     # Check if the water heater with the given ID exists
-    if heater_id not in dummy_data.water_heaters:
+    if not water_heater:
         # If not, redirect to the water heater list page
         return RedirectResponse(url="/water-heaters", status_code=302)
     

@@ -280,14 +280,17 @@ class PredictionService:
         # Add advanced features based on prediction type
         if prediction_type == "anomaly_detection":
             # Add telemetry data with timestamps for pattern recognition
+            # Handle the case where readings might be missing fields
             base_data["telemetry_series"] = [
-                {"timestamp": reading.timestamp, 
-                 "temperature": reading.temperature,
-                 "pressure": reading.pressure,
-                 "energy_usage": reading.energy_usage,
-                 "flow_rate": reading.flow_rate}
+                {
+                    "timestamp": reading.timestamp, 
+                    "temperature": reading.temperature,
+                    "pressure": reading.pressure if hasattr(reading, 'pressure') and reading.pressure is not None else 0.0,
+                    "energy_usage": reading.energy_usage if hasattr(reading, 'energy_usage') and reading.energy_usage is not None else 0.0,
+                    "flow_rate": reading.flow_rate if hasattr(reading, 'flow_rate') and reading.flow_rate is not None else 0.0
+                }
                 for reading in water_heater.readings
-            ]
+            ] if water_heater.readings else []
             
             # Add expected operating ranges
             base_data["expected_ranges"] = {
@@ -299,14 +302,17 @@ class PredictionService:
         elif prediction_type == "usage_patterns":
             # Add usage pattern data
             # Convert the readings objects to dictionaries for consistent processing
+            # Handle the case where readings might be missing fields
             base_data["usage_history"] = [
-                {"timestamp": reading.timestamp, 
-                 "temperature": reading.temperature,
-                 "pressure": reading.pressure,
-                 "energy_usage": reading.energy_usage,
-                 "flow_rate": reading.flow_rate}
+                {
+                    "timestamp": reading.timestamp, 
+                    "temperature": reading.temperature,
+                    "pressure": reading.pressure if hasattr(reading, 'pressure') and reading.pressure is not None else 0.0,
+                    "energy_usage": reading.energy_usage if hasattr(reading, 'energy_usage') and reading.energy_usage is not None else 0.0,
+                    "flow_rate": reading.flow_rate if hasattr(reading, 'flow_rate') and reading.flow_rate is not None else 0.0
+                }
                 for reading in water_heater.readings
-            ]
+            ] if water_heater.readings else []
             base_data["installation_location"] = getattr(water_heater, "location", "Unknown")
             base_data["user_preferences"] = {
                 "target_temperature": water_heater.target_temperature,
@@ -315,14 +321,17 @@ class PredictionService:
             
         elif prediction_type == "multi_factor":
             # Include all available data for multi-factor analysis
+            # Handle the case where readings might be missing fields
             base_data["telemetry_series"] = [
-                {"timestamp": reading.timestamp, 
-                 "temperature": reading.temperature,
-                 "pressure": reading.pressure,
-                 "energy_usage": reading.energy_usage,
-                 "flow_rate": reading.flow_rate}
+                {
+                    "timestamp": reading.timestamp, 
+                    "temperature": reading.temperature,
+                    "pressure": reading.pressure if hasattr(reading, 'pressure') and reading.pressure is not None else 0.0,
+                    "energy_usage": reading.energy_usage if hasattr(reading, 'energy_usage') and reading.energy_usage is not None else 0.0,
+                    "flow_rate": reading.flow_rate if hasattr(reading, 'flow_rate') and reading.flow_rate is not None else 0.0
+                }
                 for reading in water_heater.readings
-            ]
+            ] if water_heater.readings else []
             base_data["installation_location"] = getattr(water_heater, "location", "Unknown")
             base_data["heater_type"] = getattr(water_heater, "heater_type", "Residential")
             base_data["status"] = getattr(water_heater, "status", "ONLINE")
@@ -362,7 +371,7 @@ class PredictionService:
             "device_id": device_id,
             "installation_date": getattr(water_heater, 'installation_date', None),
             "model": getattr(water_heater, 'model_name', water_heater.name),  # Use name as fallback
-            "temperature_settings": water_heater.target_temperature,
+            "temperature_settings": [water_heater.target_temperature],  # Store as a list to prevent iteration errors
             "total_operation_hours": getattr(water_heater, 'total_operation_hours', 8760),  # Default to 1 year if not available
             "water_hardness": getattr(water_heater, 'water_hardness', 7.0),  # Default to medium hardness if not available
             "efficiency_degradation_rate": 0.05,  # Default value, can be calculated from history

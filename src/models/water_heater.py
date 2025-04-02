@@ -36,6 +36,7 @@ class WaterHeaterDiagnosticCode(BaseModel):
 
 class WaterHeaterReading(BaseModel):
     """Water heater sensor reading"""
+    id: Optional[str] = Field(None, description="Unique identifier for this reading")
     timestamp: datetime = Field(..., description="Time of the reading")
     temperature: float = Field(..., description="Temperature reading in Celsius")
     pressure: Optional[float] = Field(None, description="Water pressure in bar")

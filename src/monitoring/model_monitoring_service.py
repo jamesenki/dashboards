@@ -34,47 +34,74 @@ class ModelMonitoringService:
             db: Database instance (legacy parameter for backward compatibility)
             data_access_layer: Data access layer for retrieving configurable mock data
         """
+        import logging
+        from src.config import config
+        
+        # Get configuration settings
+        self.enabled = config.get_bool('services.monitoring.enabled', True)
+        use_mock_data = config.get_bool('services.monitoring.use_mock_data', False)
+        fallback_to_mock = config.get_bool('services.monitoring.fallback_to_mock', True)
+        
         # Store the db parameter directly to match test expectations
         self.db = db
         
-        # Handle the case where db is provided but metrics_repository is not
-        # This maintains backward compatibility with older tests
-        if db is not None and metrics_repository is None:
-            from src.db.adapters.sqlite_model_metrics import SQLiteModelMetricsRepository
-            from src.monitoring.model_metrics_repository import ModelMetricsRepository
-            # First create a SQLite repository with the provided db
-            sqlite_repo = SQLiteModelMetricsRepository(db=db)
-            # Then create the metrics repository using the SQLite repository
-            self.metrics_repository = ModelMetricsRepository(sql_repo=sqlite_repo)
-        # If no repository is provided, create a new one
-        elif metrics_repository is None:
+        # Configuration-based repository initialization
+        if metrics_repository is not None:
+            # Use provided repository directly if specified
+            self.metrics_repository = metrics_repository
+            logging.info("Using provided metrics repository")
+            
+        # Handle db backward compatibility case
+        elif db is not None:
+            try:
+                from src.db.adapters.sqlite_model_metrics import SQLiteModelMetricsRepository
+                from src.monitoring.model_metrics_repository import ModelMetricsRepository
+                # First create a SQLite repository with the provided db
+                sqlite_repo = SQLiteModelMetricsRepository(db=db)
+                # Then create the metrics repository using the SQLite repository
+                self.metrics_repository = ModelMetricsRepository(sql_repo=sqlite_repo)
+                logging.info("Using metrics repository with provided database connection")
+            except Exception as e:
+                if fallback_to_mock:
+                    from src.monitoring.model_metrics_repository import ModelMetricsRepository
+                    self.metrics_repository = ModelMetricsRepository()
+                    logging.warning(f"Failed to initialize with provided DB: {e}. Using fallback repository.")
+                else:
+                    logging.error(f"Failed to initialize repository with provided DB and fallback is disabled: {e}")
+                    raise
+        else:
+            # Create a new repository based on configuration
             from src.monitoring.model_metrics_repository import ModelMetricsRepository
             self.metrics_repository = ModelMetricsRepository()
-        else:
-            self.metrics_repository = metrics_repository
+            logging.info("Using metrics repository from configuration")
             
         # Store data access layer or use global instance
         self.data_access_layer = data_access_layer or data_access
             
-        # Load configuration
-        self.enabled = config.get_bool('services.monitoring.enabled', True)
+        # Load more configuration settings
         self.metrics_retention_days = config.get_int('services.monitoring.metrics_retention_days', 30)
         self.drift_threshold = config.get_float('services.monitoring.model_health.drift_threshold', 0.15)
         self.accuracy_threshold = config.get_float('services.monitoring.model_health.accuracy_threshold', 0.85)
+        model_health_enabled = config.get_bool('services.monitoring.model_health.enabled', True)
+        
+        # Alert configuration
+        alerts_enabled = config.get_bool('services.monitoring.alerts.enabled', True)
         self.alert_check_interval = config.get_int('services.monitoring.alerts.check_interval', 300)
-        self.notification_channels = config.get_section('services.monitoring.alerts.notification_channels', {
+        self.notification_channels = config.get('services.monitoring.alerts.notification_channels', {
             'email': True,
             'slack': False,
             'webhook': False
         })
             
+        # Initialize notification service
         self.notification_service = notification_service or NotificationService(channels=self.notification_channels)
         
-        # Initialize tags from configuration or use defaults
-        tag_list = config.get_list('services.monitoring.tags')
+        # Initialize tags from configuration
+        tag_list = config.get('services.monitoring.tags', [])
         if tag_list:
             # Convert list to dictionary keyed by id
             self.tags = {tag['id']: tag for tag in tag_list}
+            logging.info(f"Loaded {len(tag_list)} model tags from configuration")
         else:
             # Use default tags if not configured
             self.tags = {
@@ -83,9 +110,17 @@ class ModelMonitoringService:
                 "tag3": {"id": "tag3", "name": "testing", "color": "orange"},
                 "tag4": {"id": "tag4", "name": "deprecated", "color": "red"}
             }
+            logging.info("Using default model tags")
             
+        # Log configuration status
+        app_env = config.get('app.environment', 'development')
+        logging.info(f"Model monitoring service initialized in {app_env} environment")
+        logging.info(f"Model health monitoring enabled: {model_health_enabled}")
+        logging.info(f"Alert monitoring enabled: {alerts_enabled}")
+        
         # Check if using mock data
-        self.using_mock_data = self.data_access_layer.is_using_mocks()
+        self.using_mock_data = use_mock_data or self.data_access_layer.is_using_mocks()
+        logging.info(f"Using mock data: {self.using_mock_data}")
     
     def record_model_metrics(self, model_id: str, model_version: str, 
                        metrics: Dict[str, float], timestamp: datetime = None, invoke_time: datetime = None) -> str:

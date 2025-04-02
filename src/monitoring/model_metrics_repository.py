@@ -26,17 +26,44 @@ class ModelMetricsRepository:
         sql_repo: SQLiteModelMetricsRepository = None,
         test_mode: bool = False,
     ):
-        # Initialize SQLite repository if none provided
-        self.sql_repo = sql_repo or SQLiteModelMetricsRepository()
-        self.fallback_enabled = True  # Enable fallback mechanisms by default
-        # Default to using the database and only fall back to mock data if specified
-        # This can be overridden by setting the USE_MOCK_DATA environment variable
-        self.use_mock_data = os.environ.get('USE_MOCK_DATA', 'False').lower() in ('true', '1', 't')
+        import logging
+        from src.config import config
+        
+        # Get configuration settings
+        self.use_mock_data = config.get_bool('services.monitoring.use_mock_data', False)
+        self.fallback_enabled = config.get_bool('services.monitoring.fallback_to_mock', True)
+        
+        # For backward compatibility, also check environment variables
+        if os.environ.get('USE_MOCK_DATA', 'False').lower() in ('true', '1', 't'):
+            self.use_mock_data = True
+            logging.info("Using mock data for model metrics (set by environment variable)")
+        
+        # Initialize SQLite repository if requested and none provided
+        if not self.use_mock_data and sql_repo is None:
+            try:
+                self.sql_repo = SQLiteModelMetricsRepository()
+                logging.info("Initialized SQLite repository for model metrics")
+            except Exception as e:
+                if self.fallback_enabled:
+                    logging.warning(f"Failed to initialize database repository: {e}. Falling back to mock data.")
+                    self.use_mock_data = True
+                else:
+                    logging.error(f"Failed to initialize database repository and fallback is disabled: {e}")
+                    raise
+        else:
+            self.sql_repo = sql_repo
+            
         # Track if we're in test mode to control error verbosity
         self.test_mode = test_mode or os.environ.get('TESTING', 'False').lower() in ('true', '1', 't')
         
         # Initialize mock data for fallback
         self._initialize_mock_data()
+        
+        # Log the data source being used
+        if self.use_mock_data:
+            logging.info("Using mock data for model metrics")
+        else:
+            logging.info("Using database repository for model metrics")
 
     def _initialize_mock_data(self):
         """Initialize mock data for testing and fallback."""
@@ -337,21 +364,29 @@ class ModelMetricsRepository:
         return result
 
     def _should_use_mock_data(self) -> bool:
-        """Check if we should use mock data in real-time.
+        """Check if we should use mock data based on configuration and environment variables.
         
-        This allows tests to change the environment variable during execution,
-        which is necessary for test_use_mock_data_env_var_respected to pass.
+        This follows the environment-based configuration pattern used by other services.
+        It checks both the configuration settings and environment variables for backward compatibility.
         """
-        # Explicitly log the current value of USE_MOCK_DATA for debugging
-        current_value = os.environ.get('USE_MOCK_DATA', 'False')
-        logger.info(f"USE_MOCK_DATA is set to '{current_value}'")
+        from src.config import config
         
-        # Force to False if explicitly set to false in any case variant
-        if current_value.lower() in ('false', '0', 'f'):
-            return False
+        # First check our instance variable that was set during initialization
+        # This is already loaded from configuration
+        if self.use_mock_data:
+            return True
+        
+        # For backward compatibility, also check environment variables in real-time
+        # This allows tests to change the variable during execution
+        current_value = os.environ.get('USE_MOCK_DATA', 'False')
+        
+        # Force mock data if explicitly set via environment variable
+        if current_value.lower() in ('true', '1', 't'):
+            logger.info(f"Using mock data for model metrics (USE_MOCK_DATA={current_value})")
+            return True
             
-        # Otherwise check if it's explicitly set to true
-        return current_value.lower() in ('true', '1', 't')
+        # Otherwise, use what's configured in the repository
+        return False
         
     async def get_models(self) -> Tuple[List[Dict[str, Any]], bool]:
         """

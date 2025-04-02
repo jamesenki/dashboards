@@ -4,12 +4,90 @@ This guide provides detailed information on how to configure and extend the mode
 
 ## Table of Contents
 
-1. [Database Schema](#database-schema)
-2. [Health Status Configuration](#health-status-configuration)
-3. [Alert Configuration](#alert-configuration)
-4. [Adding New Models](#adding-new-models)
-5. [API Response Structure](#api-response-structure)
-6. [Troubleshooting](#troubleshooting)
+1. [Environment-Based Configuration](#environment-based-configuration)
+2. [Database Schema](#database-schema)
+3. [Health Status Configuration](#health-status-configuration)
+4. [Alert Configuration](#alert-configuration)
+5. [Adding New Models](#adding-new-models)
+6. [API Response Structure](#api-response-structure)
+7. [Troubleshooting](#troubleshooting)
+
+## Environment-Based Configuration
+
+The Model Monitoring system now supports environment-based configuration through the IoTSphere configuration system. This allows for different settings across development, staging, and production environments.
+
+### Configuration Files
+
+Model monitoring settings are stored in the main configuration files:
+- `config/config.yaml` - Base configuration
+- `config/development.yaml` - Development environment overrides
+- `config/production.yaml` - Production environment overrides
+
+### Key Configuration Settings
+
+```yaml
+services:
+  monitoring:
+    use_mock_data: false  # Whether to use mock data instead of the database
+    fallback_to_mock: true  # Whether to fall back to mock data if database access fails
+    metrics_retention_days: 90  # How long to retain metrics data
+    enabled: true  # Global toggle for the monitoring service
+    model_health:
+      drift_threshold: 0.15  # Maximum acceptable drift score
+      accuracy_threshold: 0.85  # Minimum acceptable accuracy score
+      enabled: true  # Toggle for model health monitoring
+    alerts:
+      enabled: true  # Toggle for alert generation
+      check_interval: 300  # Seconds between alert checks
+      notification_channels:  # Notification destinations
+        email: true
+        slack: false
+        webhook: false
+```
+
+### Environment-Specific Overrides
+
+You can use different settings for each environment. For example:
+
+**Development** (`development.yaml`):
+```yaml
+services:
+  monitoring:
+    fallback_to_mock: true  # More permissive in development
+    metrics_retention_days: 30  # Keep less data in development
+    model_health:
+      drift_threshold: 0.20  # Less strict thresholds for development
+      accuracy_threshold: 0.80
+```
+
+**Production** (`production.yaml`):
+```yaml
+services:
+  monitoring:
+    fallback_to_mock: false  # Critical to know if DB fails in production
+    metrics_retention_days: 180  # Keep more data in production
+    model_health:
+      drift_threshold: 0.10  # Stricter thresholds for production
+      accuracy_threshold: 0.90
+    alerts:
+      notification_channels:
+        email: true
+        slack: true
+        webhook: true  # Enable all channels in production
+```
+
+### Using Configuration in Code
+
+Access configuration values within the monitoring service code:
+
+```python
+from src.config import config
+
+# Get configuration values with defaults
+drift_threshold = config.get_float('services.monitoring.model_health.drift_threshold', 0.15)
+metrics_retention = config.get_int('services.monitoring.metrics_retention_days', 30)
+use_mock = config.get_bool('services.monitoring.use_mock_data', False)
+```
 
 ## Database Schema
 

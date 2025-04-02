@@ -161,7 +161,10 @@ class LifespanEstimationPrediction(IPredictionModel):
             return result
             
         except Exception as e:
+            import traceback
             logger.error(f"Error generating lifespan prediction: {str(e)}")
+            logger.error(f"Error details: {traceback.format_exc()}")
+            logger.error(f"Features: {features}")
             # Return a fallback prediction with error information
             return PredictionResult(
                 device_id=device_id,
@@ -418,7 +421,13 @@ class LifespanEstimationPrediction(IPredictionModel):
         
         # Temperature settings
         if "temperature_settings" in features and features["temperature_settings"]:
-            avg_temp = sum(features["temperature_settings"]) / len(features["temperature_settings"])
+            # Handle both list and single value formats
+            if isinstance(features["temperature_settings"], (list, tuple)):
+                avg_temp = sum(features["temperature_settings"]) / len(features["temperature_settings"])
+            else:
+                # Assume it's a single numeric value
+                avg_temp = float(features["temperature_settings"])
+                
             if avg_temp > 65:
                 factors.append("High temperature settings accelerating component wear")
             elif avg_temp < 50:
@@ -628,7 +637,13 @@ class LifespanEstimationPrediction(IPredictionModel):
         
         # Temperature settings recommendations
         if "temperature_settings" in features and features["temperature_settings"]:
-            avg_temp = sum(features["temperature_settings"]) / len(features["temperature_settings"])
+            # Handle both list and single value formats
+            if isinstance(features["temperature_settings"], (list, tuple)):
+                avg_temp = sum(features["temperature_settings"]) / len(features["temperature_settings"])
+            else:
+                # Assume it's a single numeric value
+                avg_temp = float(features["temperature_settings"])
+                
             if avg_temp > 65:
                 recommendations.append(
                     RecommendedAction(

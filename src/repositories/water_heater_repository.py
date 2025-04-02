@@ -9,6 +9,8 @@ from datetime import datetime
 import uuid
 import sqlite3
 
+from src.models.device import DeviceStatus, DeviceType
+
 from src.models.water_heater import (
     WaterHeater, 
     WaterHeaterMode,
@@ -150,23 +152,42 @@ class SQLiteWaterHeaterRepository(WaterHeaterRepository):
         CREATE TABLE IF NOT EXISTS water_heaters (
             id TEXT PRIMARY KEY,
             name TEXT NOT NULL,
-            brand TEXT,
-            model TEXT,
-            manufacturer TEXT,
-            size TEXT,
-            type TEXT,
+            type TEXT NOT NULL,
             location TEXT,
             target_temperature REAL,
             current_temperature REAL,
+            min_temperature REAL,
+            max_temperature REAL,
             mode TEXT,
             status TEXT,
-            installation_date TEXT,
-            warranty_expiry TEXT,
-            last_maintenance TEXT,
+            heater_status TEXT,
+            heater_type TEXT,
+            specification_link TEXT,
+            capacity REAL,
             efficiency_rating REAL,
-            last_seen TEXT,
-            health_status TEXT,
-            metadata TEXT
+            last_seen TEXT
+        )
+        """)
+        
+        # Create water_heater_health_config table if not exists
+        cursor.execute("""
+        CREATE TABLE IF NOT EXISTS water_heater_health_config (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            parameter TEXT NOT NULL,
+            threshold REAL,
+            status TEXT NOT NULL
+        )
+        """)
+        
+        # Create water_heater_alert_rules table if not exists
+        cursor.execute("""
+        CREATE TABLE IF NOT EXISTS water_heater_alert_rules (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            condition TEXT NOT NULL,
+            severity TEXT NOT NULL,
+            message TEXT NOT NULL,
+            enabled INTEGER NOT NULL DEFAULT 1
         )
         """)
         
@@ -236,10 +257,14 @@ class SQLiteWaterHeaterRepository(WaterHeaterRepository):
             
             # Get all water heaters
             cursor.execute("SELECT * FROM water_heaters")
+            # Get column names from cursor description
+            column_names = [column[0] for column in cursor.description]
             rows = cursor.fetchall()
             
             for row in rows:
-                water_heater = self._row_to_water_heater(conn, row)
+                # Convert tuple to dictionary using column names
+                row_dict = dict(zip(column_names, row))
+                water_heater = self._row_to_water_heater(row_dict)
                 water_heaters.append(water_heater)
                 
         except Exception as e:
@@ -266,7 +291,8 @@ class SQLiteWaterHeaterRepository(WaterHeaterRepository):
             if not row:
                 return None
                 
-            return self._row_to_water_heater(conn, row)
+            # Pass the connection and row as a tuple
+            return self._row_to_water_heater((conn, row))
                 
         except Exception as e:
             logger.error(f"Error getting water heater {device_id}: {str(e)}")
@@ -468,7 +494,7 @@ class SQLiteWaterHeaterRepository(WaterHeaterRepository):
                 
         return readings
         
-    async def get_health_configuration(self) -> Dict[str, Any]:
+    async def get_health_configuration(self) -> Dict[str, Dict[str, Any]]:
         """Get health configuration for water heaters."""
         conn = None
         config = {}
@@ -478,18 +504,17 @@ class SQLiteWaterHeaterRepository(WaterHeaterRepository):
             cursor = conn.cursor()
             
             cursor.execute("""
-            SELECT metric, threshold, status, description 
+            SELECT parameter, threshold, status 
             FROM water_heater_health_config
             """)
             
             rows = cursor.fetchall()
             
             for row in rows:
-                metric, threshold, status, description = row
-                config[metric] = {
+                parameter, threshold, status = row
+                config[parameter] = {
                     "threshold": threshold,
-                    "status": status,
-                    "description": description
+                    "status": status
                 }
                 
         except Exception as e:
@@ -513,20 +538,15 @@ class SQLiteWaterHeaterRepository(WaterHeaterRepository):
             cursor.execute("DELETE FROM water_heater_health_config")
             
             # Insert new configuration
-            now = datetime.now().isoformat()
-            for metric, settings in config.items():
+            for parameter, settings in config.items():
                 cursor.execute("""
                 INSERT INTO water_heater_health_config 
-                (id, metric, threshold, status, description, created_at, updated_at) 
-                VALUES (?, ?, ?, ?, ?, ?, ?)
+                (parameter, threshold, status) 
+                VALUES (?, ?, ?)
                 """, (
-                    str(uuid.uuid4()),
-                    metric,
+                    parameter,
                     settings.get("threshold"),
-                    settings.get("status"),
-                    settings.get("description", ""),
-                    now,
-                    now
+                    settings.get("status")
                 ))
             
             conn.commit()
@@ -584,24 +604,20 @@ class SQLiteWaterHeaterRepository(WaterHeaterRepository):
             conn = sqlite3.connect(self.db_path)
             cursor = conn.cursor()
             
-            rule_id = rule.get("id") or str(uuid.uuid4())
-            now = datetime.now().isoformat()
-            
             cursor.execute("""
             INSERT INTO water_heater_alert_rules 
-            (id, name, condition, severity, message, enabled, created_at, updated_at) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            (name, condition, severity, message, enabled) 
+            VALUES (?, ?, ?, ?, ?)
             """, (
-                rule_id,
                 rule["name"],
                 rule["condition"],
                 rule["severity"],
-                rule.get("message", ""),
-                1 if rule.get("enabled", True) else 0,
-                now,
-                now
+                rule["message"],
+                1 if rule.get("enabled", True) else 0
             ))
             
+            # Get the last inserted row id
+            rule_id = cursor.lastrowid
             conn.commit()
             
             # Return the rule with its ID
@@ -629,11 +645,9 @@ class SQLiteWaterHeaterRepository(WaterHeaterRepository):
             if not cursor.fetchone():
                 raise ValueError(f"Alert rule with ID {rule_id} not found")
             
-            now = datetime.now().isoformat()
-            
             cursor.execute("""
             UPDATE water_heater_alert_rules 
-            SET name = ?, condition = ?, severity = ?, message = ?, enabled = ?, updated_at = ? 
+            SET name = ?, condition = ?, severity = ?, message = ?, enabled = ? 
             WHERE id = ?
             """, (
                 rule["name"],
@@ -641,7 +655,6 @@ class SQLiteWaterHeaterRepository(WaterHeaterRepository):
                 rule["severity"],
                 rule.get("message", ""),
                 1 if rule.get("enabled", True) else 0,
-                now,
                 rule_id
             ))
             
@@ -682,14 +695,61 @@ class SQLiteWaterHeaterRepository(WaterHeaterRepository):
             if conn:
                 conn.close()
     
-    def _row_to_water_heater(self, conn, row) -> WaterHeater:
+    def _row_to_water_heater(self, row_data) -> WaterHeater:
         """Convert a database row to a WaterHeater object."""
-        cursor = conn.cursor()
-        
-        # Extract fields from row
-        (device_id, name, brand, model, manufacturer, size, device_type, location, 
-         target_temp, current_temp, mode, status, installation_date, warranty_expiry, 
-         last_maintenance, efficiency, last_seen, health_status, metadata) = row
+        # Check if row_data is a dictionary or a tuple with connection
+        if isinstance(row_data, dict):
+            # It's a dictionary (from get_water_heaters)
+            # Extract fields from the dictionary
+            device_id = row_data.get('id')
+            name = row_data.get('name')
+            brand = row_data.get('brand')
+            model = row_data.get('model')
+            manufacturer = row_data.get('manufacturer')
+            size = row_data.get('size')
+            device_type = row_data.get('type')
+            location = row_data.get('location')
+            target_temp = row_data.get('target_temperature')
+            current_temp = row_data.get('current_temperature')
+            mode = row_data.get('mode')
+            status = row_data.get('status')
+            installation_date = row_data.get('installation_date')
+            warranty_expiry = row_data.get('warranty_expiry')
+            last_maintenance = row_data.get('last_maintenance')
+            efficiency = row_data.get('efficiency_rating')
+            last_seen = row_data.get('last_seen')
+            health_status = row_data.get('health_status')
+            metadata = row_data.get('metadata')
+            
+            # Need to get a connection to fetch readings
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+        else:
+            # It's a tuple with (connection, row)
+            conn = row_data[0]  # First element is the connection
+            row = row_data[1]   # Second element is the row
+            cursor = conn.cursor()
+            
+            # Extract fields from row
+            device_id = row[0]
+            name = row[1]
+            brand = row[2]
+            model = row[3]
+            manufacturer = row[4]
+            size = row[5]
+            device_type = row[6]
+            location = row[7]
+            target_temp = row[8]
+            current_temp = row[9]
+            mode = row[10]
+            status = row[11]
+            installation_date = row[12]
+            warranty_expiry = row[13]
+            last_maintenance = row[14]
+            efficiency = row[15]
+            last_seen = row[16]
+            health_status = row[17]
+            metadata = row[18]
         
         # Get readings for this water heater
         cursor.execute("""
@@ -908,28 +968,28 @@ class SQLiteWaterHeaterRepository(WaterHeaterRepository):
             # Insert the water heater
             cursor.execute("""
             INSERT INTO water_heaters (
-                id, name, brand, model, size, type, location, target_temperature,
-                current_temperature, mode, status, installation_date, warranty_expiry,
-                last_maintenance, efficiency_rating, last_seen, metadata
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                id, name, type, location, target_temperature, current_temperature,
+                min_temperature, max_temperature, mode, status, heater_status, 
+                heater_type, specification_link, capacity, efficiency_rating,
+                last_seen
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """, (
                 water_heater.id,
                 water_heater.name,
-                water_heater.brand,
-                water_heater.model,
-                water_heater.size,
                 water_heater.type.value if water_heater.type else None,
                 water_heater.location,
                 water_heater.target_temperature,
                 water_heater.current_temperature,
+                water_heater.min_temperature,
+                water_heater.max_temperature,
                 water_heater.mode.value if water_heater.mode else None,
                 water_heater.status.value if water_heater.status else None,
-                water_heater.installation_date.isoformat() if water_heater.installation_date else None,
-                water_heater.warranty_expiry.isoformat() if water_heater.warranty_expiry else None,
-                water_heater.last_maintenance.isoformat() if water_heater.last_maintenance else None,
-                water_heater.efficiency_rating,
-                water_heater.last_seen.isoformat() if water_heater.last_seen else None,
-                None  # metadata - could be JSON string
+                water_heater.heater_status.value if water_heater.heater_status else None,
+                water_heater.heater_type.value if hasattr(water_heater, 'heater_type') and water_heater.heater_type else None,
+                water_heater.specification_link if hasattr(water_heater, 'specification_link') else None,
+                water_heater.capacity if hasattr(water_heater, 'capacity') else None,
+                water_heater.efficiency_rating if hasattr(water_heater, 'efficiency_rating') else None,
+                water_heater.last_seen.isoformat() if water_heater.last_seen else None
             ))
             
             # Save any readings
@@ -1007,18 +1067,19 @@ class SQLiteWaterHeaterRepository(WaterHeaterRepository):
             
             field_mappings = {
                 "name": "name",
-                "brand": "brand",
-                "model": "model",
-                "size": "size",
                 "type": "type",
                 "location": "location",
                 "target_temperature": "target_temperature",
                 "current_temperature": "current_temperature",
+                "min_temperature": "min_temperature",
+                "max_temperature": "max_temperature",
+                "current_temperature": "current_temperature",
                 "mode": "mode",
                 "status": "status",
-                "installation_date": "installation_date",
-                "warranty_expiry": "warranty_expiry",
-                "last_maintenance": "last_maintenance",
+                "heater_status": "heater_status",
+                "heater_type": "heater_type",
+                "specification_link": "specification_link",
+                "capacity": "capacity",
                 "efficiency_rating": "efficiency_rating",
                 "last_seen": "last_seen"
             }
@@ -1028,11 +1089,11 @@ class SQLiteWaterHeaterRepository(WaterHeaterRepository):
                     value = updates[key]
                     
                     # Handle enum values
-                    if key in ["mode", "status", "type"] and value is not None:
+                    if key in ["mode", "status", "type", "heater_status", "heater_type"] and value is not None:
                         value = value.value if hasattr(value, "value") else value
                     
                     # Handle date values
-                    if key in ["installation_date", "warranty_expiry", "last_maintenance", "last_seen"] and value is not None:
+                    if key in ["last_seen"] and value is not None:
                         if isinstance(value, datetime):
                             value = value.isoformat()
                     
@@ -1259,44 +1320,46 @@ class SQLiteWaterHeaterRepository(WaterHeaterRepository):
             except ValueError:
                 pass
         
-        # Parse enums
-        water_heater_type = None
-        if row.get("type"):
-            try:
-                water_heater_type = WaterHeaterType(row["type"])
-            except ValueError:
-                water_heater_type = WaterHeaterType.RESIDENTIAL
+        # Parse device type
+        device_type = DeviceType.WATER_HEATER
         
-        mode = None
+        # Parse mode
+        mode = WaterHeaterMode.ECO
         if row.get("mode"):
             try:
                 mode = WaterHeaterMode(row["mode"])
             except ValueError:
-                mode = WaterHeaterMode.STANDARD
+                pass
         
-        status = None
+        # Parse device status
+        device_status = DeviceStatus.OFFLINE
         if row.get("status"):
             try:
-                status = WaterHeaterStatus(row["status"])
+                device_status = DeviceStatus(row["status"])
             except ValueError:
-                status = WaterHeaterStatus.ONLINE
+                pass
+        
+        # Parse heater status
+        heater_status = WaterHeaterStatus.STANDBY
+        if row.get("heater_status"):
+            try:
+                heater_status = WaterHeaterStatus(row["heater_status"])
+            except ValueError:
+                pass
         
         # Create and return the water heater object
         return WaterHeater(
             id=row.get("id"),
             name=row.get("name"),
-            brand=row.get("brand"),
-            model=row.get("model"),
-            size=row.get("size"),
-            type=water_heater_type,
+            type=device_type,
             location=row.get("location"),
             target_temperature=row.get("target_temperature"),
             current_temperature=row.get("current_temperature"),
+            min_temperature=row.get("min_temperature", 40.0),
+            max_temperature=row.get("max_temperature", 85.0),
             mode=mode,
-            status=status,
-            installation_date=installation_date,
-            warranty_expiry=warranty_expiry,
-            last_maintenance=last_maintenance,
+            status=device_status,
+            heater_status=heater_status,
             efficiency_rating=row.get("efficiency_rating"),
             last_seen=last_seen,
             readings=[],  # To be populated separately

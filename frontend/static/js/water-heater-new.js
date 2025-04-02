@@ -420,7 +420,8 @@ class WaterHeaterDetail {
 
   async updateTemperature(temperature) {
     try {
-      await api.updateWaterHeater(this.heaterId, { target_temperature: temperature });
+      // Use the specific updateTemperature API method instead of updateWaterHeater
+      await api.updateTemperature(this.heaterId, temperature);
       this.heater.target_temperature = temperature;
       document.getElementById('target-temp-display').textContent = formatTemperature(temperature);
     } catch (error) {
@@ -431,7 +432,8 @@ class WaterHeaterDetail {
 
   async updateMode(mode) {
     try {
-      await api.updateWaterHeater(this.heaterId, { mode });
+      // Use the specific updateMode API method instead of updateWaterHeater
+      await api.updateMode(this.heaterId, mode);
       this.heater.mode = mode;
       
       // Update UI

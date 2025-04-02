@@ -1,0 +1,66 @@
+# IoTSphere Production Environment Configuration
+# Overrides for the production environment
+
+app:
+  environment: "production"
+  debug: false
+  log_level: "WARNING"
+
+database:
+  type: "postgres"
+  host: "${AZURE_DB_HOST}"
+  port: "${AZURE_DB_PORT|5432}"  # Default to 5432 if env var not set
+  name: "${AZURE_DB_NAME}"
+  credentials:
+    username: "${AZURE_DB_USER}"
+    password: "${AZURE_DB_PASSWORD}"
+  pool_size: 20
+  max_overflow: 30
+  fallback_to_mock: false  # Do not fall back to mock in production by default
+
+services:
+  water_heater:
+    use_mock_data: false  # Always use real database in production
+    data_retention_days: 90
+  
+  # Production specific monitoring settings
+  monitoring:
+    use_mock_data: false  # Never use mock data in production by default
+    fallback_to_mock: false  # Critical in production to know if DB fails
+    metrics_retention_days: 180  # Keep data longer in production
+    alerts:
+      enabled: true
+      check_interval: 600  # Check less frequently in production (every 10 minutes)
+      notification_channels:
+        email: true
+        slack: true
+        webhook: true  # Enable all notification channels in production
+    model_health:
+      drift_threshold: 0.10   # Stricter threshold in production
+      accuracy_threshold: 0.90  # Higher standards in production
+    
+  predictions:
+    model_cache_ttl: 3600  # Cache prediction models for 1 hour in production
+    enable_development_models: false
+
+security:
+  https:
+    enabled: true
+  
+  auth:
+    token_expiration: 1800  # 30 minutes in production
+
+observability:
+  logging:
+    format: "json"
+    levels:
+      api: "WARNING"
+      database: "WARNING"
+      predictions: "INFO"
+  
+  metrics:
+    enabled: true
+    
+  tracing:
+    enabled: true
+    sampling_rate: 0.2
