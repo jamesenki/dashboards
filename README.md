@@ -269,3 +269,4 @@ IoTSphere currently supports the following device types:
 ## License
 
 This project is proprietary software. All rights reserved.
+# Test comment for pre-commit hook
