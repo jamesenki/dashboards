@@ -1,0 +1,53 @@
+# IoTSphere AI Infrastructure Requirements
+# Optimized for Mac M1/M2 development environments
+
+# LLM Runtime
+llama-cpp-python==0.2.26  # Metal-accelerated LLM runtime for Apple Silicon
+sentencepiece==0.1.99     # Tokenization support
+
+# Vector Database
+chromadb==0.4.22          # Python-native vector database
+hnswlib==0.7.0            # High-performance vector indexing
+tokenizers==0.15.0        # Fast tokenizers for embeddings
+
+# Embedding Models
+sentence-transformers==2.3.1  # Lightweight embedding models
+
+# RAG Components
+langchain>=0.2.0          # Framework for LLM application development
+langchain-community>=0.1.0  # Community integrations
+langchain-chroma>=0.2.2   # Chroma DB integration
+unstructured==0.11.2      # Document parsing library
+unstructured-inference==0.7.21  # Document processing
+pdf2image==1.17.0         # PDF processing
+pytesseract==0.3.10       # OCR capability
+
+# Agentic Framework
+pydantic==2.11.0          # Data validation (use version compatible with FastAPI)
+tenacity==8.2.3           # Retry logic for external services
+apscheduler==3.10.4       # Task scheduling
+
+# Internet Search
+duckduckgo-search==3.9.6  # DuckDuckGo API (no key required)
+beautifulsoup4==4.12.2    # HTML parsing
+lxml==4.9.3               # XML/HTML processing
+
+# Monitoring & Feedback
+prometheus-client==0.17.1  # Metrics collection
+opentelemetry-api==1.22.0  # Telemetry
+opentelemetry-sdk==1.22.0  # Telemetry
+rich==13.6.0              # Enhanced terminal output for development
+
+# A/B Testing
+statsmodels==0.14.1       # Statistical analysis
+scikit-learn<2.0.0        # Already in requirements.ml.txt, listed for reference
+
+# Development Environment
+pytest-mock==3.12.0       # Mocking for tests
+pytest-xdist==3.5.0       # Parallel test execution
+pytest-cov==4.1.0         # Test coverage
+
+# Optional: Uncomment for improved performance with larger models
+# Note: These require additional setup for Apple Silicon
+# accelerate==0.25.0       # Optimized tensor operations
+# bitsandbytes==0.41.1     # Quantization support
