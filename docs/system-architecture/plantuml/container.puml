@@ -1,48 +1,46 @@
 @startuml Container Diagram
 !include <C4/C4_Container>
 
-title "IoTSphere Container Diagram"
+title "IoTSphere-Refactor Container Diagram"
 
-Person(user, "IoT Platform User", "A user who manages IoT devices and monitors data")
-Person(admin, "IoT Platform Administrator", "A system administrator who configures and maintains the platform")
+Person(api_client, "API Client", "Frontend applications or other services that consume the REST API")
 
-System_Boundary(iotSphere, "IoTSphere Platform") {
-    Container(webApp, "Web Application", "Angular", "Provides the user interface for device management, monitoring, and analytics")
-    Container(apiServer, "API Server", "Node.js/Express", "Provides device management and data APIs for the web application")
-    Container(deviceService, "Device Management Service", "Node.js", "Handles device lifecycle, configuration, and firmware updates")
-    Container(monitoringService, "Monitoring Service", "Node.js", "Processes device data, manages alerts, and provides analytics")
-    Container(modelMonitoringService, "Model Monitoring Service", "Python/Flask", "Monitors ML models and model performance")
-    ContainerDb(database, "Operational Database", "MongoDB", "Stores device configurations, user data, and system settings")
-    ContainerDb(timeseriesDB, "Time Series Database", "InfluxDB", "Stores historical device data and metrics")
-    Container(messageQueue, "Message Queue", "RabbitMQ", "Handles asynchronous communication between services")
+System_Boundary(iotsphere_refactor, "IoTSphere-Refactor Backend") {
+    Container(fastapi_app, "FastAPI Application", "Python/FastAPI", "Main entry point that provides RESTful API endpoints")
+    Container(config_service, "Config Service", "Python", "Environment-based configuration system with YAML files and fallback mechanisms")
+    Container(water_heater_service, "Water Heater Service", "Python", "Handles water heater operations, status, and maintenance data")
+    Container(vending_machine_service, "Vending Machine Service", "Python", "Manages vending machine inventory and operations")
+    Container(prediction_services, "Prediction Services", "Python", "Analytics for device failure prediction, maintenance scheduling, and anomaly detection")
+    Container(model_monitoring_service, "Model Monitoring Service", "Python", "Tracks ML model performance, drift, and alerts on model issues")
+    ContainerDb(database, "Relational Database", "SQLite/PostgreSQL", "Stores all persistent data including device information and model metrics")
 }
 
-System_Ext(devices, "IoT Devices", "Connected devices that collect and transmit sensor data")
-System_Ext(monitoringSystems, "Monitoring Services", "External systems that provide monitoring capabilities")
+System_Ext(water_heater, "Water Heater Devices", "Connected water heaters with temperature and usage data")
+System_Ext(vending_machine, "Vending Machines", "Connected vending machines with inventory and sales data")
+System_Ext(ml_models, "ML Model Services", "Prediction models for maintenance and health monitoring")
 
-Rel(user, webApp, "Uses to manage devices and view dashboards")
-Rel(admin, webApp, "Configures and monitors the system")
+Rel(api_client, fastapi_app, "Makes API calls to", "JSON/HTTPS")
 
-Rel(webApp, apiServer, "Makes API calls to", "JSON/HTTPS")
-Rel(webApp, monitoringService, "Gets device status and metrics from", "JSON/HTTPS")
-Rel(webApp, modelMonitoringService, "Visualizes model performance via", "JSON/HTTPS")
+Rel(fastapi_app, config_service, "Uses for configuration", "Internal")
+Rel(fastapi_app, water_heater_service, "Routes water heater requests to", "Internal")
+Rel(fastapi_app, vending_machine_service, "Routes vending machine requests to", "Internal")
+Rel(fastapi_app, prediction_services, "Routes prediction requests to", "Internal")
+Rel(fastapi_app, model_monitoring_service, "Routes monitoring requests to", "Internal")
 
-Rel(apiServer, deviceService, "Routes device management requests to", "JSON/HTTP")
-Rel(apiServer, monitoringService, "Routes monitoring requests to", "JSON/HTTP")
-Rel(apiServer, database, "Reads from and writes to", "MongoDB Driver")
+Rel(water_heater_service, database, "Reads from and writes to", "SQLAlchemy ORM")
+Rel(vending_machine_service, database, "Reads from and writes to", "SQLAlchemy ORM")
+Rel(prediction_services, database, "Reads device data from", "SQLAlchemy ORM")
+Rel(model_monitoring_service, database, "Reads from and writes to", "SQLAlchemy ORM")
 
-Rel(deviceService, messageQueue, "Publishes device events to", "AMQP")
-Rel(deviceService, database, "Reads from and writes to", "MongoDB Driver")
-Rel(deviceService, devices, "Manages and configures", "MQTT/HTTP")
+Rel(water_heater_service, water_heater, "Manages and monitors", "REST API")
+Rel(vending_machine_service, vending_machine, "Manages inventory and tracks sales", "REST API")
+Rel(prediction_services, ml_models, "Uses for predictions", "Internal")
+Rel(model_monitoring_service, ml_models, "Monitors health of", "Internal")
 
-Rel(monitoringService, messageQueue, "Consumes device events from", "AMQP")
-Rel(monitoringService, timeseriesDB, "Reads from and writes to", "InfluxDB API")
-Rel(monitoringService, modelMonitoringService, "Forwards model events to", "JSON/HTTP")
-Rel(monitoringService, monitoringSystems, "Integrates with", "REST API")
-
-Rel(modelMonitoringService, timeseriesDB, "Reads metrics from", "InfluxDB API")
-
-Rel_Back(devices, messageQueue, "Sends telemetry and status data to", "MQTT")
+Rel(config_service, water_heater_service, "Configures", "Configuration values")
+Rel(config_service, vending_machine_service, "Configures", "Configuration values")
+Rel(config_service, prediction_services, "Configures", "Configuration values")
+Rel(config_service, model_monitoring_service, "Configures", "Configuration values")
 
 LAYOUT_WITH_LEGEND()
 @enduml

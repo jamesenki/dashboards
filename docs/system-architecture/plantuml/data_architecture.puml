@@ -1,52 +1,55 @@
 @startuml Data Architecture
 !include <C4/C4_Container>
 
-title "IoTSphere Data Architecture"
+title "IoTSphere-Refactor Data Architecture"
 
-Container(deviceService, "Device Management Service", "Node.js", "Handles device data")
-Container(monitoringService, "Monitoring Service", "Node.js", "Processes device data and alerts")
-Container(analyticsEngine, "Analytics Engine", "Node.js", "Processes data for insights")
-Container(modelMonitoring, "Model Monitoring Service", "Python/Flask", "Monitors ML models")
+Container(water_heater_service, "Water Heater Service", "Python", "Handles water heater operations")
+Container(vending_machine_service, "Vending Machine Service", "Python", "Manages vending machines")
+Container(prediction_services, "Prediction Services", "Python", "Generates device predictions")
+Container(model_monitoring, "Model Monitoring Service", "Python", "Monitors ML model performance")
 
-ContainerDb(operationalDb, "Operational Database", "MongoDB", "Document-based storage")
-Note right of operationalDb
-  Key collections:
-  - Device Collection: Stores device metadata and configuration
-  - User Collection: Stores user information and permissions
-  - Alert Rules Collection: Stores alert configuration
-  - System Settings Collection: Stores system configuration
+ContainerDb(relationalDb, "Relational Database", "SQLite/PostgreSQL", "Relational storage")
+
+Note right of relationalDb
+  Device Tables:
+  - water_heaters: Water heater metadata and configuration
+  - water_heater_readings: Historical temperature and performance readings
+  - vending_machines: Vending machine metadata and status
+  - vending_machine_products: Product inventory for vending machines
+  - vending_machine_readings: Sales and operational data points
+
+  Prediction Tables:
+  - predictions: Stored prediction results
+  - prediction_models: Metadata about available prediction models
+  - prediction_features: Feature sets used for predictions
+  - anomaly_detections: Detected anomalies and classifications
+
+  Model Monitoring Tables:
+  - model_metrics: Performance metrics for ML models
+  - model_health: Health status and quality indicators
+  - model_alerts: Alert events for model issues
+  - model_drift_data: Data for tracking model drift over time
 end note
 
-ContainerDb(timeseriesDb, "Time Series Database", "InfluxDB", "Time series data storage")
-Note right of timeseriesDb
-  Key measurements:
-  - Telemetry Measurement: Stores device telemetry data
-  - Metrics Measurement: Stores performance metrics
-  - Alerts Measurement: Stores alert events
-  - Model Stats Measurement: Stores ML model performance stats
+Container(configStorage, "Configuration Storage", "YAML Files", "Environment-based configuration")
+Note right of configStorage
+  Key configuration files:
+  - config.development.yaml: Development environment configuration
+  - config.production.yaml: Production environment configuration
+  - config.default.yaml: Default fallback configuration
 end note
 
-Container(blobStorage, "Blob Storage", "AWS S3/Local FileSystem", "Binary storage")
-Note right of blobStorage
-  Key storage objects:
-  - Firmware Blobs: Stores firmware images
-  - Model Blobs: Stores trained ML models
-  - Report Blobs: Stores generated reports
-  - Config Backups: Stores configuration backups
-end note
+Rel(water_heater_service, relationalDb, "Creates and manages water heater records")
+Rel(vending_machine_service, relationalDb, "Manages vending machine data")
 
-Rel(deviceService, operationalDb, "Creates and manages device records")
-Rel(deviceService, blobStorage, "Stores and retrieves firmware images")
+Rel(prediction_services, relationalDb, "Reads device data and stores predictions")
 
-Rel(monitoringService, timeseriesDb, "Stores and analyzes device telemetry")
-Rel(monitoringService, operationalDb, "Uses alert configurations")
+Rel(model_monitoring, relationalDb, "Records model performance and alerts")
 
-Rel(analyticsEngine, timeseriesDb, "Analyzes historical telemetry")
-Rel(analyticsEngine, blobStorage, "Generates and stores reports")
-
-Rel(modelMonitoring, timeseriesDb, "Records model performance")
-Rel(modelMonitoring, blobStorage, "Manages model artifacts")
-Rel(modelMonitoring, operationalDb, "Associates models with devices")
+Rel(water_heater_service, configStorage, "Reads configuration")
+Rel(vending_machine_service, configStorage, "Reads configuration")
+Rel(prediction_services, configStorage, "Reads configuration")
+Rel(model_monitoring, configStorage, "Reads configuration")
 
 LAYOUT_WITH_LEGEND()
 @enduml

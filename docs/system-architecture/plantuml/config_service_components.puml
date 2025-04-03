@@ -1,0 +1,36 @@
+@startuml Config Service Components
+!include <C4/C4_Component>
+
+title "Configuration Service Component Diagram - IoTSphere-Refactor"
+
+Container_Boundary(config_service, "Configuration Service") {
+    Component(config_loader, "Configuration Loader", "Python", "Loads configuration from YAML files")
+    Component(environment_detector, "Environment Detector", "Python", "Detects current environment (dev/prod)")
+    Component(config_provider, "Configuration Provider", "Python", "Supplies configuration to other services")
+    Component(default_config, "Default Configuration", "YAML", "Fallback configuration values")
+    Component(override_handler, "Override Handler", "Python", "Handles environment variable overrides")
+    Component(config_validator, "Configuration Validator", "Python", "Validates configuration structure")
+}
+
+Container(fastapi_app, "FastAPI Application", "Python/FastAPI", "Main application")
+Container(water_heater_service, "Water Heater Service", "Python", "Consumes configuration")
+Container(vending_machine_service, "Vending Machine Service", "Python", "Consumes configuration")
+Container(model_monitoring_service, "Model Monitoring Service", "Python", "Consumes configuration")
+
+System_Ext(config_files, "Configuration Files", "YAML files per environment")
+
+Rel(environment_detector, config_loader, "Determines which config to load")
+Rel(config_loader, config_files, "Reads", "File I/O")
+Rel(config_loader, config_validator, "Validates loaded config")
+Rel(config_loader, default_config, "Falls back to")
+Rel(config_loader, override_handler, "Applies overrides from")
+Rel(override_handler, config_provider, "Updates configuration in")
+Rel(config_provider, config_loader, "Gets base configuration from")
+
+Rel(fastapi_app, config_provider, "Gets configuration from")
+Rel(water_heater_service, config_provider, "Gets configuration from")
+Rel(vending_machine_service, config_provider, "Gets configuration from")
+Rel(model_monitoring_service, config_provider, "Gets configuration from")
+
+LAYOUT_WITH_LEGEND()
+@enduml

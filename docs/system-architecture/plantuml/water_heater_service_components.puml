@@ -1,0 +1,33 @@
+@startuml Water Heater Service Components
+!include <C4/C4_Component>
+
+title "Water Heater Service Component Diagram - IoTSphere-Refactor"
+
+Container_Boundary(water_heater_service, "Water Heater Service") {
+    Component(water_heater_api, "Water Heater API", "FastAPI Router", "Exposes REST endpoints for water heater operations")
+    Component(water_heater_service_comp, "Water Heater Service", "Python", "Business logic for water heater operations")
+    Component(water_heater_repository, "Water Heater Repository", "Python", "Data access layer for water heater entities")
+    Component(reading_repository, "Reading Repository", "Python", "Access to temperature and performance readings")
+    Component(temperature_controller, "Temperature Controller", "Python", "Logic for temperature adjustments")
+    Component(validation_service, "Validation Service", "Python", "Validates water heater operations")
+}
+
+Container(config_service, "Configuration Service", "Python", "Provides environment-specific configuration")
+ContainerDb(database, "Relational Database", "SQLite/PostgreSQL", "Stores water heater data")
+Container(prediction_service, "Prediction Service", "Python", "Generates water heater predictions")
+
+System_Ext(api_client, "API Client", "Consumer of the water heater API")
+
+Rel(api_client, water_heater_api, "Uses", "REST API")
+Rel(water_heater_api, water_heater_service_comp, "Delegates to")
+Rel(water_heater_service_comp, water_heater_repository, "Uses")
+Rel(water_heater_service_comp, reading_repository, "Uses")
+Rel(water_heater_service_comp, temperature_controller, "Uses")
+Rel(water_heater_service_comp, validation_service, "Uses for validation")
+Rel(water_heater_repository, database, "Reads/Writes", "SQLAlchemy ORM")
+Rel(reading_repository, database, "Reads/Writes", "SQLAlchemy ORM")
+Rel(water_heater_service_comp, prediction_service, "Requests predictions from")
+Rel(config_service, water_heater_service_comp, "Configures")
+
+LAYOUT_WITH_LEGEND()
+@enduml

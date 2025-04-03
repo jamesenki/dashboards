@@ -1,8 +1,8 @@
-# IoTSphere Monitoring & Alerts Architecture
+# IoTSphere-Refactor Model Monitoring & Alerts Architecture
 
 ## Overview
 
-The IoTSphere Monitoring & Alerts system provides a comprehensive solution for tracking model performance metrics, detecting anomalies, and alerting stakeholders to potential issues. This document describes the architecture and flow of the monitoring alerts subsystem.
+The IoTSphere-Refactor Model Monitoring & Alerts system provides a comprehensive solution for tracking ML model performance metrics, detecting drift and degradation, and alerting on potential model issues. This document describes the architecture and data flow of the monitoring alerts subsystem in the refactored backend.
 
 ## Key Components
 
@@ -27,26 +27,33 @@ The monitoring system uses a SQLite database with several key tables:
 - **DashboardAPI**: Exposes HTTP endpoints for monitoring dashboard functionality
   - Formats data to match frontend expectations
 
-### 3. Frontend Components
+### 3. API Components
 
-- **AlertDashboard**: Displays alerts and their status
-  - Shows active and resolved alerts with severity indicators
-  - Allows filtering and sorting of alerts
-- **MetricCharts**: Visualizes model performance metrics
-  - Displays time-series charts of key metrics
-  - Highlights threshold violations
+- **Monitoring Router**: FastAPI router that exposes monitoring endpoints
+  - `/api/monitoring/metrics`: Provides model performance metrics
+  - `/api/monitoring/alerts`: Returns active and historical alert data
+  - `/api/monitoring/health`: Summarized model health status information
+- **Response Models**: Pydantic models for structured API responses
+  - Ensures consistent data formats for client applications
+  - Provides automatic validation and documentation
 
 ## Alert Flow
 
-1. Alert rules are defined by users through the web interface
-2. The system continuously evaluates incoming metrics against alert rules
-3. When a threshold is violated, an alert is generated and stored
-4. The alert notification is sent to subscribed users
-5. Users can acknowledge and resolve alerts through the dashboard
+1. Alert rules are defined in the configuration (YAML files based on environment)
+2. The ModelMonitoringService evaluates incoming metrics against these rules
+3. When a threshold is violated, an alert is generated and stored in the database
+4. Alerts are made available through the API endpoints
+5. Alert status can be updated through the API
 
-## Sequence Diagram
+## Alert Processing Flow
 
-![Alert Processing Sequence](../diagrams/sequence_data_processing.png)
+1. Model metrics are collected by the ModelMonitoringService
+2. Metrics are stored in the database via the ModelMetricsRepository
+3. The monitoring service evaluates metrics against configured thresholds
+4. If thresholds are exceeded, alert records are created
+5. API endpoints expose this alert data to client applications
+
+*Note: A sequence diagram specific to the refactored implementation should be created to replace the original diagram.*
 
 ## Implementation Details
 

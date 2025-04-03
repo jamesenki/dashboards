@@ -1,0 +1,73 @@
+@startuml Environment Configuration Sequence
+title "Environment-Based Configuration Loading - IoTSphere-Refactor"
+
+participant "FastAPI Application" as app
+participant "Environment Detector" as env_detector
+participant "Configuration Loader" as config_loader
+participant "Configuration Validator" as validator
+participant "Default Configuration" as default_config
+participant "Override Handler" as override_handler
+participant "Configuration Provider" as config_provider
+database "Configuration Files" as config_files
+participant "Water Heater Service" as water_heater
+
+activate app
+app -> env_detector: detect_environment()
+activate env_detector
+env_detector -> env_detector: check APP_ENV variable
+env_detector --> app: environment (development/production)
+deactivate env_detector
+
+app -> config_loader: load_config(environment)
+activate config_loader
+
+config_loader -> config_files: read config.default.yaml
+activate config_files
+config_files --> config_loader: default configuration
+deactivate config_files
+
+config_loader -> config_files: read config.{environment}.yaml
+activate config_files
+config_files --> config_loader: environment-specific configuration
+deactivate config_files
+
+config_loader -> default_config: get_defaults()
+activate default_config
+default_config --> config_loader: default values
+deactivate default_config
+
+config_loader -> config_loader: merge configurations
+note right: Environment config overrides defaults
+
+config_loader -> validator: validate_config(merged_config)
+activate validator
+validator --> config_loader: validation result
+deactivate validator
+
+config_loader -> override_handler: apply_environment_overrides(config)
+activate override_handler
+override_handler -> override_handler: check for ENV vars
+override_handler --> config_loader: final configuration
+deactivate override_handler
+
+config_loader -> config_provider: update_configuration(final_config)
+activate config_provider
+config_provider --> config_loader: confirmation
+deactivate config_provider
+
+config_loader --> app: configuration loaded
+deactivate config_loader
+
+app -> water_heater: initialize(config_provider)
+activate water_heater
+water_heater -> config_provider: get_config('water_heater')
+activate config_provider
+config_provider --> water_heater: water heater configuration
+deactivate config_provider
+water_heater -> water_heater: configure with environment settings
+water_heater --> app: initialized with environment configuration
+deactivate water_heater
+
+deactivate app
+
+@enduml

@@ -1,0 +1,30 @@
+@startuml system_context
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+LAYOUT_WITH_LEGEND()
+
+title System Context - IoTSphere-Refactor Backend
+
+Person(api_client, "API Client", "Frontend applications or other services that consume the REST API")
+
+System_Boundary(iotsphere_refactor, "IoTSphere-Refactor Backend") {
+  System(fastapi_app, "FastAPI Application", "Main entry point for all REST API endpoints")
+  System(config_service, "Configuration Service", "Environment-based configuration system")
+  System(prediction_services, "Prediction Services", "Device maintenance and health prediction")
+  System(model_monitoring, "Model Monitoring", "ML model health monitoring")
+}
+
+System(water_heater_device, "Water Heater Devices", "Primary IoT device type with temperature control")
+System(vending_machine, "Vending Machines", "Secondary device type with inventory tracking")
+System(database, "SQLite/PostgreSQL", "Relational database for storing device and prediction data")
+
+Rel(api_client, fastapi_app, "Uses", "REST API calls")
+Rel(fastapi_app, config_service, "Configures from", "Environment-specific settings")
+Rel(fastapi_app, prediction_services, "Uses", "Prediction requests")
+Rel(fastapi_app, model_monitoring, "Monitors", "ML model health")
+Rel(prediction_services, database, "Reads/Writes", "Device data")
+Rel(model_monitoring, database, "Reads/Writes", "Model metrics")
+Rel(water_heater_device, fastapi_app, "Sends data to", "API endpoints")
+Rel(vending_machine, fastapi_app, "Sends data to", "API endpoints")
+
+@enduml

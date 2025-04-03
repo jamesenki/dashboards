@@ -1,36 +1,68 @@
-@startuml Maintenance Prediction Sequence
-title "Maintenance Prediction Sequence"
+@startuml Water Heater Prediction Sequence
+title "Water Heater Prediction Request Flow - IoTSphere-Refactor"
 
-actor "Platform User" as user
-participant "Web Application" as webApp
-participant "API Server" as apiServer
-participant "Monitoring Service" as monitoringService
-participant "Analytics Engine" as analyticsEngine
-database "Time Series Database" as timeseriesDB
-participant "Model Monitoring Service" as modelMonitoring
-participant "Performance Monitor" as perfMonitor
-participant "Maintenance Predictions Module" as predictionModule
+actor "API Client" as client
+participant "FastAPI Router" as router
+participant "Prediction Handler" as handler
+participant "WaterHeaterRepository" as repository
+participant "LifespanEstimationPrediction" as lifespan
+participant "ContributingFactorAnalyzer" as factors
+participant "RecommendationGenerator" as recommendations
+database "SQLite/PostgreSQL" as database
 
-user -> webApp: Open maintenance dashboard
-webApp -> apiServer: GET /api/maintenance/predictions
-apiServer -> monitoringService: getMaintenancePredictions()
+client -> router: GET /api/predictions/water-heaters/{device_id}/lifespan
+activate router
 
-monitoringService -> analyticsEngine: generatePredictions(deviceIds)
-analyticsEngine -> timeseriesDB: queryHistoricalData(deviceIds)
-timeseriesDB --> analyticsEngine: deviceHistoricalData
-analyticsEngine -> modelMonitoring: requestPrediction(deviceData)
+router -> handler: route_prediction_request(device_id, 'lifespan')
+activate handler
 
-modelMonitoring -> perfMonitor: evaluateDeviceHealth(deviceData)
-perfMonitor -> predictionModule: predictMaintenance(deviceData)
-predictionModule --> perfMonitor: maintenancePredictions
-perfMonitor --> modelMonitoring: deviceHealthStatus
+handler -> repository: get_water_heater(device_id)
+activate repository
+repository -> database: SQL query
+activate database
+database --> repository: water_heater_data
+deactivate database
+repository --> handler: water_heater_data
+deactivate repository
 
-modelMonitoring --> analyticsEngine: predictionResults
-analyticsEngine --> monitoringService: maintenanceRecommendations
-monitoringService --> apiServer: formattedPredictions
-apiServer --> webApp: predictionResponse
+handler -> repository: get_historical_readings(device_id)
+activate repository
+repository -> database: SQL query
+activate database
+database --> repository: historical_readings
+deactivate database
+repository --> handler: historical_readings
+deactivate repository
 
-webApp -> webApp: Update maintenance dashboard
-webApp --> user: Display maintenance predictions
+handler -> lifespan: predict(water_heater_data, historical_readings)
+activate lifespan
+
+lifespan -> lifespan: transform_features(water_heater_data, historical_readings)
+note right: Prepares device data as model features
+
+lifespan -> lifespan: execute_prediction_model(features)
+note right: Runs the prediction model with transformed features
+
+lifespan -> factors: identify_contributing_factors(features, prediction_result)
+activate factors
+factors --> lifespan: contributing_factors
+deactivate factors
+
+lifespan -> recommendations: generate_recommendations(prediction_result, contributing_factors)
+activate recommendations
+recommendations --> lifespan: maintenance_recommendations
+deactivate recommendations
+
+lifespan -> lifespan: format_response(prediction_result, contributing_factors, recommendations)
+note right: Structures the response with prediction details and confidence levels
+
+lifespan --> handler: structured_prediction_response
+deactivate lifespan
+
+handler --> router: prediction_response
+deactivate handler
+
+router --> client: JSON response with prediction details and recommendations
+deactivate router
 
 @enduml

@@ -1,0 +1,121 @@
+@startuml Water Heater CRUD Operations
+title "Water Heater CRUD Operations Sequence - IoTSphere-Refactor"
+
+actor "API Client" as client
+participant "FastAPI Router" as router
+participant "Water Heater Service" as service
+participant "Validation Service" as validator
+participant "Water Heater Repository" as repository
+database "SQLite/PostgreSQL" as database
+
+== Create Water Heater ==
+
+client -> router: POST /api/water-heaters\n{water_heater_data}
+activate router
+router -> service: create_water_heater(water_heater_data)
+activate service
+
+service -> validator: validate_water_heater(water_heater_data)
+activate validator
+validator --> service: validation result
+deactivate validator
+
+alt validation successful
+    service -> repository: create(water_heater_data)
+    activate repository
+    repository -> database: INSERT SQL
+    activate database
+    database --> repository: water_heater_id
+    deactivate database
+    repository --> service: created water heater
+    deactivate repository
+    service --> router: water_heater
+    router --> client: 201 Created\n{water_heater}
+else validation failed
+    service --> router: validation error
+    router --> client: 400 Bad Request\n{error details}
+end
+deactivate service
+deactivate router
+
+== Read Water Heater ==
+
+client -> router: GET /api/water-heaters/{device_id}
+activate router
+router -> service: get_water_heater(device_id)
+activate service
+service -> repository: get_by_id(device_id)
+activate repository
+repository -> database: SELECT SQL
+activate database
+database --> repository: water_heater_data
+deactivate database
+repository --> service: water_heater or None
+deactivate repository
+
+alt water heater found
+    service --> router: water_heater
+    router --> client: 200 OK\n{water_heater}
+else water heater not found
+    service --> router: None
+    router --> client: 404 Not Found
+end
+deactivate service
+deactivate router
+
+== Update Water Heater ==
+
+client -> router: PUT /api/water-heaters/{device_id}\n{updated_data}
+activate router
+router -> service: update_water_heater(device_id, updated_data)
+activate service
+
+service -> validator: validate_update(updated_data)
+activate validator
+validator --> service: validation result
+deactivate validator
+
+alt validation successful
+    service -> repository: update(device_id, updated_data)
+    activate repository
+    repository -> database: UPDATE SQL
+    activate database
+    database --> repository: rows_affected
+    deactivate database
+    repository --> service: updated water heater
+    deactivate repository
+    service --> router: updated water heater
+    router --> client: 200 OK\n{updated_water_heater}
+else validation failed
+    service --> router: validation error
+    router --> client: 400 Bad Request\n{error details}
+end
+deactivate service
+deactivate router
+
+== Delete Water Heater ==
+
+client -> router: DELETE /api/water-heaters/{device_id}
+activate router
+router -> service: delete_water_heater(device_id)
+activate service
+service -> repository: delete(device_id)
+activate repository
+repository -> database: DELETE SQL
+activate database
+database --> repository: rows_affected
+deactivate database
+repository --> service: deletion result
+deactivate repository
+
+alt successfully deleted
+    service --> router: success
+    router --> client: 204 No Content
+else water heater not found
+    service --> router: not found
+    router --> client: 404 Not Found
+end
+deactivate service
+deactivate router
+
+@enduml

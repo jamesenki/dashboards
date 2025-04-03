@@ -1,24 +1,23 @@
 @startuml System Context Diagram
 !include <C4/C4_Context>
 
-title "IoTSphere System Context Diagram"
+title "IoTSphere-Refactor System Context Diagram"
 
-Person(user, "IoT Platform User", "A user who manages IoT devices and monitors data")
-Person(admin, "IoT Platform Administrator", "A system administrator who configures and maintains the platform")
+Person(api_client, "API Client", "Frontend applications or other services that consume the REST API")
 
-System(iotSphere, "IoTSphere Platform", "Allows users to manage and monitor IoT devices, analyze data, and receive alerts")
+System(iotsphere_refactor, "IoTSphere-Refactor Backend", "FastAPI-based backend for device management, predictions, and model monitoring")
 
-System_Ext(devices, "IoT Devices", "Connected devices that collect and transmit sensor data")
-System_Ext(monitoringSystems, "Monitoring Services", "External systems that provide monitoring capabilities")
-System_Ext(dataStorage, "Data Storage Systems", "Persistent storage for device data and analytics")
+System_Ext(water_heater, "Water Heater Devices", "Primary IoT device type with temperature control, maintenance prediction, and monitoring")
+System_Ext(vending_machine, "Vending Machines", "Secondary device type with inventory and sales tracking")
+System_Ext(relational_db, "Relational Database", "SQLite (development) or PostgreSQL (production) for data storage")
+System_Ext(ml_models, "ML Model Services", "Prediction models for device maintenance and health monitoring")
 
-Rel(user, iotSphere, "Uses to manage devices and view dashboards")
-Rel(admin, iotSphere, "Configures and maintains")
+Rel(api_client, iotsphere_refactor, "Uses", "REST API calls")
 
-Rel(iotSphere, devices, "Manages and collects data from")
-Rel(iotSphere, monitoringSystems, "Integrates with")
-Rel(iotSphere, dataStorage, "Stores and retrieves data from")
-Rel_Back(devices, iotSphere, "Sends telemetry and status data to")
+Rel(iotsphere_refactor, water_heater, "Manages and monitors")
+Rel(iotsphere_refactor, vending_machine, "Manages inventory and sales")
+Rel(iotsphere_refactor, relational_db, "Stores and retrieves data")
+Rel(iotsphere_refactor, ml_models, "Consumes predictions from")
 
 LAYOUT_WITH_LEGEND()
 @enduml

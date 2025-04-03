@@ -1,202 +1,218 @@
-# IoTSphere Architecture Documentation
+# IoTSphere-Refactor Architecture Documentation
 
 ## Introduction
 
-This document provides a comprehensive overview of the IoTSphere platform architecture. IoTSphere is a modern IoT platform that enables users to manage connected devices, collect and analyze sensor data, and receive alerts based on predefined conditions. The architecture documentation follows Test-Driven Development (TDD) principles, ensuring that the architecture evolves in a maintainable and verifiable way.
+This document provides a comprehensive overview of the IoTSphere-Refactor project architecture. This refactored backend implements a modern IoT platform that enables management of connected devices (with a focus on water heaters and vending machines), predictive analytics, and monitoring of ML model performance. The architecture documentation follows Test-Driven Development (TDD) principles, ensuring that the system evolves in a maintainable and verifiable way.
 
 ## Architectural Approach
 
-The IoTSphere platform follows these key architectural principles:
+The IoTSphere-Refactor project follows these key architectural principles:
 
-1. **Microservices Architecture**: Dividing the system into independent, loosely coupled services that can be developed, deployed, and scaled independently.
-2. **Event-Driven Communication**: Using message queues for asynchronous communication between services, enabling resilience and scalability.
+1. **Environment-Based Configuration**: Implementing a centralized, layered configuration system that adapts to different environments (development, production).
+2. **Repository Pattern**: Abstracting data access through repositories that can be configured for different backends or mock implementations.
 3. **Test-Driven Development**: Following the RED-GREEN-REFACTOR cycle for all new features and changes.
 4. **Separation of Concerns**: Clear boundaries between different system components, making the system easier to test and maintain.
-5. **API-First Design**: Well-defined APIs for all services, enabling independent development and testing.
+5. **API-First Design**: Well-defined FastAPI endpoints with clear input/output contracts.
 
 ## System Context
 
-The System Context diagram shows the IoTSphere platform and how it interacts with users and external systems.
+The IoTSphere-Refactor project provides a backend service layer with the following interactions:
 
-![IoTSphere System Context](diagrams/system_context.png)
+![Figure: IoTSphere-Refactor System Context Diagram](diagrams/system_context.png)
+*Figure 1: IoTSphere System Context - Illustrating key system boundaries and external interactions*
 
-The IoTSphere platform interacts with:
+- **REST API Clients**: Frontend applications or other services that consume the REST API
+- **Water Heater Devices**: Primary IoT device type with temperature control, maintenance prediction, and monitoring
+- **Vending Machines**: Secondary device type with inventory and sales tracking
+- **Data Storage Systems**: SQLite (development) and PostgreSQL (production) databases
+- **ML Model Services**: Integration with prediction models for device maintenance and health monitoring
 
-- **IoT Platform Users**: Who manage devices and monitor data
-- **IoT Platform Administrators**: Who configure and maintain the platform
-- **IoT Devices**: Which connect to the platform to send telemetry data and receive commands
-- **Monitoring Services**: External systems that provide monitoring capabilities
-- **Data Storage Systems**: Persistent storage for device data and analytics
+## Core Components
 
-## Container Architecture
+The IoTSphere-Refactor backend consists of these key components:
 
-The Container diagram shows the high-level technical components that make up the IoTSphere platform.
+![Figure: IoTSphere-Refactor Container Architecture](diagrams/container.png)
+*Figure 2: Container Architecture - Showing the high-level components of the IoTSphere system*
 
-![IoTSphere Container Architecture](diagrams/container.png)
+- **FastAPI Application**: Main entry point that provides RESTful API endpoints
+- **Config Service**: Environment-based configuration system with YAML files and fallback mechanisms
+- **Water Heater Service**: Handles water heater operations, status, and maintenance data
+- **Vending Machine Service**: Manages vending machine inventory and operations
+- **Prediction Services**: Analytics for device failure prediction, maintenance scheduling, and anomaly detection
+- **Model Monitoring Service**: Tracks ML model performance, drift, and alerts on model issues
+- **Relational Database**: SQLite (development) or PostgreSQL (production) for storing all persistent data
 
-The IoTSphere platform consists of these key containers:
+## Detailed Component Architecture
 
-- **Web Application**: Angular-based frontend for user interaction
-- **API Server**: Node.js/Express service that provides APIs for the web application
-- **Device Management Service**: Handles device lifecycle, configuration, and firmware updates
-- **Monitoring Service**: Processes device data, manages alerts, and provides analytics
-- **Model Monitoring Service**: Monitors ML models and provides model performance metrics
-- **Operational Database**: MongoDB database for storing device configurations and system settings
-- **Time Series Database**: InfluxDB for storing historical device data and metrics
-- **Message Queue**: RabbitMQ for asynchronous communication between services
+### FastAPI Endpoints
 
-## Component Architecture
+The FastAPI application exposes structured REST endpoints organized by device/service type:
 
-### API Server Components
+- **/api/water-heaters**: Endpoints for water heater management
+  - GET, POST, PUT operations for CRUD operations
+  - Status updates and temperature control
+  - Historical readings and maintenance records
 
-The API Server exposes REST endpoints and routes requests to appropriate microservices.
+- **/api/predictions/water-heaters**: Advanced prediction endpoints
+  - `/{device_id}/lifespan`: Lifespan estimation predictions
+  - `/{device_id}/anomaly`: Anomaly detection results
+  - `/{device_id}/usage-patterns`: Usage pattern analysis
+  - `/{device_id}/multi-factor`: Combined analysis across factors
+  - `/{device_id}/all`: Aggregated predictions from all models
 
-![API Server Components](diagrams/api_server_components.png)
+- **/api/vending-machines**: Endpoints for vending machine operations
+  - Inventory management
+  - Sales tracking and restocking needs
 
-Key components:
-- **API Gateway**: Routes requests and handles cross-cutting concerns
-- **Authentication Service**: Handles user authentication and access control
-- **Device API**: Provides endpoints for device management operations
-- **Data API**: Provides endpoints for querying device data and metrics
-- **User API**: Provides endpoints for user management and preferences
+- **/api/monitoring**: Model monitoring and health tracking
+  - Model performance metrics
+  - Drift detection notifications
+  - Health status dashboards
 
-### Device Management Service Components
+### Configuration System
 
-The Device Management Service handles device lifecycle, configuration, and firmware updates.
+![Figure: Configuration Service Component Diagram](diagrams/Config%20Service%20Components.png)
+*Figure 3: Configuration Service Component Diagram - Showing the environment-based configuration system*
 
-![Device Management Components](diagrams/device_management_components.png)
+The environment-based configuration system consists of:
 
-Key components:
-- **Device Registry**: Manages device registrations and metadata
-- **Configuration Manager**: Manages device configurations
-- **Firmware Update Service**: Handles firmware updates and versioning
-- **Provisioning Manager**: Manages device onboarding and provisioning
-- **Device Controller**: Executes commands on devices
-- **MQTT Client**: Communicates with devices over MQTT
+- **Config Service**: Central service that loads and serves configuration
+- **Environment Detection**: Logic to determine current environment (development/production)
+- **YAML Config Files**: Environment-specific configuration files
+- **Fallback Mechanism**: Cascading fallback for missing configuration values
 
-### Monitoring Service Components
+### Water Heater Service
 
-The Monitoring Service processes device data, manages alerts, and provides analytics.
+![Figure: Water Heater Service Component Diagram](diagrams/Water%20Heater%20Service%20Components.png)
+*Figure 4: Water Heater Service Component Diagram - Detailing the internal structure of the Water Heater Service*
 
-![Monitoring Service Components](diagrams/monitoring_service_components.png)
+The Water Heater service provides functionality for water heater management:
 
-Key components:
-- **Data Processor**: Processes incoming device data and metrics
-- **Alert Engine**: Detects anomalies and generates alerts
-- **Analytics Engine**: Performs data analytics and trend analysis
-- **Report Generator**: Generates reports and visualizations
-- **Notification Manager**: Manages and dispatches notifications
-- **Subscription Manager**: Manages user alert subscriptions
+- **Configurable Repository**: Switchable between mock data and real database
+- **Device Operations**: CRUD operations and status management
+- **Temperature Control**: Logic for temperature adjustments and monitoring
+- **Historical Data**: Collection and retrieval of historical readings
 
-### Frontend Components
+### Vending Machine Service
 
-The frontend architecture follows a modular, component-based approach that facilitates Test-Driven Development.
+![Figure: Vending Machine Service Component Diagram](diagrams/Vending%20Machine%20Service%20Components.png)
+*Figure 5: Vending Machine Service Component Diagram - Detailing the internal structure of the Vending Machine Service*
 
-![Frontend Components](diagrams/frontend_components.png)
+The Vending Machine service manages vending machine operations:
 
-Key components:
-- **Core Module**: Provides application initialization and centralized control
-- **API Client**: Abstracts backend communication with standardized interfaces
-- **Tab Manager**: Manages component lifecycle and navigation
-- **Event Bus**: Implements pub/sub pattern for loose coupling between components
-- **Dashboard Modules**: Implement specific functionality as self-contained units
-  - Device Management Module
-  - Monitoring Module
-  - Analytics Dashboard
-  - Alerts Module
-  - Maintenance Predictions Module
-- **Auth Module**: Handles authentication and authorization
-- **Shared Module**: Provides reusable components and utilities
-- **Layout Module**: Manages application layout and responsiveness
+- **Inventory Management**: Tracking product availability and stock levels
+- **Sales Tracking**: Recording sales transactions and patterns
+- **Restocking Alerts**: Notifications for low inventory items
+- **Product Configuration**: Management of product offerings and pricing
 
-### Model Monitoring Dashboard Components
+### Prediction Services
 
-The Model Monitoring Dashboard provides visibility into ML model performance.
+![Figure: Prediction Endpoints Component Diagram](diagrams/Prediction%20Endpoints%20Components.png)
+*Figure 6: Prediction Endpoints Component Diagram - Showing the structure of prediction services and their interactions*
 
-![Model Monitoring Dashboard](diagrams/model_monitoring_components.png)
+Prediction services provide analytical capabilities for water heaters and other devices:
 
-Key components:
-- **Model Registry**: Maintains metadata about deployed ML models
-- **Metric Collector**: Collects performance metrics from deployed models
-- **Drift Detector**: Detects data and concept drift in models
-- **Performance Monitor**: Tracks model performance metrics over time
-- **Dashboard API**: Exposes HTTP endpoints for dashboard functionality
+- **Lifespan Estimation**: Predicts device end-of-life
+- **Anomaly Detection**: Identifies abnormal operating conditions
+- **Usage Pattern Analysis**: Discovers usage trends and optimization opportunities
+- **Multi-factor Analysis**: Combines multiple data sources for comprehensive insights
+
+### Model Monitoring Service
+
+![Figure: Model Monitoring Service Component Diagram](diagrams/model_monitoring_components.png)
+*Figure 7: Model Monitoring Service Component Diagram - Detailing the components for monitoring ML model performance*
+
+The Model Monitoring Service tracks ML model performance:
+
+- **Metrics Repository**: Collects and stores model performance metrics
+- **Model Registry**: Catalog of available prediction models
+- **Health Status Tracker**: Monitors model health and quality
+- **Alert System**: Notifications for model drift or degradation
 
 ## Data Architecture
 
-The data architecture diagram shows how data flows through the system and is stored in different databases.
+![Figure: IoTSphere-Refactor Data Architecture](diagrams/data_architecture.png)
+*Figure 8: Data Architecture Diagram - Showing the relational database schema and table relationships*
 
-![Data Architecture](diagrams/data_architecture.png)
+The IoTSphere-Refactor project uses a relational database schema with the following key tables:
 
-The IoTSphere platform uses multiple data stores:
+1. **Device Tables**:
+   - `water_heaters`: Water heater device metadata and configuration
+   - `water_heater_readings`: Historical temperature and performance readings
+   - `vending_machines`: Vending machine metadata and status
+   - `vending_machine_products`: Product inventory for vending machines
+   - `vending_machine_readings`: Sales and operational data points
 
-1. **Operational Database (MongoDB)**:
-   - Device Collection: Stores device metadata and configuration
-   - User Collection: Stores user information and permissions
-   - Alert Rules Collection: Stores alert configuration
-   - System Settings Collection: Stores system configuration
+2. **Prediction and Analytics Tables**:
+   - `predictions`: Stored prediction results
+   - `prediction_models`: Metadata about available prediction models
+   - `prediction_features`: Feature sets used for predictions
+   - `anomaly_detections`: Detected anomalies and classifications
 
-2. **Time Series Database (InfluxDB)**:
-   - Telemetry Measurement: Stores device telemetry data
-   - Metrics Measurement: Stores performance metrics
-   - Alerts Measurement: Stores alert events
-   - Model Stats Measurement: Stores ML model performance stats
+3. **Model Monitoring Tables**:
+   - `model_metrics`: Performance metrics for ML models
+   - `model_health`: Health status and quality indicators
+   - `model_alerts`: Alert events for model issues
+   - `model_drift_data`: Data for tracking model drift over time
 
-3. **Blob Storage (AWS S3/Local FileSystem)**:
-   - Firmware Blobs: Stores firmware images
-   - Model Blobs: Stores trained ML models
-   - Report Blobs: Stores generated reports
-   - Config Backups: Stores configuration backups
+## Key Interactions
 
-## Sequence Diagrams
+### Water Heater CRUD Operations
 
-### Device Onboarding Sequence
+![Figure: Water Heater CRUD Operations Sequence](diagrams/Water%20Heater%20CRUD%20Operations.png)
+*Figure 9: Water Heater CRUD Operations Sequence - Illustrating the flow of create, read, update, and delete operations*
 
-This sequence diagram illustrates the process of onboarding a new device to the IoTSphere platform.
+The IoTSphere-Refactor implements standard CRUD operations for water heater management:
 
-![Device Onboarding Sequence](diagrams/sequence_device_onboarding.png)
+1. Create: Adding new water heater devices to the system
+2. Read: Retrieving water heater information by ID or with filters
+3. Update: Modifying water heater configuration, settings, and status
+4. Delete: Removing water heater devices from the system
 
-The onboarding process involves:
-1. Admin initiates device onboarding through the web application
-2. The API server forwards the request to the Device Management Service
-3. The Provisioning Manager creates the device in the Device Registry
-4. Default configuration is created for the device
-5. Device credentials are generated and stored
-6. The admin applies the provisioning package to the device
-7. The device connects to the platform using the credentials
-8. The device connection is verified and confirmed
+### Water Heater Prediction Request Flow
 
-### Data Processing and Alerting Sequence
+![Figure: Water Heater Prediction Sequence](diagrams/sequence_maintenance_prediction.png)
+*Figure 10: Water Heater Prediction Sequence - Detailing the interactions during a prediction request*
 
-This sequence diagram shows how device data is processed and how alerts are generated.
+A typical flow for water heater prediction requests:
 
-![Data Processing and Alerting Sequence](diagrams/sequence_data_processing.png)
+1. Client makes a request to `/api/predictions/water-heaters/{device_id}/lifespan`
+2. FastAPI router routes the request to the appropriate prediction handler
+3. The handler retrieves device data from the Water Heater repository
+4. Prediction model is loaded with appropriate configuration for the environment
+5. Prediction is executed with device data and model parameters
+6. Contributing factors are identified from device features
+7. Recommendations are generated based on predicted maintenance needs
+8. Results are formatted with prediction details, confidence levels, and recommendations
+9. Response is returned to the client with structured prediction data
 
-The data processing flow includes:
-1. IoT device publishes telemetry data to the Message Queue
-2. Data Processor consumes the message, validates and normalizes the data
-3. Processed data is stored in the Time Series Database
-4. Data is forwarded to the Alert Engine for analysis
-5. Alert Engine evaluates alert rules against historical data
-6. If an alert threshold is exceeded, a notification is triggered
-7. Subscribers to the alert are notified
-8. The alert event is stored in the database
+### Model Monitoring Alert Flow
 
-### Maintenance Prediction Sequence
+![Figure: Model Monitoring Alert Flow](diagrams/Model%20Monitoring%20Alert%20Flow.png)
+*Figure 11: Model Monitoring Alert Flow - Showing the sequence of metrics collection, evaluation, and alerting*
 
-This sequence diagram illustrates how maintenance predictions are generated for devices.
+The flow for model monitoring alerts:
 
-![Maintenance Prediction Sequence](diagrams/sequence_maintenance_prediction.png)
+1. Model metrics are collected periodically from prediction services
+2. Metrics are stored in the Model Metrics Repository
+3. Health status is evaluated against configurable thresholds
+4. If metrics indicate degradation or drift, alerts are generated
+5. Alerts are stored in the database with severity and impact assessment
+6. API endpoints expose current alert status for monitoring dashboards
 
-The maintenance prediction process involves:
-1. User opens the maintenance dashboard in the web application
-2. The application requests maintenance predictions from the API server
-3. The Monitoring Service forwards the request to the Analytics Engine
-4. The Analytics Engine queries historical data from the Time Series Database
-5. The Analytics Engine requests predictions from the Model Monitoring Service
-6. The Performance Monitor evaluates device health
-7. The Maintenance Predictions Module generates predictions
-8. Results are returned to the web application and displayed to the user
+### Environment-Based Configuration Flow
+
+![Figure: Environment-Based Configuration Loading Sequence](diagrams/Environment%20Configuration%20Sequence.png)
+*Figure 12: Environment-Based Configuration Loading Sequence - Illustrating how configuration is loaded based on the environment*
+
+The process for loading environment-specific configuration:
+
+1. Application startup detects the current environment from APP_ENV variable
+2. Configuration service loads the appropriate YAML file (development.yaml or production.yaml)
+3. Service-specific configuration sections are extracted for each component
+4. If a configuration value is missing, fallback values are used from default configuration
+5. Services initialize with environment-appropriate settings (mock data vs. real database)
+6. Configuration values are available to components through dependency injection
 
 ## Test-Driven Development Approach
 
