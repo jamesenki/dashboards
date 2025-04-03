@@ -16,6 +16,9 @@ class WaterHeaterMode(str, Enum):
     ECO = "ECO"
     BOOST = "BOOST"
     OFF = "OFF"
+    VACATION = "VACATION"
+    HIGH_DEMAND = "HIGH_DEMAND"
+    ENERGY_SAVER = "ENERGY_SAVER"
 
 
 class WaterHeaterStatus(str, Enum):
