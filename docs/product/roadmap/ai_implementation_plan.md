@@ -5,18 +5,18 @@
 ### Core Platform Components
 
 1. **Development-Optimized LLM Platform**
-   - **Technology**: llama.cpp with Metal acceleration for Apple Silicon
-   - **Models**: 4-bit quantized versions of Llama 3 7B or Mistral 7B
-   - **Performance Optimization**: Context window limiting (2-4K tokens), batched inference
-   - **Deployment**: Docker containers optimized for M1 architecture
-   - **Integration**: REST API with streaming capability for incremental responses
+   - **Technology**: HuggingFace Transformers with PyTorch MPS acceleration
+   - **Models**: 8-bit loaded models of Llama 3 8B or Mistral 7B
+   - **Performance Optimization**: Low CPU memory usage, dynamic device mapping, MPS fallback
+   - **Deployment**: Environment variables for MPS optimization on M1/M2 architecture
+   - **Integration**: Unified interface for both blocking and streaming text generation
 
 2. **RAG-Enhanced Knowledge System**
-   - **Technology**: Chroma DB (Python-native vector database)
-   - **Embedding Model**: Lightweight models like E5-small or BAAI/bge-small-en-v1.5
-   - **Retrieval Enhancement**: Multi-step RAG with re-ranking and hybrid search
-   - **Storage Efficiency**: Hierarchical chunking, semantic caching, in-memory index
-   - **Integration**: Python SDK with direct integration to LLM components
+   - **Technology**: Chroma DB with Sentence Transformers embedding models
+   - **Embedding Model**: BAAI/bge-small-en-v1.5 (primary) with all-MiniLM-L6-v2 (fallback)
+   - **Performance Features**: Dynamic module imports, MPS acceleration, lazy loading
+   - **Testing Support**: Fallback mock embeddings, comprehensive test coverage
+   - **Integration**: Flexible query API with semantic search and metadata filtering
 
 3. **Agentic Framework with MCP Architecture**
    - **Technology**: Custom Python framework implementing ReAct pattern

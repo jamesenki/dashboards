@@ -14,7 +14,7 @@ Our architecture focuses on practical implementation with minimal hardware requi
 │   Development Environment  │
 │  ┌────────────────────┐    │
 │  │ LLM Inference      │    │
-│  │ (llama.cpp + Metal)│    │
+│  │ (Transformers+Metal)│   │
 │  └────────────────────┘    │
 │  ┌────────────────────┐    │
 │  │ Vector Database    │    │
@@ -69,61 +69,95 @@ Our architecture focuses on practical implementation with minimal hardware requi
 └────────────────────────────────────────┘
 ```
 
-**Primary Technology**: HuggingFace Transformers with Metal acceleration
+**Primary Technology**: HuggingFace Transformers with PyTorch and Metal Performance Shaders (MPS) acceleration
 **Model Selection**:
-- Primary: Smaller models optimized for Mac M1/M2 (GPT-2, Mistral 7B)
-- Secondary: Specialized task-specific models (3-5B parameters)
+- Primary: Llama 3 8B or Mistral 7B for Mac M1/M2
+- Secondary: Specialized task-specific models or smaller models like GPT-2 for testing
 
 **Implementation Status**:
-- Completed LLM interface with Metal acceleration support
-- Implemented lazy loading for efficient memory usage
-- Added streaming support for responsive generation
-- TDD approach with comprehensive test coverage
+- Completed LLM interface with full MPS acceleration support for Apple Silicon
+- Implemented lazy loading with automatic fallback to smaller models for testing
+- Developed streaming text generation with token-by-token delivery
+- Environment variable configuration for optimizing Metal performance
+- Comprehensive test coverage with proper mocking and TDD approach
 
 **Implementation Specifications**:
-- **Quantization**: 4-bit GGUF format for optimal memory usage
-- **Context Window**: Configurable but default to 2K-4K tokens for development
+- **Optimization**: 8-bit loading for efficient memory usage with PyTorch
+- **Context Window**: Configurable with default of 2048 tokens for development
 - **Inference Optimization**:
-  - Batch similar requests when possible
-  - Implement context compression techniques
-  - Use Metal API acceleration for Apple Silicon
+  - Low CPU memory usage settings for efficient operation
+  - Dynamic device mapping based on hardware availability
+  - PyTorch MPS fallback to ensure compatibility across different operations
 
 **Integration Points**:
-- REST API endpoint for synchronous requests
-- Streaming capability for incremental responses
-- Model selection API for routing between different models
+- Consistent interface supporting both streaming and blocking generation
+- Parameter customization including temperature, token limits, and stop sequences
+- Support for both absolute and relative model paths for flexible deployment
 
 **Hardware Requirements**:
-- Mac M1/M2 with 16GB RAM minimum
+- Mac M1/M2 with 16GB RAM (32GB recommended for larger models)
 - 5-10GB free disk space for model storage
+- Environment variables to enable optimal MPS acceleration
 
 ### 2. Vector Database & RAG System
 
-**Primary Technology**: Chroma DB (Python native)
+**Figure 3: Vector Database Architecture**
+```
+┌────────────────────────────────────────┐
+│         Vector Store Interface         │
+│  ┌────────────────────────────────┐    │
+│  │   Chroma DB                    │    │
+│  │   (Persistent Document Store)  │    │
+│  └────────────────────────────────┘    │
+│               │                         │
+│               ▼                         │
+│  ┌────────────────────────────────┐    │
+│  │   Embedding System             │    │
+│  │   - Dynamic Model Loading      │    │
+│  │   - Metal Acceleration         │    │
+│  └────────────────────────────────┘    │
+│               │                         │
+│               ▼                         │
+│  ┌────────────────────────────────┐    │
+│  │   Query & Retrieval            │    │
+│  │   - Semantic Search            │    │
+│  │   - Metadata Filtering         │    │
+│  └────────────────────────────────┘    │
+└────────────────────────────────────────┘
+```
+
+**Primary Technology**: Chroma DB with Sentence Transformers
 **Alternative**: Qdrant (if higher performance needed)
 
 **Implementation Specifications**:
-- **Embedding Model**: E5-small or BAAI/bge-small-en-v1.5 (small, efficient models)
-- **Vector Dimensions**: 384-768 depending on embedding model
+- **Embedding Model**: BAAI/bge-small-en-v1.5 (primary) with all-MiniLM-L6-v2 (fallback)
+- **Vector Dimensions**: 384 dimensions for efficient storage and retrieval
 - **Storage Pattern**:
-  - In-memory vector index during development
-  - Persistent storage for production
-- **Chunk Strategy**: Hierarchical chunking with overlaps
+  - Persistent storage with configurable location
+  - Lazy-loaded components for efficient memory usage
+- **Metal Acceleration**: MPS support for embedding generation on Apple Silicon
 
-**RAG Enhancement Features**:
-- **Multi-step Retrieval**: Initial broad retrieval followed by focused re-retrieval
-- **Re-ranking**: Implement cross-encoder re-ranking for precision
-- **Hybrid Search**: Combine vector similarity with keyword search
-- **Caching**: Implement result caching for common queries
+**Implementation Status**:
+- Completed Vector Store with dynamic imports for improved testability
+- Implemented fallback embedding functions for robust testing
+- Added flexible metadata handling and filtering capabilities
+- Comprehensive test coverage with proper mocking and assertions
+
+**Advanced Features**:
+- **Dynamic Loading**: Runtime module imports to avoid test-time dependency conflicts
+- **Fallback Strategy**: Automatic creation of mock embeddings during tests
+- **Flexible Query API**: Combining semantic search with metadata filters
+- **Score Normalization**: Consistent similarity scoring for ranking results
 
 **Integration Points**:
-- Python SDK for direct integration
-- Document ingestion API
-- Query API with customizable parameters
+- Document ingestion with automatic UUID generation
+- Query API with customizable result counts and filtering
+- Document retrieval by ID with complete metadata
 
 **Hardware Requirements**:
-- Runs within M1 Mac resources
+- Runs efficiently on Mac M1/M2 hardware
 - SSD storage recommended for larger document collections
+- Compatible with MPS acceleration for embedding generation
 
 ### 3. Agentic Framework
 
