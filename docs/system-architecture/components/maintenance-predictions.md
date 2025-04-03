@@ -1,63 +1,64 @@
-# Maintenance Predictions Architecture
+# Water Heater Maintenance Predictions Architecture
 
 ## 1. System Architecture
 
 ```
 ┌─────────────────┐      ┌───────────────────────┐      ┌───────────────────┐
 │                 │      │                       │      │                   │
-│  Data Pipeline  │─────▶│  Prediction Pipeline  │─────▶│  API Layer        │
-│                 │      │                       │      │                   │
+│  Data Access    │─────▶│  Prediction Services  │─────▶│  FastAPI Endpoints│
+│  Layer          │      │                       │      │                   │
 └─────────────────┘      └───────────────────────┘      └───────────────────┘
-        │                           │                            │
-        ▼                           ▼                            ▼
-┌─────────────────┐      ┌───────────────────────┐      ┌───────────────────┐
-│                 │      │                       │      │                   │
-│  Data Storage   │      │  Model Registry       │      │  Frontend         │
-│                 │      │                       │      │                   │
-└─────────────────┘      └───────────────────────┘      └───────────────────┘
+        │                           │
+        ▼                           ▼
+┌─────────────────┐      ┌───────────────────────┐
+│                 │      │                       │
+│  SQLite/        │      │  Model Monitoring     │
+│  PostgreSQL     │      │  Service              │
+└─────────────────┘      └───────────────────────┘
 ```
 
-The Maintenance Predictions architecture follows Test-Driven Development principles and consists of the following key components:
+The Water Heater Maintenance Predictions architecture in the IoTSphere-Refactor project follows Test-Driven Development principles and consists of the following key components:
 
 ## 2. Component Description
 
-### 2.1 Data Pipeline
-- **Data Collectors**: Gather telemetry from IoT devices
-- **Data Preprocessors**: Clean and normalize data for model consumption
-- **Feature Extractors**: Generate relevant features for predictive models
+### 2.1 Data Access Layer
+- **Water Heater Repository**: Access to water heater device data and readings
+- **Reading History Service**: Retrieval of historical temperature and performance data
+- **Feature Preparation**: Transformation of raw data into model-ready features
 
-### 2.2 Prediction Pipeline
-- **Model Selector**: Chooses appropriate models based on device types
-- **Inference Engine**: Executes ML models to generate predictions
-- **Confidence Calculator**: Determines reliability of predictions
-- **Explainability Module**: Provides reasoning behind predictions
+### 2.2 Prediction Services
+- **Lifespan Estimation Prediction**: Estimates remaining useful life of water heaters
+- **Anomaly Detection Prediction**: Identifies abnormal operating patterns
+- **Usage Pattern Prediction**: Analyzes usage trends and optimization opportunities
+- **Multi-factor Prediction**: Combines multiple data sources for comprehensive insights
+- **Contributing Factor Analysis**: Identifies key factors affecting device health
+- **Recommendation Generator**: Creates actionable maintenance recommendations
 
-### 2.3 API Layer
-- **REST Endpoints**: Standard interfaces for prediction services
-- **GraphQL Interface**: Flexible querying for dashboards
-- **WebSocket Service**: Real-time updates for critical predictions
+### 2.3 FastAPI Endpoints
+- **/api/predictions/water-heaters/{device_id}/lifespan**: Endpoint for lifespan predictions
+- **/api/predictions/water-heaters/{device_id}/anomaly**: Endpoint for anomaly detection
+- **/api/predictions/water-heaters/{device_id}/usage-patterns**: Endpoint for usage pattern analysis
+- **/api/predictions/water-heaters/{device_id}/multi-factor**: Endpoint for comprehensive analysis
+- **/api/predictions/water-heaters/{device_id}/all**: Endpoint for aggregated predictions
 
-### 2.4 Data Storage
-- **Time Series Database**: Historical device measurements
-- **Feature Store**: Pre-computed features for model training
-- **Prediction Storage**: Historical predictions for validation
+### 2.4 Database Storage
+- **Device Tables**: Store water heater metadata and configuration
+- **Readings Tables**: Historical performance and temperature readings
+- **Prediction Tables**: Storage of prediction results and recommendations
 
-### 2.5 Model Registry
-- **Model Versioning**: Tracks model versions and performance
-- **A/B Testing Framework**: Compares model variations
-- **Model Metadata**: Stores information about model training and parameters
-
-### 2.6 Frontend
-- **Operations Dashboard**: Real-time view of device health
-- **Prediction Timeline**: Visual display of maintenance predictions
-- **Configuration Interface**: Tools for adjusting prediction parameters
+### 2.5 Model Monitoring Service
+- **Metrics Collection**: Tracks model performance metrics
+- **Health Status Tracker**: Monitors prediction quality over time
+- **Alert System**: Notifications for model drift or performance issues
 
 ## 3. Data Flow
 
-1. Device telemetry data flows through the Data Pipeline
-2. The Prediction Pipeline processes data and generates maintenance predictions
-3. Predictions are stored and made available through the API Layer
-4. The Frontend consumes predictions and presents them to users
+1. Client applications request predictions through the FastAPI endpoints
+2. The API routes the request to the appropriate prediction service
+3. The prediction service retrieves device data from the repository
+4. Features are extracted and preprocessed from the device data
+5. The prediction models generate maintenance forecasts and recommendations
+6. Results are formatted as structured JSON responses and returned to the client
 
 ## 4. Implementation Approach
 
@@ -80,10 +81,11 @@ The implementation follows the TDD (Test-Driven Development) principles:
 
 ## 5. Key Technologies
 
-- **InfluxDB**: Time series database for telemetry storage
-- **scikit-learn/TensorFlow**: ML frameworks for predictive models
-- **FastAPI**: Modern API framework for prediction services
-- **React/Angular**: Frontend framework for dashboard components
+- **FastAPI**: Modern API framework with automatic OpenAPI documentation
+- **Pydantic**: Data validation and settings management
+- **SQLAlchemy**: SQL toolkit and ORM for database access
+- **scikit-learn/NumPy/Pandas**: ML and data processing libraries
+- **Python 3.10+**: Core programming language
 
 ## 6. Performance Considerations
 
@@ -102,8 +104,17 @@ In line with TDD principles, the maintenance prediction system includes:
 - **Performance Tests**: Ensuring predictions are generated within SLA
 - **Model Validation Tests**: Confirming prediction accuracy meets requirements
 
-## 8. Sequence Diagram
+## 8. Prediction Request Flow
 
-![Maintenance Prediction Sequence](../diagrams/sequence_maintenance_prediction.png)
+A typical prediction request follows this sequence:
 
-This sequence diagram illustrates the flow of a maintenance prediction request from the user interface through the system components.
+1. Client makes a request to one of the prediction endpoints
+2. FastAPI router validates the request parameters and routes to the handler
+3. The handler retrieves the specified water heater from the repository
+4. Historical readings are fetched and transformed into features
+5. Prediction models analyze the features and generate results
+6. Contributing factors to the prediction are identified
+7. Actionable recommendations are generated based on prediction results
+8. A structured response containing predictions, confidence levels, contributing factors, and recommendations is returned
+
+*Note: A sequence diagram specific to the refactored implementation should be created to replace the original diagram.*

@@ -1,0 +1,57 @@
+@startuml core_components
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Core Components - IoTSphere-Refactor Backend
+
+Container_Boundary(api, "FastAPI Application") {
+  Component(config_service, "Config Service", "Python", "Loads environment-specific configuration from YAML files")
+
+  Component(fastapi_app, "FastAPI App", "Python/FastAPI", "Main application entry point")
+
+  Component(water_heater_router, "Water Heater Router", "FastAPI Router", "Endpoints for water heater management")
+  Component(prediction_router, "Prediction Router", "FastAPI Router", "Endpoints for device predictions")
+  Component(vm_router, "Vending Machine Router", "FastAPI Router", "Endpoints for vending machine management")
+  Component(model_monitoring_router, "Model Monitoring Router", "FastAPI Router", "Endpoints for model monitoring")
+
+  Component(water_heater_service, "Water Heater Service", "Python", "Business logic for water heater operations")
+  Component(vending_machine_service, "Vending Machine Service", "Python", "Business logic for vending machine operations")
+  Component(prediction_service, "Prediction Service", "Python", "Prediction generation for devices")
+  Component(model_monitoring_service, "Model Monitoring Service", "Python", "Logic for monitoring ML model health")
+
+  Component(water_heater_repo, "Water Heater Repository", "Python", "Data access for water heaters")
+  Component(vending_machine_repo, "Vending Machine Repository", "Python", "Data access for vending machines")
+  Component(model_metrics_repo, "Model Metrics Repository", "Python", "Data access for model metrics")
+}
+
+ContainerDb(database, "Relational Database", "SQLite/PostgreSQL", "Stores device data, readings, and model metrics")
+
+System_Ext(client, "API Client", "Client applications consuming the API")
+
+Rel(client, fastapi_app, "Uses", "REST API calls")
+Rel(fastapi_app, water_heater_router, "Routes to", "/api/water-heaters/*")
+Rel(fastapi_app, prediction_router, "Routes to", "/api/predictions/*")
+Rel(fastapi_app, vm_router, "Routes to", "/api/vending-machines/*")
+Rel(fastapi_app, model_monitoring_router, "Routes to", "/api/monitoring/*")
+
+Rel(water_heater_router, water_heater_service, "Uses")
+Rel(vm_router, vending_machine_service, "Uses")
+Rel(prediction_router, prediction_service, "Uses")
+Rel(model_monitoring_router, model_monitoring_service, "Uses")
+
+Rel(water_heater_service, water_heater_repo, "Uses")
+Rel(vending_machine_service, vending_machine_repo, "Uses")
+Rel(prediction_service, water_heater_repo, "Reads from")
+Rel(model_monitoring_service, model_metrics_repo, "Uses")
+
+Rel(water_heater_repo, database, "Reads/Writes")
+Rel(vending_machine_repo, database, "Reads/Writes")
+Rel(model_metrics_repo, database, "Reads/Writes")
+
+Rel_D(config_service, water_heater_service, "Configures")
+Rel_D(config_service, vending_machine_service, "Configures")
+Rel_D(config_service, prediction_service, "Configures")
+Rel_D(config_service, model_monitoring_service, "Configures")
+
+@enduml

@@ -1,0 +1,32 @@
+@startuml Vending Machine Service Components
+!include <C4/C4_Component>
+
+title "Vending Machine Service Component Diagram - IoTSphere-Refactor"
+
+Container_Boundary(vending_machine_service, "Vending Machine Service") {
+    Component(vending_machine_api, "Vending Machine API", "FastAPI Router", "Exposes REST endpoints for vending machine operations")
+    Component(vending_machine_service_comp, "Vending Machine Service", "Python", "Business logic for vending machine operations")
+    Component(vending_machine_repository, "Vending Machine Repository", "Python", "Data access layer for vending machine entities")
+    Component(product_repository, "Product Repository", "Python", "Access to product inventory data")
+    Component(sales_repository, "Sales Repository", "Python", "Access to sales transaction data")
+    Component(inventory_manager, "Inventory Manager", "Python", "Logic for inventory management and restocking alerts")
+}
+
+Container(config_service, "Configuration Service", "Python", "Provides environment-specific configuration")
+ContainerDb(database, "Relational Database", "SQLite/PostgreSQL", "Stores vending machine data")
+
+System_Ext(api_client, "API Client", "Consumer of the vending machine API")
+
+Rel(api_client, vending_machine_api, "Uses", "REST API")
+Rel(vending_machine_api, vending_machine_service_comp, "Delegates to")
+Rel(vending_machine_service_comp, vending_machine_repository, "Uses")
+Rel(vending_machine_service_comp, product_repository, "Uses")
+Rel(vending_machine_service_comp, sales_repository, "Uses")
+Rel(vending_machine_service_comp, inventory_manager, "Uses")
+Rel(vending_machine_repository, database, "Reads/Writes", "SQLAlchemy ORM")
+Rel(product_repository, database, "Reads/Writes", "SQLAlchemy ORM")
+Rel(sales_repository, database, "Reads/Writes", "SQLAlchemy ORM")
+Rel(config_service, vending_machine_service_comp, "Configures")
+
+LAYOUT_WITH_LEGEND()
+@enduml

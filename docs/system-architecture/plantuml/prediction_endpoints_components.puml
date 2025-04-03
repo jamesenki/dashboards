@@ -1,0 +1,60 @@
+@startuml Prediction Endpoints Components
+!include <C4/C4_Component>
+
+title "Prediction Endpoints Component Diagram - IoTSphere-Refactor"
+
+Container_Boundary(prediction_service, "Prediction Services") {
+    Component(prediction_router, "Prediction Router", "FastAPI Router", "Routes requests to appropriate prediction handlers")
+    Component(prediction_handler, "Prediction Handler", "Python", "Coordinates prediction operations")
+
+    Component(lifespan_prediction, "Lifespan Estimation Prediction", "Python", "Estimates remaining useful life of water heaters")
+    Component(anomaly_prediction, "Anomaly Detection Prediction", "Python", "Identifies abnormal operating patterns")
+    Component(usage_pattern_prediction, "Usage Pattern Prediction", "Python", "Analyzes usage trends and optimization opportunities")
+    Component(multi_factor_prediction, "Multi-factor Prediction", "Python", "Combines multiple data sources for comprehensive insights")
+    Component(all_predictions, "All Predictions Aggregator", "Python", "Combines results from all prediction models")
+
+    Component(contributing_factors, "Contributing Factor Analyzer", "Python", "Identifies key factors affecting device health")
+    Component(recommendations, "Recommendation Generator", "Python", "Creates actionable maintenance recommendations")
+}
+
+Container(water_heater_service, "Water Heater Service", "Python", "Provides water heater data")
+Container(water_heater_repository, "Water Heater Repository", "Python", "Data access for water heaters")
+ContainerDb(database, "Relational Database", "SQLite/PostgreSQL", "Stores device data and readings")
+Container(config_service, "Configuration Service", "Python", "Environment-specific configuration")
+
+System_Ext(api_client, "API Client", "Consumer of prediction APIs")
+
+Rel(api_client, prediction_router, "GET /api/predictions/water-heaters/{device_id}/lifespan", "REST API")
+Rel(api_client, prediction_router, "GET /api/predictions/water-heaters/{device_id}/anomaly", "REST API")
+Rel(api_client, prediction_router, "GET /api/predictions/water-heaters/{device_id}/usage-patterns", "REST API")
+Rel(api_client, prediction_router, "GET /api/predictions/water-heaters/{device_id}/multi-factor", "REST API")
+Rel(api_client, prediction_router, "GET /api/predictions/water-heaters/{device_id}/all", "REST API")
+
+Rel(prediction_router, prediction_handler, "Routes to appropriate handler")
+Rel(prediction_handler, lifespan_prediction, "Uses for lifespan predictions")
+Rel(prediction_handler, anomaly_prediction, "Uses for anomaly detection")
+Rel(prediction_handler, usage_pattern_prediction, "Uses for usage pattern analysis")
+Rel(prediction_handler, multi_factor_prediction, "Uses for multi-factor analysis")
+Rel(prediction_handler, all_predictions, "Uses to aggregate all predictions")
+
+Rel(lifespan_prediction, contributing_factors, "Identifies factors with")
+Rel(lifespan_prediction, recommendations, "Generates recommendations with")
+Rel(anomaly_prediction, contributing_factors, "Identifies factors with")
+Rel(anomaly_prediction, recommendations, "Generates recommendations with")
+Rel(usage_pattern_prediction, contributing_factors, "Identifies factors with")
+Rel(usage_pattern_prediction, recommendations, "Generates recommendations with")
+Rel(multi_factor_prediction, contributing_factors, "Identifies factors with")
+Rel(multi_factor_prediction, recommendations, "Generates recommendations with")
+
+Rel(prediction_handler, water_heater_service, "Gets device data from")
+Rel(water_heater_service, water_heater_repository, "Uses")
+Rel(water_heater_repository, database, "Reads from", "SQLAlchemy ORM")
+
+Rel(config_service, prediction_handler, "Configures")
+Rel(config_service, lifespan_prediction, "Configures")
+Rel(config_service, anomaly_prediction, "Configures")
+Rel(config_service, usage_pattern_prediction, "Configures")
+Rel(config_service, multi_factor_prediction, "Configures")
+
+LAYOUT_WITH_LEGEND()
+@enduml

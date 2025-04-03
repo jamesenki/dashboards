@@ -1,0 +1,93 @@
+@startuml Model Monitoring Alert Flow
+title "Model Monitoring Alert Flow - IoTSphere-Refactor"
+
+participant "Model Monitoring Service" as monitor_service
+participant "Metric Collector" as collector
+participant "Health Monitor" as health_monitor
+participant "Alert Manager" as alert_manager
+participant "Model Metrics Repository" as metrics_repo
+database "SQLite/PostgreSQL" as database
+participant "Monitoring API Router" as api
+
+== Metric Collection Phase ==
+
+activate monitor_service
+monitor_service -> collector: collect_metrics()
+activate collector
+
+collector -> collector: gather_model_performance_data()
+note right: Collects metrics from\nprediction services
+
+collector -> metrics_repo: store_metrics(metrics_data)
+activate metrics_repo
+metrics_repo -> database: INSERT metrics
+activate database
+database --> metrics_repo: success
+deactivate database
+metrics_repo --> collector: stored metrics
+deactivate metrics_repo
+
+collector --> monitor_service: collection complete
+deactivate collector
+
+== Health Assessment Phase ==
+
+monitor_service -> health_monitor: evaluate_model_health(model_ids)
+activate health_monitor
+
+health_monitor -> metrics_repo: get_recent_metrics(model_ids)
+activate metrics_repo
+metrics_repo -> database: SELECT metrics
+activate database
+database --> metrics_repo: recent metrics
+deactivate database
+metrics_repo --> health_monitor: recent metrics
+deactivate metrics_repo
+
+health_monitor -> health_monitor: compare_against_thresholds()
+note right: Evaluates metrics against\nconfigured thresholds
+
+alt metrics exceed thresholds
+    health_monitor -> alert_manager: create_alert(model_id, issue, severity)
+    activate alert_manager
+
+    alert_manager -> metrics_repo: store_alert(alert_data)
+    activate metrics_repo
+    metrics_repo -> database: INSERT alert
+    activate database
+    database --> metrics_repo: alert_id
+    deactivate database
+    metrics_repo --> alert_manager: stored alert
+    deactivate metrics_repo
+
+    alert_manager --> health_monitor: alert created
+    deactivate alert_manager
+end
+
+health_monitor --> monitor_service: health assessment complete
+deactivate health_monitor
+
+deactivate monitor_service
+
+== Alert Query Phase ==
+
+api -> metrics_repo: get_active_alerts()
+activate api
+activate metrics_repo
+
+metrics_repo -> database: SELECT alerts\nWHERE resolved = false
+activate database
+database --> metrics_repo: active alerts
+deactivate database
+
+metrics_repo --> api: active alerts
+deactivate metrics_repo
+
+api -> api: format_alert_response()
+note right: Structures alerts with\nmodel info and recommendations
+
+api --> client: Return active alerts via API
+
+deactivate api
+
+@enduml
