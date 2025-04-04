@@ -7,7 +7,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from src.db.connection import get_db_session
-from src.db.models import DeviceModel, ReadingModel
+
+# Import directly from models.py, not the models/ package
+# This is crucial to avoid circular imports
+from src.db.models import DeviceModel, DiagnosticCodeModel, ReadingModel
 from src.models.device import Device, DeviceStatus, DeviceType
 from src.models.device_reading import DeviceReading
 

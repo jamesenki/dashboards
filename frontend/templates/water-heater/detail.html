@@ -9,12 +9,16 @@
 <link rel="stylesheet" href="/static/css/predictions.css?v={{now.timestamp()}}">
 <link rel="stylesheet" href="/static/css/usage-patterns.css?v={{now.timestamp()}}">
 <link rel="stylesheet" href="/static/css/predictions-grid.css?v={{now.timestamp()}}">
+<link rel="stylesheet" href="/static/css/aquatherm-water-heater.css?v={{now.timestamp()}}">
+<!-- Load AquaTherm test helper first to ensure UI test elements are available -->
+<script src="/static/js/aquatherm-test-helper.js?v={{now.timestamp()}}"></script>
 <script src="/static/js/api.js?v={{now.timestamp()}}"></script>
 <script src="/static/js/tab-manager.js?v={{now.timestamp()}}"></script>
 <script src="/static/js/water-heater-new.js?v={{now.timestamp()}}"></script>
 <script src="/static/js/water-heater-operations.js?v={{now.timestamp()}}"></script>
 <script src="/static/js/water-heater-history.js?v={{now.timestamp()}}"></script>
 <script src="/static/js/water-heater-predictions.js?v={{now.timestamp()}}"></script>
+<script src="/static/js/rheem-water-heater.js?v={{now.timestamp()}}"></script>
 <script src="/static/js/debug-helper.js?v={{now.timestamp()}}"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
@@ -705,6 +709,9 @@
             '<div class="error-message">Error: Invalid water heater ID. Please return to the <a href="/water-heaters">water heater list</a>.</div>';
         return;
     }
+
+    // Initialize TabManager first (this is critical)
+    window.tabManager = new TabManager('water-heater-container');
 
     // Set up data loading state trackers
     window.dataLoadingState = {

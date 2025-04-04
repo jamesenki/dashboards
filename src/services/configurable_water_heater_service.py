@@ -21,6 +21,9 @@ from src.repositories.water_heater_repository import (
     SQLiteWaterHeaterRepository,
     WaterHeaterRepository,
 )
+
+# Import AquaTherm test data
+from src.utils.aquatherm_data import get_aquatherm_water_heaters
 from src.utils.dummy_data import (  # Keep for backward compatibility with tests
     dummy_data,
 )

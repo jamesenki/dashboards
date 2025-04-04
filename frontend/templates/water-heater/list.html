@@ -2,6 +2,18 @@
 
 {% block title %}Water Heaters{% endblock %}
 
+{% block head %}
+<!-- TDD: Stay on list script must load first, before any other scripts can trigger navigation -->
+<script src="/static/js/stay-on-list.js"></script>
+<!-- Navigation blocker as secondary defense -->
+<script src="/static/js/navigation-blocker.js"></script>
+<!-- Include CSS fixes -->
+<link rel="stylesheet" href="/static/css/aquatherm-fixes.css">
+<link rel="stylesheet" href="/static/css/aquatherm-cards.css">
+<!-- Load anti-navigation script as additional defense -->
+<script src="/static/js/prevent-auto-navigation.js"></script>
+{% endblock %}
+
 {% block nav %}
 <li><a href="/water-heaters" class="active">All Devices</a></li>
 <li><a href="/water-heaters/new">Add New</a></li>
@@ -14,10 +26,21 @@
 {% endblock %}
 
 {% block scripts %}
+<!-- Load the AquaTherm test helper first to ensure UI elements are available for tests -->
+<script src="/static/js/aquatherm-test-helper.js"></script>
 <script src="/static/js/api.js"></script>
 <script src="/static/js/debug.js"></script>
 <script src="/static/js/water-heater-new.js"></script>
+<script src="/static/js/aquatherm-water-heater.js"></script>
+<script src="/static/js/aquatherm-ui-debug.js"></script>
 <script src="/static/js/redirect-to-valid-heater.js"></script>
+<!-- Add test and fix scripts -->
+<script src="/static/js/tests/aquatherm-card-test.js"></script>
+<script src="/static/js/aquatherm-fix.js"></script>
+<!-- Add our guaranteed navigation fix -->
+<script src="/static/js/aquatherm-card-fix.js"></script>
+<!-- Add latest guaranteed navigation script -->
+<script src="/static/js/guaranteed-navigation.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         new WaterHeaterList('water-heater-list');

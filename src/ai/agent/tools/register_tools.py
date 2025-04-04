@@ -7,6 +7,11 @@ import logging
 from typing import Any
 
 from src.ai.agent.tool_registry import ToolRegistry
+from src.ai.agent.tools.water_heater_maintenance_tools import (
+    analyze_water_heater_telemetry,
+    get_water_heater_efficiency_analysis,
+    get_water_heater_maintenance_prediction,
+)
 from src.ai.agent.tools.water_heater_tools import (
     get_water_heater_info,
     get_water_heater_list,
@@ -66,6 +71,25 @@ def register_water_heater_tools(registry: ToolRegistry) -> None:
         name="get_water_heater_maintenance_info",
         description="Get maintenance information and recommendations for a specific water heater. Parameters: device_id (string)",
         func=get_water_heater_maintenance_info,
+    )
+
+    # Register maintenance prediction tools
+    registry.register_tool(
+        name="get_water_heater_maintenance_prediction",
+        description="Get maintenance prediction information for a specific water heater, including when maintenance will be needed and component risks. Parameters: device_id (string)",
+        func=get_water_heater_maintenance_prediction,
+    )
+
+    registry.register_tool(
+        name="get_water_heater_efficiency_analysis",
+        description="Get efficiency analysis for a specific water heater, including current efficiency rating, estimated costs, and recommendations. Parameters: device_id (string)",
+        func=get_water_heater_efficiency_analysis,
+    )
+
+    registry.register_tool(
+        name="analyze_water_heater_telemetry",
+        description="Analyze recent telemetry data for patterns, anomalies, and usage characteristics. Parameters: device_id (string), hours (integer, optional, default=24)",
+        func=analyze_water_heater_telemetry,
     )
 
 

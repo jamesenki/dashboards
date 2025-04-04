@@ -1,0 +1,134 @@
+/**
+ * AquaTherm UI Fixes - Ensures consistent styling and behavior
+ * Following TDD principles - implementing fixes for failed tests
+ */
+
+/* Ensure all badges have consistent positioning and styling */
+.aquatherm-badge {
+  background-color: #00a0b0 !important;  /* Consistent AquaTherm blue-green */
+  color: white !important;
+  font-weight: bold !important;
+  padding: 3px 8px !important;
+  border-radius: 4px !important;
+  position: absolute !important;
+  top: 10px !important;
+  right: 10px !important;
+  font-size: 11px !important;
+  text-transform: uppercase !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+  z-index: 2 !important;
+  letter-spacing: 0.5px !important;
+}
+
+/* Ensure all heater type badges have consistent styling */
+.heater-type-badge {
+  background-color: #333 !important;
+  color: white !important;
+  font-weight: bold !important;
+  padding: 3px 8px !important;
+  border-radius: 4px !important;
+  position: absolute !important;
+  top: 10px !important;
+  left: 10px !important;
+  font-size: 11px !important;
+  text-transform: uppercase !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+  z-index: 2 !important;
+  letter-spacing: 0.5px !important;
+}
+
+/* Specific colors for different heater types */
+.heater-type-badge.tank-type {
+  background-color: #417505 !important;
+}
+
+.heater-type-badge.hybrid-type {
+  background-color: #9b5de5 !important;
+}
+
+.heater-type-badge.tankless-type {
+  background-color: #0075c4 !important;
+}
+
+/* Make all mode indicators consistent */
+.mode {
+  display: inline-block !important;
+  padding: 4px 8px !important;
+  border-radius: 4px !important;
+  font-size: 0.75rem !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+  margin-bottom: 10px !important;
+}
+
+/* Ensure mode colors are consistent */
+.mode-eco {
+  background-color: rgba(6, 214, 160, 0.2) !important;
+  color: var(--mode-eco) !important;
+}
+
+.mode-boost {
+  background-color: rgba(255, 158, 0, 0.2) !important;
+  color: var(--mode-boost) !important;
+}
+
+.mode-vacation {
+  background-color: rgba(131, 56, 236, 0.2) !important;
+  color: var(--secondary-color) !important;
+}
+
+.mode-off {
+  background-color: rgba(151, 151, 151, 0.2) !important;
+  color: var(--mode-off) !important;
+}
+
+/* Consistent gauge styling */
+.gauge-container {
+  width: 150px !important;
+  height: 150px !important;
+  position: relative !important;
+  margin: 0 auto 15px !important;
+}
+
+/* Make all cards clickable and consistent */
+.heater-card {
+  cursor: pointer !important;
+  position: relative !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border 0.2s ease !important;
+}
+
+.heater-card:hover {
+  transform: translateY(-5px) !important;
+  box-shadow: rgba(0, 0, 0, 0.4) 0px 10px 25px !important;
+  border: 1px solid var(--primary-color) !important;
+}
+
+/* Fix for card spacing */
+.heater-card .card-body {
+  padding: 15px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  min-height: 240px !important;
+}
+
+/* Debug indicator to show fix is active */
+.fix-indicator {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  background: rgba(0, 160, 176, 0.8);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  z-index: 9999;
+  animation: fadeOut 3s forwards;
+  animation-delay: 3s;
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; visibility: hidden; }
+}

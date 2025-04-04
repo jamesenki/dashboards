@@ -7321,5 +7321,32 @@
     "next_maintenance_date": null,
     "products": [],
     "readings": []
+  },
+  "9eec14af-a560-40ce-8feb-630d82695a82": {
+    "id": "9eec14af-a560-40ce-8feb-630d82695a82",
+    "name": "New Vending Machine",
+    "type": "vending_machine",
+    "status": "ONLINE",
+    "location": "Building C, Floor 2",
+    "last_seen": "2025-04-03 12:36:04.063990",
+    "model_number": "PD-3000",
+    "serial_number": "PD2023-67890",
+    "machine_status": "OPERATIONAL",
+    "mode": "NORMAL",
+    "temperature": 4.0,
+    "total_capacity": 60,
+    "cash_capacity": 600.0,
+    "current_cash": null,
+    "location_business_name": null,
+    "location_type": null,
+    "sub_location": null,
+    "use_type": null,
+    "usage_pattern": null,
+    "stock_level": null,
+    "maintenance_partner": null,
+    "last_maintenance_date": null,
+    "next_maintenance_date": null,
+    "products": [],
+    "readings": []
   }
 }

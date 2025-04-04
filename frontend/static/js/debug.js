@@ -346,11 +346,15 @@ const Diagnostics = {
   }
 }
 
-// Export the diagnostics API for use in other modules
-window.Diagnostics = Diagnostics;
-window.Logger = Logger;
-window.LogLevel = LogLevel;
-window.LogStore = LogStore;
+// Export diagnostic modules to window
+try {
+  window.Diagnostics = Diagnostics;
+  window.Logger = Logger;
+  window.LogLevel = LogLevel;
+  window.LogStore = LogStore;
+} catch (e) {
+  console.error('Error exporting debug modules:', e);
+}
 
 // Only run test if explicitly requested via URL parameter
 if (window.location.search.includes('test_api=true')) {

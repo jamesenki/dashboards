@@ -1,0 +1,89 @@
+/**
+ * AquaTherm Cards - Consistent Styling
+ * This CSS ensures all AquaTherm cards have consistent styling
+ * regardless of their source or how they were detected.
+ */
+
+/* Card background and borders */
+.heater-card.aquatherm-heater {
+  background-color: #1e2227 !important;
+  border-left: 3px solid #00a0b0 !important;
+  color: #ffffff !important;
+}
+
+/* Card header styling */
+.heater-card.aquatherm-heater .card-header {
+  background-color: #282c34 !important;
+  border-bottom: 1px solid #373d48 !important;
+}
+
+/* Card body styling */
+.heater-card.aquatherm-heater .card-body {
+  background-color: #1e2227 !important;
+}
+
+/* Card title styling */
+.heater-card.aquatherm-heater .card-title {
+  color: #ffffff !important;
+  font-size: 1.2rem !important;
+}
+
+/* Status indicators */
+.heater-card.aquatherm-heater .status-indicator {
+  width: 10px !important;
+  height: 10px !important;
+  border-radius: 50% !important;
+  display: inline-block !important;
+  margin-right: 5px !important;
+}
+
+/* Mode badges */
+.heater-card.aquatherm-heater .mode-badge {
+  background-color: #373d48 !important;
+  color: #ffffff !important;
+  padding: 2px 8px !important;
+  border-radius: 12px !important;
+  font-size: 0.8rem !important;
+  margin-right: 5px !important;
+}
+
+/* Temperature gauges */
+.heater-card.aquatherm-heater .temperature-gauge {
+  width: 100% !important;
+  height: 120px !important;
+  position: relative !important;
+  margin: 10px 0 !important;
+}
+
+/* Type badges */
+.heater-card.aquatherm-heater .heater-type-badge {
+  position: absolute !important;
+  top: 10px !important;
+  right: 10px !important;
+  background-color: #00a0b0 !important;
+  color: #ffffff !important;
+  padding: 2px 8px !important;
+  border-radius: 12px !important;
+  font-size: 0.8rem !important;
+}
+
+/* Specific styles for different heater types */
+.heater-card.aquatherm-hybrid-heater .heater-type-badge {
+  background-color: #7b61ff !important;
+}
+
+.heater-card.aquatherm-tankless-heater .heater-type-badge {
+  background-color: #00a0b0 !important;
+}
+
+.heater-card.aquatherm-tank-heater .heater-type-badge {
+  background-color: #ff6b4a !important;
+}
+
+/* Hover and active states */
+.heater-card.aquatherm-heater:hover,
+.heater-card.aquatherm-heater:active {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 5px 15px rgba(0, 160, 176, 0.3) !important;
+  transition: all 0.2s ease !important;
+}

@@ -53,10 +53,96 @@ async def get_water_heater_detail(request: Request, heater_id: str = Path(...)):
     service = ConfigurableWaterHeaterService()
     water_heater = await service.get_water_heater(heater_id)
 
-    # Check if the water heater with the given ID exists
+    # Special handling for AquaTherm water heaters
+    # This ensures AquaTherm water heaters can be viewed even if not yet in the database
     if not water_heater:
-        # If not, redirect to the water heater list page
-        return RedirectResponse(url="/water-heaters", status_code=302)
+        # Check if this is an AquaTherm water heater by ID pattern
+        if heater_id.startswith("aqua-wh-"):
+            import logging
+
+            try:
+                logging.info(
+                    f"AquaTherm water heater ID detected: {heater_id}. Creating on-demand."
+                )
+
+                # Get AquaTherm data and find matching heater
+                from src.utils.aquatherm_data import get_aquatherm_water_heaters
+
+                aquatherm_data = get_aquatherm_water_heaters()
+
+                # Find matching heater data
+                matching_heater = None
+                for heater_data in aquatherm_data:
+                    if heater_data["id"] == heater_id:
+                        matching_heater = heater_data
+                        break
+
+                if matching_heater:
+                    # If found in AquaTherm data, create it in the database
+                    from datetime import datetime
+
+                    from src.models.device import DeviceStatus, DeviceType
+                    from src.models.water_heater import (
+                        WaterHeater,
+                        WaterHeaterMode,
+                        WaterHeaterStatus,
+                        WaterHeaterType,
+                    )
+
+                    # Handle the readings separately - they may not match the model structure
+                    readings = matching_heater.pop("readings", [])
+
+                    # Create heater object with basic properties
+                    water_heater = WaterHeater(
+                        id=matching_heater["id"],
+                        name=matching_heater["name"],
+                        type=DeviceType.WATER_HEATER,
+                        manufacturer=matching_heater["manufacturer"],
+                        model=matching_heater["model"],
+                        status=DeviceStatus(matching_heater["status"]),
+                        heater_status=WaterHeaterStatus(
+                            matching_heater["heater_status"]
+                        ),
+                        mode=WaterHeaterMode(matching_heater["mode"]),
+                        current_temperature=matching_heater["current_temperature"],
+                        target_temperature=matching_heater["target_temperature"],
+                        min_temperature=matching_heater["min_temperature"],
+                        max_temperature=matching_heater["max_temperature"],
+                        last_seen=datetime.now(),
+                        last_updated=datetime.now(),
+                        heater_type=WaterHeaterType.RESIDENTIAL,
+                        readings=[],  # Initialize with empty readings
+                        location="AquaTherm Test Location",  # Add required location field
+                    )
+
+                    # Add to database
+                    created_heater = await service.create_water_heater(water_heater)
+                    logging.info(
+                        f"Created AquaTherm water heater {heater_id} in database"
+                    )
+                    water_heater = created_heater
+                else:
+                    # If not found in AquaTherm data either, redirect to list page
+                    logging.warning(
+                        f"AquaTherm water heater {heater_id} not found in AquaTherm data"
+                    )
+                    return RedirectResponse(url="/water-heaters", status_code=302)
+            except Exception as e:
+                # Log any errors during AquaTherm creation but continue to show the detail page
+                logging.error(f"Error creating AquaTherm water heater: {str(e)}")
+                # Return a simple template response instead of an error
+                return templates.TemplateResponse(
+                    "water-heater/detail.html",
+                    {
+                        "request": request,
+                        "heater_id": heater_id,
+                        "now": datetime.now(),
+                        "error": str(e),
+                    },
+                )
+        else:
+            # For non-AquaTherm water heaters, redirect to the list page if not found
+            return RedirectResponse(url="/water-heaters", status_code=302)
 
     return templates.TemplateResponse(
         "water-heater/detail.html",

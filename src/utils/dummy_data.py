@@ -1,9 +1,16 @@
 """
 Utility to generate dummy data for testing the application
 """
+import logging
 import random
 import uuid
 from datetime import datetime, timedelta
+
+# Import AquaTherm water heater data
+from src.utils.aquatherm_data import get_aquatherm_water_heaters
+
+# Set up logging
+logger = logging.getLogger(__name__)
 
 from src.models.device import DeviceStatus, DeviceType
 from src.models.vending_machine import (
@@ -900,6 +907,46 @@ class DummyDataRepository:
             water_heaters = generate_water_heaters(count=8)
             self.water_heaters = {heater.id: heater for heater in water_heaters}
             logging.error(f"Generated {len(water_heaters)} water heaters")
+
+            # Load AquaTherm water heaters
+            try:
+                aquatherm_heaters = get_aquatherm_water_heaters()
+                aquatherm_ids = [h["id"] for h in aquatherm_heaters]
+                logging.error(
+                    f"Loading AquaTherm water heaters with IDs: {aquatherm_ids}"
+                )
+
+                # Convert dict to WaterHeater model objects
+                for heater_data in aquatherm_heaters:
+                    # Create a WaterHeater object
+                    heater = WaterHeater(
+                        id=heater_data["id"],
+                        name=heater_data["name"],
+                        type=DeviceType.WATER_HEATER,
+                        manufacturer=heater_data["manufacturer"],
+                        model=heater_data["model"],
+                        status=DeviceStatus(heater_data["status"]),
+                        heater_status=WaterHeaterStatus(heater_data["heater_status"]),
+                        mode=WaterHeaterMode(heater_data["mode"]),
+                        current_temperature=heater_data["current_temperature"],
+                        target_temperature=heater_data["target_temperature"],
+                        min_temperature=heater_data["min_temperature"],
+                        max_temperature=heater_data["max_temperature"],
+                        last_seen=datetime.now(),
+                        last_updated=datetime.now(),
+                        properties=heater_data.get("properties", {}),
+                        readings=[],
+                        heater_type=WaterHeaterType.RESIDENTIAL,
+                    )
+
+                    # Add to our water heaters dictionary
+                    self.water_heaters[heater.id] = heater
+
+                logging.error(
+                    f"Successfully added {len(aquatherm_heaters)} AquaTherm water heaters"
+                )
+            except Exception as e:
+                logging.error(f"Error loading AquaTherm test data: {str(e)}")
 
             # Generate vending machines if not loaded from JSON
             vending_machines = generate_vending_machines(count=30)

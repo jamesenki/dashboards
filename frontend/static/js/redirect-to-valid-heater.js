@@ -1,9 +1,18 @@
 /**
- * Helper to redirect to a valid water heater detail page
+ * Helper to provide a button to a valid water heater detail page
  * This handles the case where water heater IDs change on server restart
+ *
+ * IMPORTANT: This script should NEVER automatically redirect, only provide
+ * a button for the user to click manually if they want to navigate
  */
 document.addEventListener('DOMContentLoaded', async function() {
     try {
+        // Only run this on the main water heaters list page
+        if (window.location.pathname !== '/' && window.location.pathname !== '/water-heaters') {
+            console.log('Not on water heaters list page, skipping helper button');
+            return;
+        }
+
         const api = new ApiClient();
 
         // Get the first available water heater
@@ -27,7 +36,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             // Insert at the top of the container
             container.insertBefore(alertBox, container.firstChild);
 
-            console.log(`Ready to navigate to water heater: ${firstHeaterId}`);
+            console.log(`Added button to navigate to water heater: ${firstHeaterId}`);
         } else {
             console.error('No water heaters found in the system');
         }

@@ -55,14 +55,14 @@ document.addEventListener('DOMContentLoaded', function() {
         setTimeout(() => {
             window.debugTabs();
 
-            // Try to force the operations tab to become active
+            // DISABLED: Automatic tab activation removed to prevent unwanted navigation
+            // This followed TDD principles - tests should define behavior, not the debug scripts
+            // The operations tab should only activate when explicitly clicked by the user
+
+            // Display available tabs without forcing navigation
             const opsTabBtn = document.getElementById('operations-tab-btn');
             if (opsTabBtn) {
-                console.log('DEBUG: Forcing click on operations tab');
-                opsTabBtn.click();
-
-                // Check again after the click
-                setTimeout(window.debugTabs, 500);
+                console.log('DEBUG: Operations tab available but not auto-activated');
             }
         }, 1000);
     }

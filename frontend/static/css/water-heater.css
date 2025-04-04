@@ -250,19 +250,44 @@ a:hover {
   text-transform: uppercase;
 }
 
-.mode-ECO {
+/* Mode styling - consolidated for consistency */
+.mode {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.mode-eco {
   background-color: rgba(6, 214, 160, 0.2);
   color: var(--mode-eco);
 }
 
-.mode-BOOST {
+.mode-boost {
   background-color: rgba(255, 158, 0, 0.2);
   color: var(--mode-boost);
 }
 
-.mode-OFF {
+.mode-off {
   background-color: rgba(151, 151, 151, 0.2);
   color: var(--mode-off);
+}
+
+.mode-electric {
+  background-color: rgba(131, 56, 236, 0.2);
+  color: var(--secondary-color);
+}
+
+.mode-heat_pump, .mode-heat\ pump {
+  background-color: rgba(58, 134, 255, 0.2);
+  color: var(--primary-color);
+}
+
+.mode-vacation {
+  background-color: rgba(66, 66, 66, 0.2);
+  color: #aaa;
 }
 
 /* Gauge Styling */

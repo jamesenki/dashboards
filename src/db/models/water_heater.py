@@ -17,7 +17,7 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import relationship
 
-from src.db.models import Base
+from src.db.base import Base
 
 
 class WaterHeaterType(PyEnum):
