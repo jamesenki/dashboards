@@ -28,8 +28,10 @@ class WaterHeaterRepository(ABC):
     """Abstract base class for water heater repositories."""
 
     @abstractmethod
-    async def get_water_heaters(self) -> List[WaterHeater]:
-        """Get all water heaters."""
+    async def get_water_heaters(
+        self, manufacturer: Optional[str] = None
+    ) -> List[WaterHeater]:
+        """Get all water heaters, optionally filtered by manufacturer."""
         pass
 
     @abstractmethod
@@ -67,9 +69,51 @@ class WaterHeaterRepository(ABC):
 class MockWaterHeaterRepository(WaterHeaterRepository):
     """Mock implementation of water heater repository using dummy data."""
 
-    async def get_water_heaters(self) -> List[WaterHeater]:
-        """Get all water heaters from mock data."""
-        return dummy_data.get_water_heaters()
+    def __init__(self):
+        """Initialize the mock repository with in-memory data storage."""
+        self.simulate_failure = None
+        # Cache water heaters for better performance
+        self._water_heaters = dummy_data.get_water_heaters()
+
+    @property
+    def water_heaters(self):
+        """Get all water heaters from the cached collection."""
+        return self._water_heaters
+
+    async def get_water_heaters(
+        self, manufacturer: Optional[str] = None
+    ) -> List[WaterHeater]:
+        """Get all water heaters from mock data.
+
+        Args:
+            manufacturer: Optional filter by manufacturer name
+
+        Returns:
+            List of water heaters, optionally filtered by manufacturer
+        """
+        # Check if we're supposed to simulate a failure
+        if hasattr(self, "simulate_failure") and self.simulate_failure == "network":
+            # Simulate network error by returning empty list
+            return []
+
+        # Get water heaters from dummy data
+        all_heaters = dummy_data.get_water_heaters()
+        valid_heaters = []
+
+        for heater in all_heaters:
+            # Filter by water heater type (not by ID pattern)
+            if heater.type == DeviceType.WATER_HEATER:
+                # Apply manufacturer filter if specified
+                if manufacturer and heater.manufacturer:
+                    if manufacturer.lower() in heater.manufacturer.lower():
+                        valid_heaters.append(heater)
+                else:
+                    valid_heaters.append(heater)
+
+        # Update cached copy
+        self._water_heaters = valid_heaters
+
+        return valid_heaters
 
     async def get_water_heater(self, device_id: str) -> Optional[WaterHeater]:
         """Get a specific water heater by ID from mock data."""
@@ -207,7 +251,8 @@ class SQLiteWaterHeaterRepository(WaterHeaterRepository):
             condition TEXT NOT NULL,
             severity TEXT NOT NULL,
             message TEXT NOT NULL,
-            enabled INTEGER NOT NULL DEFAULT 1
+            enabled INTEGER NOT NULL DEFAULT 1,
+            created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
         )
         """
         )
@@ -275,8 +320,17 @@ class SQLiteWaterHeaterRepository(WaterHeaterRepository):
         """
         )
 
-    async def get_water_heaters(self) -> List[WaterHeater]:
-        """Get all water heaters from the database."""
+    async def get_water_heaters(
+        self, manufacturer: Optional[str] = None
+    ) -> List[WaterHeater]:
+        """Get all water heaters from the database.
+
+        Args:
+            manufacturer: Optional filter by manufacturer name
+
+        Returns:
+            List of water heaters, optionally filtered by manufacturer
+        """
         conn = None
         water_heaters = []
 
@@ -284,8 +338,14 @@ class SQLiteWaterHeaterRepository(WaterHeaterRepository):
             conn = sqlite3.connect(self.db_path)
             cursor = conn.cursor()
 
-            # Get all water heaters
-            cursor.execute("SELECT * FROM water_heaters")
+            if manufacturer:
+                # Filter by manufacturer if specified
+                query = "SELECT * FROM water_heaters WHERE manufacturer LIKE ?"
+                cursor.execute(query, (f"%{manufacturer}%",))
+            else:
+                # Get all water heaters
+                cursor.execute("SELECT * FROM water_heaters")
+
             # Get column names from cursor description
             column_names = [column[0] for column in cursor.description]
             rows = cursor.fetchall()
@@ -660,11 +720,16 @@ class SQLiteWaterHeaterRepository(WaterHeaterRepository):
             conn = sqlite3.connect(self.db_path)
             cursor = conn.cursor()
 
+            # Get current timestamp for created_at if not provided
+            import datetime
+
+            created_at = rule.get("created_at", datetime.datetime.utcnow().isoformat())
+
             cursor.execute(
                 """
             INSERT INTO water_heater_alert_rules
-            (name, condition, severity, message, enabled)
-            VALUES (?, ?, ?, ?, ?)
+            (name, condition, severity, message, enabled, created_at)
+            VALUES (?, ?, ?, ?, ?, ?)
             """,
                 (
                     rule["name"],
@@ -672,6 +737,7 @@ class SQLiteWaterHeaterRepository(WaterHeaterRepository):
                     rule["severity"],
                     rule["message"],
                     1 if rule.get("enabled", True) else 0,
+                    created_at,
                 ),
             )
 

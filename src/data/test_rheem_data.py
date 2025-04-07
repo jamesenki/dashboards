@@ -40,6 +40,7 @@ def get_test_rheem_water_heaters():
             last_seen=now,
             heater_type=RheemWaterHeaterType.TANK,
             series=RheemProductSeries.PROFESSIONAL,
+            manufacturer="Rheem",
             target_temperature=49.0,  # 120°F
             current_temperature=48.5,
             mode=RheemWaterHeaterMode.ENERGY_SAVER,
@@ -129,6 +130,7 @@ def get_test_rheem_water_heaters():
             last_seen=now,
             heater_type=RheemWaterHeaterType.HYBRID,
             series=RheemProductSeries.PROTERRA,
+            manufacturer="Rheem",
             target_temperature=51.5,  # 125°F
             current_temperature=50.0,
             mode=RheemWaterHeaterMode.HEAT_PUMP,
@@ -189,6 +191,7 @@ def get_test_rheem_water_heaters():
             last_seen=now,
             heater_type=RheemWaterHeaterType.TANKLESS,
             series=RheemProductSeries.PERFORMANCE_PLATINUM,
+            manufacturer="Rheem",
             target_temperature=54.0,  # 130°F
             current_temperature=54.0,
             mode=RheemWaterHeaterMode.HIGH_DEMAND,
@@ -217,6 +220,7 @@ def get_test_rheem_water_heaters():
             last_seen=now,
             heater_type=RheemWaterHeaterType.TANKLESS,
             series=RheemProductSeries.PRESTIGE,
+            manufacturer="Rheem",
             target_temperature=52.0,  # 126°F
             current_temperature=52.0,
             mode=RheemWaterHeaterMode.ENERGY_SAVER,
@@ -245,6 +249,7 @@ def get_test_rheem_water_heaters():
             last_seen=now,
             heater_type=RheemWaterHeaterType.TANKLESS,
             series=RheemProductSeries.CLASSIC,
+            manufacturer="Rheem",
             target_temperature=50.0,  # 122°F
             current_temperature=49.5,
             mode=RheemWaterHeaterMode.ENERGY_SAVER,
@@ -258,6 +263,214 @@ def get_test_rheem_water_heaters():
                 last_connected=now - timedelta(minutes=10),
                 firmware_version="2.4.1",
                 update_available=True,
+                remote_control_enabled=True,
+            ),
+        )
+    )
+
+    # Add 8 more water heaters to reach the required total of 16
+
+    # Additional tank water heaters
+    water_heaters.append(
+        RheemWaterHeater(
+            id="aqua-wh-tank-004",
+            name="Second Floor HydroMax",
+            status=DeviceStatus.ONLINE,
+            location="Upstairs Utility",
+            last_seen=now,
+            heater_type=RheemWaterHeaterType.TANK,
+            series=RheemProductSeries.PROFESSIONAL,
+            manufacturer="Rheem",
+            target_temperature=48.0,  # 118°F
+            current_temperature=48.0,
+            mode=RheemWaterHeaterMode.ENERGY_SAVER,
+            smart_enabled=True,
+            capacity=50.0,
+            uef_rating=0.93,
+            energy_star_certified=True,
+            installation_date=now - timedelta(days=180),
+            econet_status=RheemEcoNetStatus(
+                connected=True,
+                wifi_signal_strength=88,
+                last_connected=now - timedelta(minutes=7),
+                firmware_version="2.3.5",
+                update_available=True,
+                remote_control_enabled=True,
+            ),
+        )
+    )
+
+    water_heaters.append(
+        RheemWaterHeater(
+            id="aqua-wh-tank-005",
+            name="Backyard Guest House HydroMax",
+            status=DeviceStatus.ONLINE,
+            location="Guest House",
+            last_seen=now,
+            heater_type=RheemWaterHeaterType.TANK,
+            series=RheemProductSeries.PERFORMANCE_PLATINUM,
+            manufacturer="Rheem",
+            target_temperature=47.0,  # 117°F
+            current_temperature=47.5,
+            mode=RheemWaterHeaterMode.ENERGY_SAVER,
+            smart_enabled=True,
+            capacity=40.0,
+            uef_rating=0.92,
+            energy_star_certified=True,
+            installation_date=now - timedelta(days=45),
+            econet_status=RheemEcoNetStatus(
+                connected=True,
+                wifi_signal_strength=70,
+                last_connected=now - timedelta(minutes=3),
+                firmware_version="2.3.5",
+                update_available=False,
+                remote_control_enabled=True,
+            ),
+        )
+    )
+
+    # Additional hybrid water heaters
+    water_heaters.append(
+        RheemWaterHeater(
+            id="aqua-wh-hybrid-003",
+            name="Workshop EcoHybrid",
+            status=DeviceStatus.ONLINE,
+            location="Workshop",
+            last_seen=now,
+            heater_type=RheemWaterHeaterType.HYBRID,
+            series=RheemProductSeries.PROTERRA,
+            manufacturer="Rheem",
+            target_temperature=50.0,  # 122°F
+            current_temperature=49.5,
+            mode=RheemWaterHeaterMode.HEAT_PUMP,
+            smart_enabled=True,
+            capacity=65.0,
+            uef_rating=3.9,
+            energy_star_certified=True,
+            installation_date=now - timedelta(days=60),
+            econet_status=RheemEcoNetStatus(
+                connected=True,
+                wifi_signal_strength=85,
+                last_connected=now - timedelta(minutes=1),
+                firmware_version="3.1.0",
+                update_available=False,
+                remote_control_enabled=True,
+            ),
+        )
+    )
+
+    water_heaters.append(
+        RheemWaterHeater(
+            id="aqua-wh-hybrid-004",
+            name="Main Building EcoHybrid Pro",
+            status=DeviceStatus.ONLINE,
+            location="Main Building",
+            last_seen=now,
+            heater_type=RheemWaterHeaterType.HYBRID,
+            series=RheemProductSeries.PROFESSIONAL,
+            manufacturer="Rheem",
+            target_temperature=51.0,  # 124°F
+            current_temperature=51.0,
+            mode=RheemWaterHeaterMode.ELECTRIC,
+            smart_enabled=True,
+            capacity=80.0,
+            uef_rating=4.0,
+            energy_star_certified=True,
+            installation_date=now - timedelta(days=15),
+            econet_status=RheemEcoNetStatus(
+                connected=True,
+                wifi_signal_strength=92,
+                last_connected=now - timedelta(minutes=2),
+                firmware_version="3.1.1",
+                update_available=False,
+                remote_control_enabled=True,
+            ),
+        )
+    )
+
+    # Additional tankless water heaters
+    water_heaters.append(
+        RheemWaterHeater(
+            id="aqua-wh-tankless-004",
+            name="Laundry Room FlowMax",
+            status=DeviceStatus.ONLINE,
+            location="Laundry Room",
+            last_seen=now,
+            heater_type=RheemWaterHeaterType.TANKLESS,
+            series=RheemProductSeries.PERFORMANCE_PLATINUM,
+            manufacturer="Rheem",
+            target_temperature=52.0,  # 126°F
+            current_temperature=52.0,
+            mode=RheemWaterHeaterMode.ENERGY_SAVER,
+            smart_enabled=True,
+            uef_rating=0.96,
+            energy_star_certified=True,
+            installation_date=now - timedelta(days=90),
+            econet_status=RheemEcoNetStatus(
+                connected=True,
+                wifi_signal_strength=80,
+                last_connected=now - timedelta(minutes=8),
+                firmware_version="2.4.0",
+                update_available=True,
+                remote_control_enabled=True,
+            ),
+        )
+    )
+
+    # Additional water heaters with different series
+    water_heaters.append(
+        RheemWaterHeater(
+            id="aqua-wh-prestige-001",
+            name="Pool House Prestige",
+            status=DeviceStatus.ONLINE,
+            location="Pool House",
+            last_seen=now,
+            heater_type=RheemWaterHeaterType.TANK,
+            series=RheemProductSeries.PRESTIGE,
+            manufacturer="Rheem",
+            target_temperature=45.0,  # 113°F
+            current_temperature=45.0,
+            mode=RheemWaterHeaterMode.ENERGY_SAVER,
+            smart_enabled=True,
+            capacity=85.0,
+            uef_rating=0.91,
+            energy_star_certified=True,
+            installation_date=now - timedelta(days=210),
+            econet_status=RheemEcoNetStatus(
+                connected=True,
+                wifi_signal_strength=78,
+                last_connected=now - timedelta(minutes=12),
+                firmware_version="2.2.5",
+                update_available=True,
+                remote_control_enabled=True,
+            ),
+        )
+    )
+
+    water_heaters.append(
+        RheemWaterHeater(
+            id="aqua-wh-classicp-001",
+            name="Fitness Center Classic Plus",
+            status=DeviceStatus.ONLINE,
+            location="Fitness Center",
+            last_seen=now,
+            heater_type=RheemWaterHeaterType.TANK,
+            series=RheemProductSeries.CLASSIC_PLUS,
+            manufacturer="Rheem",
+            target_temperature=49.0,  # 120°F
+            current_temperature=49.0,
+            mode=RheemWaterHeaterMode.ENERGY_SAVER,
+            smart_enabled=True,
+            capacity=75.0,
+            uef_rating=0.90,
+            energy_star_certified=True,
+            installation_date=now - timedelta(days=75),
+            econet_status=RheemEcoNetStatus(
+                connected=True,
+                wifi_signal_strength=88,
+                last_connected=now - timedelta(minutes=3),
+                firmware_version="2.2.0",
+                update_available=False,
                 remote_control_enabled=True,
             ),
         )

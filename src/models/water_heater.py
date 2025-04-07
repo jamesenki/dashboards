@@ -29,10 +29,11 @@ class WaterHeaterStatus(str, Enum):
 
 
 class WaterHeaterType(str, Enum):
-    """Water heater type classification"""
+    """Water heater type classification based on Rheem product categories"""
 
-    COMMERCIAL = "Commercial"
-    RESIDENTIAL = "Residential"
+    TANK = "Tank"
+    TANKLESS = "Tankless"
+    HYBRID = "Hybrid"
 
 
 class WaterHeaterDiagnosticCode(BaseModel):
@@ -56,7 +57,7 @@ class WaterHeaterReading(BaseModel):
     """Water heater sensor reading"""
 
     id: Optional[str] = Field(None, description="Unique identifier for this reading")
-    timestamp: datetime = Field(..., description="Time of the reading")
+    timestamp: str = Field(..., description="Time of the reading in ISO format")
     temperature: float = Field(..., description="Temperature reading in Celsius")
     pressure: Optional[float] = Field(None, description="Water pressure in bar")
     energy_usage: Optional[float] = Field(None, description="Energy usage in watts")
@@ -94,10 +95,10 @@ class WaterHeater(Device):
         WaterHeaterStatus.STANDBY, description="Current heater status"
     )
 
-    # New: Water heater type classification
+    # Water heater type classification based on Rheem product categories
     heater_type: WaterHeaterType = Field(
-        WaterHeaterType.RESIDENTIAL,
-        description="Water heater type (Commercial or Residential)",
+        WaterHeaterType.TANK,
+        description="Water heater type (Tank, Tankless, or Hybrid)",
     )
 
     # New: Link to detailed specifications
@@ -106,9 +107,37 @@ class WaterHeater(Device):
     )
 
     # Device specifications
+    # Additional specifications
+    size: Optional[str] = Field(
+        None, description="Size classification (e.g., Small, Medium, Large)"
+    )
     capacity: Optional[float] = Field(None, description="Water tank capacity in liters")
     efficiency_rating: Optional[float] = Field(
         None, description="Energy efficiency rating (0-1)"
+    )
+
+    # Important dates
+    installation_date: Optional[str] = Field(None, description="Date of installation")
+    warranty_expiry: Optional[str] = Field(
+        None, description="Date of warranty expiration"
+    )
+    last_maintenance: Optional[str] = Field(
+        None, description="Date of last maintenance"
+    )
+
+    # Health indicators
+    health_status: Optional[str] = Field(None, description="Health status indicator")
+
+    # Rheem-specific fields
+    series: Optional[str] = Field(
+        None, description="Product series (e.g., Classic, Prestige, ProTerra)"
+    )
+    features: Optional[List[str]] = Field(
+        default_factory=list, description="Special features (e.g., EcoNet, LeakGuard)"
+    )
+    operation_modes: Optional[List[str]] = Field(
+        default_factory=list,
+        description="Available operation modes (e.g., Energy Saver, Heat Pump)",
     )
 
     # Sensor readings history
@@ -119,6 +148,11 @@ class WaterHeater(Device):
     # New: Diagnostic codes history
     diagnostic_codes: List[WaterHeaterDiagnosticCode] = Field(
         default_factory=list, description="Diagnostic codes history"
+    )
+
+    # Metadata for additional properties
+    metadata: Optional[Dict[str, Any]] = Field(
+        default_factory=dict, description="Additional metadata for the water heater"
     )
 
     def add_reading(self, reading: WaterHeaterReading):

@@ -22,44 +22,86 @@ from src.repositories.water_heater_repository import (
     WaterHeaterRepository,
 )
 
-# Import AquaTherm test data
-from src.utils.aquatherm_data import get_aquatherm_water_heaters
-from src.utils.dummy_data import (  # Keep for backward compatibility with tests
-    dummy_data,
-)
+# Import generic manufacturer-agnostic dummy data
+from src.utils.dummy_data import dummy_data
 
 # Setup logging
 logger = logging.getLogger(__name__)
 
 # Import PostgreSQL repository if available
 try:
-    from src.repositories.water_heater_repository import PostgresWaterHeaterRepository
+    # Import PostgreSQL repository from the correct module
+    from src.repositories.postgres_water_heater_repository import (
+        PostgresWaterHeaterRepository,
+    )
 
     HAS_POSTGRES = True
-except ImportError:
+except ImportError as e:
     HAS_POSTGRES = False
     logger.warning(
-        "PostgreSQL repository not available. Install required dependencies for production use."
+        f"PostgreSQL repository not available: {e}. Install required dependencies for production use."
     )
 
 
 class ConfigurableWaterHeaterService:
     """Service for water heater operations with configurable data source."""
 
-    def __init__(self, repository: Optional[WaterHeaterRepository] = None):
+    # Class variable to track data source for UI indicator
+    is_using_mock_data = False
+    data_source_reason = ""
+
+    def __init__(
+        self, repository: Optional[WaterHeaterRepository] = None, message_bus=None
+    ):
         """
         Initialize the service with a repository.
 
         Args:
             repository: Water heater repository implementation.
                         If None, uses configuration to determine repository.
+            message_bus: Optional message bus for publishing telemetry updates
 
         Raises:
             Exception: If database connection fails and fallback is disabled.
         """
+        # Reset class tracking variables
+        ConfigurableWaterHeaterService.is_using_mock_data = False
+        ConfigurableWaterHeaterService.data_source_reason = ""
+
+        # Store message bus for telemetry publishing
+        self.message_bus = message_bus
+        if self.message_bus:
+            logger.info("Using message bus for real-time telemetry updates")
+        else:
+            logger.info("No message bus provided, real-time telemetry updates disabled")
+
+        # Log environment info and database configuration
+        env = os.environ.get("IOTSPHERE_ENV", "development")
+        logger.info(f"Environment: {env}")
+
+        # Load database settings
+        from src.db.config import db_settings
+
+        logger.info(
+            f"Database settings: type={db_settings.DB_TYPE}, host={db_settings.DB_HOST}, name={db_settings.DB_NAME}"
+        )
+
         if repository:
+            logger.info(f"Using provided repository: {type(repository).__name__}")
+            ConfigurableWaterHeaterService.is_using_mock_data = isinstance(
+                repository, MockWaterHeaterRepository
+            )
+            ConfigurableWaterHeaterService.data_source_reason = (
+                "Explicitly provided repository"
+            )
             self.repository = repository
         else:
+            # Import database settings
+            from src.db.config import db_settings
+
+            # Get current environment
+            env = os.environ.get("IOTSPHERE_ENV", "development")
+
             # Check for backward compatibility with USE_MOCK_DATA environment variable
             use_mock_data_env = os.environ.get("USE_MOCK_DATA", "").lower() in [
                 "true",
@@ -67,65 +109,256 @@ class ConfigurableWaterHeaterService:
                 "yes",
             ]
 
-            # Get configuration settings
+            # Legacy config settings for backward compatibility
             use_mock_data_config = config.get(
                 "services.water_heater.use_mock_data", False
             )
-            db_type = config.get("database.type", "sqlite").lower()
-            fallback_enabled = config.get("database.fallback_to_mock", True)
+
+            # Use db_settings for database configuration
+            db_type = db_settings.DB_TYPE
+            fallback_enabled = db_settings.FALLBACK_TO_MOCK
 
             # Use mock data if explicitly configured or set by environment variable
             if use_mock_data_env or use_mock_data_config:
-                logger.info(
-                    "Using mock data repository for water heaters (as configured)"
+                logger.warning(
+                    f"Using mock data repository for water heaters because: \n"
+                    f"  - USE_MOCK_DATA env var: {use_mock_data_env} \n"
+                    f"  - use_mock_data config: {use_mock_data_config}"
+                )
+                ConfigurableWaterHeaterService.is_using_mock_data = True
+                ConfigurableWaterHeaterService.data_source_reason = (
+                    "Explicitly configured to use mock data"
                 )
                 self.repository = MockWaterHeaterRepository()
             else:
                 # Try to connect to the configured database
                 try:
+                    # Use PostgreSQL as our primary database type
                     if db_type == "postgres" and HAS_POSTGRES:
-                        # Get PostgreSQL connection parameters
-                        host = config.get("database.host", "localhost")
-                        port = config.get("database.port", 5432)
-                        database = config.get("database.name", "iotsphere")
-                        user = config.get("database.credentials.username", "postgres")
-                        password = config.get("database.credentials.password", "")
+                        # Get PostgreSQL connection parameters from database settings
+                        host = db_settings.DB_HOST
+                        port = db_settings.DB_PORT
+                        database = db_settings.DB_NAME
+                        user = db_settings.DB_USER
+                        password = db_settings.DB_PASSWORD
 
                         logger.info(
-                            f"Using PostgreSQL repository for water heaters on {host}:{port}"
+                            f"Using PostgreSQL repository for water heaters ({env} environment)\n"
+                            f"  Host: {host}:{port}\n"
+                            f"  Database: {database}\n"
+                            f"  User: {user}"
                         )
-                        self.repository = PostgresWaterHeaterRepository(
-                            host=host,
-                            port=port,
-                            database=database,
-                            user=user,
-                            password=password,
+
+                        # Attempt PostgreSQL connection
+                        try:
+                            self.repository = PostgresWaterHeaterRepository(
+                                host=host,
+                                port=port,
+                                database=database,
+                                user=user,
+                                password=password,
+                            )
+                            ConfigurableWaterHeaterService.is_using_mock_data = False
+                            ConfigurableWaterHeaterService.data_source_reason = (
+                                f"Connected to PostgreSQL database ({env} environment)"
+                            )
+                            logger.info("Successfully connected to PostgreSQL database")
+                        except Exception as pg_error:
+                            logger.error(f"PostgreSQL connection error: {pg_error}")
+                            logger.error(
+                                "Check that PostgreSQL is installed and running"
+                            )
+                            logger.error(
+                                "Make sure the database and user exist with correct permissions"
+                            )
+                            raise  # Re-raise for outer exception handler
+                    elif db_type == "memory":
+                        # In-memory SQLite for testing
+                        logger.info("Using in-memory SQLite for testing environment")
+                        self.repository = SQLiteWaterHeaterRepository(in_memory=True)
+                        ConfigurableWaterHeaterService.is_using_mock_data = False
+                        ConfigurableWaterHeaterService.data_source_reason = (
+                            "Using in-memory SQLite database for testing"
                         )
-                    else:
-                        # Default to SQLite
+
+                    elif db_type == "sqlite":
+                        # Default to SQLite as fallback or if explicitly configured
                         logger.info("Using SQLite repository for water heaters")
+                        # Log database check
+                        try:
+                            import sqlite3
+
+                            from src.db.real_database import get_database_path
+
+                            db_path = get_database_path()
+                            logger.info(f"SQLite database path: {db_path}")
+
+                            # Check if database file exists
+                            if not os.path.exists(db_path):
+                                logger.error(f"Database file does not exist: {db_path}")
+
+                            # Try to connect and check tables
+                            conn = sqlite3.connect(db_path)
+                            cursor = conn.cursor()
+                            cursor.execute(
+                                "SELECT name FROM sqlite_master WHERE type='table'"
+                            )
+                            tables = cursor.fetchall()
+                            logger.info(
+                                f"Found {len(tables)} tables in SQLite database"
+                            )
+
+                            # Check water_heaters table specifically
+                            cursor.execute("SELECT COUNT(*) FROM water_heaters")
+                            count = cursor.fetchone()[0]
+                            logger.info(f"Found {count} records in water_heaters table")
+
+                            conn.close()
+                        except Exception as db_check_error:
+                            logger.error(
+                                f"Error checking SQLite database: {db_check_error}"
+                            )
+
+                        # Create repository
                         self.repository = SQLiteWaterHeaterRepository()
+                        ConfigurableWaterHeaterService.is_using_mock_data = False
+                        ConfigurableWaterHeaterService.data_source_reason = (
+                            "Using SQLite database"
+                        )
+
+                    else:
+                        # Unsupported database type
+                        logger.error(f"Unsupported database type: {db_type}")
+                        raise ValueError(f"Unsupported database type: {db_type}")
 
                 except Exception as e:
                     # If database connection fails, check if fallback is enabled
-                    if fallback_enabled:
+                    logger.error(f"Database connection error: {e}")
+                    logger.error(f"Exception type: {type(e).__name__}")
+                    import traceback
+
+                    logger.error(f"Traceback: {traceback.format_exc()}")
+
+                    # Check if DATABASE_FALLBACK_ENABLED is explicitly set to False
+                    explicit_fallback_disabled = os.environ.get(
+                        "DATABASE_FALLBACK_ENABLED", ""
+                    ).lower() in ["false", "0", "no"]
+
+                    if fallback_enabled and not explicit_fallback_disabled:
                         logger.warning(
-                            f"Database connection failed: {e}. Falling back to mock data."
+                            f"Database connection failed. Falling back to mock data.\n"
+                            f"  - Error: {e}\n"
+                            f"  - Fallback enabled in config: {fallback_enabled}\n"
+                            f"  - DATABASE_FALLBACK_ENABLED env var: {os.environ.get('DATABASE_FALLBACK_ENABLED', 'Not set')}"
+                        )
+                        ConfigurableWaterHeaterService.is_using_mock_data = True
+                        ConfigurableWaterHeaterService.data_source_reason = (
+                            f"Database connection failed: {str(e)[:100]}"
                         )
                         self.repository = MockWaterHeaterRepository()
                     else:
                         logger.error(
-                            f"Database connection failed and fallback is disabled: {e}"
+                            f"Database connection failed and fallback is disabled:\n"
+                            f"  - Error: {e}\n"
+                            f"  - Fallback enabled in config: {fallback_enabled}\n"
+                            f"  - DATABASE_FALLBACK_ENABLED env var: {os.environ.get('DATABASE_FALLBACK_ENABLED', 'Not set')}"
+                        )
+                        # Still track this in case error is caught higher up
+                        ConfigurableWaterHeaterService.is_using_mock_data = True
+                        ConfigurableWaterHeaterService.data_source_reason = (
+                            f"Database error with fallback disabled: {str(e)[:100]}"
                         )
                         raise
 
-    async def get_water_heaters(self) -> List[WaterHeater]:
-        """Get all water heaters."""
-        return await self.repository.get_water_heaters()
+    async def get_water_heaters(
+        self, manufacturer: Optional[str] = None
+    ) -> List[WaterHeater]:
+        """Get all water heaters, optionally filtered by manufacturer.
+
+        Args:
+            manufacturer: Optional filter by manufacturer name (e.g., 'Rheem', 'AquaTherm')
+
+        Returns:
+            Tuple (List[WaterHeater], bool, str) containing:
+            - List of water heaters, filtered if manufacturer is specified
+            - Boolean indicating if data is from database (True) or not (False)
+            - Error message if any, otherwise empty string
+        """
+        try:
+            result = await self.repository.get_water_heaters(manufacturer=manufacturer)
+            # Log data source information with result count
+            logger.info(
+                f"get_water_heaters returned {len(result)} items from "
+                f"{'mock data' if ConfigurableWaterHeaterService.is_using_mock_data else 'database'}"
+            )
+            # Return tuple containing results, data source indicator, and empty error message
+            return (result, not ConfigurableWaterHeaterService.is_using_mock_data, "")
+        except Exception as e:
+            error_msg = f"Database error: {str(e)}"
+            logger.error(f"Error in get_water_heaters: {error_msg}")
+            # In case of error, return empty list, database indicator false, and error message
+            return ([], False, error_msg)
+
+    @classmethod
+    def get_data_source_info(cls) -> Dict[str, Any]:
+        """Get information about the current data source.
+
+        Returns:
+            Dictionary with data source information including whether using mock data,
+            the reason for the current data source, and a timestamp.
+        """
+        return {
+            "is_using_mock_data": cls.is_using_mock_data,
+            "data_source_reason": cls.data_source_reason,
+            "timestamp": datetime.now().isoformat(),
+        }
 
     async def get_water_heater(self, device_id: str) -> Optional[WaterHeater]:
-        """Get a specific water heater by ID."""
-        return await self.repository.get_water_heater(device_id)
+        """Get a specific water heater by ID.
+
+        Returns:
+            Tuple (water_heater, is_from_db) where:
+              - water_heater is the water heater object or None if not found
+              - is_from_db is a boolean indicating if data came from database (True) or mock data (False)
+        """
+        try:
+            result = await self.repository.get_water_heater(device_id)
+            # Log data source information
+            if result:
+                logger.info(
+                    f"get_water_heater for {device_id} returned data from "
+                    f"{'mock data' if ConfigurableWaterHeaterService.is_using_mock_data else 'database'}"
+                )
+
+                # Publish telemetry event to message bus if available
+                if self.message_bus:
+                    telemetry_data = {
+                        "device_id": device_id,
+                        "timestamp": datetime.utcnow().isoformat(),
+                        "data": {
+                            "current_temperature": result.current_temperature,
+                            "target_temperature": result.target_temperature,
+                            "mode": result.mode.value if result.mode else None,
+                            "heater_status": result.heater_status.value
+                            if result.heater_status
+                            else None,
+                            "status": result.status.value if result.status else None,
+                        },
+                        "simulated": ConfigurableWaterHeaterService.is_using_mock_data,
+                    }
+                    self.message_bus.publish("device.telemetry", telemetry_data)
+                    logger.info(
+                        f"Published telemetry for device {device_id} to message bus"
+                    )
+            else:
+                logger.warning(f"get_water_heater for {device_id} found no device")
+
+            # Return tuple containing results and data source indicator
+            return (result, not ConfigurableWaterHeaterService.is_using_mock_data)
+        except Exception as e:
+            logger.error(f"Error in get_water_heater for {device_id}: {e}")
+            # In case of error, return None with mock data indicator
+            return (None, False)
 
     async def create_water_heater(self, water_heater: WaterHeater) -> WaterHeater:
         """Create a new water heater."""

@@ -1,0 +1,168 @@
+<!--
+Data Source Indicator Component
+This component displays which data source is currently being used (mock or database)
+and provides a visual indicator of connection status.
+-->
+<div id="data-source-indicator" class="data-source-indicator">
+    <div class="source-badge" data-source="unknown">
+        <span class="icon">
+            <i class="fas fa-database" id="db-icon"></i>
+            <i class="fas fa-cloud" id="mock-icon"></i>
+        </span>
+        <span class="source-text" id="source-text">Unknown Data Source</span>
+        <span class="status-indicator" id="status-indicator"></span>
+    </div>
+    <div class="source-controls">
+        <button id="toggle-source-btn" class="btn btn-sm btn-outline-secondary">
+            Switch Source
+        </button>
+    </div>
+</div>
+
+<style>
+    .data-source-indicator {
+        display: flex;
+        align-items: center;
+        padding: 5px 10px;
+        border-radius: 4px;
+        margin-bottom: 10px;
+        font-size: 0.85rem;
+    }
+
+    .source-badge {
+        display: flex;
+        align-items: center;
+        padding: 3px 8px;
+        border-radius: 12px;
+        margin-right: 10px;
+    }
+
+    .source-badge[data-source="database"] {
+        background-color: #e7f5ff;
+        color: #0366d6;
+        border: 1px solid #0366d6;
+    }
+
+    .source-badge[data-source="mock"] {
+        background-color: #ffefe7;
+        color: #d63700;
+        border: 1px solid #d63700;
+    }
+
+    .source-badge[data-source="unknown"] {
+        background-color: #e7e7e7;
+        color: #666;
+        border: 1px solid #999;
+    }
+
+    .icon {
+        margin-right: 5px;
+    }
+
+    .status-indicator {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        margin-left: 8px;
+    }
+
+    .status-indicator.connected {
+        background-color: #28a745;
+    }
+
+    .status-indicator.disconnected {
+        background-color: #dc3545;
+    }
+
+    .source-controls {
+        display: flex;
+    }
+</style>
+
+<script>
+    // Initialize data source indicator component
+    document.addEventListener('DOMContentLoaded', function() {
+        const indicator = document.getElementById('data-source-indicator');
+        const sourceBadge = indicator.querySelector('.source-badge');
+        const sourceText = document.getElementById('source-text');
+        const statusIndicator = document.getElementById('status-indicator');
+        const dbIcon = document.getElementById('db-icon');
+        const mockIcon = document.getElementById('mock-icon');
+        const toggleBtn = document.getElementById('toggle-source-btn');
+
+        // Check current data source
+        function checkDataSource() {
+            // Make requests to both data source info endpoints
+            Promise.all([
+                fetch('/api/db/water-heaters/data-source').then(res => res.ok ? res.json() : {source_type: 'database', is_connected: false}),
+                fetch('/api/mock/water-heaters/data-source').then(res => res.ok ? res.json() : {source_type: 'mock', is_connected: false})
+            ])
+            .then(([dbInfo, mockInfo]) => {
+                // Check which API is actively being used by the application
+                fetch('/debug/data-sources')
+                    .then(res => res.json())
+                    .then(debugInfo => {
+                        const usingMock = debugInfo.water_heater_data_source.using_mock_data;
+                        updateIndicator(usingMock ? 'mock' : 'database', usingMock ? mockInfo.is_connected : dbInfo.is_connected);
+                    })
+                    .catch(err => {
+                        console.error('Error checking debug data sources:', err);
+                        // Default to database if we can't determine
+                        updateIndicator('unknown', false);
+                    });
+            })
+            .catch(err => {
+                console.error('Error checking data sources:', err);
+                updateIndicator('unknown', false);
+            });
+        }
+
+        // Update the indicator UI
+        function updateIndicator(sourceType, isConnected) {
+            // Update badge appearance
+            sourceBadge.setAttribute('data-source', sourceType);
+
+            // Update text
+            if (sourceType === 'database') {
+                sourceText.textContent = 'Database';
+                dbIcon.style.display = 'inline';
+                mockIcon.style.display = 'none';
+            } else if (sourceType === 'mock') {
+                sourceText.textContent = 'Mock Data';
+                dbIcon.style.display = 'none';
+                mockIcon.style.display = 'inline';
+            } else {
+                sourceText.textContent = 'Unknown Source';
+                dbIcon.style.display = 'none';
+                mockIcon.style.display = 'none';
+            }
+
+            // Update connection status
+            statusIndicator.className = 'status-indicator ' + (isConnected ? 'connected' : 'disconnected');
+            statusIndicator.title = isConnected ? 'Connected' : 'Disconnected';
+        }
+
+        // Toggle between data sources
+        toggleBtn.addEventListener('click', function() {
+            const currentSource = sourceBadge.getAttribute('data-source');
+            const newSource = currentSource === 'database' ? 'mock' : 'database';
+
+            // Show loading state
+            sourceBadge.setAttribute('data-source', 'unknown');
+            sourceText.textContent = 'Switching...';
+
+            // Set a cookie to control which API the frontend uses
+            document.cookie = `preferred_data_source=${newSource}; path=/; max-age=86400`;
+
+            // Reload the page to apply the change
+            setTimeout(() => window.location.reload(), 500);
+        });
+
+        // Initial check
+        checkDataSource();
+
+        // Check periodically
+        setInterval(checkDataSource, 30000);
+    });
+</script>

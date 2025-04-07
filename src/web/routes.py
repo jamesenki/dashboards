@@ -30,6 +30,26 @@ async def get_water_heater_list(request: Request):
     return templates.TemplateResponse("water-heater/list.html", {"request": request})
 
 
+@router.get("/diagnostic", response_class=HTMLResponse)
+async def get_diagnostic_page(request: Request):
+    """Render the API diagnostic page"""
+    return templates.TemplateResponse("diagnostic.html", {"request": request})
+
+
+@router.get("/water-heaters/debug", response_class=HTMLResponse)
+async def get_water_heater_debug_page(request: Request):
+    """Render the water heater debug page"""
+    return templates.TemplateResponse("water-heater/debug.html", {"request": request})
+
+
+@router.get("/water-heaters/standalone", response_class=HTMLResponse)
+async def get_water_heater_standalone_page(request: Request):
+    """Render the standalone water heater page that doesn't rely on WaterHeaterList class"""
+    return templates.TemplateResponse(
+        "water-heater/standalone.html", {"request": request}
+    )
+
+
 @router.get("/water-heaters/new", response_class=HTMLResponse)
 async def get_new_water_heater_form(request: Request):
     """Render the new water heater form"""
@@ -65,20 +85,24 @@ async def get_water_heater_detail(request: Request, heater_id: str = Path(...)):
                     f"AquaTherm water heater ID detected: {heater_id}. Creating on-demand."
                 )
 
-                # Get AquaTherm data and find matching heater
-                from src.utils.aquatherm_data import get_aquatherm_water_heaters
+                # Get water heater data from the manufacturer-agnostic implementation
+                from src.utils.dummy_data import dummy_data
 
-                aquatherm_data = get_aquatherm_water_heaters()
-
-                # Find matching heater data
+                # Find matching heater data from the dummy data
                 matching_heater = None
-                for heater_data in aquatherm_data:
-                    if heater_data["id"] == heater_id:
-                        matching_heater = heater_data
+                for heater_id_key, heater in dummy_data.water_heaters.items():
+                    if heater_id_key == heater_id:
+                        matching_heater = {
+                            "id": heater.id,
+                            "name": heater.name,
+                            "manufacturer": heater.manufacturer,
+                            "model": heater.model,
+                            "status": heater.status.value,
+                        }
                         break
 
                 if matching_heater:
-                    # If found in AquaTherm data, create it in the database
+                    # If found in dummy data, create it in the database
                     from datetime import datetime
 
                     from src.models.device import DeviceStatus, DeviceType

@@ -26,11 +26,24 @@ class DeviceStatus(str, Enum):
     ERROR = "ERROR"
 
 
+class ManufacturerType(str, Enum):
+    """Device manufacturer enumeration"""
+
+    RHEEM = "Rheem"
+    AQUATHERM = "AquaTherm"
+    GENERIC = "Generic"
+
+
 class Device(BaseModel):
     """Base device model"""
 
     id: str = Field(..., description="Device unique identifier")
     name: str = Field(..., description="Device name")
+    manufacturer: Optional[str] = Field(
+        None, description="Device manufacturer (e.g., Rheem, AquaTherm)"
+    )
+    brand: Optional[str] = Field(None, description="Device brand")
+    model: Optional[str] = Field(None, description="Device model number")
     type: DeviceType = Field(..., description="Device type")
     status: DeviceStatus = Field(
         DeviceStatus.OFFLINE, description="Current device status"
