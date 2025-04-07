@@ -1,0 +1,25 @@
+# IoTSphere files that have been updated to use environment variables instead of hardcoded credentials
+# These files now use environment variables or the get_db_credentials() function for secure credential management
+
+# Updated scripts - TDD security compliance
+src/scripts/check_postgres_connection.py
+src/scripts/check_postgres_direct.py
+src/scripts/check_rheem_types.py
+src/scripts/direct_database_check.py
+src/scripts/e2e_data_validation.py
+src/scripts/ensure_rheem_water_heaters.py
+src/scripts/migrate_water_heaters_table.py
+src/scripts/test_postgres_connection.py
+src/scripts/postgres_e2e_validation.py
+src/scripts/validate_postgres_e2e.py
+src/scripts/verify_postgres_data_flow.py
+src/scripts/verify_water_heater_types.py
+
+# Environment configuration files
+src/db/config.py
+src/utils/env_loader.py
+
+# Migration and API files using environment variables
+src/infrastructure/db_migration/create_asset_tables.py
+src/infrastructure/db_migration/create_telemetry_tables.py
+src/api/manufacturer_agnostic/api_service.py

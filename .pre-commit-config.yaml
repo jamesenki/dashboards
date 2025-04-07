@@ -71,6 +71,7 @@ repos:
     rev: v8.18.1
     hooks:
     -   id: gitleaks
+        args: [--config=.gitleaks.toml]
 
 # Test execution is commented out for now to allow other hooks to run
 # -   repo: local

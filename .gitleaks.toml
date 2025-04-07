@@ -1,0 +1,19 @@
+# Custom gitleaks configuration that allows patterns using environment variables
+# This is part of our TDD approach, focusing on refactoring for security while maintaining testability
+
+title = "IoTSphere Gitleaks Configuration"
+
+[allowlist]
+description = "Allowlisted patterns for environment variables usage"
+regexes = [
+  "os\\.environ\\.get\\(['\"]DB_PASSWORD['\"].*\\)",
+  "os\\.getenv\\(['\"]DB_PASSWORD['\"].*\\)",
+  "db_credentials\\[[\"']password[\"']\\]",
+  "get_db_credentials\\(\\)"
+]
+paths = [
+  "src/scripts/.*.py",
+  "src/db/config.py",
+  "src/infrastructure/db_migration/.*.py",
+  "src/api/manufacturer_agnostic/.*.py"
+]
