@@ -1,0 +1,43 @@
+/**
+ * Status Indicator Fix
+ * Ensures that status indicators display properly without text overlay
+ */
+
+/* 
+ * Override any content inside status indicators
+ * This prevents text from showing up inside the colored circle
+ */
+#realtime-connection-status.status-indicator {
+  font-size: 0 !important;  /* No text rendering */
+  color: transparent !important; /* Invisible text */
+  text-indent: -9999px !important; /* Push text far away */
+  overflow: hidden !important; /* Don't let text overflow */
+  white-space: nowrap !important; /* Prevent wrapping */
+  line-height: 0 !important; /* No line height */
+  content: none !important; /* No content */
+}
+
+/* Make sure pseudo-elements can't add content */
+#realtime-connection-status.status-indicator::before,
+#realtime-connection-status.status-indicator::after {
+  content: none !important;
+  display: none !important;
+}
+
+/* Set proper display properties for the indicator */
+#realtime-connection-status.status-indicator {
+  width: 12px !important;
+  height: 12px !important;
+  border-radius: 50% !important;
+  display: inline-block !important;
+  margin-right: 8px !important;
+  vertical-align: middle !important;
+  position: relative !important;
+}
+
+/* Style the connection type container properly */
+#connection-type-container {
+  display: inline-block;
+  margin-left: 5px;
+  font-weight: bold;
+}

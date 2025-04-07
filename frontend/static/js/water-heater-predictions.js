@@ -219,9 +219,9 @@ class WaterHeaterPredictionsDashboard {
       this.ensureUIRendered();
     }, 5000);
 
-    // Use the all-predictions endpoint to get all predictions at once if possible
+    // Use the all-predictions endpoint with manufacturer-agnostic path to get all predictions at once if possible
     // This reduces the number of API calls and improves performance
-    fetch(`/api/predictions/water-heaters/${this.deviceId}/all?_t=${timestamp}`)
+    fetch(`/api/manufacturer/water-heaters/${this.deviceId}/predictions/all?_t=${timestamp}`)
       .then(response => {
         if (!response.ok) {
           // If the all-in-one endpoint fails, fall back to individual requests
@@ -326,10 +326,11 @@ class WaterHeaterPredictionsDashboard {
    * @param {number} timestamp - Common timestamp for the requests
    */
   fetchIndividualPredictions(timestamp) {
-    console.log('Fetching individual prediction endpoints');
+    console.log('Fetching individual prediction endpoints using manufacturer-agnostic API');
 
     // Fetch all prediction types in parallel using Promise.all for better performance
-    const lifespanPromise = fetch(`/api/predictions/water-heaters/${this.deviceId}/lifespan-estimation?_t=${timestamp}`)
+    // Using the manufacturer-agnostic API endpoints from /api/manufacturer/water-heaters/
+    const lifespanPromise = fetch(`/api/manufacturer/water-heaters/${this.deviceId}/predictions/lifespan?_t=${timestamp}`)
       .then(response => {
         if (!response.ok) throw new Error(`Lifespan prediction failed: ${response.status}`);
         return response.json();
@@ -337,14 +338,14 @@ class WaterHeaterPredictionsDashboard {
       .then(data => {
         this.lifespanPrediction = data;
         this.renderLifespanPrediction();
-        console.log('Lifespan prediction loaded successfully');
+        console.log('Lifespan prediction loaded successfully from manufacturer-agnostic API');
       })
       .catch(error => {
         console.error('Error loading lifespan prediction:', error);
         this.showError(error.message || 'Failed to load lifespan prediction data', 'lifespan');
       });
 
-    const anomalyPromise = fetch(`/api/predictions/water-heaters/${this.deviceId}/anomaly-detection?_t=${timestamp}`)
+    const anomalyPromise = fetch(`/api/manufacturer/water-heaters/${this.deviceId}/predictions/anomalies?_t=${timestamp}`)
       .then(response => {
         if (!response.ok) throw new Error(`Anomaly detection failed: ${response.status}`);
         return response.json();
@@ -352,14 +353,14 @@ class WaterHeaterPredictionsDashboard {
       .then(data => {
         this.anomalyDetection = data;
         this.renderAnomalyDetection();
-        console.log('Anomaly detection loaded successfully');
+        console.log('Anomaly detection loaded successfully from manufacturer-agnostic API');
       })
       .catch(error => {
         console.error('Error loading anomaly detection:', error);
         this.showError(error.message || 'Failed to load anomaly detection data', 'anomaly');
       });
 
-    const usagePromise = fetch(`/api/predictions/water-heaters/${this.deviceId}/usage-patterns?_t=${timestamp}`)
+    const usagePromise = fetch(`/api/manufacturer/water-heaters/${this.deviceId}/predictions/usage?_t=${timestamp}`)
       .then(response => {
         if (!response.ok) throw new Error(`Usage patterns failed: ${response.status}`);
         return response.json();
@@ -367,14 +368,14 @@ class WaterHeaterPredictionsDashboard {
       .then(data => {
         this.usagePatterns = data;
         this.renderUsagePatterns();
-        console.log('Usage patterns loaded successfully');
+        console.log('Usage patterns loaded successfully from manufacturer-agnostic API');
       })
       .catch(error => {
         console.error('Error loading usage patterns:', error);
         this.showError(error.message || 'Failed to load usage patterns data', 'usage');
       });
 
-    const multiFactorPromise = fetch(`/api/predictions/water-heaters/${this.deviceId}/multi-factor?_t=${timestamp}`)
+    const multiFactorPromise = fetch(`/api/manufacturer/water-heaters/${this.deviceId}/predictions/factors?_t=${timestamp}`)
       .then(response => {
         if (!response.ok) throw new Error(`Multi-factor analysis failed: ${response.status}`);
         return response.json();
@@ -382,7 +383,7 @@ class WaterHeaterPredictionsDashboard {
       .then(data => {
         this.multiFactor = data;
         this.renderMultiFactorPrediction();
-        console.log('Multi-factor analysis loaded successfully');
+        console.log('Multi-factor analysis loaded successfully from manufacturer-agnostic API');
       })
       .catch(error => {
         console.error('Error loading multi-factor analysis:', error);

@@ -113,7 +113,7 @@ class WaterHeaterDashboard {
      * Fetch current device state
      */
     async fetchDeviceState() {
-        const response = await fetch(`/api/water-heaters/${this.deviceId}`);
+        const response = await fetch(`/api/manufacturer/water-heaters/${this.deviceId}`);
 
         if (!response.ok) {
             throw new Error('Failed to fetch device state');
@@ -126,7 +126,7 @@ class WaterHeaterDashboard {
      * Fetch telemetry data
      */
     async fetchTelemetryData() {
-        const response = await fetch(`/api/water-heaters/${this.deviceId}/telemetry?limit=100`);
+        const response = await fetch(`/api/manufacturer/water-heaters/${this.deviceId}/telemetry?limit=100`);
 
         if (!response.ok) {
             throw new Error('Failed to fetch telemetry data');

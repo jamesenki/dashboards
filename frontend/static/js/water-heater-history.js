@@ -185,56 +185,16 @@ class WaterHeaterHistoryDashboard {
     reload() {
         console.log('WaterHeaterHistoryDashboard reload method called by TabManager');
 
-        // EXTREME ISOLATION: First, handle the predictions tab content to prevent it from showing
-        // Use our cached element or find it
-        const predictionsContent = this.getElement('#predictions-content', true, 'predictionsContent');
-        if (predictionsContent) {
-            console.log('Forcing predictions content to be completely hidden using isolation pattern');
-            // Most aggressive possible hiding - using tabContent isolation technique
-            predictionsContent.style.display = 'none !important';
-            predictionsContent.style.visibility = 'hidden !important';
-            predictionsContent.style.opacity = '0 !important';
-            predictionsContent.style.position = 'absolute !important';
-            predictionsContent.style.zIndex = '-1000 !important';
-            predictionsContent.style.pointerEvents = 'none !important';
-            predictionsContent.style.clip = 'rect(0, 0, 0, 0) !important';
-            predictionsContent.style.clipPath = 'inset(100%) !important';
-            predictionsContent.style.maxHeight = '0px !important';
-            predictionsContent.style.maxWidth = '0px !important';
-            predictionsContent.style.overflow = 'hidden !important';
-            predictionsContent.style.transform = 'translateX(-100000px) !important';
-            predictionsContent.classList.remove('active');
-            predictionsContent.classList.add('tab-content-hidden');
-        }
-
-        // Ensure history content is visible and properly isolated
-        // Use our cached element or find it
+        // Get the history content element
         const historyContent = this.elements.historyContent || this.getElement('#history-content');
-        if (historyContent) {
-            console.log('Ensuring history content is visible during reload');
 
-            // Reset all inline styles first for clean slate
-            historyContent.removeAttribute('style');
-
-            // Apply comprehensive visibility settings
-            historyContent.style.display = 'block';
-            historyContent.style.visibility = 'visible';
-            historyContent.style.opacity = '1';
-            historyContent.style.position = 'relative';
-            historyContent.style.zIndex = '100';
-            historyContent.style.pointerEvents = 'auto';
-            historyContent.classList.add('active');
-            historyContent.classList.remove('tab-content-hidden');
-
-            // Force the history content to be at the top of the stacking context
-            // Use our container-scoped query to find the tab content container
-            const tabContentContainer = this.getElement('.tab-content-container');
-            if (tabContentContainer) {
-                // Move history content to the end of its parent to ensure it's rendered last (on top)
-                tabContentContainer.appendChild(historyContent);
-                console.log('History Dashboard: Repositioned history content for proper stacking context');
-            }
+        // Only proceed if the history content is actually visible/active
+        if (historyContent && historyContent.classList.contains('active')) {
+            console.log('History tab is active, loading data');
         }
+
+        // Let TabManager handle tab visibility - don't manipulate other tabs' DOM
+        // Focus only on our own functionality
 
         // Check if charts need to be reinitialized
         const reinitializeCharts = !this.temperatureChart ||
@@ -289,12 +249,30 @@ class WaterHeaterHistoryDashboard {
      * Load history data from the API
      */
     async loadHistoryData() {
+        // Clear any previous errors
+        this.showError('');
+
+        // Show loading indicators
+        this.showLoading(true);
+
+        // DIRECT FIX: Force chart containers to be visible
+        const chartContainers = document.querySelectorAll('.chart-container');
+        chartContainers.forEach(container => {
+            container.style.display = 'block';
+            container.style.visibility = 'visible';
+        });
+
+        // IMPROVEMENT: Log API call to help with debugging
+        console.log(`🔄 Loading temperature history data for heater ${this.heaterId}, ${this.days} days`);
+
         try {
             // Show loading indicators
             this.showLoading(true);
 
-            // Get history data from API
-            const historyData = await this.api.request('GET', `/water-heaters/${this.heaterId}/history?days=${this.days}`);
+            // Get history data from API using manufacturer-agnostic endpoint
+            const historyData = await this.api.request('GET', `/manufacturer/water-heaters/${this.heaterId}/history?days=${this.days}`);
+
+            console.log('Successfully loaded history data from manufacturer-agnostic endpoint');
 
             // Update charts
             this.updateCharts(historyData);
@@ -303,7 +281,37 @@ class WaterHeaterHistoryDashboard {
             this.showLoading(false);
         } catch (error) {
             console.error('Error loading history data:', error);
-            this.showError('Failed to load history data. Please try again later.');
+
+            // Check for shadow document error in the server logs
+            let errorMessage = 'Failed to load history data';
+
+            // Create visible error message that directly addresses the shadow document issue
+            if (error.response && error.response.status === 404) {
+                errorMessage = 'No shadow document exists for this device. Temperature history cannot be displayed.';
+                console.warn('Detected likely shadow document issue - showing specific error');
+
+                // Create visible error indicators in chart containers
+                const chartContainers = document.querySelectorAll('.chart-container');
+                chartContainers.forEach(container => {
+                    // Create an error message element that's very visible
+                    const errorDiv = document.createElement('div');
+                    errorDiv.className = 'chart-error';
+                    errorDiv.style.padding = '20px';
+                    errorDiv.style.backgroundColor = 'rgba(255, 0, 0, 0.1)';
+                    errorDiv.style.border = '1px solid #ff0000';
+                    errorDiv.style.borderRadius = '5px';
+                    errorDiv.style.margin = '10px 0';
+                    errorDiv.style.color = '#ff0000';
+                    errorDiv.style.fontWeight = 'bold';
+                    errorDiv.innerHTML = 'ERROR: No device shadow document exists.<br>Temperature history cannot be displayed.';
+
+                    // Ensure container is empty and add error
+                    container.innerHTML = '';
+                    container.appendChild(errorDiv);
+                });
+            }
+
+            this.showError(errorMessage);
             this.showLoading(false);
         }
     }
@@ -313,14 +321,38 @@ class WaterHeaterHistoryDashboard {
      * @param {Object} historyData - The history data from the API
      */
     updateCharts(historyData) {
+        console.log('History data received:', historyData);
+
+        // Check if history data contains the expected properties
+        if (!historyData) {
+            console.error('No history data received from API');
+            this.showError('No history data available');
+            return;
+        }
+
         // Update temperature chart
-        this.updateTemperatureChart(historyData.temperature);
+        console.log('Temperature data:', historyData.temperature);
+        if (historyData.temperature) {
+            this.updateTemperatureChart(historyData.temperature);
+        } else {
+            console.error('No temperature data in history response');
+        }
 
         // Update energy usage chart
-        this.updateEnergyUsageChart(historyData.energy_usage);
+        console.log('Energy usage data:', historyData.energy_usage);
+        if (historyData.energy_usage) {
+            this.updateEnergyUsageChart(historyData.energy_usage);
+        } else {
+            console.error('No energy usage data in history response');
+        }
 
         // Update pressure and flow rate chart
-        this.updatePressureFlowChart(historyData.pressure_flow);
+        console.log('Pressure flow data:', historyData.pressure_flow);
+        if (historyData.pressure_flow) {
+            this.updatePressureFlowChart(historyData.pressure_flow);
+        } else {
+            console.error('No pressure/flow data in history response');
+        }
     }
 
     /**

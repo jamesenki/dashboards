@@ -249,7 +249,7 @@ class WaterHeaterOperationsDashboard {
      */
     async loadDashboardData() {
         try {
-            const response = await fetch(`/api/water-heaters/${this.heaterId}/operations`);
+            const response = await fetch(`/api/manufacturer/water-heaters/${this.heaterId}/operations`);
             if (!response.ok) {
                 throw new Error(`API error: ${response.status}`);
             }
@@ -286,22 +286,89 @@ class WaterHeaterOperationsDashboard {
      * @param {Object} data - Dashboard data
      */
     updateStatusCards(data) {
-        // Update machine status
-        this.updateStatusCard('machine-status', 'Machine Status', data.machine_status);
+        console.log('🔄 COMPLETE REWRITE: Creating status cards with guaranteed no duplication');
 
-        // Update heater status
-        this.updateStatusCard('heater-status', 'Heater Status', data.heater_status);
+        // CRITICAL FIX: COMPLETELY rebuild status container from scratch
+        const operationsContent = document.getElementById('operations-content');
+        if (!operationsContent) {
+            console.error('Cannot find operations-content element');
+            return;
+        }
 
-        // Update current temperature
-        this.updateStatusCard('current-temp', 'Current Temp',
-            this.formatTemperature(data.current_temperature));
+        // Find the existing status container
+        let statusContainer = operationsContent.querySelector('.status-container');
 
-        // Update target temperature
-        this.updateStatusCard('target-temp', 'Target Temp',
-            this.formatTemperature(data.target_temperature));
+        // If no container exists, create one
+        if (!statusContainer) {
+            statusContainer = document.createElement('div');
+            statusContainer.className = 'status-container';
+            operationsContent.appendChild(statusContainer);
+        } else {
+            // COMPLETE REBUILD: Always start with a clean slate
+            statusContainer.innerHTML = '';
+            console.log('⚠️ Completely cleared status container to prevent any possibility of duplication');
+        }
 
-        // Update mode
-        this.updateStatusCard('mode', 'Mode', data.mode);
+        // Define status items to create
+        const statusItems = [
+            { id: 'machine-status', label: 'Machine Status', value: data.machine_status },
+            { id: 'heater-status', label: 'Heater Status', value: data.heater_status },
+            { id: 'current-temp', label: 'Current Temp', value: this.formatTemperature(data.current_temperature) },
+            { id: 'target-temp', label: 'Target Temp', value: this.formatTemperature(data.target_temperature) },
+            { id: 'mode', label: 'Mode', value: data.mode }
+        ];
+
+        // Create each status item from scratch
+        statusItems.forEach(item => {
+            const statusItem = document.createElement('div');
+            statusItem.id = `${item.id}-card`;
+            statusItem.className = 'status-item';
+
+            const labelElement = document.createElement('div');
+            labelElement.className = 'status-label';
+            labelElement.textContent = item.label;
+
+            const valueElement = document.createElement('div');
+            valueElement.className = 'status-value';
+            valueElement.textContent = item.value;
+
+            // Add appropriate status class
+            if (item.id === 'machine-status') {
+                if (item.value === 'ONLINE') valueElement.classList.add('online');
+                else if (item.value === 'OFFLINE') valueElement.classList.add('offline');
+                else valueElement.classList.add('warning');
+            }
+            else if (item.id === 'heater-status') {
+                if (item.value === 'HEATING') valueElement.classList.add('online');
+                else if (item.value === 'STANDBY') valueElement.classList.add('warning');
+                else valueElement.classList.add('offline');
+            }
+
+            statusItem.appendChild(labelElement);
+            statusItem.appendChild(valueElement);
+            statusContainer.appendChild(statusItem);
+        });
+
+        console.log(`✅ Successfully created exactly 5 status items`);
+
+        // VERIFICATION: Double-check for any duplication
+        setTimeout(() => {
+            const allStatusItems = document.querySelectorAll('.status-item');
+            if (allStatusItems.length !== 5) {
+                console.error(`⚠️ CRITICAL ERROR: Found ${allStatusItems.length} status items (expected exactly 5)`);
+
+                // Last resort nuclear option to fix any remaining duplication
+                const statusContainers = document.querySelectorAll('.status-container');
+                if (statusContainers.length > 1) {
+                    console.warn(`⚠️ Multiple status containers found (${statusContainers.length}) - fixing this issue`);
+
+                    // Keep only the first container, remove all others
+                    for (let i = 1; i < statusContainers.length; i++) {
+                        statusContainers[i].remove();
+                    }
+                }
+            }
+        }, 100);
     }
 
     /**
@@ -311,27 +378,33 @@ class WaterHeaterOperationsDashboard {
      * @param {string} value - Value to display
      */
     updateStatusCard(cardId, title, value) {
-        const card = document.getElementById(`${cardId}-card`);
+        // Use our scoped element selection to prevent multiple updates to the same element
+        const card = this.getElement(`#${cardId}-card`);
         if (!card) return;
 
+        // Find the value element within our scoped element
         const valueElement = card.querySelector('.status-value');
-        if (valueElement) {
-            valueElement.textContent = value;
+        if (!valueElement) return;
 
-            // Update classes based on value
-            valueElement.classList.remove('online', 'offline', 'warning');
+        // Clean existing content first to prevent duplication
+        valueElement.innerHTML = '';
 
-            // Add appropriate status class
-            if (cardId === 'machine-status') {
-                if (value === 'ONLINE') valueElement.classList.add('online');
-                else if (value === 'OFFLINE') valueElement.classList.add('offline');
-                else valueElement.classList.add('warning');
-            }
-            else if (cardId === 'heater-status') {
-                if (value === 'HEATING') valueElement.classList.add('online');
-                else if (value === 'STANDBY') valueElement.classList.add('warning');
-                else valueElement.classList.add('offline');
-            }
+        // Set new content
+        valueElement.textContent = value;
+
+        // Update classes based on value
+        valueElement.classList.remove('online', 'offline', 'warning');
+
+        // Add appropriate status class
+        if (cardId === 'machine-status') {
+            if (value === 'ONLINE') valueElement.classList.add('online');
+            else if (value === 'OFFLINE') valueElement.classList.add('offline');
+            else valueElement.classList.add('warning');
+        }
+        else if (cardId === 'heater-status') {
+            if (value === 'HEATING') valueElement.classList.add('online');
+            else if (value === 'STANDBY') valueElement.classList.add('warning');
+            else valueElement.classList.add('offline');
         }
     }
 
@@ -392,8 +465,9 @@ class WaterHeaterOperationsDashboard {
      * @param {number} percentage - Percentage for gauge needle (0-100)
      */
     updateGauge(gaugeId, value, unit, percentage) {
-        // Update gauge value
-        const valueElement = document.getElementById(`${gaugeId}-gauge-value`);
+        // Use our scoped element selection to ensure we get the right elements
+        // and prevent duplicate updates
+        const valueElement = this.getElement(`#${gaugeId}-gauge-value`);
         if (valueElement) {
             // Format value based on type
             let displayValue;
@@ -404,11 +478,13 @@ class WaterHeaterOperationsDashboard {
                 displayValue = value || '--';
             }
 
+            // Clear existing content first to prevent duplication
+            valueElement.innerHTML = '';
             valueElement.textContent = `${displayValue}${unit}`;
         }
 
-        // Update gauge needle position
-        const needleElement = document.getElementById(`${gaugeId}-gauge-needle`);
+        // Update gauge needle position using scoped selection
+        const needleElement = this.getElement(`#${gaugeId}-gauge-needle`);
         if (needleElement) {
             // Limit percentage to valid range
             const limitedPercentage = Math.max(0, Math.min(100, percentage));
@@ -512,16 +588,68 @@ class WaterHeaterOperationsDashboard {
      * @returns {boolean} Success status
      */
     reload() {
+        // COMPLETE FIX: Guarantee there are no duplicate status items when tab is activated
+        console.log('🔥 NUCLEAR OPTION: Ensuring zero possibility of status duplication');
+
+        // 1. Find all status containers across the entire document
+        const allStatusContainers = document.querySelectorAll('.status-container');
+        if (allStatusContainers.length > 1) {
+            console.warn(`⚠️ Found ${allStatusContainers.length} status containers - removing all but the first`);
+            // Keep only the first container, remove all others
+            for (let i = 1; i < allStatusContainers.length; i++) {
+                allStatusContainers[i].remove();
+            }
+        }
+
+        // 2. Get the remaining status container
+        const statusContainer = document.querySelector('.status-container');
+        if (statusContainer) {
+            // Always clear the container completely
+            statusContainer.innerHTML = '';
+            console.log('✅ Status container completely cleared');
+        } else {
+            console.log('👀 No status container found yet, will be created during update');
+        }
+
+        // 3. Clean up any stray status items that might exist outside containers
+        const strayStatusItems = document.querySelectorAll('.status-item');
+        if (strayStatusItems.length > 0) {
+            console.warn(`⚠️ Found ${strayStatusItems.length} stray status items - removing all`);
+            strayStatusItems.forEach(item => item.remove());
+        }
         console.log('Operations Dashboard: Reload method called by TabManager');
 
         try {
-            // Ensure operations content is visible (this should already be handled by TabManager)
-            const operationsContent = document.getElementById('operations-content');
-            if (operationsContent) {
-                console.log('Operations Dashboard: Ensuring content is visible');
-                operationsContent.style.display = 'block';
-                operationsContent.style.visibility = 'visible';
+            // Only proceed if this is the active tab
+            if (window.tabManager && window.tabManager.getActiveTabId() !== 'operations') {
+                console.log('Operations Dashboard: Not the active tab, aborting reload');
+                // Clear any update intervals if we're not the active tab
+                this.clearUpdateInterval();
+                return true;
             }
+
+            // Clear any existing intervals first to prevent duplicates
+            this.clearUpdateInterval();
+
+            // Force clean the UI to prevent duplication
+            // Reset status cards to loading state
+            const statusValues = this.getAllElements('.status-value');
+            statusValues.forEach(el => {
+                el.textContent = 'Loading...';
+                el.classList.remove('online', 'offline', 'warning');
+            });
+
+            // Reset gauge values
+            const gaugeValues = this.getAllElements('.gauge-value');
+            gaugeValues.forEach(el => {
+                el.textContent = '--';
+            });
+
+            // Reset gauge needles
+            const gaugeNeedles = this.getAllElements('.gauge-needle');
+            gaugeNeedles.forEach(el => {
+                el.style.transform = 'rotate(-90deg)';
+            });
 
             // Safe initialization check
             const safeInitialized = this.initialized === true;
@@ -532,15 +660,18 @@ class WaterHeaterOperationsDashboard {
             if (safeInitialized && typeof this.loadDashboardData === 'function') {
                 // If already initialized, just refresh data
                 console.log('Operations Dashboard: Refreshing data for initialized dashboard');
-                this.loadDashboardData().catch(error => {
-                    console.error('Operations Dashboard: Error reloading data', error);
-                    this.showError('Failed to refresh operations data');
-                });
+                // Add a small delay to ensure UI is reset before loading new data
+                setTimeout(() => {
+                    this.loadDashboardData().catch(error => {
+                        console.error('Operations Dashboard: Error reloading data', error);
+                        this.showError('Failed to refresh operations data');
+                    });
 
-                // Restart periodic updates
-                if (typeof this.setupPeriodicUpdates === 'function') {
-                    this.setupPeriodicUpdates();
-                }
+                    // Restart periodic updates
+                    if (typeof this.setupPeriodicUpdates === 'function') {
+                        this.setupPeriodicUpdates();
+                    }
+                }, 50);
             } else {
                 // If not initialized or in an uncertain state, do full initialization
                 console.log('Operations Dashboard: Performing full initialization');

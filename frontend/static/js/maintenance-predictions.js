@@ -131,7 +131,7 @@ class MaintenancePredictionsModule {
      */
     async getDeviceTelemetryData() {
         // Fetch recent telemetry data for the device
-        const response = await fetch(`/api/water-heaters/${this.deviceId}/telemetry`);
+        const response = await fetch(`/api/manufacturer/water-heaters/${this.deviceId}/telemetry`);
 
         if (!response.ok) {
             console.warn('Failed to fetch detailed telemetry, using basic data');
@@ -163,7 +163,7 @@ class MaintenancePredictionsModule {
      */
     async getBasicDeviceData() {
         // Fetch basic device info
-        const response = await fetch(`/api/water-heaters/${this.deviceId}`);
+        const response = await fetch(`/api/manufacturer/water-heaters/${this.deviceId}`);
 
         if (!response.ok) {
             throw new Error('Unable to fetch device data');

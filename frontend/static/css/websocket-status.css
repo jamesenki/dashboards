@@ -1,0 +1,137 @@
+/**
+ * WebSocket Status Indicator Styles
+ * These styles enhance the visual feedback for WebSocket connection status
+ */
+
+/* Connection status indicators */
+.status-indicator {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 8px;
+  vertical-align: middle;
+  position: relative;
+  top: -1px;
+}
+
+.status-indicator.connected {
+  background-color: #4CAF50;
+  box-shadow: 0 0 5px #4CAF50;
+  animation: pulse-green 2s infinite;
+}
+
+.status-indicator.connecting {
+  background-color: #FFC107;
+  box-shadow: 0 0 5px #FFC107;
+  animation: pulse-yellow 2s infinite;
+}
+
+.status-indicator.disconnected {
+  background-color: #F44336;
+  box-shadow: 0 0 5px #F44336;
+}
+
+.status-indicator.error {
+  background-color: #9C27B0;
+  box-shadow: 0 0 5px #9C27B0;
+}
+
+/* Status text styling */
+.connection-status {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.connection-status .label {
+  font-weight: bold;
+  margin-right: 5px;
+}
+
+/* Status card styling */
+.status-card {
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.status-card h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 8px;
+}
+
+.status-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.status-label {
+  font-weight: bold;
+}
+
+/* Error notification styling */
+.error-notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: #f44336;
+  color: white;
+  padding: 15px;
+  border-radius: 4px;
+  z-index: 1000;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  display: none;
+  max-width: 500px;
+}
+
+.error-notification .close-button {
+  margin-left: 10px;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  float: right;
+}
+
+/* Pulse animations for connection status indicators */
+@keyframes pulse-green {
+  0% {
+    box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 6px rgba(76, 175, 80, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(76, 175, 80, 0);
+  }
+}
+
+@keyframes pulse-yellow {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 6px rgba(255, 193, 7, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 193, 7, 0);
+  }
+}
+
+/* Dark theme support */
+.dark-theme .status-card {
+  background-color: #2d2d2d;
+  border: 1px solid #444;
+}
+
+.dark-theme .status-card h3 {
+  border-bottom-color: #444;
+}

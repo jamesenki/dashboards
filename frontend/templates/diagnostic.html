@@ -1,0 +1,140 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}IoTSphere API Diagnostic{% endblock %}
+
+{% block head %}
+<style>
+  pre {
+    background-color: #f5f5f5;
+    padding: 10px;
+    border-radius: 5px;
+    overflow: auto;
+    max-height: 400px;
+  }
+  .test-button {
+    margin: 10px 0;
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  .status {
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+  }
+  .success {
+    background-color: #d4edda;
+    color: #155724;
+  }
+  .error {
+    background-color: #f8d7da;
+    color: #721c24;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h1>IoTSphere API Diagnostic</h1>
+  <p>This page tests direct API access to help troubleshoot connection issues.</p>
+
+  <div>
+    <button id="test-api" class="test-button">Test API Connection</button>
+    <div id="connection-info"></div>
+  </div>
+
+  <div id="status-container"></div>
+
+  <h2>API Response:</h2>
+  <pre id="api-response">Click "Test API Connection" to fetch data...</pre>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const testButton = document.getElementById('test-api');
+  const responseElement = document.getElementById('api-response');
+  const statusContainer = document.getElementById('status-container');
+  const connectionInfo = document.getElementById('connection-info');
+
+  // Display connection info
+  connectionInfo.innerHTML = `
+    <p><strong>Page URL:</strong> ${window.location.href}</p>
+    <p><strong>Protocol:</strong> ${window.location.protocol}</p>
+    <p><strong>Hostname:</strong> ${window.location.hostname}</p>
+    <p><strong>Port:</strong> ${window.location.port || '(default)'}</p>
+  `;
+
+  testButton.addEventListener('click', async function() {
+    // Clear previous results
+    statusContainer.innerHTML = '';
+    responseElement.textContent = 'Fetching data...';
+
+    try {
+      // Construct the API URL using the current location
+      const apiHost = window.location.hostname;
+      const apiPort = window.location.port || '8006';
+      const apiUrl = `${window.location.protocol}//${apiHost}${apiPort ? ':' + apiPort : ''}/api/manufacturer/water-heaters/`;
+
+      // Show the URL being requested
+      statusContainer.innerHTML = `<div class="status">Requesting: ${apiUrl}</div>`;
+
+      // Make the request
+      const response = await fetch(apiUrl, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      // Parse and display the JSON response
+      const data = await response.json();
+
+      // Count items and manufacturers
+      const count = Array.isArray(data) ? data.length : 0;
+      const manufacturers = {};
+      if (Array.isArray(data)) {
+        data.forEach(item => {
+          const manufacturer = item.manufacturer || 'Unknown';
+          manufacturers[manufacturer] = (manufacturers[manufacturer] || 0) + 1;
+        });
+      }
+
+      // Display success status
+      statusContainer.innerHTML = `
+        <div class="status success">
+          <p><strong>Success!</strong> Retrieved ${count} water heaters.</p>
+          <p><strong>Manufacturers:</strong></p>
+          <ul>
+            ${Object.entries(manufacturers).map(([name, count]) =>
+              `<li>${name}: ${count} water heater(s)</li>`
+            ).join('')}
+          </ul>
+        </div>
+      `;
+
+      // Display the full response
+      responseElement.textContent = JSON.stringify(data, null, 2);
+
+    } catch (error) {
+      // Display error status
+      statusContainer.innerHTML = `
+        <div class="status error">
+          <p><strong>Error!</strong> ${error.message}</p>
+          <p>Check your browser console for more details.</p>
+        </div>
+      `;
+      console.error('API test error:', error);
+      responseElement.textContent = `Error: ${error.message}`;
+    }
+  });
+});
+</script>
+{% endblock %}

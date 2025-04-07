@@ -60,7 +60,14 @@
         </div>
     </div>
 
+    <script src="/static/js/auth-token-provider.js"></script>
     <script src="/static/js/icons.js"></script>
+    <script src="/static/js/data-source-indicator.js"></script>
     {% block scripts %}{% endblock %}
+
+    <!-- Database connection status indicator -->
+    <div id="connection-status" style="display:none">
+        <span id="db-status-text"></span>
+    </div>
 </body>
 </html>

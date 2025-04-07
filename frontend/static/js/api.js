@@ -3,10 +3,14 @@
  */
 class ApiClient {
   constructor(baseUrl = null) {
-    // Use absolute URL to avoid CORS issues when running in browser preview
+    // Use the current hostname and port for API requests
+    // This ensures it works from any network location
     const apiHost = window.location.hostname;
-    const apiPort = '8006';
-    this.baseUrl = baseUrl || `http://${apiHost}:${apiPort}/api`;
+    const apiPort = window.location.port || '8006';
+
+    // Construct base URL using current location information
+    this.baseUrl = baseUrl || `${window.location.protocol}//${apiHost}${apiPort ? ':' + apiPort : ''}/api`;
+
     console.log('API client initialized with base URL:', this.baseUrl);
   }
 
@@ -130,8 +134,14 @@ class ApiClient {
    * Get all water heaters
    * @returns {Promise<Array>} - List of water heaters
    */
-  async getWaterHeaters() {
-    return this.request('GET', '/water-heaters');
+  async getWaterHeaters(manufacturer = null) {
+    // Use the manufacturer-agnostic API endpoint
+    let endpoint = '/manufacturer/water-heaters';
+    if (manufacturer) {
+      endpoint += `?manufacturer=${encodeURIComponent(manufacturer)}`;
+    }
+    console.log(`Fetching water heaters from endpoint: ${endpoint}`);
+    return this.request('GET', endpoint);
   }
 
   /**
@@ -140,7 +150,9 @@ class ApiClient {
    * @returns {Promise<Object>} - Water heater data
    */
   async getWaterHeater(id) {
-    return this.request('GET', `/water-heaters/${id}`);
+    // Use the manufacturer-agnostic API endpoint
+    console.log(`Fetching water heater details for ID: ${id}`);
+    return this.request('GET', `/manufacturer/water-heaters/${id}`);
   }
 
   /**

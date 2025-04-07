@@ -26,19 +26,25 @@
 {% endblock %}
 
 {% block scripts %}
-<!-- Load the AquaTherm test helper first to ensure UI elements are available for tests -->
-<script src="/static/js/aquatherm-test-helper.js"></script>
+<!-- Clean up any mock water heaters that might be injected by other scripts -->
+<script src="/static/js/clear-mock-data.js"></script>
+
+<!-- DISABLED: AquaTherm test helper that injects mock water heaters -->
+<!-- <script src="/static/js/aquatherm-test-helper.js"></script> -->
 <script src="/static/js/api.js"></script>
 <script src="/static/js/debug.js"></script>
-<script src="/static/js/water-heater-new.js"></script>
-<script src="/static/js/aquatherm-water-heater.js"></script>
-<script src="/static/js/aquatherm-ui-debug.js"></script>
-<script src="/static/js/redirect-to-valid-heater.js"></script>
-<!-- Add test and fix scripts -->
-<script src="/static/js/tests/aquatherm-card-test.js"></script>
-<script src="/static/js/aquatherm-fix.js"></script>
-<!-- Add our guaranteed navigation fix -->
-<script src="/static/js/aquatherm-card-fix.js"></script>
+<!-- Add data source indicator to show database/mock status -->
+<script src="/static/js/data-source-indicator.js?v=20250405"></script>
+<!-- FORCE LATEST VERSION: Added version to prevent caching issues across networks -->
+<script src="/static/js/water-heater-new.js?v=20250405"></script>
+<!-- DISABLED: AquaTherm specific scripts -->
+<!-- <script src="/static/js/aquatherm-water-heater.js"></script> -->
+<!-- <script src="/static/js/aquatherm-ui-debug.js"></script> -->
+<script src="/static/js/redirect-to-valid-heater.js?v=20250405"></script>
+<!-- DISABLED: Test and fix scripts that may add mock water heaters -->
+<!-- <script src="/static/js/tests/aquatherm-card-test.js"></script> -->
+<!-- <script src="/static/js/aquatherm-fix.js"></script> -->
+<!-- <script src="/static/js/aquatherm-card-fix.js"></script> -->
 <!-- Add latest guaranteed navigation script -->
 <script src="/static/js/guaranteed-navigation.js"></script>
 <script>
