@@ -3,7 +3,10 @@
  */
 module.exports = {
   // The root directory where Jest should scan for tests
-  roots: ['<rootDir>/src/tests/frontend'],
+  roots: [
+    '<rootDir>/src/tests/frontend',
+    '<rootDir>/tests/unit'
+  ],
 
   // The test environment that will be used for testing
   testEnvironment: 'jsdom',
@@ -14,8 +17,16 @@ module.exports = {
     '**/?(*.)+(spec|test).js'
   ],
 
-  // Transform files with babel for ES6+ features
-  transform: {},
+  // Enable ESM support
+  transform: {
+    '^.+\.jsx?$': 'babel-jest'
+  },
+  transformIgnorePatterns: [
+    '/node_modules/(?!.*\.mjs$)'
+  ],
+
+  // ESM support is handled via package.json type field
+  // extensionsToTreatAsEsm setting removed to fix configuration conflict
 
   // Setup files to run before each test
   setupFiles: [],
