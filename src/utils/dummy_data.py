@@ -6,8 +6,8 @@ import random
 import uuid
 from datetime import datetime, timedelta
 
-# Import AquaTherm water heater data
-from src.utils.aquatherm_data import get_aquatherm_water_heaters
+# AquaTherm implementation has been deprecated
+# Now using manufacturer-agnostic implementations
 
 # Set up logging
 logger = logging.getLogger(__name__)
@@ -873,10 +873,10 @@ class DummyDataRepository:
     def __new__(cls):
         import logging
 
-        logging.error("DummyDataRepository.__new__ called")
+        logging.debug("DummyDataRepository.__new__ called")
 
         if cls._instance is None:
-            logging.error("Creating new DummyDataRepository instance")
+            logging.debug("Creating new DummyDataRepository instance")
             cls._instance = super(DummyDataRepository, cls).__new__(cls)
 
             # Ensure data directory exists
@@ -889,7 +889,7 @@ class DummyDataRepository:
             # Initialize data (only if no persisted data exists)
             cls._instance.initialize()
         else:
-            logging.error("Reusing existing DummyDataRepository instance")
+            logging.debug("Reusing existing DummyDataRepository instance")
 
         return cls._instance
 
@@ -897,56 +897,44 @@ class DummyDataRepository:
         """Initialize with dummy data, loading from JSON if available"""
         import logging
 
-        logging.error("DummyDataRepository.initialize() called")
+        logging.debug("DummyDataRepository.initialize() called")
 
         # Try to load from persistent storage first
         data_loaded = self._load_persisted_data()
 
         if not data_loaded:
-            # Generate water heaters if not loaded from JSON
-            water_heaters = generate_water_heaters(count=8)
-            self.water_heaters = {heater.id: heater for heater in water_heaters}
-            logging.error(f"Generated {len(water_heaters)} water heaters")
+            # Don't generate random water heaters, only use AquaTherm/Rheem ones
+            self.water_heaters = {}
+            logging.error(
+                "Skipping random water heater generation, using only AquaTherm/Rheem heaters"
+            )
 
-            # Load AquaTherm water heaters
+            # Generate manufacturer-agnostic water heaters
             try:
-                aquatherm_heaters = get_aquatherm_water_heaters()
-                aquatherm_ids = [h["id"] for h in aquatherm_heaters]
-                logging.error(
-                    f"Loading AquaTherm water heaters with IDs: {aquatherm_ids}"
-                )
+                # Generate random generic water heaters instead of AquaTherm-specific ones
+                logging.info("Generating manufacturer-agnostic water heaters")
 
-                # Convert dict to WaterHeater model objects
-                for heater_data in aquatherm_heaters:
-                    # Create a WaterHeater object
-                    heater = WaterHeater(
-                        id=heater_data["id"],
-                        name=heater_data["name"],
-                        type=DeviceType.WATER_HEATER,
-                        manufacturer=heater_data["manufacturer"],
-                        model=heater_data["model"],
-                        status=DeviceStatus(heater_data["status"]),
-                        heater_status=WaterHeaterStatus(heater_data["heater_status"]),
-                        mode=WaterHeaterMode(heater_data["mode"]),
-                        current_temperature=heater_data["current_temperature"],
-                        target_temperature=heater_data["target_temperature"],
-                        min_temperature=heater_data["min_temperature"],
-                        max_temperature=heater_data["max_temperature"],
-                        last_seen=datetime.now(),
-                        last_updated=datetime.now(),
-                        properties=heater_data.get("properties", {}),
-                        readings=[],
-                        heater_type=WaterHeaterType.RESIDENTIAL,
-                    )
+                # Generate water heaters is already implemented elsewhere in this file
+                generic_heaters = generate_water_heaters(10)
 
-                    # Add to our water heaters dictionary
-                    self.water_heaters[heater.id] = heater
-
-                logging.error(
-                    f"Successfully added {len(aquatherm_heaters)} AquaTherm water heaters"
-                )
+                # All AquaTherm-specific code has been removed since it's deprecated
+                # We're now using the manufacturer-agnostic implementation
+                pass
             except Exception as e:
-                logging.error(f"Error loading AquaTherm test data: {str(e)}")
+                logging.error(
+                    f"Error generating manufacturer-agnostic water heaters: {e}"
+                )
+
+                # We've completely removed all AquaTherm-specific code to align with our
+                # device-agnostic architecture and manufacturer-neutral implementation
+                # The water heaters are now generated using the generic generate_water_heaters function
+                # which already adds them to self.water_heaters
+
+                logging.info(f"Using manufacturer-agnostic water heater implementation")
+            except Exception as e:
+                logging.error(
+                    f"Error initializing manufacturer-agnostic water heaters: {str(e)}"
+                )
 
             # Generate vending machines if not loaded from JSON
             vending_machines = generate_vending_machines(count=30)

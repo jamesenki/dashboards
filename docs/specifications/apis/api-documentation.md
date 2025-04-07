@@ -4,6 +4,8 @@
 
 This document provides comprehensive documentation for the IoTSphere platform APIs. These REST APIs enable developers to interact with the IoTSphere platform programmatically, allowing for device management, data retrieval, and platform configuration.
 
+> **Note:** This document reflects the current manufacturer-agnostic API design. Legacy endpoints for specific manufacturers have been deprecated.
+
 ## Base URL
 
 All API endpoints are relative to the base URL:

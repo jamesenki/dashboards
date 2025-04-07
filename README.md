@@ -1,42 +1,44 @@
 # IoTSphere Application
 
-IoTSphere is an IoT monitoring platform for tracking and managing various devices including plant equipment, vending machines (Polar Delight), electric motorcycles/vehicles, and smart water heaters. This repository contains the refactored version using a Python backend with a lightweight JavaScript/HTML frontend.
+IoTSphere is an IoT monitoring platform for tracking and managing various devices including plant equipment, vending machines, electric vehicles, and smart water heaters. This repository contains the refactored platform using a Python backend with a lightweight JavaScript/HTML frontend.
 
 ## Project Overview
 
-This refactored version addresses issues with Angular's dependency management and security vulnerabilities by adopting a more maintainable architecture with these benefits:
+The platform has evolved to implement a manufacturer-agnostic architecture with a vision toward supporting multiple device types. The current implementation focuses on water heaters with a clean separation between device-agnostic core components and device-specific extensions.
 
-1. Better separation between backend data processing and frontend presentation
-2. Easier frontend customization for customers
-3. More explicit control over dependencies
-4. Leveraging Python's strengths for data processing
+### Recent Improvements
+
+1. **Manufacturer-Agnostic API**: Standardized API endpoints that work with any water heater brand
+2. **Device-Agnostic Architecture**: Foundation for supporting multiple device types beyond water heaters
+3. **Improved Network Compatibility**: Robust operation in various network environments
+4. **Deprecated Legacy Code**: Removed AquaTherm-specific implementations in favor of generic solutions
+5. **Consistent Data Access**: Real database integration with PostgreSQL for all environments
 
 ## Documentation Guide
 
 This README provides high-level information about the project. For detailed documentation, please refer to the following resources:
 
 ### Design & Architecture
-- [Architecture Overview](./docs/architecture-overview.md) - High-level system architecture and component interaction
+- [Device-Agnostic Platform Architecture](./docs/architecture/device_agnostic_platform.md) - Vision for the multi-device IoT platform
+- [Current Architecture](./docs/architecture/current-architecture.md) - Current implementation architecture
 - [Database Configuration](./docs/database_configuration.md) - PostgreSQL and TimescaleDB integration details
-- [Predictions Plan](./docs/predictionsplan.md) - Machine learning features for water heater monitoring
-- [Monitoring & Alerts Architecture](./docs/monitoring-alerts-architecture.md) - ML model monitoring and alerts system
+- [Predictions Plan](./docs/predictionsplan.md) - Machine learning features for device monitoring
 
 ### Architecture Decision Records
 - [ADR-001: Angular to Python/JS Migration](./docs/adr/001-angular-to-python-js-migration.md) - Rationale for platform migration
 - [ADR-002: Operations Dashboard Real-time Focus](./docs/adr/002-operations-dashboard-realtime-focus.md) - Focus on operational metrics
 - [ADR-003: PostgreSQL with TimescaleDB](./docs/adr/003-postgresql-timescaledb-database-choice.md) - Database architecture decisions
 - [ADR-004: ML Approach for Lifespan Estimation](./docs/adr/004-ml-approach-for-lifespan-estimation.md) - Machine learning implementation approach
-- [Data Models](./docs/data-models.md) - Database schema and model relationships
 
-### Features & Implementation
-- [Operations Dashboard](./docs/operations_dashboard.md) - Real-time operational monitoring and analytics
-- [API Documentation](./docs/api-documentation.md) - REST API endpoints and usage
+### API Documentation
+- [General API Documentation](./docs/specifications/apis/api-documentation.md) - Platform API overview
+- [Water Heater API](./docs/specifications/apis/water-heater-api.md) - Manufacturer-agnostic water heater API
 
 ### Developer Resources
+- [Water Heater Implementation Guide](./docs/development-guides/water-heater-implementation-guide.md) - Current water heater implementation details
 - [Developer Guide](./docs/developer-guide.md) - Getting started for developers
-- [Testing Strategy](./testing-strategy.md) - Test coverage and implementation
+- [Testing Strategy](./docs/testing-strategy.md) - Test coverage and implementation
 - [Coding Standards](./docs/coding-standards.md) - Coding conventions and best practices
-- [Contributing Guide](./docs/contributing.md) - Guidelines for contributing to the project
 
 ## Project Structure
 

@@ -24,6 +24,9 @@ import sys
 from datetime import datetime, timedelta
 from pathlib import Path
 
+# Make sure src is in the Python path
+sys.path.append(str(Path(__file__).resolve().parent.parent))
+
 # Configuration
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 TDD_LOG_FILE = PROJECT_ROOT / "tdd_workflow.log"
@@ -38,6 +41,9 @@ os.makedirs(PREDICTION_TEST_DIR, exist_ok=True)
 os.makedirs(TEST_DATA_DIR, exist_ok=True)
 os.makedirs(TEST_MOCK_DIR, exist_ok=True)
 os.makedirs(TEST_CHECKSUM_DIR, exist_ok=True)
+
+# Import environment loader for credentials
+from src.utils.env_loader import get_db_credentials
 
 
 def log_message(message, level="INFO"):
@@ -76,12 +82,14 @@ def verify_postgres_running():
     try:
         import psycopg2
 
+        # Get database credentials from environment variables
+        db_credentials = get_db_credentials()
         conn = psycopg2.connect(
-            dbname="iotsphere",
-            user="iotsphere",
-            password="iotsphere",
-            host="localhost",
-            port="5432",
+            dbname=db_credentials["database"],
+            user=db_credentials["user"],
+            password=db_credentials["password"],
+            host=db_credentials["host"],
+            port=str(db_credentials["port"]),
         )
         conn.close()
         log_message("PostgreSQL connection successful")
@@ -100,12 +108,14 @@ def check_timescaledb():
     try:
         import psycopg2
 
+        # Get database credentials from environment variables
+        db_credentials = get_db_credentials()
         conn = psycopg2.connect(
-            dbname="iotsphere",
-            user="iotsphere",
-            password="iotsphere",
-            host="localhost",
-            port="5432",
+            dbname=db_credentials["database"],
+            user=db_credentials["user"],
+            password=db_credentials["password"],
+            host=db_credentials["host"],
+            port=str(db_credentials["port"]),
         )
         cursor = conn.cursor()
         cursor.execute("SELECT 1 FROM pg_extension WHERE extname = 'timescaledb';")

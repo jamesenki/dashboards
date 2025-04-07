@@ -29,7 +29,20 @@ async def check_data_sources():
     service = ModelMonitoringService()
 
     # Get all models
-    models = await service.get_models()
+    result = await service.get_models()
+
+    # Extract models from the new data structure if needed
+    is_from_db = False
+    if isinstance(result, tuple) and len(result) > 0:
+        print("API Response Format: (models_array, is_from_db)")
+        models = result[0]  # Extract the actual models from the first element
+        is_from_db = result[1] if len(result) > 1 else False
+    elif isinstance(result, list):
+        models = result
+        print("API Response Format: direct models list")
+    else:
+        print(f"API Response Format: unexpected type {type(result)}")
+        models = result
 
     # Check current environment settings
     use_mock_data = os.environ.get("USE_MOCK_DATA", "False").lower() in (
@@ -38,17 +51,58 @@ async def check_data_sources():
         "t",
     )
     print(f"Current USE_MOCK_DATA setting: {use_mock_data}")
+    print(f"Is data from database (based on API response): {is_from_db}")
 
     # Print data source information
     print(f"\nFound {len(models)} models:")
-    for model in models:
-        data_source = model.get("data_source", "unknown")
-        print(f"- {model['name']} (ID: {model['id']}): Source = {data_source}")
 
-    # Count sources
-    db_count = sum(1 for m in models if m.get("data_source") == "database")
-    mock_count = sum(1 for m in models if m.get("data_source") == "mock")
-    unknown_count = sum(1 for m in models if "data_source" not in m)
+    # Check the data structure
+    if not models:
+        print("No models returned from the service.")
+        return
+
+    if not isinstance(models, list):
+        print(f"ERROR: Expected models to be a list, got {type(models)}")
+        print(f"Data sample: {models}")
+        return
+
+    if isinstance(models[0], list):
+        print("NOTE: Models are returned as nested lists, not dictionaries.")
+        print("Data structure has changed from what was expected.")
+        for i, model in enumerate(models):
+            print(f"- Model #{i+1}: {model}")
+        return
+
+    # Original logic for dictionary models
+    try:
+        for model in models:
+            if not isinstance(model, dict):
+                print(f"WARNING: Expected model to be a dictionary, got {type(model)}")
+                continue
+
+            data_source = model.get("data_source", "unknown")
+            print(
+                f"- {model.get('name', 'unknown')} (ID: {model.get('id', 'unknown')}): Source = {data_source}"
+            )
+
+        # Count sources
+        db_count = sum(
+            1
+            for m in models
+            if isinstance(m, dict) and m.get("data_source") == "database"
+        )
+        mock_count = sum(
+            1 for m in models if isinstance(m, dict) and m.get("data_source") == "mock"
+        )
+        unknown_count = sum(
+            1 for m in models if isinstance(m, dict) and "data_source" not in m
+        )
+    except (AttributeError, TypeError) as e:
+        print(f"ERROR: Unexpected data structure: {e}")
+        print(f"Data type: {type(models)}")
+        print(f"First model type: {type(models[0]) if models else 'N/A'}")
+        print(f"Data sample: {models[:2] if models else 'N/A'}")
+        return
 
     print(f"\nSummary:")
     print(f"- Models from database: {db_count}")
