@@ -51,7 +51,7 @@ const canvasMock = {
 // REMOVED to avoid duplicate step definitions - using the one in common_steps.js instead
 /* Given('I am logged in as an administrator', async function() {
   // we'll mock the authentication directly in the page context
-  
+
   // Set a global variable in the page context to indicate admin login
   await this.page.evaluate(() => {
     // Create a mock auth object directly on the window
@@ -60,14 +60,14 @@ const canvasMock = {
       userRole: 'administrator',
       permissions: ['read:devices', 'write:devices', 'admin:system']
     };
-    
+
     // Add an admin indicator element to the page
     const adminIndicator = document.createElement('div');
     adminIndicator.id = 'admin-logged-in';
     adminIndicator.style.display = 'none';
     document.body.appendChild(adminIndicator);
   });
-  
+
   // Verify the admin indicator exists
   const adminIndicator = await this.page.$('#admin-logged-in');
   expect(adminIndicator).to.not.be.null;
@@ -75,16 +75,16 @@ const canvasMock = {
 */
 
 // REMOVED to avoid duplicate step definitions - using common_steps.js
-/* 
+/*
 // REMOVED to avoid duplicate step definitions - using common_steps.js
 // // REMOVED to avoid duplicate step definitions - using common_steps.js
 // When('I navigate to the water heater with ID {string}', async function(deviceId) {
   // Store device ID for later use in the test
   this.deviceId = deviceId;
-  
+
   // Navigate to the device page
   await this.navigate(`/devices/${deviceId}`);
-  
+
   // Mock device info in the page
   await this.page.evaluate(({ deviceId, shadowData }) => {
     // Create the basic page structure if it doesn't exist
@@ -109,7 +109,7 @@ const canvasMock = {
       document.body.appendChild(container);
     }
   }, { deviceId, shadowData: mockShadowData[deviceId] });
-  
+
   // Wait for the page elements to be rendered
   await this.page.waitForSelector('.device-info-card', { timeout: 5000 });
 });
@@ -125,7 +125,7 @@ Then('I should see the device shadow information', async function() {
 Then('the temperature should be displayed', async function() {
   const temperatureElement = await this.page.$('.temperature-display, .temperature-value');
   expect(temperatureElement).to.not.be.null;
-  
+
   const temperatureText = await this.page.$eval('.temperature-display, .temperature-value', el => el.textContent);
   expect(temperatureText).to.not.be.empty;
   expect(temperatureText).to.match(/\d+(\.\d+)?°?/);
@@ -135,20 +135,20 @@ Then('the status indicators should reflect current device state', async function
   // Check for status indicator element
   const statusElement = await this.page.$('.device-status, .status-indicator');
   expect(statusElement).to.not.be.null;
-  
+
   // Verify status text
   const statusText = await this.page.$eval('.device-status, .status-indicator', el => el.textContent);
   expect(statusText).to.match(/online|offline|warning/);
 });
 
 // REMOVED to avoid duplicate step definitions - using common_steps.js
-/* 
+/*
 // REMOVED to avoid duplicate step definitions - using common_steps.js
 // // REMOVED to avoid duplicate step definitions - using common_steps.js
 // When('I navigate to the water heater with ID {string}', async function(deviceId) {
   // Navigate to the device details page
   await this.page.goto(`/devices/${deviceId}`, { waitUntil: 'networkidle' });
-  
+
   // Verify we're on the correct page
   const titleElement = await this.page.$('#device-id-title, .device-title');
   if (titleElement) {
@@ -186,11 +186,11 @@ Then('I should see an error message about missing shadow document', async functi
       document.body.appendChild(errorMsg);
     }
   });
-  
+
   // Check for error message element
   const errorElement = await this.page.$('.shadow-document-error, .error-message');
   expect(errorElement).to.not.be.null;
-  
+
   // Get the error message text
   const errorText = await this.page.evaluate(el => el.textContent, errorElement);
   expect(errorText).to.include('shadow document');
@@ -202,7 +202,7 @@ Then('I should see the device shadow information', async function() {
   // Verify the shadow document section exists
   const shadowSection = await this.page.$('.shadow-document-section, .device-shadow');
   expect(shadowSection).to.not.be.null;
-  
+
   // If this device has a missing shadow, we should see an error instead
   if (this.deviceId && this.deviceId.includes('missing')) {
     const errorMsg = await this.page.$('.shadow-error, .error-message');
@@ -215,17 +215,17 @@ Then('I should see the device shadow information', async function() {
         // Create metadata section
         const metadata = document.createElement('div');
         metadata.className = 'shadow-metadata';
-        
+
         // Add some mock data
         const lastUpdated = document.createElement('div');
         lastUpdated.className = 'last-updated';
         lastUpdated.textContent = `Last Updated: ${new Date().toLocaleString()}`;
         metadata.appendChild(lastUpdated);
-        
+
         shadowSection.appendChild(metadata);
       }
     });
-    
+
     // Check if shadow metadata is visible
     const metadata = await this.page.$('.shadow-metadata, .shadow-info');
     expect(metadata).to.not.be.null;
@@ -237,10 +237,10 @@ Then('the temperature should be displayed', async function() {
   // Check if temperature display exists
   const tempDisplay = await this.page.$('.temperature-display, .device-temperature');
   expect(tempDisplay).to.not.be.null;
-  
+
   // Get the temperature text
   const tempText = await this.page.evaluate(el => el.textContent, tempDisplay);
-  
+
   // For devices with missing shadow documents, we expect placeholder
   if (this.deviceId && this.deviceId.includes('missing')) {
     expect(tempText).to.include('--');
@@ -254,24 +254,24 @@ Then('the temperature should be displayed', async function() {
       }
     }
   });
-  
+
   // Check for status indicators
   const statusIndicators = await this.page.$$('.status-indicator');
   expect(statusIndicators.length).to.be.at.least(1);
-  
+
   // Verify each status indicator has a valid state class
   for (const indicator of statusIndicators) {
     const hasState = await this.page.evaluate(el => {
       const indicatorElement = el.querySelector('.indicator');
       if (!indicatorElement) return false;
-      
+
       // Check for any state class
       return [
-        'online', 'offline', 'error', 
+        'online', 'offline', 'error',
         'active', 'inactive', 'standby'
       ].some(state => indicatorElement.classList.contains(state));
     }, indicator);
-    
+
     expect(hasState).to.be.true;
   }
 });
@@ -281,14 +281,14 @@ Then('the error message should clearly explain the issue', async function() {
   // Check the content of the error message
   const errorElement = await this.page.$('.shadow-document-error, .error-message');
   expect(errorElement).to.not.be.null;
-  
+
   // Check that it's visible
   const isVisible = await this.page.evaluate(el => {
     return window.getComputedStyle(el).display !== 'none';
   }, errorElement);
-  
+
   expect(isVisible).to.be.true;
-  
+
   // Verify the message content is clear
   const errorText = await this.page.evaluate(el => el.textContent, errorElement);
   expect(errorText).to.include('shadow document');
@@ -301,7 +301,7 @@ Then('I should see the device shadow information', async function() {
   // Verify the shadow document section exists
   const shadowSection = await this.page.$('.shadow-document-section, .device-shadow');
   expect(shadowSection).to.not.be.null;
-  
+
   // If this device has a missing shadow, we should see an error instead
   if (this.deviceId && this.deviceId.includes('missing')) {
     const errorMsg = await this.page.$('.shadow-error, .error-message');
@@ -314,17 +314,17 @@ Then('I should see the device shadow information', async function() {
         // Create metadata section
         const metadata = document.createElement('div');
         metadata.className = 'shadow-metadata';
-        
+
         // Add some mock data
         const lastUpdated = document.createElement('div');
         lastUpdated.className = 'last-updated';
         lastUpdated.textContent = `Last Updated: ${new Date().toLocaleString()}`;
         metadata.appendChild(lastUpdated);
-        
+
         shadowSection.appendChild(metadata);
       }
     });
-    
+
     // Check if shadow metadata is visible
     const metadata = await this.page.$('.shadow-metadata, .shadow-info');
     expect(metadata).to.not.be.null;
@@ -336,10 +336,10 @@ Then('the temperature should be displayed', async function() {
   // Check if temperature display exists
   const tempDisplay = await this.page.$('.temperature-display, .device-temperature');
   expect(tempDisplay).to.not.be.null;
-  
+
   // Get the temperature text
   const tempText = await this.page.evaluate(el => el.textContent, tempDisplay);
-  
+
   // For devices with missing shadow documents, we expect placeholder
   if (this.deviceId && this.deviceId.includes('missing')) {
     expect(tempText).to.include('--');
@@ -353,24 +353,24 @@ Then('the temperature should be displayed', async function() {
       }
     }
   });
-  
+
   // Check for status indicators
   const statusIndicators = await this.page.$$('.status-indicator');
   expect(statusIndicators.length).to.be.at.least(1);
-  
+
   // Verify each status indicator has a valid state class
   for (const indicator of statusIndicators) {
     const hasState = await this.page.evaluate(el => {
       const indicatorElement = el.querySelector('.indicator');
       if (!indicatorElement) return false;
-      
+
       // Check for any state class
       return [
-        'online', 'offline', 'error', 
+        'online', 'offline', 'error',
         'active', 'inactive', 'standby'
       ].some(state => indicatorElement.classList.contains(state));
     }, indicator);
-    
+
     expect(hasState).to.be.true;
   }
 });

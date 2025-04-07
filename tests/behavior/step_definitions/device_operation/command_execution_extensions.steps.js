@@ -14,7 +14,7 @@ import('chai').then(chai => {
 When('the user sends a {string} command', function(commandType) {
   // Get the current device
   const deviceId = this.testContext.currentDeviceId || 'water-heater-123';
-  
+
   // Create a command object based on the type
   let command = {
     type: commandType,
@@ -22,7 +22,7 @@ When('the user sends a {string} command', function(commandType) {
     timestamp: new Date().toISOString(),
     status: 'PENDING'
   };
-  
+
   // Add command-specific parameters
   switch(commandType) {
     case 'setMode':
@@ -43,10 +43,10 @@ When('the user sends a {string} command', function(commandType) {
     default:
       command.parameters = {};
   }
-  
+
   // Store the command for later steps
   this.testContext.currentCommand = command;
-  
+
   return 'pending'; // Mark as pending since this is just a stub implementation
 });
 
@@ -57,20 +57,20 @@ Then('when the device comes online', function() {
   // Get the current device and command
   const deviceId = this.testContext.currentDeviceId || 'water-heater-123';
   const command = this.testContext.currentCommand;
-  
+
   if (!command) {
     throw new Error('No command has been created to execute when device comes online');
   }
-  
+
   // Update device status to online
   this.deviceRepository.updateDeviceStatus(deviceId, 'ONLINE');
-  
+
   // Simulate the command being sent to the device
   command.status = 'SENT';
   command.sentTimestamp = new Date().toISOString();
-  
+
   // Store updated command
   this.testContext.currentCommand = command;
-  
+
   return 'pending'; // Mark as pending since this is just a stub implementation
 });

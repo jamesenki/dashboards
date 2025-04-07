@@ -19,47 +19,47 @@ Then('the business intelligence analytics dashboard should display:', function(d
       { name: 'Uptime', value: '99.2%', trend: 'up', timeRange: '30 days' }
     ],
     charts: [
-      { 
-        type: 'line', 
+      {
+        type: 'line',
         title: 'Energy Consumption Trends',
         dataPoints: 90,
         hasComparison: true
       },
-      { 
-        type: 'bar', 
+      {
+        type: 'bar',
         title: 'Device Performance by Type',
         dataPoints: 12,
         hasComparison: true
       },
-      { 
-        type: 'pie', 
+      {
+        type: 'pie',
         title: 'Operational Cost Breakdown',
         dataPoints: 6,
         hasComparison: false
       }
     ],
     alerts: [
-      { 
-        type: 'warning', 
+      {
+        type: 'warning',
         message: 'Energy consumption above threshold in Building A',
         timestamp: new Date().toISOString(),
         actionable: true
       },
-      { 
-        type: 'info', 
+      {
+        type: 'info',
         message: 'Predictive maintenance opportunity identified',
         timestamp: new Date().toISOString(),
         actionable: true
       }
     ]
   };
-  
+
   // Store the dashboard content in test context
   this.testContext.dashboardContent = dashboardContent;
-  
+
   // Check that all required elements from the data table are present
   const requirements = dataTable.rowsHash();
-  
+
   for (const [metricType, description] of Object.entries(requirements)) {
     switch(metricType) {
       case 'keyPerformanceIndicators':
@@ -88,6 +88,6 @@ Then('the business intelligence analytics dashboard should display:', function(d
         break;
     }
   }
-  
+
   return 'pending'; // Mark as pending since this is just a stub implementation
 });

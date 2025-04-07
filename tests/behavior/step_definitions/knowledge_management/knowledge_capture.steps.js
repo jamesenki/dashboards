@@ -14,10 +14,10 @@ import('chai').then(chai => {
 Given('a service technician resolves an unusual issue', async function() {
   // Create a device with an unusual issue
   const deviceId = 'knowledge-capture-device';
-  
+
   // Register device if not exists
   let device = await this.deviceRepository.findDeviceById(deviceId);
-  
+
   if (!device) {
     device = await this.deviceRepository.registerDevice({
       id: deviceId,
@@ -29,12 +29,12 @@ Given('a service technician resolves an unusual issue', async function() {
       firmwareVersion: '1.0.0'
     });
   }
-  
+
   this.testContext.currentDeviceId = deviceId;
-  
+
   // Create an unusual error code
   await this.deviceRepository.addDeviceErrorCode(deviceId, 'E-UNUSUAL-42');
-  
+
   // Set up technician
   this.testContext.technician = {
     id: 'test-technician',
@@ -43,7 +43,7 @@ Given('a service technician resolves an unusual issue', async function() {
     specialization: 'Water Heater Systems',
     experienceYears: 12
   };
-  
+
   // Store resolution details
   this.testContext.unusualResolution = {
     errorCode: 'E-UNUSUAL-42',
@@ -68,7 +68,7 @@ Given('accumulated knowledge about device operations and maintenance', async fun
     ],
     knowledgeEntries: []
   };
-  
+
   // Create sample knowledge entries
   const sampleEntries = [
     {
@@ -127,13 +127,13 @@ Given('accumulated knowledge about device operations and maintenance', async fun
       successRate: 0.96
     }
   ];
-  
+
   // Add entries to knowledge base
   for (const entry of sampleEntries) {
     await this.analyticsEngine.addKnowledgeEntry(entry);
     this.testContext.knowledgeBase.knowledgeEntries.push(entry);
   }
-  
+
   // Verify knowledge base has entries
   const entries = await this.analyticsEngine.getKnowledgeEntries();
   expect(entries.length).to.equal(sampleEntries.length);
@@ -145,7 +145,7 @@ Given('accumulated knowledge about device operations and maintenance', async fun
 When('they document their solution in the system', async function() {
   const solution = this.testContext.unusualResolution;
   const technician = this.testContext.technician;
-  
+
   try {
     // Document the solution
     const knowledgeEntry = {
@@ -158,7 +158,7 @@ When('they document their solution in the system', async function() {
       author: technician.name,
       dateAdded: new Date()
     };
-    
+
     const result = await this.analyticsEngine.addTechnicianSolution(knowledgeEntry);
     this.testContext.knowledgeResult = result;
   } catch (error) {
@@ -182,16 +182,16 @@ When('the business intelligence system analyzes this knowledge', async function(
 Then('the knowledge management system should:', function(dataTable) {
   const expectedActions = dataTable.rowsHash();
   const result = this.testContext.knowledgeResult;
-  
+
   expect(result).to.not.be.null;
-  
+
   // Verify each expected action was performed
   for (const [action] of Object.entries(expectedActions)) {
     // Convert to camelCase
     const propertyName = action
       .toLowerCase()
       .replace(/[^a-z0-9]+(.)/g, (match, chr) => chr.toUpperCase());
-    
+
     expect(result).to.have.property(propertyName);
     expect(result[propertyName]).to.be.an('object');
   }
@@ -200,14 +200,14 @@ Then('the knowledge management system should:', function(dataTable) {
 Then('the new knowledge should be available for future similar issues', async function() {
   const result = this.testContext.knowledgeResult;
   const deviceId = this.testContext.currentDeviceId;
-  
+
   // Verify knowledge can be retrieved
   const knowledgeEntry = await this.analyticsEngine.getKnowledgeEntryByErrorCode(result.extractKeyInsights.errorCode);
   expect(knowledgeEntry).to.not.be.null;
-  
+
   // Now try to use it for a similar issue
   const similarDeviceId = 'similar-issue-device';
-  
+
   // Register a similar device
   await this.deviceRepository.registerDevice({
     id: similarDeviceId,
@@ -218,13 +218,13 @@ Then('the new knowledge should be available for future similar issues', async fu
     serialNumber: 'SIMILAR-1',
     firmwareVersion: '1.0.0'
   });
-  
+
   // Add the same error code
   await this.deviceRepository.addDeviceErrorCode(similarDeviceId, result.extractKeyInsights.errorCode);
-  
+
   // Request troubleshooting assistance
   const assistance = await this.analyticsEngine.getTroubleshootingAssistance(similarDeviceId);
-  
+
   // Verify the new knowledge is utilized
   expect(assistance.solutions).to.be.an('array');
   const relevantSolution = assistance.solutions.find(s => s.source && s.source.includes(result.extractKeyInsights.id));
@@ -233,13 +233,13 @@ Then('the new knowledge should be available for future similar issues', async fu
 
 Then('other technicians should benefit from the captured expertise', async function() {
   const result = this.testContext.knowledgeResult;
-  
+
   // Simulate technician searching for solutions
   const searchResults = await this.analyticsEngine.searchSolutions({
     deviceType: 'water-heater',
     searchTerm: 'pressure'
   });
-  
+
   // Verify the new solution is in the search results
   expect(searchResults).to.be.an('array');
   const foundSolution = searchResults.find(s => s.id === result.extractKeyInsights.id);
@@ -249,17 +249,17 @@ Then('other technicians should benefit from the captured expertise', async funct
 Then('it should identify opportunities for operational improvements such as:', function(dataTable) {
   const expectedOpportunities = dataTable.rowsHash();
   const analysis = this.testContext.knowledgeAnalysis;
-  
+
   expect(analysis).to.have.property('improvementOpportunities');
   expect(analysis.improvementOpportunities).to.be.an('object');
-  
+
   // Check each expected opportunity type
   for (const [opportunity] of Object.entries(expectedOpportunities)) {
     // Convert to camelCase
     const propertyName = opportunity
       .toLowerCase()
       .replace(/[^a-z0-9]+(.)/g, (match, chr) => chr.toUpperCase());
-    
+
     expect(analysis.improvementOpportunities).to.have.property(propertyName);
     expect(analysis.improvementOpportunities[propertyName]).to.be.an('array');
     expect(analysis.improvementOpportunities[propertyName].length).to.be.greaterThan(0);
@@ -268,7 +268,7 @@ Then('it should identify opportunities for operational improvements such as:', f
 
 Then('each improvement should include an estimated impact', function() {
   const analysis = this.testContext.knowledgeAnalysis;
-  
+
   // Check all improvement types
   for (const improvements of Object.values(analysis.improvementOpportunities)) {
     // Each improvement should have impact information
@@ -283,10 +283,10 @@ Then('each improvement should include an estimated impact', function() {
 
 Then('implementation guidance should be provided', function() {
   const analysis = this.testContext.knowledgeAnalysis;
-  
+
   expect(analysis).to.have.property('implementationGuidance');
   expect(analysis.implementationGuidance).to.be.an('object');
-  
+
   // Should have guidance for each improvement type
   for (const improvementType of Object.keys(analysis.improvementOpportunities)) {
     expect(analysis.implementationGuidance).to.have.property(improvementType);
@@ -298,11 +298,11 @@ Then('implementation guidance should be provided', function() {
 
 Then('training materials should be automatically suggested', function() {
   const analysis = this.testContext.knowledgeAnalysis;
-  
+
   expect(analysis).to.have.property('suggestedTraining');
   expect(analysis.suggestedTraining).to.be.an('array');
   expect(analysis.suggestedTraining.length).to.be.greaterThan(0);
-  
+
   // Each training suggestion should include essential information
   for (const training of analysis.suggestedTraining) {
     expect(training).to.have.property('title');

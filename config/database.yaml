@@ -1,0 +1,22 @@
+# PostgreSQL Database Configuration
+# This file defines database settings for development and testing environments
+
+# Development environment (local PostgreSQL)
+development:
+  type: postgres
+  host: localhost
+  port: 5432
+  name: iotsphere
+  user: iotsphere
+  password: iotsphere
+  fallback_to_mock: true  # Fall back to mock data if connection fails
+  debug_logging: true
+  connect_timeout: 10
+  pool_size: 5
+  max_overflow: 10
+
+# Testing environment (in-memory database)
+testing:
+  type: memory
+  fallback_to_mock: true
+  debug_logging: true

@@ -1,6 +1,6 @@
 /**
  * Browser Hooks for IoTSphere BDD Tests
- * 
+ *
  * Provides browser setup and helper functions for interacting with UI elements
  * Designed to support device-agnostic approach with water heater reference implementation
  */
@@ -36,7 +36,7 @@ function setupBrowserHooks() {
       viewport: { width: 1280, height: 720 }
     });
     this.page = await this.context.newPage();
-    
+
     // Set up mock API interceptors
     await setupApiMocks(this.page);
   });
@@ -69,7 +69,7 @@ async function setupApiMocks(page) {
   await page.route('**/api/devices/*', route => {
     const url = route.request().url();
     const deviceId = url.split('/').pop().split('?')[0];
-    
+
     return page.evaluate(id => {
       return localStorage.getItem(`device_${id}`);
     }, deviceId).then(device => {
@@ -93,7 +93,7 @@ async function setupApiMocks(page) {
   await page.route('**/api/telemetry/history/*', route => {
     const url = route.request().url();
     const deviceId = url.split('/').pop().split('?')[0];
-    
+
     return page.evaluate(id => {
       return localStorage.getItem(`telemetry_${id}`);
     }, deviceId).then(telemetry => {
@@ -118,7 +118,7 @@ async function setupApiMocks(page) {
     const url = route.request().url();
     const parts = url.split('/');
     const deviceId = parts[parts.indexOf('devices') + 1];
-    
+
     return page.evaluate(id => {
       return localStorage.getItem(`performance_${id}`);
     }, deviceId).then(performance => {
@@ -141,7 +141,7 @@ async function setupApiMocks(page) {
   // Intercept command API calls to simulate device control
   await page.route('**/api/commands', async (route) => {
     const postData = route.request().postDataJSON();
-    
+
     // Store command in history for verification
     await page.evaluate(commandData => {
       const commandHistory = JSON.parse(localStorage.getItem('commandHistory') || '[]');
@@ -149,22 +149,22 @@ async function setupApiMocks(page) {
       commandData.acknowledged = false;
       commandHistory.push(commandData);
       localStorage.setItem('commandHistory', JSON.stringify(commandHistory));
-      
+
       // Simulate command acknowledgment after a delay
       setTimeout(() => {
         const history = JSON.parse(localStorage.getItem('commandHistory') || '[]');
-        const index = history.findIndex(cmd => 
+        const index = history.findIndex(cmd =>
           cmd.timestamp === commandData.timestamp &&
           cmd.command === commandData.command
         );
-        
+
         if (index >= 0) {
           history[index].acknowledged = true;
           localStorage.setItem('commandHistory', JSON.stringify(history));
         }
       }, 500);
     }, postData);
-    
+
     route.fulfill({
       status: 202,
       contentType: 'application/json',
@@ -216,7 +216,7 @@ async function getAnomalyCount(page) {
 async function getTemperatureValues(page) {
   const currentElement = await page.$('.current-temp .value');
   const targetElement = await page.$('.target-temp .value');
-  
+
   return {
     current: await currentElement.textContent(),
     target: await targetElement.textContent()

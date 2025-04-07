@@ -1,0 +1,289 @@
+/**
+ * Water Heater Micro-Frontend Styles
+ * 
+ * Common styles for water heater components
+ * Part of the device-agnostic IoTSphere platform
+ */
+
+:root {
+  /* Primary colors */
+  --primary-color: #2196F3;
+  --primary-light: #E3F2FD;
+  --primary-dark: #1976D2;
+  
+  /* Secondary colors */
+  --secondary-color: #FF9800;
+  --secondary-light: #FFF3E0;
+  --secondary-dark: #F57C00;
+  
+  /* Neutral colors */
+  --text-primary: #212121;
+  --text-secondary: #757575;
+  --divider-color: #E0E0E0;
+  --background-light: #F5F5F5;
+  --background-white: #FFFFFF;
+  
+  /* Status colors */
+  --success-color: #4CAF50;
+  --success-light: #E8F5E9;
+  --warning-color: #FF9800;
+  --warning-light: #FFF3E0;
+  --error-color: #F44336;
+  --error-light: #FFEBEE;
+  --info-color: #2196F3;
+  --info-light: #E3F2FD;
+  
+  /* Fonts */
+  --font-family: 'Roboto', 'Segoe UI', Arial, sans-serif;
+  --font-size-small: 0.875rem;
+  --font-size-normal: 1rem;
+  --font-size-large: 1.25rem;
+  --font-size-xlarge: 1.5rem;
+  
+  /* Spacing */
+  --spacing-xs: 0.25rem;
+  --spacing-s: 0.5rem;
+  --spacing-m: 1rem;
+  --spacing-l: 1.5rem;
+  --spacing-xl: 2rem;
+  
+  /* Borders */
+  --border-radius-small: 4px;
+  --border-radius-medium: 8px;
+  --border-radius-large: 16px;
+  --border-width: 1px;
+  
+  /* Shadows */
+  --shadow-light: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --shadow-medium: 0 4px 8px rgba(0, 0, 0, 0.1);
+  --shadow-dark: 0 8px 16px rgba(0, 0, 0, 0.1);
+  
+  /* Transitions */
+  --transition-fast: 0.2s;
+  --transition-normal: 0.3s;
+  --transition-slow: 0.5s;
+}
+
+/* Global styles for water heater components */
+.water-heater-dashboard,
+.water-heater-device-details {
+  font-family: var(--font-family);
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+
+/* Card styles */
+.card {
+  background-color: var(--background-white);
+  border-radius: var(--border-radius-medium);
+  box-shadow: var(--shadow-light);
+  padding: var(--spacing-l);
+  margin-bottom: var(--spacing-l);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-l);
+}
+
+.card-title {
+  font-size: var(--font-size-large);
+  font-weight: 500;
+  margin: 0;
+}
+
+/* Button styles */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-s) var(--spacing-m);
+  border-radius: var(--border-radius-small);
+  font-family: var(--font-family);
+  font-size: var(--font-size-normal);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+  border: none;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-dark);
+}
+
+.btn-secondary {
+  background-color: var(--background-light);
+  color: var(--text-secondary);
+}
+
+.btn-secondary:hover {
+  background-color: var(--divider-color);
+}
+
+.btn-success {
+  background-color: var(--success-color);
+  color: white;
+}
+
+.btn-warning {
+  background-color: var(--warning-color);
+  color: white;
+}
+
+.btn-error {
+  background-color: var(--error-color);
+  color: white;
+}
+
+/* Status indicators */
+.status-indicator {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--spacing-xs) var(--spacing-s);
+  border-radius: var(--border-radius-large);
+  font-size: var(--font-size-small);
+}
+
+.status-indicator.connected {
+  background-color: var(--success-light);
+  color: var(--success-color);
+}
+
+.status-indicator.disconnected {
+  background-color: var(--error-light);
+  color: var(--error-color);
+}
+
+.status-indicator.warning {
+  background-color: var(--warning-light);
+  color: var(--warning-color);
+}
+
+/* Loading state */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-xl);
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(33, 150, 243, 0.2);
+  border-top: 4px solid var(--primary-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: var(--spacing-m);
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Error state */
+.error-container {
+  background-color: var(--error-light);
+  color: var(--error-color);
+  padding: var(--spacing-l);
+  border-radius: var(--border-radius-medium);
+  text-align: center;
+  margin: var(--spacing-l) 0;
+}
+
+/* Empty state */
+.empty-container {
+  text-align: center;
+  padding: var(--spacing-xl);
+  color: var(--text-secondary);
+}
+
+/* Responsive grid layouts */
+.grid {
+  display: grid;
+  gap: var(--spacing-l);
+}
+
+.grid-2 {
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+
+.grid-3 {
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+}
+
+/* Media queries for responsiveness */
+@media (max-width: 768px) {
+  .card {
+    padding: var(--spacing-m);
+  }
+  
+  .grid-2,
+  .grid-3 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Tab navigation */
+.device-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--divider-color);
+  margin-bottom: var(--spacing-l);
+  overflow-x: auto;
+}
+
+.tab-button {
+  padding: var(--spacing-s) var(--spacing-l);
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: var(--font-size-normal);
+  font-weight: 500;
+  color: var(--text-secondary);
+  position: relative;
+  white-space: nowrap;
+}
+
+.tab-button.active {
+  color: var(--primary-color);
+}
+
+.tab-button.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background-color: var(--primary-color);
+}
+
+.tab-pane {
+  display: none;
+}
+
+.tab-pane.active {
+  display: block;
+}
+
+/* Device overview layout */
+.device-overview-layout {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: var(--spacing-l);
+}
+
+@media (max-width: 1024px) {
+  .device-overview-layout {
+    grid-template-columns: 1fr;
+  }
+}

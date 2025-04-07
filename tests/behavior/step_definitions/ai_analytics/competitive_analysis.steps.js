@@ -508,7 +508,7 @@ When('the competitive intelligence system analyzes the market position', async f
       featureComparison: this.testContext.featureComparison,
       analysisTimeframe: '3 years'
     });
-    
+
     this.testContext.competitiveAnalysis = competitiveAnalysis;
   } catch (error) {
     this.testContext.errors.push(error);
@@ -520,16 +520,16 @@ When('the competitive intelligence system analyzes the market position', async f
  */
 Then('it should identify key competitive strengths and vulnerabilities', function() {
   const analysis = this.testContext.competitiveAnalysis;
-  
+
   expect(analysis).to.have.property('strengthsAndVulnerabilities');
   expect(analysis.strengthsAndVulnerabilities).to.be.an('object');
   expect(analysis.strengthsAndVulnerabilities).to.have.property('strengths');
   expect(analysis.strengthsAndVulnerabilities).to.have.property('vulnerabilities');
-  
+
   // Check strengths array
   expect(analysis.strengthsAndVulnerabilities.strengths).to.be.an('array');
   expect(analysis.strengthsAndVulnerabilities.strengths.length).to.be.at.least(3);
-  
+
   // Each strength should have specific properties
   for (const strength of analysis.strengthsAndVulnerabilities.strengths) {
     expect(strength).to.have.property('area');
@@ -538,11 +538,11 @@ Then('it should identify key competitive strengths and vulnerabilities', functio
     expect(strength).to.have.property('sustainability');
     expect(strength).to.have.property('relevantCompetitors');
   }
-  
+
   // Check vulnerabilities array
   expect(analysis.strengthsAndVulnerabilities.vulnerabilities).to.be.an('array');
   expect(analysis.strengthsAndVulnerabilities.vulnerabilities.length).to.be.at.least(2);
-  
+
   // Each vulnerability should have specific properties
   for (const vulnerability of analysis.strengthsAndVulnerabilities.vulnerabilities) {
     expect(vulnerability).to.have.property('area');
@@ -555,11 +555,11 @@ Then('it should identify key competitive strengths and vulnerabilities', functio
 
 Then('it should map opportunities for differentiation', function() {
   const analysis = this.testContext.competitiveAnalysis;
-  
+
   expect(analysis).to.have.property('differentiationOpportunities');
   expect(analysis.differentiationOpportunities).to.be.an('array');
   expect(analysis.differentiationOpportunities.length).to.be.at.least(3);
-  
+
   // Each opportunity should have specific properties
   for (const opportunity of analysis.differentiationOpportunities) {
     expect(opportunity).to.have.property('area');
@@ -573,11 +573,11 @@ Then('it should map opportunities for differentiation', function() {
 
 Then('it should highlight underserved market needs', function() {
   const analysis = this.testContext.competitiveAnalysis;
-  
+
   expect(analysis).to.have.property('underservedNeeds');
   expect(analysis.underservedNeeds).to.be.an('array');
   expect(analysis.underservedNeeds.length).to.be.at.least(2);
-  
+
   // Each need should have specific properties
   for (const need of analysis.underservedNeeds) {
     expect(need).to.have.property('need');
@@ -591,11 +591,11 @@ Then('it should highlight underserved market needs', function() {
 
 Then('it should recommend strategic positioning options', function() {
   const analysis = this.testContext.competitiveAnalysis;
-  
+
   expect(analysis).to.have.property('strategicPositioningOptions');
   expect(analysis.strategicPositioningOptions).to.be.an('array');
   expect(analysis.strategicPositioningOptions.length).to.be.at.least(3);
-  
+
   // Each positioning option should have specific properties
   for (const option of analysis.strategicPositioningOptions) {
     expect(option).to.have.property('positioningStatement');
@@ -610,25 +610,25 @@ Then('it should recommend strategic positioning options', function() {
 
 Then('it should quantify potential market share gains for each strategy', function() {
   const analysis = this.testContext.competitiveAnalysis;
-  
+
   expect(analysis).to.have.property('marketShareProjections');
   expect(analysis.marketShareProjections).to.be.an('object');
   expect(analysis.marketShareProjections).to.have.property('baseline');
   expect(analysis.marketShareProjections).to.have.property('byStrategy');
-  
+
   // Check baseline projection
   expect(analysis.marketShareProjections.baseline).to.be.an('object');
   expect(analysis.marketShareProjections.baseline).to.have.property('currentMarketShare');
   expect(analysis.marketShareProjections.baseline).to.have.property('projectedMarketShare');
   expect(analysis.marketShareProjections.baseline).to.have.property('assumptions');
-  
+
   // Check projections for each strategy
   expect(analysis.marketShareProjections.byStrategy).to.be.an('object');
-  
+
   for (const option of analysis.strategicPositioningOptions) {
     const strategyId = option.positioningStatement.toLowerCase().replace(/\s+/g, '-').substring(0, 20);
     expect(analysis.marketShareProjections.byStrategy).to.have.property(strategyId);
-    
+
     const projection = analysis.marketShareProjections.byStrategy[strategyId];
     expect(projection).to.have.property('year1MarketShare');
     expect(projection).to.have.property('year3MarketShare');
@@ -639,12 +639,12 @@ Then('it should quantify potential market share gains for each strategy', functi
 
 Then('it should identify high-value acquisition or partnership targets', function() {
   const analysis = this.testContext.competitiveAnalysis;
-  
+
   expect(analysis).to.have.property('acquisitionPartnershipTargets');
   expect(analysis.acquisitionPartnershipTargets).to.be.an('object');
   expect(analysis.acquisitionPartnershipTargets).to.have.property('acquisitionTargets');
   expect(analysis.acquisitionPartnershipTargets).to.have.property('partnershipOpportunities');
-  
+
   // Check acquisition targets
   expect(analysis.acquisitionPartnershipTargets.acquisitionTargets).to.be.an('array');
   if (analysis.acquisitionPartnershipTargets.acquisitionTargets.length > 0) {
@@ -656,11 +656,11 @@ Then('it should identify high-value acquisition or partnership targets', functio
       expect(target).to.have.property('riskFactors');
     }
   }
-  
+
   // Check partnership opportunities
   expect(analysis.acquisitionPartnershipTargets.partnershipOpportunities).to.be.an('array');
   expect(analysis.acquisitionPartnershipTargets.partnershipOpportunities.length).to.be.at.least(2);
-  
+
   for (const opportunity of analysis.acquisitionPartnershipTargets.partnershipOpportunities) {
     expect(opportunity).to.have.property('partnerType');
     expect(opportunity).to.have.property('potentialPartners');

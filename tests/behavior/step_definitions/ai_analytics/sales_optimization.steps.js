@@ -46,28 +46,28 @@ Given('historical sales data for IoT devices', async function() {
       'Food & Beverage'
     ]
   };
-  
+
   // Create sales records from 2022 to current date
   const startDate = new Date('2022-01-01');
   const endDate = new Date(); // Current date
   const dayDiff = Math.floor((endDate - startDate) / (1000 * 60 * 60 * 24));
-  
+
   // Generate approximately 5000 sales records spread over the time period
   const salesTransactions = 5000;
-  
+
   for (let i = 0; i < salesTransactions; i++) {
     // Random date within the period
     const randomDayOffset = Math.floor(Math.random() * dayDiff);
     const saleDate = new Date(startDate);
     saleDate.setDate(startDate.getDate() + randomDayOffset);
-    
+
     // Only include products that were launched before the sale date
     const availableProducts = this.testContext.salesData.productLines.filter(
       product => new Date(product.launchDate) <= saleDate
     );
-    
+
     if (availableProducts.length === 0) continue;
-    
+
     // Select random attributes for this sale
     const product = availableProducts[Math.floor(Math.random() * availableProducts.length)];
     const channel = this.testContext.salesData.salesChannels[
@@ -79,16 +79,16 @@ Given('historical sales data for IoT devices', async function() {
     const industry = this.testContext.salesData.industries[
       Math.floor(Math.random() * this.testContext.salesData.industries.length)
     ];
-    
+
     // Calculate quantity based on product type (industrial products sell in smaller quantities)
     const isIndustrial = product.id.includes('industrial');
-    const quantity = isIndustrial ? 
+    const quantity = isIndustrial ?
       Math.floor(Math.random() * 5) + 1 : // 1-5 units for industrial
       Math.floor(Math.random() * 20) + 1; // 1-20 units for others
-    
+
     // Calculate revenue
     const revenue = quantity * product.unitPrice;
-    
+
     // Calculate customer acquisition cost (varies by channel)
     let acquisitionCost;
     switch (channel) {
@@ -110,7 +110,7 @@ Given('historical sales data for IoT devices', async function() {
       default:
         acquisitionCost = revenue * 0.10; // 10% of revenue
     }
-    
+
     // Create sale record
     const saleRecord = {
       id: `SALE-${i + 1}`,
@@ -128,10 +128,10 @@ Given('historical sales data for IoT devices', async function() {
       customerType: Math.random() > 0.7 ? 'New' : 'Existing', // 30% new, 70% existing
       dealSize: revenue < 10000 ? 'Small' : revenue < 50000 ? 'Medium' : 'Large'
     };
-    
+
     this.testContext.salesData.historicalSales.push(saleRecord);
   }
-  
+
   // Verify sales data was created
   expect(this.testContext.salesData.historicalSales.length).to.be.at.least(1000);
 });
@@ -146,7 +146,7 @@ Given('customer adoption patterns across different regions', async function() {
       { id: 'current', name: 'Current (2024+)' }
     ]
   };
-  
+
   // For each region, create adoption patterns
   for (const region of this.testContext.salesData.regions) {
     this.testContext.adoptionPatterns.regions[region] = {
@@ -185,10 +185,10 @@ Given('current sales pipeline information', async function() {
     ],
     totalForecast: 0
   };
-  
+
   // Generate pipeline opportunities
   const opportunityCount = 200; // 200 opportunities in the pipeline
-  
+
   for (let i = 0; i < opportunityCount; i++) {
     // Select random attributes for this opportunity
     const product = this.testContext.salesData.productLines[
@@ -206,16 +206,16 @@ Given('current sales pipeline information', async function() {
     const stage = this.testContext.salesPipeline.stageDefinitions[
       Math.floor(Math.random() * this.testContext.salesPipeline.stageDefinitions.length)
     ];
-    
+
     // Calculate quantity based on product type
     const isIndustrial = product.id.includes('industrial');
-    const quantity = isIndustrial ? 
+    const quantity = isIndustrial ?
       Math.floor(Math.random() * 5) + 1 : // 1-5 units for industrial
       Math.floor(Math.random() * 20) + 1; // 1-20 units for others
-    
+
     // Calculate revenue
     const revenue = quantity * product.unitPrice;
-    
+
     // Create opportunity
     const opportunity = {
       id: `OPP-${i + 1}`,
@@ -234,11 +234,11 @@ Given('current sales pipeline information', async function() {
       customerType: Math.random() > 0.5 ? 'New' : 'Existing',
       salesRepId: `REP-${Math.floor(Math.random() * 20) + 1}`
     };
-    
+
     this.testContext.salesPipeline.opportunities.push(opportunity);
     this.testContext.salesPipeline.totalForecast += revenue * stage.probability;
   }
-  
+
   // Verify pipeline data was created
   expect(this.testContext.salesPipeline.opportunities.length).to.equal(opportunityCount);
 });
@@ -255,7 +255,7 @@ When('the AI system analyzes sales performance patterns', async function() {
       salesPipeline: this.testContext.salesPipeline,
       analysisDepth: 'comprehensive'
     });
-    
+
     this.testContext.salesAnalysis = salesAnalysis;
   } catch (error) {
     this.testContext.errors.push(error);
@@ -267,11 +267,11 @@ When('the AI system analyzes sales performance patterns', async function() {
  */
 Then('it should identify sales process bottlenecks', function() {
   const analysis = this.testContext.salesAnalysis;
-  
+
   expect(analysis).to.have.property('processBottlenecks');
   expect(analysis.processBottlenecks).to.be.an('array');
   expect(analysis.processBottlenecks.length).to.be.at.least(1);
-  
+
   // Each bottleneck should have detailed information
   for (const bottleneck of analysis.processBottlenecks) {
     expect(bottleneck).to.have.property('stage');
@@ -285,17 +285,17 @@ Then('it should identify sales process bottlenecks', function() {
 
 Then('it should recommend optimal sales approaches per customer segment', function() {
   const analysis = this.testContext.salesAnalysis;
-  
+
   expect(analysis).to.have.property('segmentApproaches');
   expect(analysis.segmentApproaches).to.be.an('object');
-  
+
   // Should have approaches for multiple segments
   expect(Object.keys(analysis.segmentApproaches).length).to.be.at.least(3);
-  
+
   // Each segment approach should have detailed recommendations
   for (const segmentKey in analysis.segmentApproaches) {
     const approach = analysis.segmentApproaches[segmentKey];
-    
+
     expect(approach).to.have.property('salesMethodology');
     expect(approach).to.have.property('keyMessaging');
     expect(approach).to.have.property('decisionMakers');
@@ -307,18 +307,18 @@ Then('it should recommend optimal sales approaches per customer segment', functi
 
 Then('it should generate sales forecasts with confidence intervals', function() {
   const analysis = this.testContext.salesAnalysis;
-  
+
   expect(analysis).to.have.property('salesForecasts');
   expect(analysis.salesForecasts).to.be.an('object');
-  
+
   // Check forecast periods
   expect(analysis.salesForecasts).to.have.property('quarterly');
   expect(analysis.salesForecasts).to.have.property('annual');
-  
+
   // Check quarterly forecasts
   expect(analysis.salesForecasts.quarterly).to.be.an('array');
   expect(analysis.salesForecasts.quarterly.length).to.be.at.least(4);
-  
+
   // Each forecast should have confidence intervals
   for (const forecast of analysis.salesForecasts.quarterly) {
     expect(forecast).to.have.property('period');
@@ -326,7 +326,7 @@ Then('it should generate sales forecasts with confidence intervals', function() 
     expect(forecast).to.have.property('lowerBound');
     expect(forecast).to.have.property('upperBound');
     expect(forecast).to.have.property('confidenceLevel');
-    
+
     // Lower bound should be less than expected which should be less than upper bound
     expect(forecast.lowerBound).to.be.lessThan(forecast.expectedRevenue);
     expect(forecast.expectedRevenue).to.be.lessThan(forecast.upperBound);
@@ -335,17 +335,17 @@ Then('it should generate sales forecasts with confidence intervals', function() 
 
 Then('it should highlight the most profitable customer acquisition channels', function() {
   const analysis = this.testContext.salesAnalysis;
-  
+
   expect(analysis).to.have.property('channelProfitability');
   expect(analysis.channelProfitability).to.be.an('array');
   expect(analysis.channelProfitability.length).to.be.at.least(3);
-  
+
   // Channels should be sorted by profitability (highest first)
   for (let i = 1; i < analysis.channelProfitability.length; i++) {
     expect(analysis.channelProfitability[i-1].profitMargin)
       .to.be.at.least(analysis.channelProfitability[i].profitMargin);
   }
-  
+
   // Each channel should have detailed metrics
   for (const channel of analysis.channelProfitability) {
     expect(channel).to.have.property('name');
@@ -360,15 +360,15 @@ Then('it should highlight the most profitable customer acquisition channels', fu
 
 Then('it should suggest ways to reduce customer acquisition costs', function() {
   const analysis = this.testContext.salesAnalysis;
-  
+
   expect(analysis).to.have.property('acquisitionCostReduction');
   expect(analysis.acquisitionCostReduction).to.be.an('object');
-  
+
   // Should have specific strategies
   expect(analysis.acquisitionCostReduction).to.have.property('strategies');
   expect(analysis.acquisitionCostReduction.strategies).to.be.an('array');
   expect(analysis.acquisitionCostReduction.strategies.length).to.be.at.least(3);
-  
+
   // Each strategy should have details
   for (const strategy of analysis.acquisitionCostReduction.strategies) {
     expect(strategy).to.have.property('name');
@@ -377,7 +377,7 @@ Then('it should suggest ways to reduce customer acquisition costs', function() {
     expect(strategy).to.have.property('implementationDifficulty');
     expect(strategy).to.have.property('timeToValue');
   }
-  
+
   // Should have overall potential savings
   expect(analysis.acquisitionCostReduction).to.have.property('potentialSavings');
   expect(analysis.acquisitionCostReduction.potentialSavings).to.be.an('object');

@@ -1,0 +1,44 @@
+{
+  "postgresql_connection": true,
+  "water_heaters_table": {
+    "success": false,
+    "data": {
+      "columns": [
+        "id",
+        "name",
+        "brand",
+        "model",
+        "manufacturer",
+        "size",
+        "type",
+        "location",
+        "target_temperature",
+        "current_temperature",
+        "mode",
+        "status",
+        "installation_date",
+        "warranty_expiry",
+        "last_maintenance",
+        "efficiency_rating",
+        "last_seen",
+        "health_status",
+        "metadata",
+        "series",
+        "features",
+        "operation_modes"
+      ]
+    }
+  },
+  "rheem_water_heater_types": {
+    "success": false,
+    "data": {
+      "error": "column \"water_heater_type\" does not exist"
+    }
+  },
+  "api_endpoint_test": {
+    "success": false,
+    "data": {
+      "error": "Cannot connect to host localhost:8006 ssl:default [None]"
+    }
+  }
+}

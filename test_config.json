@@ -1,0 +1,60 @@
+{
+  "test_types": {
+    "unit": {
+      "name": "Unit Tests",
+      "command": "python -m pytest tests/unit --verbose --json-report --json-report-file=unit_tests_report.json",
+      "report_file": "unit_tests_report.json",
+      "description": "Tests for individual functions and methods",
+      "priority": 1
+    },
+    "integration": {
+      "name": "Integration Tests",
+      "command": "python -m pytest tests/integration --verbose --json-report --json-report-file=integration_tests_report.json",
+      "report_file": "integration_tests_report.json",
+      "description": "Tests for component interactions",
+      "priority": 2
+    },
+    "bdd": {
+      "name": "BDD Tests",
+      "command": "npx cucumber-js features/ --format json:cucumber-report.json",
+      "report_file": "cucumber-report.json",
+      "description": "Behavior-driven development tests using Gherkin syntax",
+      "requires_shadow": true,
+      "priority": 3
+    },
+    "realtime": {
+      "name": "Real-Time Update Tests",
+      "command": "npx cucumber-js --profile realtime --format json:realtime-report.json",
+      "report_file": "realtime-report.json",
+      "description": "Tests for WebSocket-based real-time data updates",
+      "requires_shadow": true,
+      "priority": 4
+    },
+    "ui": {
+      "name": "UI Tests",
+      "command": "npx playwright test --reporter=json",
+      "report_file": "playwright-report/results.json",
+      "description": "Tests for user interface components",
+      "priority": 4
+    },
+    "e2e": {
+      "name": "End-to-End Tests",
+      "command": "python e2e_websocket_test.py --json-report e2e_report.json",
+      "report_file": "e2e_report.json",
+      "description": "Full workflow tests from end to end",
+      "priority": 5
+    }
+  },
+  "report_dir": "test_reports",
+  "parallel": true,
+  "timeout": 600,
+  "report_title": "IoTSphere Comprehensive Test Report",
+  "open_report_after_run": true,
+  "notify_on_completion": true,
+  "show_test_requirements": true,
+  "tdd_compliance_check": true,
+  "shadow_setup": {
+    "command": "python populate_shadow_documents.py",
+    "timeout": 60
+  }
+}

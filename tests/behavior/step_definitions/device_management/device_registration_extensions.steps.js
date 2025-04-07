@@ -51,19 +51,19 @@ Given('multiple water heaters from different manufacturers are registered', func
       location: 'Building A, Floor 3'
     }
   ];
-  
+
   // Register devices in the mocked device repository
   const devices = this.testContext.multiManufacturerDevices;
   for (const device of devices) {
     this.deviceRepository.registerDevice(device);
   }
-  
+
   // Store manufacturer counts for later verification
   this.testContext.manufacturerCounts = devices.reduce((counts, device) => {
     counts[device.manufacturer] = (counts[device.manufacturer] || 0) + 1;
     return counts;
   }, {});
-  
+
   return 'pending'; // Mark as pending since this is just a stub implementation
 });
 
@@ -85,12 +85,12 @@ Given('a registered water heater with ID {string}', function(deviceId) {
       mode: 'STANDARD'
     }
   };
-  
+
   // Register the device in the mocked device repository
   this.deviceRepository.registerDevice(device);
-  
+
   // Store the device for later usage
   this.testContext.currentDevice = device;
-  
+
   return 'pending'; // Mark as pending since this is just a stub implementation
 });

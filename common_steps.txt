@@ -1,0 +1,12 @@
+// When('I navigate to the water heater with ID {string}', async function(deviceId) {
+Given('I am logged in as an administrator', async function() {
+Given('the IoTSphere application is running', async function() {
+Then('I should see an error message about missing shadow document', async function() {
+Then('I should see the device shadow information', async function() {
+Then('I should see the temperature history chart', async function() {
+Then('the chart should display historical temperature data', async function() {
+Then('the error message should clearly explain the issue', async function() {
+Then('the status indicators should reflect current device state', async function() {
+Then('the temperature should be displayed', async function() {
+When('I click on the History tab', async function() {
+When('I navigate to the water heater with ID {string}', async function(deviceId) {

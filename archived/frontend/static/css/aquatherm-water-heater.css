@@ -1,0 +1,309 @@
+/**
+ * AquaTherm Water Heater CSS Styles
+ */
+
+/* AquaTherm badge styles */
+.aquatherm-badge {
+  background-color: #00a0b0;  /* AquaTherm blue-green */
+  color: white;
+  font-weight: bold;
+  padding: 3px 8px;
+  border-radius: 4px;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 11px;
+  text-transform: uppercase;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  z-index: 2;
+  letter-spacing: 0.5px;
+}
+
+/* Heater type badge styles */
+.heater-type-badge {
+  background-color: #333;
+  color: white;
+  font-weight: bold;
+  padding: 3px 8px;
+  border-radius: 4px;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  font-size: 11px;
+  text-transform: uppercase;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  z-index: 2;
+  letter-spacing: 0.5px;
+}
+
+/* Different colors for different heater types */
+.heater-type-badge.tank-type {
+  background-color: #417505;
+}
+
+.heater-type-badge.hybrid-type {
+  background-color: #9b5de5;
+}
+
+.heater-type-badge.tankless-type {
+  background-color: #0075c4;
+}
+
+/* AquaTherm heater card styling */
+.heater-card.aquatherm-heater {
+  border-left: 3px solid #00a0b0;
+  position: relative; /* Ensure positioning context for badges */
+}
+
+.heater-card .manufacturer {
+  font-size: 12px;
+  color: #999;
+  margin-top: -5px;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Ensure all heater cards have consistent height and spacing */
+.heater-card .card-body {
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 240px;
+}
+
+/* AquaTherm detail view styling */
+.aquatherm-details {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: #f8f8f8;
+  border-radius: 5px;
+  border-left: 3px solid #00a0b0;
+}
+
+.aquatherm-details h3 {
+  color: #00a0b0;
+  margin-top: 0;
+  margin-bottom: 15px;
+}
+
+.aquatherm-details .row {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 -10px;
+}
+
+.aquatherm-details .col {
+  flex: 1;
+  padding: 0 10px;
+  min-width: 250px;
+}
+
+.aquatherm-details .data-item {
+  margin-bottom: 10px;
+}
+
+.aquatherm-details .label {
+  font-weight: bold;
+  display: inline-block;
+  min-width: 120px;
+}
+
+/* EcoNet toggle switch */
+.eco-net-controls {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 30px;
+  margin: 0 10px;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 22px;
+  width: 22px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #00a0b0;  /* Updated to AquaTherm color */
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #00a0b0;  /* Updated to AquaTherm color */
+}
+
+input:checked + .slider:before {
+  transform: translateX(30px);
+}
+
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+.status-text {
+  font-weight: bold;
+}
+
+/* AquaTherm mode control styling */
+.aquatherm-mode-control {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: #f8f8f8;
+  border-radius: 5px;
+  border-left: 3px solid #00a0b0;
+}
+
+.aquatherm-mode-control h3 {
+  color: #00a0b0;
+  margin-top: 0;
+  margin-bottom: 15px;
+}
+
+.control-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.control-row label {
+  margin-right: 15px;
+  font-weight: bold;
+}
+
+.control-row select {
+  flex: 1;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  margin-right: 10px;
+}
+
+.description {
+  font-size: 14px;
+  color: #666;
+  font-style: italic;
+}
+
+/* AquaTherm prediction components */
+.aquatherm-maintenance-prediction,
+.aquatherm-efficiency-analysis {
+  margin-top: 20px;
+  border-left: 3px solid #00a0b0;
+}
+
+.aquatherm-maintenance-prediction .prediction-header h3,
+.aquatherm-efficiency-analysis .prediction-header h3 {
+  color: #00a0b0;
+}
+
+.prediction-result {
+  display: flex;
+  flex-direction: column;
+}
+
+.prediction-summary {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.prediction-value {
+  font-size: 32px;
+  font-weight: bold;
+  color: #00a0b0;
+  margin-bottom: 5px;
+}
+
+.prediction-description {
+  font-size: 14px;
+  color: #666;
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+.prediction-details {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.detail-item {
+  text-align: center;
+  flex: 1;
+  padding: 0 10px;
+}
+
+.detail-value {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.detail-label {
+  font-size: 12px;
+  color: #666;
+}
+
+/* Hybrid model specific styling */
+.aquatherm-hybrid-heater {
+  background-color: #f0f8ff;
+  border-top: 3px solid #00a0b0;
+}
+
+.hybrid-badge {
+  background-color: #00a0b0;
+  font-size: 11px;
+  padding: 1px 6px;
+  border-radius: 3px;
+  color: white;
+  margin-left: 10px;
+  vertical-align: middle;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .aquatherm-details .col {
+    flex: 0 0 100%;
+    margin-bottom: 15px;
+  }
+
+  .prediction-details {
+    flex-direction: column;
+  }
+
+  .detail-item {
+    margin-bottom: 15px;
+  }
+}

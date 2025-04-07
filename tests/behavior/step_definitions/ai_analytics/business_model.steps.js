@@ -46,7 +46,7 @@ Given('device usage and value creation data across industries', async function()
     usageTrends: [],
     valueCreationByIndustry: {}
   };
-  
+
   // Generate usage trends data
   for (const deviceType of this.testContext.valueCreationData.deviceTypes) {
     // Create quarterly data for last 3 years
@@ -57,16 +57,16 @@ Given('device usage and value creation data across industries', async function()
       featureUtilization: Math.random() * 0.4 + 0.3, // 30-70% of features used
       remoteInteractions: Math.floor(Math.random() * 10) + 1 // 1-10 interactions per day
     };
-    
+
     const trend = {
       deviceType: deviceType.type,
       quarterlyData: []
     };
-    
+
     for (let i = 0; i < quarters; i++) {
       // Create usage growth over time
       const growthFactor = 1 + (i * 0.05); // 5% growth per quarter
-      
+
       trend.quarterlyData.push({
         quarter: `Q${(i % 4) + 1} ${2022 + Math.floor(i / 4)}`,
         operatingHours: baselineUsage.operatingHours * Math.min(growthFactor, 2), // Cap at 2x
@@ -75,10 +75,10 @@ Given('device usage and value creation data across industries', async function()
         remoteInteractions: baselineUsage.remoteInteractions * Math.min(growthFactor, 4) // Cap at 4x
       });
     }
-    
+
     this.testContext.valueCreationData.usageTrends.push(trend);
   }
-  
+
   // Generate value creation by industry
   for (const industry of this.testContext.valueCreationData.industries) {
     this.testContext.valueCreationData.valueCreationByIndustry[industry] = {
@@ -86,28 +86,28 @@ Given('device usage and value creation data across industries', async function()
       valueRealization: [],
       topChallenges: []
     };
-    
+
     // Set device adoption rates per industry
     for (const deviceType of this.testContext.valueCreationData.deviceTypes) {
       // Different industries have different adoption patterns
       let adoptionRate;
       let growthRate;
-      
+
       switch (industry) {
         case 'Manufacturing':
-          adoptionRate = deviceType.type === 'water-heater' ? 0.7 : 
-                        deviceType.type === 'hvac' ? 0.6 : 
+          adoptionRate = deviceType.type === 'water-heater' ? 0.7 :
+                        deviceType.type === 'hvac' ? 0.6 :
                         deviceType.type === 'robot' ? 0.4 : 0.2;
           growthRate = deviceType.type === 'robot' ? 0.3 : 0.15;
           break;
         case 'Healthcare':
-          adoptionRate = deviceType.type === 'water-heater' ? 0.8 : 
+          adoptionRate = deviceType.type === 'water-heater' ? 0.8 :
                         deviceType.type === 'hvac' ? 0.7 : 0.3;
           growthRate = 0.1;
           break;
         case 'Hospitality':
-          adoptionRate = deviceType.type === 'water-heater' ? 0.9 : 
-                        deviceType.type === 'hvac' ? 0.8 : 
+          adoptionRate = deviceType.type === 'water-heater' ? 0.9 :
+                        deviceType.type === 'hvac' ? 0.8 :
                         deviceType.type === 'refrigeration' ? 0.7 : 0.2;
           growthRate = 0.12;
           break;
@@ -115,14 +115,14 @@ Given('device usage and value creation data across industries', async function()
           adoptionRate = Math.random() * 0.5 + 0.2; // 20-70%
           growthRate = Math.random() * 0.2 + 0.05; // 5-25%
       }
-      
+
       this.testContext.valueCreationData.valueCreationByIndustry[industry].deviceAdoption[deviceType.type] = {
         currentAdoptionRate: adoptionRate,
         projectedGrowthRate: growthRate,
         averageDeploymentSize: Math.floor(Math.random() * 20) + 5 // 5-25 devices per customer
       };
     }
-    
+
     // Set value realization metrics
     for (const metric of this.testContext.valueCreationData.valueMetrics) {
       // Different value realization based on industry
@@ -133,10 +133,10 @@ Given('device usage and value creation data across industries', async function()
         timeToValue: Math.floor(Math.random() * 10) + 2, // 2-12 months
         sustainabilityOfValue: Math.random() > 0.3 // 70% sustainable value
       };
-      
+
       this.testContext.valueCreationData.valueCreationByIndustry[industry].valueRealization.push(realization);
     }
-    
+
     // Set industry-specific challenges
     const commonChallenges = [
       'Integration complexity',
@@ -147,11 +147,11 @@ Given('device usage and value creation data across industries', async function()
       'Training requirements',
       'Maintenance knowledge'
     ];
-    
+
     // Select 3-5 challenges for each industry
     const challengeCount = Math.floor(Math.random() * 3) + 3;
     const shuffledChallenges = [...commonChallenges].sort(() => 0.5 - Math.random());
-    this.testContext.valueCreationData.valueCreationByIndustry[industry].topChallenges = 
+    this.testContext.valueCreationData.valueCreationByIndustry[industry].topChallenges =
       shuffledChallenges.slice(0, challengeCount);
   }
 });
@@ -257,7 +257,7 @@ Given('competitor business model information', async function() {
       uniqueValue: 'Guaranteed outcomes with shared success model'
     }
   ];
-  
+
   // Add market dynamics
   this.testContext.marketDynamics = {
     customerPreferences: {
@@ -302,7 +302,7 @@ When('the business innovation system analyzes value creation patterns', async fu
       marketDynamics: this.testContext.marketDynamics,
       analysisTimeframe: '5 years'
     });
-    
+
     this.testContext.businessModelAnalysis = businessModelAnalysis;
   } catch (error) {
     this.testContext.errors.push(error);
@@ -315,17 +315,17 @@ When('the business innovation system analyzes value creation patterns', async fu
 Then('it should identify potential new business models such as:', function(dataTable) {
   const expectedModels = dataTable.rowsHash();
   const analysis = this.testContext.businessModelAnalysis;
-  
+
   expect(analysis).to.have.property('businessModelOpportunities');
   expect(analysis.businessModelOpportunities).to.be.an('array');
   expect(analysis.businessModelOpportunities.length).to.be.at.least(Object.keys(expectedModels).length);
-  
+
   // Check that all expected model types are included
   for (const [modelType] of Object.entries(expectedModels)) {
     const matchingModel = analysis.businessModelOpportunities.find(
       model => model.type.toLowerCase() === modelType.toLowerCase()
     );
-    
+
     expect(matchingModel, `Business model of type ${modelType} should be identified`).to.not.be.undefined;
   }
 });
@@ -333,7 +333,7 @@ Then('it should identify potential new business models such as:', function(dataT
 Then('each model should include:', function(dataTable) {
   const expectedAttributes = dataTable.rowsHash();
   const analysis = this.testContext.businessModelAnalysis;
-  
+
   for (const model of analysis.businessModelOpportunities) {
     // Check each model has all the required attributes
     for (const [attribute] of Object.entries(expectedAttributes)) {
@@ -341,7 +341,7 @@ Then('each model should include:', function(dataTable) {
       const propertyName = attribute
         .toLowerCase()
         .replace(/[^a-z0-9]+(.)/g, (match, chr) => chr.toUpperCase());
-      
+
       expect(model, `Model ${model.type} should have ${attribute} attribute`).to.have.property(propertyName);
     }
   }

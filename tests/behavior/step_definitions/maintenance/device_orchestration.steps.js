@@ -50,7 +50,7 @@ Given('a facility with diverse device types', function() {
       }
     ]
   };
-  
+
   return 'pending'; // Mark as pending since this is just a stub implementation
 });
 
@@ -62,7 +62,7 @@ Given('multiple devices require maintenance in the next month', function() {
   if (!this.testContext.diverseFacility) {
     throw new Error('Facility with devices not initialized');
   }
-  
+
   // All devices are already set up with nextMaintenance dates in the next month
   this.testContext.maintenanceRequirements = this.testContext.diverseFacility.devices.map(device => ({
     deviceId: device.id,
@@ -72,7 +72,7 @@ Given('multiple devices require maintenance in the next month', function() {
     priority: device.priority,
     deadline: device.nextMaintenance
   }));
-  
+
   return 'pending'; // Mark as pending since this is just a stub implementation
 });
 
@@ -83,7 +83,7 @@ When('the maintenance orchestration system analyzes the requirements', function(
   // In a real implementation, this would call the actual orchestration service
   this.testContext.maintenanceSchedule = {
     created: new Date().toISOString(),
-    scheduledDate: '2025-04-15', 
+    scheduledDate: '2025-04-15',
     maintenancePlan: [
       {
         timeSlot: '08:00-12:00',
@@ -117,7 +117,7 @@ When('the maintenance orchestration system analyzes the requirements', function(
       productivityGain: '15%'
     }
   };
-  
+
   return 'pending'; // Mark as pending since this is just a stub implementation
 });
 
@@ -126,12 +126,12 @@ When('the maintenance orchestration system analyzes the requirements', function(
  */
 Then('it should generate an optimized maintenance schedule', function() {
   const schedule = this.testContext.maintenanceSchedule;
-  
+
   expect(schedule).to.not.be.undefined;
   expect(schedule).to.have.property('maintenancePlan');
   expect(schedule.maintenancePlan).to.be.an('array');
   expect(schedule.maintenancePlan.length).to.be.greaterThan(0);
-  
+
   return 'pending'; // Mark as pending since this is just a stub implementation
 });
 
@@ -142,7 +142,7 @@ Then('the schedule should:', function(dataTable) {
   const schedule = this.testContext.maintenanceSchedule;
   const optimizationMetrics = schedule.optimizationMetrics;
   const criteria = dataTable.rowsHash();
-  
+
   // Verify all expected optimization criteria are met
   Object.keys(criteria).forEach(criterion => {
     switch(criterion) {
@@ -163,7 +163,7 @@ Then('the schedule should:', function(dataTable) {
         break;
     }
   });
-  
+
   return 'pending'; // Mark as pending since this is just a stub implementation
 });
 
@@ -172,12 +172,12 @@ Then('the schedule should:', function(dataTable) {
  */
 Then('it should provide a cost-benefit analysis of the optimized schedule', function() {
   const schedule = this.testContext.maintenanceSchedule;
-  
+
   expect(schedule).to.have.property('costBenefitAnalysis');
   expect(schedule.costBenefitAnalysis).to.be.an('object');
   expect(schedule.costBenefitAnalysis).to.have.property('optimizedCost');
   expect(schedule.costBenefitAnalysis).to.have.property('standardCost');
   expect(schedule.costBenefitAnalysis).to.have.property('savings');
-  
+
   return 'pending'; // Mark as pending since this is just a stub implementation
 });

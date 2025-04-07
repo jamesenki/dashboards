@@ -14,29 +14,29 @@ import('chai').then(chai => {
 Given('a facility with multiple device types with varying:', async function(dataTable) {
   // Extract properties that vary across devices
   const variableProperties = dataTable.rowsHash();
-  
+
   // Create a diverse set of devices with varying properties
   this.testContext.optimizationDevices = [];
-  
+
   // Define device types to create
   const deviceTypes = ['water-heater', 'vending-machine', 'hvac', 'robot'];
   const deviceCounts = {
     'water-heater': 6,
-    'vending-machine': 4, 
+    'vending-machine': 4,
     'hvac': 5,
     'robot': 3
   };
-  
+
   for (const deviceType of deviceTypes) {
     for (let i = 0; i < deviceCounts[deviceType]; i++) {
       const deviceId = `opt-${deviceType}-${i+1}`;
-      
+
       // Generate varying values for each property
       const age = generateVariedValue('age', i, deviceCounts[deviceType]);
       const efficiency = generateVariedValue('efficiency', i, deviceCounts[deviceType]);
       const reliability = generateVariedValue('reliability', i, deviceCounts[deviceType]);
       const utilization = generateVariedValue('utilization', i, deviceCounts[deviceType]);
-      
+
       // Register device
       const device = await this.deviceRepository.registerDevice({
         id: deviceId,
@@ -56,24 +56,24 @@ Given('a facility with multiple device types with varying:', async function(data
           utilization: utilization
         }
       });
-      
+
       // Add device-specific telemetry and operational data
       await this.generateDeviceTypeSpecificHistory(
-        deviceId, 
-        deviceType, 
+        deviceId,
+        deviceType,
         new Date(Date.now() - (90 * 24 * 60 * 60 * 1000)), // 90 days ago
         new Date()
       );
-      
+
       this.testContext.optimizationDevices.push(device);
     }
   }
-  
+
   // Helper function to generate varied values for each property
   function generateVariedValue(property, index, totalCount) {
     // Distribute values across the range specified in the step
     const position = index / (totalCount - 1); // 0 to 1 based on position in array
-    
+
     switch(property) {
       case 'age':
         // Range from new to end-of-life (0-10 years)
@@ -91,7 +91,7 @@ Given('a facility with multiple device types with varying:', async function(data
         return 0.5; // Default mid-range value
     }
   }
-  
+
   // Helper function to calculate installation date based on age in years
   function calculateInstallationDate(ageYears) {
     const now = new Date();
@@ -100,7 +100,7 @@ Given('a facility with multiple device types with varying:', async function(data
     installDate.setMonth(now.getMonth() - Math.round((ageYears % 1) * 12));
     return installDate;
   }
-  
+
   // Verify devices were created
   expect(this.testContext.optimizationDevices.length).to.equal(
     Object.values(deviceCounts).reduce((a, b) => a + b, 0)
@@ -112,7 +112,7 @@ Given('a facility with multiple device types with varying:', async function(data
  */
 When('the AI optimization system analyzes the entire fleet', async function() {
   const deviceIds = this.testContext.optimizationDevices.map(d => d.id);
-  
+
   try {
     // Analyze the fleet for optimization
     const optimizationResults = await this.analyticsEngine.analyzeFleetForOptimization(deviceIds);
@@ -127,7 +127,7 @@ When('the AI optimization system analyzes the entire fleet', async function() {
  */
 Then('it should recommend an optimal device replacement strategy', function() {
   const optimization = this.testContext.fleetOptimization;
-  
+
   expect(optimization).to.have.property('replacementStrategy');
   expect(optimization.replacementStrategy).to.be.an('object');
   expect(optimization.replacementStrategy).to.have.property('overview');
@@ -138,11 +138,11 @@ Then('it should recommend an optimal device replacement strategy', function() {
 
 Then('it should suggest device redeployment based on usage patterns', function() {
   const optimization = this.testContext.fleetOptimization;
-  
+
   expect(optimization).to.have.property('redeploymentSuggestions');
   expect(optimization.redeploymentSuggestions).to.be.an('array');
   expect(optimization.redeploymentSuggestions.length).to.be.greaterThan(0);
-  
+
   // Each suggestion should include source and target locations
   for (const suggestion of optimization.redeploymentSuggestions) {
     expect(suggestion).to.have.property('deviceId');
@@ -155,17 +155,17 @@ Then('it should suggest device redeployment based on usage patterns', function()
 Then('it should identify candidates for:', function(dataTable) {
   const categories = dataTable.rowsHash();
   const optimization = this.testContext.fleetOptimization;
-  
+
   expect(optimization).to.have.property('deviceCategories');
   expect(optimization.deviceCategories).to.be.an('object');
-  
+
   // Check each category exists
   for (const [category] of Object.entries(categories)) {
     // Convert to camelCase
     const propertyName = category
       .toLowerCase()
       .replace(/[^a-z0-9]+(.)/g, (match, chr) => chr.toUpperCase());
-    
+
     expect(optimization.deviceCategories).to.have.property(propertyName);
     expect(optimization.deviceCategories[propertyName]).to.be.an('array');
     expect(optimization.deviceCategories[propertyName].length).to.be.greaterThan(0);
@@ -174,13 +174,13 @@ Then('it should identify candidates for:', function(dataTable) {
 
 Then('it should provide a phased implementation plan', function() {
   const optimization = this.testContext.fleetOptimization;
-  
+
   expect(optimization).to.have.property('implementationPlan');
   expect(optimization.implementationPlan).to.be.an('object');
   expect(optimization.implementationPlan).to.have.property('phases');
   expect(optimization.implementationPlan.phases).to.be.an('array');
   expect(optimization.implementationPlan.phases.length).to.be.greaterThan(0);
-  
+
   // Each phase should have specific content
   for (const phase of optimization.implementationPlan.phases) {
     expect(phase).to.have.property('phaseNumber');
@@ -194,12 +194,12 @@ Then('it should provide a phased implementation plan', function() {
 
 Then('it should calculate expected ROI for the overall strategy', function() {
   const optimization = this.testContext.fleetOptimization;
-  
+
   expect(optimization).to.have.property('roi');
   expect(optimization.roi).to.be.an('object');
   expect(optimization.roi).to.have.property('overallROI');
   expect(optimization.roi.overallROI).to.be.a('number');
-  
+
   // Should include financial projections
   expect(optimization.roi).to.have.property('financialProjections');
   expect(optimization.roi.financialProjections).to.be.an('object');

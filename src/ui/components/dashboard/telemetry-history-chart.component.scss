@@ -1,0 +1,318 @@
+// Variables - using the same palette as existing components
+$primary-color: #2196F3;
+$secondary-color: #607D8B;
+$success-color: #4CAF50;
+$warning-color: #FF9800;
+$error-color: #F44336;
+$simulation-color: #673AB7;
+
+$bg-color: #f5f5f5;
+$card-bg: #ffffff;
+$text-primary: #212121;
+$text-secondary: #757575;
+$border-color: #e0e0e0;
+$card-radius: 8px;
+$card-shadow: rgba(0, 0, 0, 0.1);
+
+// Chart container
+.chart-container {
+  background-color: $card-bg;
+  border-radius: $card-radius;
+  border: 1px solid $border-color;
+  box-shadow: 0 2px 8px $card-shadow;
+  margin: 1rem 0;
+  padding: 1.5rem;
+  position: relative;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    box-shadow: 0 4px 12px $card-shadow;
+  }
+  
+  &.loading {
+    min-height: 200px;
+  }
+}
+
+// Chart header
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+    
+    .chart-controls {
+      margin-top: 1rem;
+      width: 100%;
+    }
+  }
+  
+  .chart-title {
+    h3 {
+      margin: 0 0 0.5rem 0;
+      font-size: 1.2rem;
+      color: $text-primary;
+    }
+    
+    .chart-subtitle {
+      font-size: 0.8rem;
+      color: $text-secondary;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      
+      .device-id {
+        font-family: monospace;
+      }
+      
+      .last-updated {
+        font-style: italic;
+      }
+    }
+  }
+  
+  .chart-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+    
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      
+      label {
+        font-size: 0.8rem;
+        color: $text-secondary;
+        margin-bottom: 0.3rem;
+      }
+      
+      .btn-group {
+        display: flex;
+        border: 1px solid $border-color;
+        border-radius: 4px;
+        overflow: hidden;
+        
+        button {
+          background-color: $card-bg;
+          border: none;
+          border-right: 1px solid $border-color;
+          padding: 0.4rem 0.8rem;
+          font-size: 0.9rem;
+          color: $text-secondary;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          
+          &:last-child {
+            border-right: none;
+          }
+          
+          &:hover {
+            background-color: darken($card-bg, 5%);
+          }
+          
+          &.active {
+            background-color: $primary-color;
+            color: white;
+          }
+          
+          i {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            
+            &.icon-line-chart:before {
+              content: "📈";
+            }
+            
+            &.icon-area-chart:before {
+              content: "📊";
+            }
+            
+            &.icon-bar-chart:before {
+              content: "📊";
+            }
+          }
+        }
+      }
+    }
+    
+    .btn-refresh {
+      background-color: $primary-color;
+      border: none;
+      border-radius: 4px;
+      color: white;
+      cursor: pointer;
+      height: 32px;
+      width: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      
+      &:hover {
+        background-color: darken($primary-color, 10%);
+      }
+      
+      .icon-refresh:before {
+        content: "↻";
+      }
+    }
+  }
+}
+
+// Chart content
+.chart-content {
+  width: 100%;
+  background-color: $bg-color;
+  border-radius: $card-radius;
+  overflow: hidden;
+  
+  .apex-chart-container {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+// Loading state
+.chart-loading {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba($card-bg, 0.8);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  
+  .loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba($primary-color, 0.2);
+    border-top: 4px solid $primary-color;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+  }
+  
+  .loading-text {
+    font-size: 0.9rem;
+    color: $text-secondary;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+}
+
+// Error state
+.chart-error {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  
+  .error-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: $error-color;
+    color: white;
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+  }
+  
+  .error-message {
+    color: $text-primary;
+    margin-bottom: 1rem;
+    max-width: 80%;
+  }
+  
+  .btn-retry {
+    background-color: $primary-color;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    
+    &:hover {
+      background-color: darken($primary-color, 10%);
+    }
+  }
+}
+
+// No data state
+.chart-no-data {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  
+  .no-data-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: $secondary-color;
+    color: white;
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+  }
+  
+  .no-data-message {
+    color: $text-secondary;
+  }
+}
+
+// Chart legend
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid $border-color;
+  
+  .legend-item {
+    display: flex;
+    align-items: center;
+    margin-right: 1rem;
+    
+    .legend-color {
+      width: 12px;
+      height: 12px;
+      border-radius: 2px;
+      margin-right: 0.5rem;
+    }
+    
+    .legend-name {
+      font-size: 0.9rem;
+      color: $text-primary;
+      margin-right: 0.3rem;
+    }
+    
+    .legend-unit {
+      font-size: 0.8rem;
+      color: $text-secondary;
+    }
+  }
+}

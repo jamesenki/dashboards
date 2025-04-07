@@ -1,6 +1,6 @@
 /**
  * Mock Analytics Engine
- * 
+ *
  * This file provides a mock implementation of the analytics and AI engine
  * for use in BDD tests. It simulates predictive analytics, anomaly detection,
  * and other AI/ML capabilities without requiring the actual implementation.
@@ -9,19 +9,19 @@
 function mockAnalyticsEngine() {
   // Mock data for device performance insights
   const devicePerformanceInsights = new Map();
-  
+
   // Mock data for anomaly predictions
   const anomalyPredictions = new Map();
-  
+
   // Mock data for performance optimization recommendations
   const optimizationRecommendations = new Map();
-  
+
   // Mock data for predictive maintenance
   const maintenancePredictions = new Map();
-  
+
   // Mock data for maintenance records
   const maintenanceRecords = new Map();
-  
+
   // Mock knowledge base for storing knowledge entries
   const knowledgeBase = {
     entries: [
@@ -83,37 +83,37 @@ function mockAnalyticsEngine() {
       }
     ],
     categories: [
-      'maintenance', 
-      'operation', 
-      'installation', 
+      'maintenance',
+      'operation',
+      'installation',
       'troubleshooting',
       'energy-optimization',
       'efficiency-degradation',
       'best-practices'
     ]
   };
-  
+
   // Mock cross-device optimization data
   const fleetOptimizationData = new Map();
-  
+
   // Mock date for maintenance (30 days ago)
   const maintenanceDate = new Date();
   maintenanceDate.setDate(maintenanceDate.getDate() - 30);
-  
+
   return {
     // Anomaly Detection methods
     async predictAnomalies(deviceId, timeframe) {
       const deviceAnomalies = anomalyPredictions.get(deviceId) || [];
-      return deviceAnomalies.filter(anomaly => 
-        anomaly.predictedTimestamp >= timeframe.start && 
+      return deviceAnomalies.filter(anomaly =>
+        anomaly.predictedTimestamp >= timeframe.start &&
         anomaly.predictedTimestamp <= timeframe.end
       );
     },
-    
+
     async detectCurrentAnomalies(deviceId) {
       const anomalies = anomalyPredictions.get(deviceId) || [];
       const now = new Date();
-      
+
       // Return anomalies predicted to occur within 24 hours of now
       return anomalies.filter(anomaly => {
         const anomalyTime = new Date(anomaly.predictedTimestamp);
@@ -121,12 +121,12 @@ function mockAnalyticsEngine() {
         return diffHours <= 24;
       });
     },
-    
+
     async getAnomalyHistory(deviceId, timeframe) {
       // This would return historical anomalies, different from predictions
       return [];
     },
-    
+
     // Get operational analytics dashboard data for a fleet of devices
     async getOperationalAnalytics(deviceIds) {
       // Return a rich operational analytics object that aligns with the project's device-agnostic vision
@@ -155,7 +155,7 @@ function mockAnalyticsEngine() {
             { period: '2023-Q4', value: 0.982 }
           ]
         },
-        
+
         // Maintenance efficiency section
         maintenanceEfficiency: {
           preventiveVsReactive: {
@@ -172,7 +172,7 @@ function mockAnalyticsEngine() {
           maintenanceComplianceRate: 0.92, // 92%
           maintenanceEffectivenessScore: 87 // out of 100
         },
-        
+
         // Performance trends section
         performanceTrends: {
           energyEfficiencyTrend: [
@@ -194,7 +194,7 @@ function mockAnalyticsEngine() {
             cycleTime: { value: -3.1, trend: 'improving' } // percent change year-over-year
           }
         },
-        
+
         // Cost breakdown section
         costBreakdown: {
           energyCosts: 42, // percent of total
@@ -210,7 +210,7 @@ function mockAnalyticsEngine() {
             { period: '2023-Q4', energy: 11200, maintenance: 6500, parts: 4600, labor: 3200 }
           ]
         },
-        
+
         // Data sources and confidence section
         dataSources: {
           telemetryRecords: deviceIds.length * 24 * 180, // 6 months of hourly data per device
@@ -224,7 +224,7 @@ function mockAnalyticsEngine() {
           confidenceLevel: 0.92, // 92% confidence in analytics
           sources: ['telemetry', 'maintenance_records', 'device_specifications']
         },
-        
+
         // Comparative benchmarks section
         benchmarks: {
           industryComparisons: {
@@ -274,7 +274,7 @@ function mockAnalyticsEngine() {
             'Third-party research'
           ]
         },
-        
+
         // Recommendations based on analytics
         recommendations: [
           {
@@ -301,14 +301,14 @@ function mockAnalyticsEngine() {
         ]
       };
     },
-    
+
     addAnomalyPrediction(deviceId, anomaly) {
       if (!anomalyPredictions.has(deviceId)) {
         anomalyPredictions.set(deviceId, []);
       }
       anomalyPredictions.get(deviceId).push(anomaly);
     },
-    
+
     // Performance Insights methods
     async getDevicePerformanceInsights(deviceId) {
       return devicePerformanceInsights.get(deviceId) || {
@@ -324,7 +324,7 @@ function mockAnalyticsEngine() {
         }
       };
     },
-    
+
     async compareDevicePerformance(deviceIds) {
       return deviceIds.map(id => ({
         deviceId: id,
@@ -335,11 +335,11 @@ function mockAnalyticsEngine() {
         }
       }));
     },
-    
+
     setDevicePerformanceInsights(deviceId, insights) {
       devicePerformanceInsights.set(deviceId, insights);
     },
-    
+
     // Optimization methods
     async getOptimizationRecommendations(deviceId) {
       return optimizationRecommendations.get(deviceId) || [
@@ -373,11 +373,11 @@ function mockAnalyticsEngine() {
         }
       ];
     },
-    
+
     setOptimizationRecommendations(deviceId, recommendations) {
       optimizationRecommendations.set(deviceId, recommendations);
     },
-    
+
     // Predictive Maintenance methods
     async getPredictiveMaintenance(deviceId) {
       return maintenancePredictions.get(deviceId) || {
@@ -411,11 +411,11 @@ function mockAnalyticsEngine() {
         ]
       };
     },
-    
+
     setPredictiveMaintenance(deviceId, prediction) {
       maintenancePredictions.set(deviceId, prediction);
     },
-    
+
     /**
      * Save a device health assessment
      * @param {string} deviceId - The ID of the device
@@ -431,7 +431,7 @@ function mockAnalyticsEngine() {
           healthAssessment: null
         });
       }
-      
+
       // Update the existing maintenance prediction with the health assessment
       const prediction = maintenancePredictions.get(deviceId);
       prediction.healthAssessment = {
@@ -439,11 +439,11 @@ function mockAnalyticsEngine() {
         timestamp: new Date().toISOString(),
         deviceId: deviceId
       };
-      
+
       // Return the updated assessment
       return prediction.healthAssessment;
     },
-    
+
     /**
      * Retrieve a device health assessment
      * @param {string} deviceId - The ID of the device
@@ -454,11 +454,11 @@ function mockAnalyticsEngine() {
       if (!maintenancePredictions.has(deviceId)) {
         return null;
       }
-      
+
       const prediction = maintenancePredictions.get(deviceId);
       return prediction.healthAssessment || null;
     },
-    
+
     /**
      * Get maintenance recommendations for a device
      * @param {string} deviceId - The ID of the device
@@ -467,11 +467,11 @@ function mockAnalyticsEngine() {
     async getMaintenanceRecommendations(deviceId) {
       // Get the device's health assessment if it exists
       const assessment = await this.getHealthAssessment(deviceId);
-      
+
       // Generate recommendations based on the health assessment
       // or return default recommendations if no assessment exists
       const recommendations = [];
-      
+
       // Default recommendations any device might need
       recommendations.push({
         action: 'Perform routine inspection',
@@ -480,11 +480,11 @@ function mockAnalyticsEngine() {
         estimatedCost: 150,
         potentialImpact: 'Prevents potential issues before they develop into serious problems'
       });
-      
+
       // Add recommendations based on device health if assessment exists
       if (assessment) {
         const healthScore = assessment.overallScore;
-        
+
         // Add specific recommendations based on health score
         if (healthScore < 50) {
           recommendations.push({
@@ -503,7 +503,7 @@ function mockAnalyticsEngine() {
             potentialImpact: 'Improves performance and reduces risk of failure'
           });
         }
-        
+
         // Add component-specific recommendations if available
         if (assessment.componentScores) {
           // Check heating element
@@ -516,7 +516,7 @@ function mockAnalyticsEngine() {
               potentialImpact: 'Restores heating efficiency and prevents failure'
             });
           }
-          
+
           // Check thermostat
           if (assessment.componentScores.thermostat < 70) {
             recommendations.push({
@@ -527,7 +527,7 @@ function mockAnalyticsEngine() {
               potentialImpact: 'Improves temperature regulation and energy efficiency'
             });
           }
-          
+
           // Check pressure relief valve
           if (assessment.componentScores.pressureRelief < 65) {
             recommendations.push({
@@ -538,7 +538,7 @@ function mockAnalyticsEngine() {
               potentialImpact: 'Critical safety improvement to prevent pressure-related accidents'
             });
           }
-          
+
           // Check tank integrity
           if (assessment.componentScores.tankIntegrity < 60) {
             recommendations.push({
@@ -551,7 +551,7 @@ function mockAnalyticsEngine() {
           }
         }
       }
-      
+
       // Sort recommendations by priority (assuming high > medium > low)
       const priorityOrder = {
         'high': 1,
@@ -560,30 +560,30 @@ function mockAnalyticsEngine() {
         'medium-low': 4,
         'low': 5
       };
-      
+
       recommendations.sort((a, b) => {
         return priorityOrder[a.priority] - priorityOrder[b.priority];
       });
-      
+
       return recommendations;
     },
-    
+
     setMaintenanceRecords(deviceId, hasRecords = true) {
       maintenanceRecords.set(deviceId, hasRecords);
     },
-    
+
     // Add the missing method needed by the test
     async addMaintenanceRecord(record) {
       // Store the record by device ID
       if (!maintenanceRecords.has(record.deviceId)) {
         maintenanceRecords.set(record.deviceId, true);
       }
-      
+
       // In a real implementation, we'd store the actual record
       // For the mock, we just need to mark that this device has maintenance records
       return record;
     },
-    
+
     // This avoids memory issues during test execution
     async getMaintenanceRecords(deviceId) {
       // Return a realistic mock record when maintenance records exist
@@ -612,21 +612,21 @@ function mockAnalyticsEngine() {
       }
       return [];
     },
-    
+
     // Business intelligence calculations
     async calculateMaintenanceROI(deviceId) {
       // This avoids memory issues during test execution
       return {
         // Static ROI values that don't depend on any calculations
-        costSavings: 450.00,  
-        energySavings: 200.00, 
+        costSavings: 450.00,
+        energySavings: 200.00,
         lifespanExtension: {
-          months: 9,  
-          value: 625.00 
+          months: 9,
+          value: 625.00
         },
         downtimeReduction: {
-          hours: 48, 
-          value: 300.00 
+          hours: 48,
+          value: 300.00
         },
         totalROI: 4.9, // 490% return on maintenance investment
         paybackPeriod: {
@@ -669,7 +669,7 @@ function mockAnalyticsEngine() {
               change: -12.5 // percent
             },
             uptime: {
-              before: 0.94, // 94% 
+              before: 0.94, // 94%
               after: 0.99,  // 99%
               change: 5.3   // percent
             },
@@ -688,7 +688,7 @@ function mockAnalyticsEngine() {
         }
       };
     },
-    
+
     /**
      * Compare preventive and reactive maintenance approaches
      * @param {Array<string>} preventiveDeviceIds - Devices following preventive maintenance
@@ -741,7 +741,7 @@ function mockAnalyticsEngine() {
         recommendedStrategy: 'Preventive maintenance with condition-based monitoring'
       };
     },
-    
+
     // AI-powered operational optimization
     async getOptimalSchedule(deviceId, constraints) {
       return {
@@ -772,32 +772,32 @@ function mockAnalyticsEngine() {
         }
       };
     },
-    
+
     // Energy consumption forecasting
     async forecastEnergyConsumption(deviceId, timeframe) {
       const days = Math.ceil((timeframe.end - timeframe.start) / (1000 * 60 * 60 * 24));
       const dailyData = [];
-      
+
       // Generate forecast data points
       let baseline = 6.5; // kWh starting point
-      
+
       for (let i = 0; i < days; i++) {
         // Add some variation to make it look realistic
         const dayVariation = (Math.random() * 0.8) - 0.4; // -0.4 to +0.4
         const weekendAdjustment = (i % 7 === 0 || i % 7 === 6) ? 1.2 : 1.0; // Higher on weekends
-        
+
         const forecast = (baseline + dayVariation) * weekendAdjustment;
-        
+
         const date = new Date(timeframe.start);
         date.setDate(date.getDate() + i);
-        
+
         dailyData.push({
           date: date,
           forecastKwh: forecast.toFixed(2),
           confidence: 0.85 - (i * 0.01) // Confidence decreases further into the future
         });
       }
-      
+
       return {
         deviceId,
         forecastPeriod: {
@@ -816,7 +816,7 @@ function mockAnalyticsEngine() {
         }
       };
     },
-    
+
     // Mock method for water usage pattern analysis
     async analyzeWaterUsagePatterns(deviceId, timeframe) {
       return {
@@ -857,7 +857,7 @@ function mockAnalyticsEngine() {
         ]
       };
     },
-    
+
     // Cross-device learning and optimization
     async getFleetWideInsights(deviceIds, metrics) {
       return {
@@ -903,7 +903,7 @@ function mockAnalyticsEngine() {
         ]
       };
     },
-    
+
     // AI-driven business intelligence
     async analyzeBizROI(implementation, customerSegment) {
       return {
@@ -957,7 +957,7 @@ function mockAnalyticsEngine() {
         ]
       };
     },
-    
+
     // Knowledge extraction and response
     async getKnowledgeResponse(query, context) {
       // Mock of a large language model responding to user queries
@@ -978,7 +978,7 @@ function mockAnalyticsEngine() {
           sources: ['Installation Guide', 'Building Code Reference']
         }
       };
-      
+
       // Default response if no match
       return responses[query.toLowerCase()] || {
         content: 'The IoTSphere system optimizes water heater performance through advanced analytics and machine learning. It monitors energy usage, water temperature, and maintenance needs to provide personalized recommendations for efficiency improvements.',
@@ -986,7 +986,7 @@ function mockAnalyticsEngine() {
         sources: ['Product Documentation', 'User Manual']
       };
     },
-    
+
     /**
      * Add a knowledge entry to the knowledge base
      * @param {Object} entry - The knowledge entry to add
@@ -997,22 +997,22 @@ function mockAnalyticsEngine() {
       if (!entry.id) {
         entry.id = `entry-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
       }
-      
+
       // Add timestamp if not provided
       if (!entry.dateAdded) {
         entry.dateAdded = new Date();
       }
-      
+
       // Initialize metrics if not provided
       if (!entry.appliedCount) entry.appliedCount = 0;
       if (entry.successRate === undefined) entry.successRate = 1.0;
-      
+
       // Add to knowledge base
       knowledgeBase.entries.push(entry);
-      
+
       return entry.id;
     },
-    
+
     /**
      * Get all knowledge entries from the knowledge base
      * @param {Object} filters - Optional filters for retrieving entries
@@ -1020,31 +1020,31 @@ function mockAnalyticsEngine() {
      */
     async getKnowledgeEntries(filters = {}) {
       let entries = [...knowledgeBase.entries];
-      
+
       // Apply category filter if provided
       if (filters.category) {
         entries = entries.filter(entry => entry.category === filters.category);
       }
-      
+
       // Apply search term filter if provided
       if (filters.searchTerm) {
         const term = filters.searchTerm.toLowerCase();
-        entries = entries.filter(entry => 
+        entries = entries.filter(entry =>
           entry.title.toLowerCase().includes(term) ||
           entry.content.toLowerCase().includes(term)
         );
       }
-      
+
       // Apply date filter if provided
       if (filters.dateFrom) {
-        entries = entries.filter(entry => 
+        entries = entries.filter(entry =>
           entry.dateAdded >= filters.dateFrom
         );
       }
-      
+
       return entries;
     },
-    
+
     /**
      * Get all available knowledge categories
      * @returns {Promise<Array<string>>} The knowledge categories
@@ -1052,7 +1052,7 @@ function mockAnalyticsEngine() {
     async getKnowledgeCategories() {
       return [...knowledgeBase.categories];
     },
-    
+
     /**
      * Analyze the knowledge base to identify operational improvement opportunities
      * @returns {Promise<Object>} Analysis results with improvement opportunities
@@ -1186,7 +1186,7 @@ function mockAnalyticsEngine() {
         }
       };
     },
-    
+
     /**
      * Perform fleet-wide optimization analysis
      * @param {Array<string>} deviceIds - Array of device IDs to analyze
@@ -1297,7 +1297,7 @@ function mockAnalyticsEngine() {
         ]
       };
     },
-    
+
     /**
      * Generate scenario projection model based on input parameters
      * @param {Object} parameters - Scenario parameters
@@ -1443,39 +1443,39 @@ function mockAnalyticsEngine() {
         usageCount: entry.usageCount || 0,
         verificationStatus: entry.verificationStatus || 'pending-review'
       };
-      
+
       // Add the entry to the knowledge base
       knowledgeBase.entries.push(newEntry);
-      
+
       return newEntry;
     },
-    
+
     async getKnowledgeEntries(filters = {}) {
       let results = [...knowledgeBase.entries];
-      
+
       // Apply filters if provided
       if (filters.category) {
-        results = results.filter(entry => 
+        results = results.filter(entry =>
           entry.category && entry.category.toLowerCase() === filters.category.toLowerCase());
       }
-      
+
       if (filters.deviceType) {
-        results = results.filter(entry => 
+        results = results.filter(entry =>
           entry.deviceTypes && entry.deviceTypes.includes(filters.deviceType));
       }
-      
+
       if (filters.tags && Array.isArray(filters.tags) && filters.tags.length > 0) {
-        results = results.filter(entry => 
+        results = results.filter(entry =>
           entry.tags && filters.tags.some(tag => entry.tags.includes(tag)));
       }
-      
+
       if (filters.searchTerm) {
         const searchTermLower = filters.searchTerm.toLowerCase();
-        results = results.filter(entry => 
-          (entry.title && entry.title.toLowerCase().includes(searchTermLower)) || 
+        results = results.filter(entry =>
+          (entry.title && entry.title.toLowerCase().includes(searchTermLower)) ||
           (entry.content && entry.content.toLowerCase().includes(searchTermLower)));
       }
-      
+
       // Apply sorting if specified
       if (filters.sortBy && filters.sortDirection) {
         const direction = filters.sortDirection.toLowerCase() === 'desc' ? -1 : 1;
@@ -1492,10 +1492,10 @@ function mockAnalyticsEngine() {
           return 0;
         });
       }
-      
+
       return results;
     },
-    
+
     async getKnowledgeCategories() {
       return knowledgeBase.categories;
     }

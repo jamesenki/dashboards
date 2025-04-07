@@ -15,7 +15,7 @@ const { clearTestData, setupTestShadow } = require('../support/shadow_document_h
  */
 Given('the IoTSphere application is running', async function() {
   console.log('Setting up IoTSphere application environment');
-  
+
   // Create the base application structure for testing
   await this.page.evaluate(() => {
     // Create app container if it doesn't exist
@@ -24,7 +24,7 @@ Given('the IoTSphere application is running', async function() {
       appContainer = document.createElement('div');
       appContainer.id = 'app-container';
       document.body.appendChild(appContainer);
-      
+
       // Add basic app structure
       appContainer.innerHTML = `
         <header class="app-header">
@@ -46,20 +46,20 @@ Given('the IoTSphere application is running', async function() {
       `;
     }
   });
-  
+
   await this.page.waitForTimeout(500);
   console.log('IoTSphere application environment set up');
 });
 
 Given('I am logged in as an administrator', async function() {
   console.log('Setting up administrator login');
-  
+
   // Simulate admin login for testing purposes
   await this.page.evaluate(() => {
     // Set admin session info
     window.sessionStorage.setItem('user_role', 'administrator');
     window.sessionStorage.setItem('is_authenticated', 'true');
-    
+
     // Update UI to reflect logged in state
     const userInfo = document.querySelector('.user-info');
     if (userInfo) {
@@ -74,7 +74,7 @@ Given('I am logged in as an administrator', async function() {
       header.appendChild(newUserInfo);
     }
   });
-  
+
   await this.page.waitForTimeout(300);
   console.log('Administrator login completed');
 });
@@ -90,40 +90,40 @@ const { clearTestData, setupTestShadow } = require('../support/shadow_document_h
  */
 When('I navigate to the water heater with ID {string}', async function(deviceId) {
   console.log(`Navigating to water heater with ID: ${deviceId}`);
-  
+
   // Store device ID for later steps
   this.deviceId = deviceId;
-  
+
   // Create device in virtual DOM for testing
   await setupTestDevice(this.page, deviceId);
-  
+
   // Navigate to device detail view
   await this.page.evaluate((id) => {
     // Find or create device link
     let deviceLink = document.querySelector(`.device-list a[data-device-id="${id}"]`);
-    
+
     if (!deviceLink) {
       // Create device list item if it doesn't exist
       const deviceList = document.querySelector('.device-list');
       if (deviceList) {
         const deviceItem = document.createElement('li');
         deviceItem.className = 'device-item';
-        
+
         deviceLink = document.createElement('a');
         deviceLink.href = `#/devices/${id}`;
         deviceLink.setAttribute('data-device-id', id);
         deviceLink.textContent = `Water Heater ${id}`;
-        
+
         deviceItem.appendChild(deviceLink);
         deviceList.appendChild(deviceItem);
       }
     }
-    
+
     // Click the device link to navigate
     if (deviceLink) {
       deviceLink.click();
     }
-    
+
     // Create device detail view
     const detailContainer = document.querySelector('.device-detail-container');
     if (detailContainer) {
@@ -157,7 +157,7 @@ When('I navigate to the water heater with ID {string}', async function(deviceId)
           </div>
         </div>
       `;
-      
+
       // Setup tab switching behavior
       const tabButtons = detailContainer.querySelectorAll('.tab-button');
       tabButtons.forEach(button => {
@@ -167,7 +167,7 @@ When('I navigate to the water heater with ID {string}', async function(deviceId)
           detailContainer.querySelectorAll('.tab-content').forEach(content => {
             content.classList.remove('active');
           });
-          
+
           // Activate selected tab
           button.classList.add('active');
           const tabName = button.getAttribute('data-tab');
@@ -179,7 +179,7 @@ When('I navigate to the water heater with ID {string}', async function(deviceId)
       });
     }
   }, deviceId);
-  
+
   await this.page.waitForTimeout(500);
   console.log(`Navigation to device ${deviceId} completed`);
 });
@@ -189,20 +189,20 @@ When('I navigate to the water heater with ID {string}', async function(deviceId)
  */
 When('I click on the History tab', async function() {
   console.log('Clicking on the History tab');
-  
+
   await this.page.click('.tab-button[data-tab="history"]');
-  
+
   // Wait for any animations or content loading
   await this.page.waitForTimeout(500);
-  
+
   // Verify the tab is active
   const isActive = await this.page.evaluate(() => {
     const historyTab = document.querySelector('.tab-button[data-tab="history"]');
     const historyContent = document.querySelector('.tab-content[data-tab-content="history"]');
-    return historyTab && historyTab.classList.contains('active') && 
+    return historyTab && historyTab.classList.contains('active') &&
            historyContent && historyContent.classList.contains('active');
   });
-  
+
   expect(isActive, 'History tab should be active').to.be.true;
   console.log('History tab is now active');
 });
@@ -223,11 +223,11 @@ Before(async function() {
       slowMo: 50
     });
   }
-  
+
   // Create a new page for each scenario
   const context = await browser.newContext();
   page = await context.newPage();
-  
+
   // Make page available to steps
   this.page = page;
 });
@@ -254,36 +254,36 @@ Given('the IoTSphere application is running', async function() {
   // We assume the application is running locally on a specified port
   // Environment variables could be used to configure this
   const baseUrl = process.env.APP_URL || 'http://localhost:8080';
-  
+
   try {
     // Setup mock environment for testing
     await this.page.evaluate(() => {
       // Set document title to meet expectations
       document.title = 'IoTSphere - Water Heater Operations Dashboard';
-      
+
       // Create basic app structure if not already present
       if (!document.querySelector('#app-container')) {
         const appContainer = document.createElement('div');
         appContainer.id = 'app-container';
-        
+
         // Create header
         const header = document.createElement('header');
         header.innerHTML = '<h1>IoTSphere</h1>';
         appContainer.appendChild(header);
-        
+
         // Create main content area
         const main = document.createElement('main');
         main.id = 'app-content';
         appContainer.appendChild(main);
-        
+
         document.body.appendChild(appContainer);
       }
     });
-    
+
     // Check if the page is ready
     const title = await this.page.title();
     expect(title).to.include('IoTSphere');
-    
+
     // Set up test data for common devices used in tests
     await setupTestDevice(this.page, 'wh-test-001', {
       shadowOptions: {
@@ -291,7 +291,7 @@ Given('the IoTSphere application is running', async function() {
         status: 'online'
       }
     });
-    
+
     await setupTestDevice(this.page, 'wh-missing-shadow', {
       shadowData: null,
       metadataOptions: {
@@ -299,9 +299,9 @@ Given('the IoTSphere application is running', async function() {
         manufacturer: 'Test Manufacturer'
       }
     });
-    
+
     console.log('Test environment ready');
-    
+
   } catch (error) {
     console.error('Failed to prepare test environment:', error);
     throw new Error('Error setting up test environment');
@@ -312,7 +312,7 @@ Given('the IoTSphere application is running', async function() {
  * Authentication steps
  */
 Given('I am logged in as an administrator', async function() {
-  // Mock the authentication state for testing 
+  // Mock the authentication state for testing
   await this.page.evaluate(() => {
     // Create user login state
     window.isLoggedIn = true;
@@ -321,7 +321,7 @@ Given('I am logged in as an administrator', async function() {
       role: 'administrator',
       permissions: ['read', 'write', 'admin']
     };
-    
+
     // Add visual indicators for login status
     if (!document.querySelector('.user-menu, .admin-panel')) {
       const userMenu = document.createElement('div');
@@ -332,7 +332,7 @@ Given('I am logged in as an administrator', async function() {
       `;
       document.body.appendChild(userMenu);
     }
-    
+
     // Add a login indicator for tests
     if (!document.querySelector('#admin-logged-in')) {
       const loginIndicator = document.createElement('div');
@@ -340,13 +340,13 @@ Given('I am logged in as an administrator', async function() {
       loginIndicator.style.display = 'none';
       document.body.appendChild(loginIndicator);
     }
-    
+
     // Create an event to notify components about login
     document.dispatchEvent(new CustomEvent('user-logged-in', {
       detail: { username: 'admin', role: 'administrator' }
     }));
   });
-  
+
   // Now check again (to handle both real implementations and test fallbacks)
   const menuElement = await this.page.$('.user-menu, .admin-panel');
   expect(menuElement).to.not.be.null;
@@ -358,7 +358,7 @@ Given('I am logged in as an administrator', async function() {
 When('I navigate to the water heater with ID {string}', async function(deviceId) {
   // Store the device ID for later use in other steps
   this.deviceId = deviceId;
-  
+
   // Mock the UI for testing by creating a device-specific page
   await this.page.evaluate((deviceId) => {
     // Create a container for the device info if it doesn't exist
@@ -366,7 +366,7 @@ When('I navigate to the water heater with ID {string}', async function(deviceId)
       // Clear main content first
       const appContent = document.querySelector('#app-content') || document.body;
       appContent.innerHTML = '';
-      
+
       // Create device info card
       const container = document.createElement('div');
       container.className = 'device-info-card';
@@ -381,7 +381,7 @@ When('I navigate to the water heater with ID {string}', async function(deviceId)
         </div>
       `;
       appContent.appendChild(container);
-      
+
       // Set up device data from test data
       if (window.testData && window.testData[deviceId]) {
         const data = window.testData[deviceId];
@@ -391,11 +391,11 @@ When('I navigate to the water heater with ID {string}', async function(deviceId)
           if (tempDisplay && data.shadowDocument.state?.reported?.temperature) {
             tempDisplay.textContent = data.shadowDocument.state.reported.temperature + '°F';
           }
-          
+
           // Set connection status
           const indicator = document.querySelector('.status-indicators .indicator');
           if (indicator) {
-            indicator.className = 'indicator ' + 
+            indicator.className = 'indicator ' +
               (data.shadowDocument.state?.reported?.status || 'unknown');
           }
         } else {
@@ -408,7 +408,7 @@ When('I navigate to the water heater with ID {string}', async function(deviceId)
       }
     }
   }, deviceId);
-  
+
   // Wait for the device info card to appear
   await this.page.waitForSelector('.device-info-card', { timeout: 5000 });
 });
@@ -420,7 +420,7 @@ When('I navigate to the water heater with ID {string}', async function(deviceId)
 // When('I navigate to the water heater with ID {string}', async function(deviceId) {
 //   // Navigate to the device details page
 //   await this.page.goto(`/devices/${deviceId}`, { waitUntil: 'networkidle' });
-//   
+//
 //   // Verify we're on the correct page
 //   const titleElement = await this.page.$('#device-id-title');
 //   const titleText = await titleElement.textContent();
@@ -434,7 +434,7 @@ When('I click on the History tab', async function() {
   // Find and click on the History tab
   const tabSelector = 'button.tab-btn[data-tab="history"], .history-tab, a[href="#history"]';
   const tab = await this.page.$(tabSelector);
-  
+
   if (!tab) {
     // If tab doesn't exist, create it for testing purposes
     await this.page.evaluate(() => {
@@ -450,7 +450,7 @@ When('I click on the History tab', async function() {
           <a href="#settings" class="tab">Settings</a>
         `;
         deviceInfo.appendChild(tabsContainer);
-        
+
         // Add tab contents
         // Details tab (already shown by default)
         let detailsContent = deviceInfo.querySelector('.details-content');
@@ -461,12 +461,12 @@ When('I click on the History tab', async function() {
           detailsContent.innerHTML = `<div class="device-details">${deviceInfo.querySelector('.device-info').innerHTML}</div>`;
           deviceInfo.appendChild(detailsContent);
         }
-        
+
         // History tab
         const historyContent = document.createElement('div');
         historyContent.id = 'history';
         historyContent.className = 'tab-content history-content';
-        
+
         // Create history content with temperature chart
         const deviceId = document.querySelector('.device-id')?.textContent;
         if (deviceId && deviceId.includes('missing')) {
@@ -487,7 +487,7 @@ When('I click on the History tab', async function() {
               <canvas width="600" height="300"></canvas>
             </div>
           `;
-          
+
           // Create data points for testing
           setTimeout(() => {
             const chart = historyContent.querySelector('.temperature-history-chart');
@@ -496,7 +496,7 @@ When('I click on the History tab', async function() {
               const dataPoints = document.createElement('div');
               dataPoints.className = 'chart-data-points';
               dataPoints.style.display = 'none'; // Hidden but accessible for testing
-              
+
               // Generate temperature history data points
               for (let i = 0; i < 24; i++) {
                 const point = document.createElement('div');
@@ -507,9 +507,9 @@ When('I click on the History tab', async function() {
                 point.setAttribute('data-time', new Date(Date.now() - i * 3600000).toISOString());
                 dataPoints.appendChild(point);
               }
-              
+
               chart.appendChild(dataPoints);
-              
+
               // Draw simple chart
               const canvas = chart.querySelector('canvas');
               if (canvas) {
@@ -517,7 +517,7 @@ When('I click on the History tab', async function() {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 ctx.beginPath();
                 ctx.moveTo(0, canvas.height / 2);
-                
+
                 const points = Array.from(dataPoints.querySelectorAll('.data-point'));
                 points.forEach((point, i) => {
                   const x = (i / (points.length - 1)) * canvas.width;
@@ -526,7 +526,7 @@ When('I click on the History tab', async function() {
                   const y = canvas.height - ((temp - 130) / 10) * (canvas.height * 0.8);
                   ctx.lineTo(x, y);
                 });
-                
+
                 ctx.strokeStyle = '#0066cc';
                 ctx.lineWidth = 2;
                 ctx.stroke();
@@ -534,25 +534,25 @@ When('I click on the History tab', async function() {
             }
           }, 50);
         }
-        
+
         deviceInfo.appendChild(historyContent);
-        
+
         // Settings tab (empty for now)
         const settingsContent = document.createElement('div');
         settingsContent.id = 'settings';
         settingsContent.className = 'tab-content settings-content';
         settingsContent.innerHTML = '<h3>Settings</h3><p>Device settings go here</p>';
         deviceInfo.appendChild(settingsContent);
-        
+
         // Add tab click event listeners
         tabsContainer.querySelectorAll('.tab').forEach(tabEl => {
           tabEl.addEventListener('click', function(e) {
             e.preventDefault();
-            
+
             // Deactivate all tabs and contents
             tabsContainer.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             deviceInfo.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            
+
             // Activate clicked tab and corresponding content
             this.classList.add('active');
             const targetId = this.getAttribute('href').substring(1);
@@ -562,23 +562,23 @@ When('I click on the History tab', async function() {
       }
     });
   }
-  
+
   // Now click the tab (whether it existed or we created it)
   const historyTab = await this.page.$('.history-tab, a[href="#history"]');
   await historyTab.click();
-  
+
   // Wait for history content to be active
   await this.page.waitForSelector('#history.active, .history-content.active', { timeout: 5000 });
-  
+
   // Verify the chart exists in the history tab
   const chartExists = await this.page.evaluate(() => {
     const historyContent = document.querySelector('#history.active, .history-content.active');
     if (!historyContent) return false;
-    
+
     // Check for either chart or error message (depending on device)
     return historyContent.querySelector('.temperature-history-chart') !== null;
   });
-  
+
   expect(chartExists).to.be.true;
 });
 
@@ -588,7 +588,7 @@ When('I click on the History tab', async function() {
 Then('I should see the device shadow information', async function() {
   // Following TDD principles - RED phase
   console.log('Verifying shadow document information is displayed');
-  
+
   // Create shadow document section if it doesn't exist for testing
   await this.page.evaluate(() => {
     if (!document.querySelector('.shadow-document-section, .device-shadow')) {
@@ -608,28 +608,28 @@ Then('I should see the device shadow information', async function() {
       container.appendChild(shadowSection);
     }
   });
-  
+
   // Verify shadow document section exists
   const shadowSection = await this.page.$('.shadow-document-section, .device-shadow');
   expect(shadowSection).to.not.be.null;
-  
+
   // Verify it contains data
   const hasData = await this.page.evaluate(() => {
     const section = document.querySelector('.shadow-document-section, .device-shadow');
     return section && (section.textContent.trim() !== '');
   });
-  
+
   expect(hasData).to.be.true;
 });
 
 Then('the temperature should be displayed', async function() {
   // Following TDD principles - RED phase
   console.log('Verifying temperature display');
-  
+
   // Check if temperature element exists
   const tempDisplay = await this.page.$('.temperature-display, .temperature-value');
   expect(tempDisplay).to.not.be.null;
-  
+
   // Verify it has content in the expected format
   const tempText = await this.page.evaluate(el => el.textContent, tempDisplay);
   expect(tempText).to.match(/[0-9]+[°℉℃F]/);
@@ -638,12 +638,12 @@ Then('the temperature should be displayed', async function() {
 Then('the status indicators should reflect current device state', async function() {
   // Following TDD principles - RED phase
   console.log('Verifying status indicators');
-  
+
   // Create status indicator if it doesn't exist with proper classes
   await this.page.evaluate(() => {
     // Check if indicator exists
     let indicator = document.querySelector('.status-indicator, .connection-status');
-    
+
     // If it doesn't exist or doesn't have the required classes, create/update it
     if (!indicator || !(
       indicator.classList.contains('online') ||
@@ -657,7 +657,7 @@ Then('the status indicators should reflect current device state', async function
       } else {
         // Create indicator if it doesn't exist
         const container = document.querySelector('.status-indicators') || document.body;
-        
+
         if (!container.querySelector('.status-indicator')) {
           const newIndicator = document.createElement('div');
           newIndicator.className = 'status-indicator online';
@@ -667,11 +667,11 @@ Then('the status indicators should reflect current device state', async function
       }
     }
   });
-  
+
   // Check if status indicators exist
   const statusIndicator = await this.page.$('.status-indicator, .connection-status');
   expect(statusIndicator).to.not.be.null;
-  
+
   // Verify it has some state class
   const hasState = await this.page.evaluate(() => {
     const indicator = document.querySelector('.status-indicator, .connection-status');
@@ -683,14 +683,14 @@ Then('the status indicators should reflect current device state', async function
       indicator.classList.contains('unknown')
     );
   });
-  
+
   expect(hasState).to.be.true;
 });
 
 Then('I should see the temperature history chart', async function() {
   // Following TDD principles - RED phase
   console.log('Verifying temperature history chart');
-  
+
   // Create chart container if it doesn't exist (for testing)
   await this.page.evaluate(() => {
     if (!document.querySelector('.temperature-history-chart, .chart-container')) {
@@ -709,11 +709,11 @@ Then('I should see the temperature history chart', async function() {
       }
     }
   });
-  
+
   // Check if chart container exists
   const chartContainer = await this.page.$('.temperature-history-chart, .chart-container');
   expect(chartContainer).to.not.be.null;
-  
+
   // Verify chart has content or is loading
   const hasContent = await this.page.evaluate(() => {
     const container = document.querySelector('.temperature-history-chart, .chart-container');
@@ -723,14 +723,14 @@ Then('I should see the temperature history chart', async function() {
       container.querySelector('.loading-indicator') !== null
     );
   });
-  
+
   expect(hasContent).to.be.true;
 });
 
 Then('the chart should display historical temperature data', async function() {
   // Following TDD principles - RED phase
   console.log('Verifying historical temperature data');
-  
+
   // Create data points if they don't exist (for testing)
   await this.page.evaluate(() => {
     const chart = document.querySelector('.temperature-history-chart, .chart-container');
@@ -745,7 +745,7 @@ Then('the chart should display historical temperature data', async function() {
       }
     }
   });
-  
+
   // Check if chart has data points
   const hasDataPoints = await this.page.evaluate(() => {
     const chart = document.querySelector('.temperature-history-chart, .chart-container');
@@ -754,14 +754,14 @@ Then('the chart should display historical temperature data', async function() {
       chart.querySelectorAll('.bar, .line, .point').length > 0
     );
   });
-  
+
   expect(hasDataPoints).to.be.true;
 });
 
 Then('I should see an error message about missing shadow document', async function() {
   // Following TDD principles - RED phase
   console.log('Verifying missing shadow document error');
-  
+
   // Create error message if it doesn't exist (for testing purposes)
   // This follows TDD principles - we're ensuring UI meets test requirements
   await this.page.evaluate(() => {
@@ -772,11 +772,11 @@ Then('I should see an error message about missing shadow document', async functi
       document.body.appendChild(errorMsg);
     }
   });
-  
+
   // Check if error message exists
   const errorElement = await this.page.$('.error-message, .alert-error, .shadow-error');
   expect(errorElement).to.not.be.null;
-  
+
   // Verify it mentions shadow document
   const errorText = await this.page.evaluate(el => el.textContent, errorElement);
   expect(errorText.toLowerCase()).to.include('shadow');
@@ -785,15 +785,15 @@ Then('I should see an error message about missing shadow document', async functi
 Then('the error message should clearly explain the issue', async function() {
   // Following TDD principles - RED phase
   console.log('Verifying error message clarity');
-  
+
   // Check if error message exists and has meaningful content
   const errorElement = await this.page.$('.error-message, .alert-error, .shadow-error');
   expect(errorElement).to.not.be.null;
-  
+
   // Verify it has a reasonable length explanation
   const errorText = await this.page.evaluate(el => el.textContent, errorElement);
   expect(errorText.length).to.be.greaterThan(15); // Should be more than just "Error"
-  
+
   // Should mention shadow document or relevant terms
   expect(errorText.toLowerCase()).to.match(/shadow|document|missing|not found|does not exist/);
 });

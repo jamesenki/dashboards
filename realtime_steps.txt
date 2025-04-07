@@ -1,0 +1,9 @@
+Then('I should see a reconnection attempt message', async function() {
+Then('the new data points should appear on the chart', async function() {
+Then('the status indicator should show {string} again', async function(status) {
+Then('the status indicator should show {string}', async function(status) {
+Then('the temperature display should update to {string} automatically', async function(temperature) {
+When('the WebSocket connection is interrupted', async function() {
+When('the connection is restored', async function() {
+When('the device sends a new temperature reading of {string}', async function(temperature) {
+When('the device sends new temperature readings', async function() {

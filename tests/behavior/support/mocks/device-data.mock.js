@@ -1,6 +1,6 @@
 /**
  * Device Data Mock
- * 
+ *
  * Provides mock data for BDD testing of the IoTSphere dashboard
  * Following device-agnostic approach with water heaters as reference implementation
  */
@@ -60,7 +60,7 @@ function createSingleDevice(deviceId, connectionStatus = 'connected', mode = 'he
   const manufacturer = MANUFACTURERS.AQUATECH;
   const model = 'Pro 2000';
   const simulated = deviceId.includes('sim');
-  
+
   return createDevice(deviceId, manufacturer, model, connectionStatus, simulated, mode);
 }
 
@@ -89,7 +89,7 @@ function createDeviceState(manufacturer, model, mode = 'heating') {
   let baseTemp = 120;
   let powerConsumption = 1200;
   let waterFlow = 2.5;
-  
+
   // Adjust base values by manufacturer
   if (manufacturer === MANUFACTURERS.AQUATECH) {
     baseTemp += 5;
@@ -98,7 +98,7 @@ function createDeviceState(manufacturer, model, mode = 'heating') {
     baseTemp -= 5;
     powerConsumption -= 200;
   }
-  
+
   // Adjust by model type
   if (model.includes('Pro') || model.includes('Elite') || model.includes('Industrial')) {
     baseTemp += 10;
@@ -108,10 +108,10 @@ function createDeviceState(manufacturer, model, mode = 'heating') {
     baseTemp -= 5;
     powerConsumption -= 300;
   }
-  
+
   // Determine heating status based on mode
   const heatingStatus = mode === 'heating';
-  
+
   return {
     temperature_current: baseTemp + (Math.random() * 10 - 5),
     temperature_setpoint: baseTemp,
@@ -132,18 +132,18 @@ const mockTelemetryData = {
     const now = new Date();
     const yesterday = new Date(now);
     yesterday.setDate(yesterday.getDate() - 1);
-    
+
     // Create 24 hours of hourly data points
     const hourlyData = [];
     for (let i = 0; i < 24; i++) {
       const timestamp = new Date(yesterday);
       timestamp.setHours(timestamp.getHours() + i);
-      
+
       // Generate realistic temperature patterns
       // Morning rise, midday peak, evening plateau, night decline
       let tempModifier = 0;
       const hour = timestamp.getHours();
-      
+
       if (hour >= 5 && hour < 10) {
         // Morning rise
         tempModifier = (hour - 5) * 2;
@@ -157,16 +157,16 @@ const mockTelemetryData = {
         // Night decline
         tempModifier = hour < 5 ? (20 + hour) * -0.5 : (hour - 20) * -3;
       }
-      
+
       // Base temperature plus pattern modifier plus small random variation
       const baseTemp = 120;
       const targetTemp = 125;
       const currentTemp = baseTemp + tempModifier + (Math.random() * 2 - 1);
-      
+
       // Power consumption varies with heating activity
       const heatingStatus = currentTemp < targetTemp - 2;
       const powerConsumption = heatingStatus ? 1200 + (Math.random() * 200 - 100) : 50 + (Math.random() * 20);
-      
+
       // Water flow varies with time of day
       let waterFlow = 0;
       if ((hour >= 6 && hour < 9) || (hour >= 17 && hour < 22)) {
@@ -179,7 +179,7 @@ const mockTelemetryData = {
         // Low nighttime usage
         waterFlow = Math.random() * 0.5;
       }
-      
+
       hourlyData.push({
         timestamp: timestamp.toISOString(),
         temperature_current: currentTemp,
@@ -189,7 +189,7 @@ const mockTelemetryData = {
         water_flow_gpm: waterFlow
       });
     }
-    
+
     return {
       device_id: deviceId,
       series: {
@@ -251,13 +251,13 @@ const mockPerformanceData = {
       }
     };
   },
-  
+
   /**
    * Creates performance data with anomalies for testing anomaly detection
    */
   createPerformanceDataWithAnomalies(deviceId) {
     const baseData = this.createPerformanceData(deviceId);
-    
+
     // Add anomalies
     baseData.anomalies = {
       count: 3,
@@ -288,7 +288,7 @@ const mockPerformanceData = {
         }
       ]
     };
-    
+
     // Update other metrics to reflect anomalies
     baseData.efficiency.score = 65 + (Math.random() * 10 - 5);
     baseData.efficiency.rating = 'C';
@@ -296,7 +296,7 @@ const mockPerformanceData = {
     baseData.energy_consumption.trend = 'up';
     baseData.energy_consumption.trend_value = 12.5;
     baseData.heating_cycles.status = 'critical';
-    
+
     return baseData;
   }
 };

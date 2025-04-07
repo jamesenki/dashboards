@@ -105,16 +105,16 @@ Given('data from multiple devices across different customer segments', async fun
       }
     }
   ];
-  
+
   // Generate device data for each segment
   for (const segment of this.testContext.customerSegments) {
     segment.devices = [];
-    
+
     // Create devices for this segment
     for (let i = 0; i < segment.deviceCount; i++) {
       const deviceType = segment.deviceTypes[i % segment.deviceTypes.length];
       const deviceId = `${segment.name.toLowerCase().replace(/\s+/g, '-')}-${deviceType}-${i+1}`;
-      
+
       // Register the device
       const device = await this.deviceRepository.registerDevice({
         id: deviceId,
@@ -131,14 +131,14 @@ Given('data from multiple devices across different customer segments', async fun
           location: `${segment.name} Location ${Math.floor(i/5) + 1}`
         }
       });
-      
+
       // Generate telemetry based on segment patterns
       await this.generateSegmentBasedTelemetry(deviceId, deviceType, segment.utilizationPatterns);
-      
+
       segment.devices.push(device);
     }
   }
-  
+
   // Verify devices were created
   const totalDeviceCount = this.testContext.customerSegments.reduce(
     (sum, segment) => sum + segment.devices.length, 0
@@ -160,7 +160,7 @@ Given('customer demographic and firmographic data', async function() {
       decisionFactors: ['Cost', 'Reliability', 'Efficiency', 'Service Quality', 'Innovation', 'Sustainability']
     }
   };
-  
+
   // Assign these attributes to each segment
   for (const segment of this.testContext.customerSegments) {
     // Add firmographic data to each segment
@@ -186,7 +186,7 @@ When('the business analytics system performs customer segmentation analysis', as
       customerData: this.testContext.customerData,
       analysisDepth: 'comprehensive'
     });
-    
+
     this.testContext.segmentationResults = segmentationResults;
   } catch (error) {
     this.testContext.errors.push(error);
@@ -198,16 +198,16 @@ When('the business analytics system performs customer segmentation analysis', as
  */
 Then('it should identify distinct customer segments based on usage patterns', function() {
   const results = this.testContext.segmentationResults;
-  
+
   expect(results).to.have.property('identifiedSegments');
   expect(results.identifiedSegments).to.be.an('array');
   expect(results.identifiedSegments.length).to.be.at.least(3); // Should identify at least 3 distinct segments
-  
+
   // Each segment should have a distinct usage pattern profile
-  const usagePatterns = results.identifiedSegments.map(segment => 
+  const usagePatterns = results.identifiedSegments.map(segment =>
     JSON.stringify(segment.usagePattern)
   );
-  
+
   // Check for uniqueness - all patterns should be different
   const uniquePatterns = new Set(usagePatterns);
   expect(uniquePatterns.size).to.equal(usagePatterns.length);
@@ -215,13 +215,13 @@ Then('it should identify distinct customer segments based on usage patterns', fu
 
 Then('it should quantify the size and value of each segment', function() {
   const results = this.testContext.segmentationResults;
-  
+
   for (const segment of results.identifiedSegments) {
     expect(segment).to.have.property('marketSize');
     expect(segment.marketSize).to.be.an('object');
     expect(segment.marketSize).to.have.property('estimatedCustomerCount');
     expect(segment.marketSize).to.have.property('estimatedDeviceCount');
-    
+
     expect(segment).to.have.property('economicValue');
     expect(segment.economicValue).to.be.an('object');
     expect(segment.economicValue).to.have.property('customerLifetimeValue');
@@ -232,11 +232,11 @@ Then('it should quantify the size and value of each segment', function() {
 
 Then('it should identify underserved segments with high growth potential', function() {
   const results = this.testContext.segmentationResults;
-  
+
   expect(results).to.have.property('growthOpportunities');
   expect(results.growthOpportunities).to.be.an('array');
   expect(results.growthOpportunities.length).to.be.at.least(1);
-  
+
   // Each growth opportunity should have specific attributes
   for (const opportunity of results.growthOpportunities) {
     expect(opportunity).to.have.property('segment');
@@ -249,11 +249,11 @@ Then('it should identify underserved segments with high growth potential', funct
 
 Then('it should provide firmographic profiles of each segment', function() {
   const results = this.testContext.segmentationResults;
-  
+
   for (const segment of results.identifiedSegments) {
     expect(segment).to.have.property('firmographicProfile');
     expect(segment.firmographicProfile).to.be.an('object');
-    
+
     // Each profile should have specific attributes
     expect(segment.firmographicProfile).to.have.property('industryComposition');
     expect(segment.firmographicProfile).to.have.property('companySize');
@@ -265,16 +265,16 @@ Then('it should provide firmographic profiles of each segment', function() {
 
 Then('it should recommend targeting approaches for high-value segments', function() {
   const results = this.testContext.segmentationResults;
-  
+
   expect(results).to.have.property('targetingRecommendations');
   expect(results.targetingRecommendations).to.be.an('object');
-  
+
   // Should have recommendations for high-value segments
   for (const segment of results.identifiedSegments) {
     if (segment.economicValue.customerLifetimeValue > 100000) { // Arbitrary threshold for high-value
       const segmentId = segment.id;
       expect(results.targetingRecommendations).to.have.property(segmentId);
-      
+
       const recommendation = results.targetingRecommendations[segmentId];
       expect(recommendation).to.have.property('marketingChannels');
       expect(recommendation).to.have.property('messagingThemes');

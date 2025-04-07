@@ -1,6 +1,6 @@
 /**
  * Mock User Service
- * 
+ *
  * This file provides a mock implementation of the user service
  * for use in BDD tests. It simulates the behavior of the real service
  * without actually connecting to a user database.
@@ -12,7 +12,7 @@
 function mockUserService() {
   // In-memory storage for users
   const users = new Map();
-  
+
   // Define mock roles and permissions
   const roles = {
     'FACILITY_MANAGER': {
@@ -37,7 +37,7 @@ function mockUserService() {
       permissions: ['READ_DEVICES', 'VIEW_TELEMETRY', 'CONTROL_DEVICES']
     }
   };
-  
+
   // Add some pre-defined users
   users.set('facility-manager-1', {
     id: 'facility-manager-1',
@@ -47,7 +47,7 @@ function mockUserService() {
     permissions: roles['FACILITY_MANAGER'].permissions,
     metadata: { facilityIds: ['facility-1', 'facility-2'] }
   });
-  
+
   users.set('service-tech-1', {
     id: 'service-tech-1',
     username: 'service.tech',
@@ -56,7 +56,7 @@ function mockUserService() {
     permissions: roles['SERVICE_TECHNICIAN'].permissions,
     metadata: { certifications: ['AquaTherm Certified', 'HVAC-R'] }
   });
-  
+
   // Add an admin user
   users.set('admin-1', {
     id: 'admin-1',
@@ -66,7 +66,7 @@ function mockUserService() {
     permissions: roles['SYSTEM_ADMIN'] ? roles['SYSTEM_ADMIN'].permissions : ['MANAGE_USERS', 'MANAGE_SYSTEM', 'READ_DEVICES'],
     metadata: { isSystemAdmin: true }
   });
-  
+
   // Add a technician user
   users.set('tech-1', {
     id: 'tech-1',
@@ -76,7 +76,7 @@ function mockUserService() {
     permissions: roles['SERVICE_TECHNICIAN'] ? roles['SERVICE_TECHNICIAN'].permissions : ['READ_DEVICES', 'UPDATE_DEVICE', 'RECORD_MAINTENANCE'],
     metadata: { certifications: ['HVAC Certified'] }
   });
-  
+
   users.set('system-admin-1', {
     id: 'system-admin-1',
     username: 'system.admin',
@@ -85,7 +85,7 @@ function mockUserService() {
     permissions: roles['SYSTEM_ADMIN'].permissions,
     metadata: {}
   });
-  
+
   users.set('end-user-1', {
     id: 'end-user-1',
     username: 'end.user',
@@ -94,7 +94,7 @@ function mockUserService() {
     permissions: roles['END_USER'].permissions,
     metadata: { deviceIds: ['device-101', 'device-102'] }
   });
-  
+
   return {
     /**
      * Reset the mock to initial state
@@ -102,7 +102,7 @@ function mockUserService() {
     reset() {
       // Clear any dynamically added users, keep the pre-defined ones
     },
-    
+
     /**
      * Get a user by role
      * @param {string} role The role to find a user for
@@ -115,7 +115,7 @@ function mockUserService() {
           return user;
         }
       }
-      
+
       // If no existing user has this role, create a mock user with this role
       if (roles[role]) {
         const mockUser = {
@@ -126,16 +126,16 @@ function mockUserService() {
           permissions: roles[role].permissions,
           metadata: {}
         };
-        
+
         // Add to users collection for future use
         users.set(mockUser.id, mockUser);
         return mockUser;
       }
-      
+
       // Return null if the role doesn't exist
       return null;
     },
-    
+
     /**
      * Authenticate a user
      * @param {Object} credentials User credentials or role to impersonate
@@ -153,7 +153,7 @@ function mockUserService() {
             };
           }
         }
-        
+
         // If no user with the role exists, create one
         const userId = `${credentials.role.toLowerCase()}-${Date.now()}`;
         const newUser = {
@@ -164,9 +164,9 @@ function mockUserService() {
           permissions: roles[credentials.role] ? roles[credentials.role].permissions : [],
           metadata: {}
         };
-        
+
         users.set(userId, newUser);
-        
+
         return {
           ...newUser,
           token: `mock-token-${userId}`
@@ -182,10 +182,10 @@ function mockUserService() {
           }
         }
       }
-      
+
       throw new Error('Authentication failed');
     },
-    
+
     /**
      * Check if a user has a specific permission
      * @param {string} userId User ID
@@ -194,14 +194,14 @@ function mockUserService() {
      */
     async hasPermission(userId, permission) {
       const user = users.get(userId);
-      
+
       if (!user) {
         return false;
       }
-      
+
       return user.permissions.includes(permission);
     },
-    
+
     /**
      * Check if a user has access to a device
      * @param {string} userId User ID
@@ -210,34 +210,34 @@ function mockUserService() {
      */
     async hasDeviceAccess(userId, deviceId) {
       const user = users.get(userId);
-      
+
       if (!user) {
         return false;
       }
-      
+
       // System admins have access to all devices
       if (user.roles.includes('SYSTEM_ADMIN')) {
         return true;
       }
-      
+
       // Facility managers have access to all devices
       if (user.roles.includes('FACILITY_MANAGER')) {
         return true;
       }
-      
+
       // Service technicians have access to all devices
       if (user.roles.includes('SERVICE_TECHNICIAN')) {
         return true;
       }
-      
+
       // End users only have access to their own devices
       if (user.roles.includes('END_USER')) {
         return user.metadata.deviceIds && user.metadata.deviceIds.includes(deviceId);
       }
-      
+
       return false;
     },
-    
+
     /**
      * Authenticate a user - alias for 'authenticate' method to maintain compatibility with tests
      * @param {Object} credentials User credentials or role to impersonate

@@ -8,9 +8,9 @@ let expect;
 })();
 
 const { mockDeviceData, mockTelemetryData, mockPerformanceData } = require('../support/mocks/device-data.mock');
-const { navigateToDashboard, selectDevice, filterByManufacturer, 
+const { navigateToDashboard, selectDevice, filterByManufacturer,
         filterByStatus, clearFilters, toggleTemperatureUnit,
-        changeTemperatureSetpoint, togglePowerState, 
+        changeTemperatureSetpoint, togglePowerState,
         selectTab } = require('../support/actions/dashboard.actions');
 const { setupBrowserHooks, getDeviceCards, getDeviceDetails,
         getSummaryMetrics, getTelemetryChart, getPerformanceMetrics,
@@ -29,7 +29,7 @@ setupBrowserHooks();
 Given('I am logged in as a {string}', async function(role) {
   // Set up user role and permissions for tests
   this.currentUser = { role, permissions: ['read:devices', 'write:devices'] };
-  
+
   // Mock authorization for the current user
   await this.page.evaluate((userJson) => {
     localStorage.setItem('currentUser', userJson);
@@ -78,7 +78,7 @@ Given('there is a water heater with ID {string} with historical telemetry data',
   // Mock a device with telemetry history
   const mockDevice = mockDeviceData.createSingleDevice(deviceId);
   const telemetryHistory = mockTelemetryData.createTelemetryHistory(deviceId);
-  
+
   await this.page.evaluate((deviceJson, telemetryJson, id) => {
     const devices = JSON.parse(localStorage.getItem('mockDevices') || '[]');
     devices.push(JSON.parse(deviceJson));
@@ -92,7 +92,7 @@ Given('there is a water heater with ID {string} with performance data', async fu
   // Mock a device with performance metrics
   const mockDevice = mockDeviceData.createSingleDevice(deviceId);
   const performanceData = mockPerformanceData.createPerformanceData(deviceId);
-  
+
   await this.page.evaluate((deviceJson, performanceJson, id) => {
     const devices = JSON.parse(localStorage.getItem('mockDevices') || '[]');
     devices.push(JSON.parse(deviceJson));
@@ -117,7 +117,7 @@ Given('there is a water heater with ID {string} with detected anomalies', async 
   // Mock a device with anomaly data
   const mockDevice = mockDeviceData.createSingleDevice(deviceId);
   const performanceData = mockPerformanceData.createPerformanceDataWithAnomalies(deviceId);
-  
+
   await this.page.evaluate((deviceJson, performanceJson, id) => {
     const devices = JSON.parse(localStorage.getItem('mockDevices') || '[]');
     devices.push(JSON.parse(deviceJson));
@@ -173,7 +173,7 @@ Then('I should see a list of all water heaters in the system', async function() 
   const mockDevices = JSON.parse(await this.page.evaluate(() => {
     return localStorage.getItem('mockDevices');
   }));
-  
+
   expect(deviceCards.length).to.equal(mockDevices.length);
 });
 
@@ -190,11 +190,11 @@ Then('each water heater should indicate if it is simulated', async function() {
   const mockDevices = JSON.parse(await this.page.evaluate(() => {
     return localStorage.getItem('mockDevices');
   }));
-  
+
   for (let i = 0; i < deviceCards.length; i++) {
     const card = deviceCards[i];
     const device = mockDevices[i];
-    
+
     if (device.simulated) {
       const simulationBadge = await card.$('.simulation-badge');
       expect(simulationBadge).to.not.be.null;
@@ -212,12 +212,12 @@ Then('I should only see water heaters from {string}', async function(manufacture
 
 Then('I should be able to clear the filter to see all water heaters', async function() {
   await clearFilters(this.page);
-  
+
   const deviceCards = await getDeviceCards(this.page);
   const mockDevices = JSON.parse(await this.page.evaluate(() => {
     return localStorage.getItem('mockDevices');
   }));
-  
+
   expect(deviceCards.length).to.equal(mockDevices.length);
 });
 
@@ -232,13 +232,13 @@ Then('I should only see water heaters with {string} status', async function(stat
 Then('I should see summary metrics including:', async function(dataTable) {
   const metrics = dataTable.raw().map(row => row[0]);
   const summaryCards = await getSummaryMetrics(this.page);
-  
+
   for (const metric of metrics) {
     const found = await summaryCards.some(async (card) => {
       const label = await card.$('.card-label');
       return (await label.textContent()).includes(metric);
     });
-    
+
     expect(found).to.be.true;
   }
 });
@@ -246,13 +246,13 @@ Then('I should see summary metrics including:', async function(dataTable) {
 Then('each device card should show:', async function(dataTable) {
   const expectedElements = dataTable.raw().map(row => row[0]);
   const deviceCards = await getDeviceCards(this.page);
-  
+
   // Check first device card for all expected elements
   const card = deviceCards[0];
-  
+
   for (const element of expectedElements) {
     let found = false;
-    
+
     // Check different possible selectors based on element type
     switch(element) {
       case 'Device Name':
@@ -281,7 +281,7 @@ Then('each device card should show:', async function(dataTable) {
         const allText = await card.textContent();
         found = allText.includes(element);
     }
-    
+
     expect(found, `Element "${element}" not found in device card`).to.be.true;
   }
 });
@@ -289,13 +289,13 @@ Then('each device card should show:', async function(dataTable) {
 Then('I should see the detailed view for water heater {string}', async function(deviceId) {
   const deviceDetails = await getDeviceDetails(this.page);
   const deviceIdElement = await deviceDetails.$('.device-id');
-  
+
   expect(await deviceIdElement.textContent()).to.include(deviceId);
 });
 
 Then('the detailed view should show device information', async function() {
   const deviceDetails = await getDeviceDetails(this.page);
-  
+
   // Check for essential device information elements
   expect(await deviceDetails.$('.device-name')).to.not.be.null;
   expect(await deviceDetails.$('.device-meta')).to.not.be.null;
@@ -305,7 +305,7 @@ Then('the detailed view should show device information', async function() {
 Then('the detailed view should show real-time operational status', async function() {
   const deviceDetails = await getDeviceDetails(this.page);
   const statusCard = await deviceDetails.$('app-device-status-card');
-  
+
   expect(statusCard).to.not.be.null;
 });
 
@@ -332,13 +332,13 @@ Then('I should see the efficiency rating for the water heater', async function()
 Then('I should see key performance metrics including:', async function(dataTable) {
   const expectedMetrics = dataTable.raw().map(row => row[0]);
   const performanceMetrics = await getPerformanceMetrics(this.page);
-  
+
   for (const metric of expectedMetrics) {
     const found = await performanceMetrics.some(async (metricCard) => {
       const nameElement = await metricCard.$('.metric-name');
       return (await nameElement.textContent()).includes(metric);
     });
-    
+
     expect(found, `Metric "${metric}" not found in performance metrics`).to.be.true;
   }
 });
@@ -347,13 +347,13 @@ Then('the system should send a command to set the target temperature to {string}
   // Check command was sent
   const commandSent = await this.page.evaluate((temp) => {
     const commandHistory = JSON.parse(localStorage.getItem('commandHistory') || '[]');
-    return commandHistory.some(cmd => 
-      cmd.command === 'set_temperature' && 
-      cmd.parameters && 
+    return commandHistory.some(cmd =>
+      cmd.command === 'set_temperature' &&
+      cmd.parameters &&
       cmd.parameters.setpoint === parseInt(temp)
     );
   }, temperature);
-  
+
   expect(commandSent).to.be.true;
 });
 
@@ -363,12 +363,12 @@ Then('the device should acknowledge the command', async function() {
     const commandHistory = JSON.parse(localStorage.getItem('commandHistory') || '[]');
     return commandHistory.some(cmd => cmd.acknowledged === true);
   }, { timeout: 5000 });
-  
+
   const commandAcknowledged = await this.page.evaluate(() => {
     const commandHistory = JSON.parse(localStorage.getItem('commandHistory') || '[]');
     return commandHistory.some(cmd => cmd.acknowledged === true);
   });
-  
+
   expect(commandAcknowledged).to.be.true;
 });
 
@@ -378,7 +378,7 @@ Then('the system should send a power toggle command to the device', async functi
     const commandHistory = JSON.parse(localStorage.getItem('commandHistory') || '[]');
     return commandHistory.some(cmd => cmd.command === 'power_toggle');
   });
-  
+
   expect(commandSent).to.be.true;
 });
 
@@ -388,12 +388,12 @@ Then('the device mode should change from {string}', async function(originalMode)
     const device = document.querySelector('app-device-status-card');
     return device && !device.textContent.includes(`Mode: ${mode}`);
   }, { timeout: 5000 }, originalMode);
-  
+
   const modeChanged = await this.page.evaluate((mode) => {
     const device = document.querySelector('app-device-status-card');
     return device && !device.textContent.includes(`Mode: ${mode}`);
   }, originalMode);
-  
+
   expect(modeChanged).to.be.true;
 });
 
@@ -405,7 +405,7 @@ Then('I should see the number of anomalies detected', async function() {
 Then('I should be able to view details about the anomalies', async function() {
   // Click button to show anomaly details
   await this.page.click('.anomalies-details');
-  
+
   // Check anomaly details panel appeared
   const anomaliesPanel = await this.page.$('.anomalies-details-panel');
   expect(anomaliesPanel).to.not.be.null;
@@ -414,13 +414,13 @@ Then('I should be able to view details about the anomalies', async function() {
 Then('the temperature values should be converted to the selected unit', async function() {
   // Get initial temperature values
   const initialTemps = await getTemperatureValues(this.page);
-  
+
   // Toggle temperature unit
   await toggleTemperatureUnit(this.page);
-  
+
   // Get updated temperature values
   const updatedTemps = await getTemperatureValues(this.page);
-  
+
   // Verify values are different (conversion happened)
   expect(initialTemps.current).to.not.equal(updatedTemps.current);
   expect(initialTemps.target).to.not.equal(updatedTemps.target);
@@ -429,7 +429,7 @@ Then('the temperature values should be converted to the selected unit', async fu
 Then('the unit indicator should update accordingly', async function() {
   const unitElement = await this.page.$('.temperature-gauge .unit');
   const unit = await unitElement.textContent();
-  
+
   // Check if unit is either °F or °C
   expect(unit).to.be.oneOf(['°F', '°C']);
 });

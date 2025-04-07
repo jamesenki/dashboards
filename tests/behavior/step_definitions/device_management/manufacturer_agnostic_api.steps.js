@@ -14,17 +14,17 @@ import('chai').then(chai => {
 Given('multiple water heaters from different manufacturers are registered:', async function(dataTable) {
   const manufacturers = dataTable.hashes();
   this.testContext.registeredManufacturers = {};
-  
+
   // Register water heaters for each manufacturer
   for (const item of manufacturers) {
     const manufacturer = item.manufacturer;
     const count = parseInt(item.count);
-    
+
     this.testContext.registeredManufacturers[manufacturer] = [];
-    
+
     for (let i = 0; i < count; i++) {
       const deviceId = `${manufacturer.toLowerCase().replace(/\s+/g, '-')}-${i+1}`;
-      
+
       // Register device
       const device = await this.deviceRepository.registerDevice({
         id: deviceId,
@@ -35,7 +35,7 @@ Given('multiple water heaters from different manufacturers are registered:', asy
         serialNumber: `${manufacturer.substring(0, 2).toUpperCase()}${1000 + i}`,
         firmwareVersion: '1.0.0'
       });
-      
+
       // Add basic telemetry
       const telemetryData = {
         temperature: 120 + (Math.random() * 10 - 5),
@@ -43,13 +43,13 @@ Given('multiple water heaters from different manufacturers are registered:', asy
         energyConsumed: 5.0 + (Math.random() * 1),
         mode: Math.random() > 0.3 ? 'STANDARD' : 'ECO'
       };
-      
+
       await this.telemetryService.addTelemetryData(deviceId, telemetryData);
-      
+
       this.testContext.registeredManufacturers[manufacturer].push(device);
     }
   }
-  
+
   // Verify all manufacturers and devices were registered
   for (const [manufacturer, devices] of Object.entries(this.testContext.registeredManufacturers)) {
     const expectedCount = manufacturers.find(m => m.manufacturer === manufacturer).count;
@@ -60,7 +60,7 @@ Given('multiple water heaters from different manufacturers are registered:', asy
 Given('a registered water heater with ID {string} from manufacturer {string}', async function(deviceId, manufacturer) {
   // Check if device exists
   let device = await this.deviceRepository.findDeviceById(deviceId);
-  
+
   if (!device) {
     // Create a new water heater device
     device = await this.deviceRepository.registerDevice({
@@ -72,7 +72,7 @@ Given('a registered water heater with ID {string} from manufacturer {string}', a
       serialNumber: `${manufacturer.substring(0, 2).toUpperCase()}12345`,
       firmwareVersion: '1.0.0'
     });
-    
+
     // Add basic telemetry
     const telemetryData = {
       temperature: 120,
@@ -80,7 +80,7 @@ Given('a registered water heater with ID {string} from manufacturer {string}', a
       energyConsumed: 5.0,
       mode: 'STANDARD'
     };
-    
+
     await this.telemetryService.addTelemetryData(deviceId, telemetryData);
   } else {
     // Ensure manufacturer matches
@@ -89,7 +89,7 @@ Given('a registered water heater with ID {string} from manufacturer {string}', a
       await this.deviceRepository.updateDevice(device);
     }
   }
-  
+
   this.testContext.currentDeviceId = deviceId;
   this.testContext.currentDevice = device;
 });
@@ -97,7 +97,7 @@ Given('a registered water heater with ID {string} from manufacturer {string}', a
 Given('a registered water heater with ID {string} with operational history', async function(deviceId) {
   // Check if device exists
   let device = await this.deviceRepository.findDeviceById(deviceId);
-  
+
   if (!device) {
     // Create a new water heater device
     device = await this.deviceRepository.registerDevice({
@@ -110,18 +110,18 @@ Given('a registered water heater with ID {string} with operational history', asy
       firmwareVersion: '1.0.0'
     });
   }
-  
+
   this.testContext.currentDeviceId = deviceId;
   this.testContext.currentDevice = device;
-  
+
   // Generate operational history - last 30 days
   const now = new Date();
   const startDate = new Date(now);
   startDate.setDate(now.getDate() - 30);
-  
+
   // Generate telemetry history
   await this.generateOperationalHistory(deviceId, startDate, now);
-  
+
   // Generate a health assessment
   const assessment = {
     deviceId,
@@ -136,9 +136,9 @@ Given('a registered water heater with ID {string} with operational history', asy
     confidenceLevel: 0.85,
     timestamp: new Date()
   };
-  
+
   await this.analyticsEngine.saveHealthAssessment(deviceId, assessment);
-  
+
   // Create some maintenance predictions
   const prediction = {
     deviceId,
@@ -148,23 +148,23 @@ Given('a registered water heater with ID {string} with operational history', asy
     severity: 'MEDIUM',
     estimatedCost: 230
   };
-  
+
   await this.analyticsEngine.addMaintenancePrediction(deviceId, prediction);
-  
+
   // Verify history was created
   const history = await this.telemetryService.getHistoricalTelemetry(
     deviceId,
     startDate,
     now
   );
-  
+
   expect(history.length).to.be.greaterThan(0);
 });
 
 Given('the following registered devices:', async function(dataTable) {
   const deviceData = dataTable.hashes();
   this.testContext.unifiedDevices = [];
-  
+
   for (const device of deviceData) {
     // Register device
     const registeredDevice = await this.deviceRepository.registerDevice({
@@ -176,10 +176,10 @@ Given('the following registered devices:', async function(dataTable) {
       serialNumber: device.deviceId,
       firmwareVersion: '1.0.0'
     });
-    
+
     // Add some basic telemetry appropriate for device type
     let telemetryData;
-    
+
     switch (device.type) {
       case 'water-heater':
         telemetryData = {
@@ -211,11 +211,11 @@ Given('the following registered devices:', async function(dataTable) {
           lastActivity: new Date()
         };
     }
-    
+
     await this.telemetryService.addTelemetryData(device.deviceId, telemetryData);
     this.testContext.unifiedDevices.push(registeredDevice);
   }
-  
+
   expect(this.testContext.unifiedDevices.length).to.equal(deviceData.length);
 });
 
@@ -259,7 +259,7 @@ When('a user sends a PUT request to {string}', async function(endpoint) {
 When('includes the mode {string} in the request body', async function(mode) {
   const endpoint = this.testContext.requestEndpoint;
   const requestBody = { mode };
-  
+
   try {
     // Make PUT request
     const response = await this.apiClient.put(endpoint, requestBody);
@@ -274,23 +274,23 @@ When('includes the mode {string} in the request body', async function(mode) {
  */
 Then('the system should return all registered water heaters', function() {
   const response = this.testContext.apiResponse;
-  
+
   expect(response).to.not.be.null;
   expect(response.status).to.equal(200);
-  
+
   // Count total number of expected devices
   let totalDevices = 0;
   for (const devices of Object.values(this.testContext.registeredManufacturers)) {
     totalDevices += devices.length;
   }
-  
+
   expect(response.data.waterHeaters.length).to.equal(totalDevices);
 });
 
 Then('each water heater should have manufacturer information', function() {
   const response = this.testContext.apiResponse;
   const waterHeaters = response.data.waterHeaters;
-  
+
   for (const waterHeater of waterHeaters) {
     expect(waterHeater).to.have.property('manufacturer');
     expect(waterHeater.manufacturer).to.be.a('string');
@@ -301,13 +301,13 @@ Then('each water heater should have manufacturer information', function() {
 Then('the response should use the standardized data model', function() {
   const response = this.testContext.apiResponse;
   const data = response.data;
-  
+
   // Check for standardized data structure
   if (data.waterHeaters) {
     // List response
     expect(data).to.have.property('waterHeaters');
     expect(data.waterHeaters).to.be.an('array');
-    
+
     if (data.waterHeaters.length > 0) {
       const waterHeater = data.waterHeaters[0];
       expect(waterHeater).to.have.property('id');
@@ -329,7 +329,7 @@ Then('the response should use the standardized data model', function() {
 Then('the response should include pagination information', function() {
   const response = this.testContext.apiResponse;
   const data = response.data;
-  
+
   expect(data).to.have.property('pagination');
   expect(data.pagination).to.have.property('total');
   expect(data.pagination).to.have.property('page');
@@ -340,9 +340,9 @@ Then('the response should include pagination information', function() {
 Then('the system should return only water heaters from {string}', function(manufacturer) {
   const response = this.testContext.apiResponse;
   const waterHeaters = response.data.waterHeaters;
-  
+
   expect(waterHeaters.length).to.be.greaterThan(0);
-  
+
   for (const waterHeater of waterHeaters) {
     expect(waterHeater.manufacturer).to.equal(manufacturer);
   }
@@ -351,14 +351,14 @@ Then('the system should return only water heaters from {string}', function(manuf
 Then('the count of returned devices should match the number of registered {word} devices', function(manufacturer) {
   const response = this.testContext.apiResponse;
   const waterHeaters = response.data.waterHeaters;
-  
+
   const expectedCount = this.testContext.registeredManufacturers[manufacturer].length;
   expect(waterHeaters.length).to.equal(expectedCount);
 });
 
 Then('the system should return the water heater details', function() {
   const response = this.testContext.apiResponse;
-  
+
   expect(response).to.not.be.null;
   expect(response.status).to.equal(200);
   expect(response.data).to.be.an('object');
@@ -369,12 +369,12 @@ Then('the response should include:', function(dataTable) {
   const expectedFields = dataTable.rowsHash();
   const response = this.testContext.apiResponse;
   const waterHeater = response.data;
-  
+
   // Verify all expected fields
   for (const [field] of Object.entries(expectedFields)) {
     expect(waterHeater).to.have.property(field);
   }
-  
+
   // Check specific field values if specified
   for (const [field, description] of Object.entries(expectedFields)) {
     if (description.startsWith('"') && description.endsWith('"')) {
@@ -387,13 +387,13 @@ Then('the response should include:', function(dataTable) {
 Then('the system should return an operational summary including:', function(dataTable) {
   const expectedFields = dataTable.rowsHash();
   const response = this.testContext.apiResponse;
-  
+
   expect(response).to.not.be.null;
   expect(response.status).to.equal(200);
-  
+
   const summary = response.data;
   expect(summary).to.be.an('object');
-  
+
   // Verify all expected fields
   for (const [field] of Object.entries(expectedFields)) {
     expect(summary).to.have.property(field);
@@ -402,13 +402,13 @@ Then('the system should return an operational summary including:', function(data
 
 Then('the response should follow the standardized format regardless of manufacturer', function() {
   const response = this.testContext.apiResponse;
-  
+
   expect(response).to.not.be.null;
   expect(response.data).to.be.an('object');
-  
+
   // The format should include standard fields
   const data = response.data;
-  
+
   if (data.waterHeaters) {
     // Check waterHeaters list format
     expect(data.waterHeaters[0]).to.have.property('id');
@@ -423,27 +423,27 @@ Then('the response should follow the standardized format regardless of manufactu
 
 Then('the system should translate the request to the manufacturer-specific format', function() {
   const response = this.testContext.apiResponse;
-  
+
   expect(response).to.not.be.null;
   expect(response.status).to.equal(200);
-  
+
   // The mock API client should record that a translation happened
   expect(this.apiClient.lastRequestTranslated).to.be.true;
 });
 
 Then('the water heater mode should be updated to {string}', async function(mode) {
   const deviceId = this.testContext.currentDeviceId;
-  
+
   // Get the current device state
   const deviceState = await this.deviceRepository.getDeviceState(deviceId);
-  
+
   expect(deviceState).to.have.property('mode');
   expect(deviceState.mode).to.equal(mode);
 });
 
 Then('the response should include the updated water heater state', function() {
   const response = this.testContext.apiResponse;
-  
+
   expect(response).to.not.be.null;
   expect(response.data).to.have.property('currentState');
   expect(response.data.currentState).to.have.property('mode');
@@ -456,10 +456,10 @@ Then('the standardized response format should be the same regardless of manufact
 
 Then('the system should return a list of all supported manufacturers', function() {
   const response = this.testContext.apiResponse;
-  
+
   expect(response).to.not.be.null;
   expect(response.status).to.equal(200);
-  
+
   expect(response.data).to.have.property('manufacturers');
   expect(response.data.manufacturers).to.be.an('array');
   expect(response.data.manufacturers.length).to.be.greaterThan(0);
@@ -469,7 +469,7 @@ Then('each manufacturer should include:', function(dataTable) {
   const expectedFields = dataTable.rowsHash();
   const response = this.testContext.apiResponse;
   const manufacturers = response.data.manufacturers;
-  
+
   // Check each manufacturer has the expected fields
   for (const manufacturer of manufacturers) {
     for (const [field] of Object.entries(expectedFields)) {
@@ -481,10 +481,10 @@ Then('each manufacturer should include:', function(dataTable) {
 Then('the response should include any recently added manufacturers', function() {
   const response = this.testContext.apiResponse;
   const manufacturers = response.data.manufacturers;
-  
+
   // Get manufacturers we registered in earlier steps
   const registeredManufacturers = Object.keys(this.testContext.registeredManufacturers || {});
-  
+
   for (const manufacturer of registeredManufacturers) {
     const found = manufacturers.find(m => m.name === manufacturer);
     expect(found).to.not.be.undefined;
@@ -493,13 +493,13 @@ Then('the response should include any recently added manufacturers', function() 
 
 Then('the system should return all devices regardless of type', function() {
   const response = this.testContext.apiResponse;
-  
+
   expect(response).to.not.be.null;
   expect(response.status).to.equal(200);
-  
+
   expect(response.data).to.have.property('devices');
   expect(response.data.devices).to.be.an('array');
-  
+
   // Should include all registered unified devices
   expect(response.data.devices.length).to.equal(this.testContext.unifiedDevices.length);
 });
@@ -507,11 +507,11 @@ Then('the system should return all devices regardless of type', function() {
 Then('each device should use its type-specific data model', function() {
   const response = this.testContext.apiResponse;
   const devices = response.data.devices;
-  
+
   // Check device-specific properties
   for (const device of devices) {
     expect(device).to.have.property('type');
-    
+
     if (device.type === 'water-heater') {
       expect(device).to.have.property('temperature');
     } else if (device.type === 'vending-machine') {
@@ -526,7 +526,7 @@ Then('all devices should share common base fields:', function(dataTable) {
   const expectedFields = dataTable.rowsHash();
   const response = this.testContext.apiResponse;
   const devices = response.data.devices;
-  
+
   // Check all devices have common fields
   for (const device of devices) {
     for (const [field] of Object.entries(expectedFields)) {
@@ -537,7 +537,7 @@ Then('all devices should share common base fields:', function(dataTable) {
 
 Then('the response should maintain backward compatibility with existing clients', function() {
   const response = this.testContext.apiResponse;
-  
+
   // The mock API client should set a flag if the response is backward compatible
   expect(this.apiClient.backwardCompatible).to.be.true;
 });

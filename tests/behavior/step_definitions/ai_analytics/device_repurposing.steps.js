@@ -307,7 +307,7 @@ When('the sustainability analytics system analyzes device lifecycles', async fun
       secondaryMarket: this.testContext.secondaryMarket,
       circularEconomy: this.testContext.circularEconomy
     });
-    
+
     this.testContext.repurposingAnalysis = repurposingAnalysis;
   } catch (error) {
     this.testContext.errors.push(error);
@@ -319,11 +319,11 @@ When('the sustainability analytics system analyzes device lifecycles', async fun
  */
 Then('it should identify high-value repurposing opportunities', function() {
   const analysis = this.testContext.repurposingAnalysis;
-  
+
   expect(analysis).to.have.property('repurposingOpportunities');
   expect(analysis.repurposingOpportunities).to.be.an('array');
   expect(analysis.repurposingOpportunities.length).to.be.at.least(3);
-  
+
   // Each opportunity should have detailed information
   for (const opportunity of analysis.repurposingOpportunities) {
     expect(opportunity).to.have.property('deviceType');
@@ -338,7 +338,7 @@ Then('it should identify high-value repurposing opportunities', function() {
     expect(opportunity).to.have.property('implementationComplexity');
     expect(opportunity).to.have.property('recommendedPartners');
   }
-  
+
   // Opportunities should be sorted by net value (highest first)
   for (let i = 1; i < analysis.repurposingOpportunities.length; i++) {
     expect(analysis.repurposingOpportunities[i-1].financialValue.netValue)
@@ -348,16 +348,16 @@ Then('it should identify high-value repurposing opportunities', function() {
 
 Then('it should suggest refurbishment strategies for different device conditions', function() {
   const analysis = this.testContext.repurposingAnalysis;
-  
+
   expect(analysis).to.have.property('refurbishmentStrategies');
   expect(analysis.refurbishmentStrategies).to.be.an('object');
-  
+
   // Should have strategies for different conditions
   const conditions = ['Excellent', 'Good', 'Fair', 'Poor'];
   for (const condition of conditions) {
     const conditionKey = condition.toLowerCase();
     expect(analysis.refurbishmentStrategies).to.have.property(conditionKey);
-    
+
     const strategy = analysis.refurbishmentStrategies[conditionKey];
     expect(strategy).to.have.property('recommendedApproach');
     expect(strategy).to.have.property('keyProcessSteps');
@@ -372,21 +372,21 @@ Then('it should suggest refurbishment strategies for different device conditions
 
 Then('it should calculate the financial value of reclaimed components', function() {
   const analysis = this.testContext.repurposingAnalysis;
-  
+
   expect(analysis).to.have.property('componentValueAnalysis');
   expect(analysis.componentValueAnalysis).to.be.an('object');
-  
+
   // Should have analysis for each device type
   for (const deviceType in this.testContext.secondaryMarket.componentValues) {
     expect(analysis.componentValueAnalysis).to.have.property(deviceType);
-    
+
     const deviceAnalysis = analysis.componentValueAnalysis[deviceType];
     expect(deviceAnalysis).to.be.an('object');
-    
+
     // Should have analysis for each component
     for (const component in this.testContext.secondaryMarket.componentValues[deviceType]) {
       expect(deviceAnalysis).to.have.property(component);
-      
+
       const componentAnalysis = deviceAnalysis[component];
       expect(componentAnalysis).to.have.property('recoveryRate');
       expect(componentAnalysis).to.have.property('reconditioningCost');
@@ -399,25 +399,25 @@ Then('it should calculate the financial value of reclaimed components', function
 
 Then('it should recommend optimal end-of-life pathways for each device type', function() {
   const analysis = this.testContext.repurposingAnalysis;
-  
+
   expect(analysis).to.have.property('endOfLifePathways');
   expect(analysis.endOfLifePathways).to.be.an('object');
-  
+
   // Should have pathways for each device type
   for (const deviceData of this.testContext.eolDevices.devices) {
     const deviceKey = `${deviceData.type}-${deviceData.model.replace(/\s+/g, '-').toLowerCase()}`;
     expect(analysis.endOfLifePathways).to.have.property(deviceKey);
-    
+
     const pathway = analysis.endOfLifePathways[deviceKey];
     expect(pathway).to.have.property('recommendedPathway');
     expect(pathway).to.have.property('pathwayBreakdown');
     expect(pathway.pathwayBreakdown).to.be.an('object');
-    
+
     // Percentages should add up to 100%
     const totalPercentage = Object.values(pathway.pathwayBreakdown)
       .reduce((sum, value) => sum + value, 0);
     expect(totalPercentage).to.be.closeTo(100, 0.1); // Within rounding error
-    
+
     expect(pathway).to.have.property('processingSteps');
     expect(pathway.processingSteps).to.be.an('array');
     expect(pathway).to.have.property('logisticsRecommendations');
@@ -428,24 +428,24 @@ Then('it should recommend optimal end-of-life pathways for each device type', fu
 
 Then('it should quantify the sustainability impact of reuse strategies', function() {
   const analysis = this.testContext.repurposingAnalysis;
-  
+
   expect(analysis).to.have.property('sustainabilityImpact');
   expect(analysis.sustainabilityImpact).to.be.an('object');
-  
+
   // Check environmental metrics
   expect(analysis.sustainabilityImpact).to.have.property('environmentalMetrics');
   expect(analysis.sustainabilityImpact.environmentalMetrics).to.be.an('object');
-  
+
   const metrics = analysis.sustainabilityImpact.environmentalMetrics;
   expect(metrics).to.have.property('carbonReduction');
   expect(metrics).to.have.property('wasteReduction');
   expect(metrics).to.have.property('waterConservation');
   expect(metrics).to.have.property('energySavings');
-  
+
   // Check sustainability reporting
   expect(analysis.sustainabilityImpact).to.have.property('reportingFrameworks');
   expect(analysis.sustainabilityImpact.reportingFrameworks).to.be.an('object');
-  
+
   // Check regulatory compliance
   expect(analysis.sustainabilityImpact).to.have.property('regulatoryCompliance');
   expect(analysis.sustainabilityImpact.regulatoryCompliance).to.be.an('array');
@@ -454,13 +454,13 @@ Then('it should quantify the sustainability impact of reuse strategies', functio
 
 Then('it should identify potential buyers for repurposed equipment', function() {
   const analysis = this.testContext.repurposingAnalysis;
-  
+
   expect(analysis).to.have.property('marketOpportunities');
   expect(analysis.marketOpportunities).to.be.an('object');
   expect(analysis.marketOpportunities).to.have.property('buyerSegments');
   expect(analysis.marketOpportunities.buyerSegments).to.be.an('array');
   expect(analysis.marketOpportunities.buyerSegments.length).to.be.at.least(3);
-  
+
   // Each buyer segment should have detailed information
   for (const segment of analysis.marketOpportunities.buyerSegments) {
     expect(segment).to.have.property('name');
@@ -472,7 +472,7 @@ Then('it should identify potential buyers for repurposed equipment', function() 
     expect(segment).to.have.property('volumePotential');
     expect(segment).to.have.property('salesApproach');
   }
-  
+
   // Check go-to-market strategy
   expect(analysis.marketOpportunities).to.have.property('goToMarketStrategy');
   expect(analysis.marketOpportunities.goToMarketStrategy).to.be.an('object');

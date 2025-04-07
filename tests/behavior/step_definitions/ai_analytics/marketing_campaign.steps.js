@@ -250,36 +250,36 @@ Given('historical campaign performance data', async function() {
 Given('product usage patterns by segment', async function() {
   // Create product usage patterns by segment
   this.testContext.usagePatterns = {};
-  
+
   // For each customer segment
   for (const segment of this.testContext.customerSegments) {
     this.testContext.usagePatterns[segment.id] = {
-      primaryDeviceTypes: segment.id === 'enterprise-industrial' ? 
+      primaryDeviceTypes: segment.id === 'enterprise-industrial' ?
         ['water-heater', 'hvac', 'industrial-refrigeration'] :
-        segment.id === 'small-business' ? 
+        segment.id === 'small-business' ?
         ['water-heater'] : ['water-heater', 'hvac'],
       featureUtilization: {
         basic: 0.95, // 95% use basic features
-        advanced: segment.id === 'enterprise-industrial' ? 0.65 : 
+        advanced: segment.id === 'enterprise-industrial' ? 0.65 :
                   segment.id === 'mid-market-commercial' ? 0.45 : 0.25,
-        ai: segment.id === 'enterprise-industrial' ? 0.35 : 
+        ai: segment.id === 'enterprise-industrial' ? 0.35 :
             segment.id === 'mid-market-commercial' ? 0.20 : 0.05
       },
       usageFrequency: {
-        dailyActiveUsers: segment.id === 'enterprise-industrial' ? 0.40 : 
+        dailyActiveUsers: segment.id === 'enterprise-industrial' ? 0.40 :
                            segment.id === 'mid-market-commercial' ? 0.30 : 0.20,
-        weeklyActiveUsers: segment.id === 'enterprise-industrial' ? 0.75 : 
+        weeklyActiveUsers: segment.id === 'enterprise-industrial' ? 0.75 :
                             segment.id === 'mid-market-commercial' ? 0.60 : 0.45,
-        monthlyActiveUsers: segment.id === 'enterprise-industrial' ? 0.95 : 
+        monthlyActiveUsers: segment.id === 'enterprise-industrial' ? 0.95 :
                              segment.id === 'mid-market-commercial' ? 0.85 : 0.70
       },
-      primaryUseCase: segment.id === 'enterprise-industrial' ? 
+      primaryUseCase: segment.id === 'enterprise-industrial' ?
         'Operational efficiency and compliance' :
-        segment.id === 'mid-market-commercial' ? 
+        segment.id === 'mid-market-commercial' ?
         'Cost management and reliability' :
-        segment.id === 'small-business' ? 
+        segment.id === 'small-business' ?
         'Basic operational needs' :
-        segment.id === 'educational-institutions' ? 
+        segment.id === 'educational-institutions' ?
         'Maintenance planning and sustainability' : 'Budget compliance and planning',
       valuePerception: {
         costSavings: segment.id === 'small-business' ? 'High' : 'Medium',
@@ -304,7 +304,7 @@ When('the marketing optimization system analyzes customer responses', async func
       targetQuarters: 4, // Plan for next 4 quarters
       optimizationGoal: 'balanced' // Balance acquisition, engagement, and retention
     });
-    
+
     this.testContext.marketingAnalysis = marketingAnalysis;
   } catch (error) {
     this.testContext.errors.push(error);
@@ -316,14 +316,14 @@ When('the marketing optimization system analyzes customer responses', async func
  */
 Then('it should generate segment-specific marketing messaging', function() {
   const analysis = this.testContext.marketingAnalysis;
-  
+
   expect(analysis).to.have.property('segmentMessaging');
   expect(analysis.segmentMessaging).to.be.an('object');
-  
+
   // Should have messaging for each segment
   for (const segment of this.testContext.customerSegments) {
     expect(analysis.segmentMessaging).to.have.property(segment.id);
-    
+
     const messaging = analysis.segmentMessaging[segment.id];
     expect(messaging).to.have.property('valueProposition');
     expect(messaging).to.have.property('keySelling');
@@ -337,14 +337,14 @@ Then('it should generate segment-specific marketing messaging', function() {
 
 Then('it should recommend optimal channel mix by segment', function() {
   const analysis = this.testContext.marketingAnalysis;
-  
+
   expect(analysis).to.have.property('channelRecommendations');
   expect(analysis.channelRecommendations).to.be.an('object');
-  
+
   // Should have channel recommendations for each segment
   for (const segment of this.testContext.customerSegments) {
     expect(analysis.channelRecommendations).to.have.property(segment.id);
-    
+
     const channelMix = analysis.channelRecommendations[segment.id];
     expect(channelMix).to.have.property('primaryChannels');
     expect(channelMix.primaryChannels).to.be.an('array');
@@ -358,14 +358,14 @@ Then('it should recommend optimal channel mix by segment', function() {
 
 Then('it should predict campaign performance metrics by segment', function() {
   const analysis = this.testContext.marketingAnalysis;
-  
+
   expect(analysis).to.have.property('performancePredictions');
   expect(analysis.performancePredictions).to.be.an('object');
-  
+
   // Should have performance predictions for each segment
   for (const segment of this.testContext.customerSegments) {
     expect(analysis.performancePredictions).to.have.property(segment.id);
-    
+
     const predictions = analysis.performancePredictions[segment.id];
     expect(predictions).to.have.property('expectedLeads');
     expect(predictions).to.have.property('expectedConversionRate');
@@ -377,21 +377,21 @@ Then('it should predict campaign performance metrics by segment', function() {
 
 Then('it should optimize marketing budget allocation across segments', function() {
   const analysis = this.testContext.marketingAnalysis;
-  
+
   expect(analysis).to.have.property('budgetOptimization');
   expect(analysis.budgetOptimization).to.be.an('object');
   expect(analysis.budgetOptimization).to.have.property('recommendedAllocation');
   expect(analysis.budgetOptimization.recommendedAllocation).to.be.an('object');
-  
+
   // Total allocation should be 100%
   const totalAllocation = Object.values(analysis.budgetOptimization.recommendedAllocation)
     .reduce((sum, value) => sum + value, 0);
   expect(totalAllocation).to.be.closeTo(1, 0.001); // Within rounding error of 100%
-  
+
   // Should explain the allocation strategy
   expect(analysis.budgetOptimization).to.have.property('allocationRationale');
   expect(analysis.budgetOptimization.allocationRationale).to.be.an('object');
-  
+
   // Should have quarterly breakdown
   expect(analysis.budgetOptimization).to.have.property('quarterlyBreakdown');
   expect(analysis.budgetOptimization.quarterlyBreakdown).to.be.an('array');
@@ -400,11 +400,11 @@ Then('it should optimize marketing budget allocation across segments', function(
 
 Then('it should identify the highest ROI marketing opportunities', function() {
   const analysis = this.testContext.marketingAnalysis;
-  
+
   expect(analysis).to.have.property('highestRoiOpportunities');
   expect(analysis.highestRoiOpportunities).to.be.an('array');
   expect(analysis.highestRoiOpportunities.length).to.be.at.least(3);
-  
+
   // Each opportunity should have detailed attributes
   for (const opportunity of analysis.highestRoiOpportunities) {
     expect(opportunity).to.have.property('segment');
@@ -414,7 +414,7 @@ Then('it should identify the highest ROI marketing opportunities', function() {
     expect(opportunity).to.have.property('investmentRequired');
     expect(opportunity).to.have.property('timeToResults');
   }
-  
+
   // Opportunities should be sorted by ROI (highest first)
   for (let i = 1; i < analysis.highestRoiOpportunities.length; i++) {
     expect(analysis.highestRoiOpportunities[i-1].expectedRoi)
@@ -424,20 +424,20 @@ Then('it should identify the highest ROI marketing opportunities', function() {
 
 Then('it should generate A/B testing variants for key messages', function() {
   const analysis = this.testContext.marketingAnalysis;
-  
+
   expect(analysis).to.have.property('abTestingPlan');
   expect(analysis.abTestingPlan).to.be.an('object');
   expect(analysis.abTestingPlan).to.have.property('messageVariants');
   expect(analysis.abTestingPlan.messageVariants).to.be.an('object');
-  
+
   // Should have variants for each segment
   for (const segment of this.testContext.customerSegments) {
     expect(analysis.abTestingPlan.messageVariants).to.have.property(segment.id);
-    
+
     const variants = analysis.abTestingPlan.messageVariants[segment.id];
     expect(variants).to.be.an('array');
     expect(variants.length).to.be.at.least(2); // At least 2 variants
-    
+
     // Each variant should have specific elements
     for (const variant of variants) {
       expect(variant).to.have.property('headline');
@@ -446,7 +446,7 @@ Then('it should generate A/B testing variants for key messages', function() {
       expect(variant).to.have.property('expectedImpact');
     }
   }
-  
+
   // Should have test execution plan
   expect(analysis.abTestingPlan).to.have.property('testingSchedule');
   expect(analysis.abTestingPlan).to.have.property('successMetrics');

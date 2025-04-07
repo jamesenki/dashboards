@@ -1,0 +1,566 @@
+// Variables - using the same palette as existing components
+$primary-color: #2196F3;
+$secondary-color: #607D8B;
+$success-color: #4CAF50;
+$warning-color: #FF9800;
+$error-color: #F44336;
+$simulation-color: #673AB7;
+
+$rating-a-plus: #388E3C;
+$rating-a: #4CAF50;
+$rating-b: #8BC34A;
+$rating-c: #FFC107;
+$rating-d: #FF9800;
+$rating-f: #F44336;
+
+$bg-color: #f5f5f5;
+$card-bg: #ffffff;
+$text-primary: #212121;
+$text-secondary: #757575;
+$border-color: #e0e0e0;
+$card-radius: 8px;
+$card-shadow: rgba(0, 0, 0, 0.1);
+
+// Metrics container
+.metrics-container {
+  background-color: $card-bg;
+  border-radius: $card-radius;
+  border: 1px solid $border-color;
+  box-shadow: 0 2px 8px $card-shadow;
+  margin: 1rem 0;
+  padding: 1.5rem;
+  position: relative;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    box-shadow: 0 4px 12px $card-shadow;
+  }
+  
+  &.loading {
+    min-height: 300px;
+  }
+}
+
+// Metrics header
+.metrics-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+    
+    .metrics-controls {
+      margin-top: 1rem;
+      width: 100%;
+    }
+  }
+  
+  .metrics-title {
+    h3 {
+      margin: 0 0 0.5rem 0;
+      font-size: 1.2rem;
+      color: $text-primary;
+    }
+    
+    .metrics-subtitle {
+      font-size: 0.8rem;
+      color: $text-secondary;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      
+      .device-id {
+        font-family: monospace;
+      }
+      
+      .last-updated {
+        font-style: italic;
+      }
+    }
+  }
+  
+  .metrics-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+    
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      
+      label {
+        font-size: 0.8rem;
+        color: $text-secondary;
+        margin-bottom: 0.3rem;
+      }
+      
+      .btn-group {
+        display: flex;
+        border: 1px solid $border-color;
+        border-radius: 4px;
+        overflow: hidden;
+        
+        button {
+          background-color: $card-bg;
+          border: none;
+          border-right: 1px solid $border-color;
+          padding: 0.4rem 0.8rem;
+          font-size: 0.9rem;
+          color: $text-secondary;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          
+          &:last-child {
+            border-right: none;
+          }
+          
+          &:hover {
+            background-color: darken($card-bg, 5%);
+          }
+          
+          &.active {
+            background-color: $primary-color;
+            color: white;
+          }
+        }
+      }
+    }
+    
+    .btn-refresh {
+      background-color: $primary-color;
+      border: none;
+      border-radius: 4px;
+      color: white;
+      cursor: pointer;
+      height: 32px;
+      width: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      
+      &:hover {
+        background-color: darken($primary-color, 10%);
+      }
+      
+      .icon-refresh:before {
+        content: "↻";
+      }
+    }
+  }
+}
+
+// Loading state
+.metrics-loading {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba($card-bg, 0.8);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  
+  .loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba($primary-color, 0.2);
+    border-top: 4px solid $primary-color;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+  }
+  
+  .loading-text {
+    font-size: 0.9rem;
+    color: $text-secondary;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+}
+
+// Error state
+.metrics-error {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  
+  .error-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: $error-color;
+    color: white;
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+  }
+  
+  .error-message {
+    color: $text-primary;
+    margin-bottom: 1rem;
+    max-width: 80%;
+  }
+  
+  .btn-retry {
+    background-color: $primary-color;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    
+    &:hover {
+      background-color: darken($primary-color, 10%);
+    }
+  }
+}
+
+// Metrics summary cards
+.metrics-summary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+  
+  // Shared card styles
+  .efficiency-card, .anomalies-card {
+    background-color: $bg-color;
+    border-radius: $card-radius;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    
+    .card-title {
+      font-size: 0.9rem;
+      color: $text-secondary;
+      margin-bottom: 0.5rem;
+    }
+  }
+  
+  // Efficiency card
+  .efficiency-card {
+    .efficiency-gauge {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      
+      .rating {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.8rem;
+        font-weight: bold;
+        color: white;
+        
+        &.rating-a\+ {
+          background-color: $rating-a-plus;
+        }
+        
+        &.rating-a {
+          background-color: $rating-a;
+        }
+        
+        &.rating-b {
+          background-color: $rating-b;
+        }
+        
+        &.rating-c {
+          background-color: $rating-c;
+        }
+        
+        &.rating-d {
+          background-color: $rating-d;
+        }
+        
+        &.rating-f {
+          background-color: $rating-f;
+        }
+      }
+      
+      .score {
+        text-align: right;
+        
+        .score-value {
+          font-size: 2rem;
+          font-weight: bold;
+          color: $text-primary;
+        }
+        
+        .score-label {
+          font-size: 0.8rem;
+          color: $text-secondary;
+        }
+      }
+    }
+  }
+  
+  // Anomalies card
+  .anomalies-card {
+    &.active {
+      border-left: 4px solid $error-color;
+    }
+    
+    .anomalies-count {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      
+      .count-value {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: $text-primary;
+        
+        .active & {
+          color: $error-color;
+        }
+      }
+      
+      .count-label {
+        font-size: 0.8rem;
+        color: $text-secondary;
+      }
+    }
+    
+    .anomalies-details {
+      margin-top: 1rem;
+      background: none;
+      border: 1px solid $border-color;
+      border-radius: 4px;
+      padding: 0.3rem 0.8rem;
+      font-size: 0.8rem;
+      color: $primary-color;
+      cursor: pointer;
+      align-self: center;
+      
+      &:hover {
+        background-color: rgba($primary-color, 0.05);
+      }
+    }
+  }
+}
+
+// Anomalies details panel
+.anomalies-details-panel {
+  background-color: $bg-color;
+  border-radius: $card-radius;
+  margin-bottom: 1.5rem;
+  overflow: hidden;
+  
+  .panel-header {
+    background-color: $error-color;
+    color: white;
+    padding: 0.8rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    
+    h4 {
+      margin: 0;
+      font-size: 1rem;
+    }
+    
+    .close-button {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+      }
+    }
+  }
+  
+  .anomalies-list {
+    padding: 1rem;
+    
+    .anomaly-placeholder {
+      text-align: center;
+      padding: 1rem;
+      color: $text-secondary;
+      font-style: italic;
+      
+      p {
+        margin: 0.5rem 0;
+      }
+    }
+  }
+}
+
+// Metrics grid
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1rem;
+  
+  .metric-card {
+    background-color: $bg-color;
+    border-radius: $card-radius;
+    padding: 1rem;
+    display: flex;
+    align-items: flex-start;
+    border-left: 4px solid $secondary-color;
+    
+    &.status-normal {
+      border-left-color: $success-color;
+    }
+    
+    &.status-warning {
+      border-left-color: $warning-color;
+    }
+    
+    &.status-critical {
+      border-left-color: $error-color;
+    }
+    
+    .metric-icon {
+      width: 32px;
+      height: 32px;
+      margin-right: 1rem;
+      background-color: rgba($secondary-color, 0.1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      color: $secondary-color;
+      
+      &.icon-energy:before {
+        content: "⚡";
+      }
+      
+      &.icon-water:before {
+        content: "💧";
+      }
+      
+      &.icon-cycle:before {
+        content: "🔄";
+      }
+      
+      &.icon-temperature:before {
+        content: "🌡️";
+      }
+      
+      &.icon-recovery:before {
+        content: "⏱️";
+      }
+    }
+    
+    .metric-details {
+      flex: 1;
+      
+      .metric-name {
+        font-size: 1rem;
+        color: $text-primary;
+        margin-bottom: 0.3rem;
+      }
+      
+      .metric-value {
+        display: flex;
+        align-items: baseline;
+        
+        .value {
+          font-size: 1.5rem;
+          font-weight: bold;
+          color: $text-primary;
+        }
+        
+        .unit {
+          font-size: 0.9rem;
+          color: $text-secondary;
+          margin-left: 0.3rem;
+        }
+      }
+      
+      .metric-trend {
+        font-size: 0.9rem;
+        margin: 0.3rem 0;
+        display: flex;
+        align-items: center;
+        
+        &.trend-up {
+          color: $error-color;
+        }
+        
+        &.trend-down {
+          color: $success-color;
+        }
+        
+        &.trend-stable {
+          color: $secondary-color;
+        }
+        
+        &.trend-unknown {
+          color: $text-secondary;
+        }
+        
+        .trend-icon {
+          margin-right: 0.3rem;
+        }
+      }
+      
+      .metric-description {
+        font-size: 0.8rem;
+        color: $text-secondary;
+      }
+    }
+  }
+}
+
+// No metrics state
+.metrics-no-data {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  
+  .no-data-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: $secondary-color;
+    color: white;
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+  }
+  
+  .no-data-message {
+    color: $text-secondary;
+  }
+}

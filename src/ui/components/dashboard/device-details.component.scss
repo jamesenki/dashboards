@@ -1,0 +1,500 @@
+// Variables - using same palette as existing components
+$primary-color: #2196F3;
+$secondary-color: #607D8B;
+$success-color: #4CAF50;
+$warning-color: #FF9800;
+$error-color: #F44336;
+$simulation-color: #673AB7;
+
+$bg-color: #f5f5f5;
+$card-bg: #ffffff;
+$text-primary: #212121;
+$text-secondary: #757575;
+$border-color: #e0e0e0;
+$card-radius: 8px;
+$card-shadow: rgba(0, 0, 0, 0.1);
+
+// Container styles
+.device-details-container {
+  padding: 1rem;
+  background-color: $bg-color;
+  min-height: 100vh;
+  
+  &.loading {
+    position: relative;
+  }
+}
+
+// Back navigation link
+.back-navigation {
+  margin-bottom: 1.5rem;
+  
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    color: $primary-color;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.2s ease;
+    
+    &:hover {
+      color: darken($primary-color, 10%);
+      text-decoration: underline;
+    }
+    
+    .icon-back {
+      margin-right: 0.5rem;
+      
+      &:before {
+        content: "←";
+      }
+    }
+  }
+}
+
+// Loading state
+.loading-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba($bg-color, 0.8);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  
+  .loading-spinner {
+    width: 60px;
+    height: 60px;
+    border: 6px solid rgba($primary-color, 0.2);
+    border-top: 6px solid $primary-color;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1.5rem;
+  }
+  
+  .loading-text {
+    font-size: 1.1rem;
+    color: $text-primary;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+}
+
+// Error state
+.error-container {
+  padding: 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background-color: $card-bg;
+  border-radius: $card-radius;
+  box-shadow: 0 2px 8px $card-shadow;
+  
+  .error-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: $error-color;
+    color: white;
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+  }
+  
+  .error-message {
+    color: $text-primary;
+    margin-bottom: 1.5rem;
+    max-width: 600px;
+    font-size: 1.1rem;
+  }
+  
+  .btn-retry {
+    background-color: $primary-color;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+    
+    &:hover {
+      background-color: darken($primary-color, 10%);
+    }
+  }
+}
+
+// Device header
+.device-header {
+  display: flex;
+  background-color: $card-bg;
+  border-radius: $card-radius;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 4px $card-shadow;
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+    
+    .device-image {
+      margin-right: 0;
+      margin-bottom: 1.5rem;
+    }
+    
+    .device-actions {
+      margin-top: 1.5rem;
+    }
+  }
+  
+  .device-image {
+    position: relative;
+    width: 160px;
+    height: 160px;
+    margin-right: 2rem;
+    flex-shrink: 0;
+    
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border-radius: $card-radius;
+      background-color: $bg-color;
+      padding: 1rem;
+    }
+    
+    .device-status {
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      color: white;
+      font-size: 0.8rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      
+      &.connected {
+        background-color: $success-color;
+      }
+      
+      &.disconnected {
+        background-color: $error-color;
+      }
+    }
+    
+    .simulation-badge {
+      position: absolute;
+      bottom: -10px;
+      left: 0;
+      right: 0;
+      margin: 0 auto;
+      width: fit-content;
+      background-color: $simulation-color;
+      color: white;
+      font-size: 0.7rem;
+      font-weight: bold;
+      padding: 0.2rem 0.6rem;
+      border-radius: 2px;
+    }
+  }
+  
+  .device-info {
+    flex: 1;
+    
+    .device-name {
+      margin: 0 0 1rem 0;
+      font-size: 1.8rem;
+      color: $text-primary;
+    }
+    
+    .device-meta {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 0.8rem;
+      
+      .meta-item {
+        display: flex;
+        flex-direction: column;
+        
+        .meta-label {
+          font-size: 0.8rem;
+          color: $text-secondary;
+          margin-bottom: 0.2rem;
+        }
+        
+        .meta-value {
+          font-size: 1rem;
+          color: $text-primary;
+          font-weight: 500;
+        }
+      }
+    }
+  }
+  
+  .device-actions {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-left: 1.5rem;
+    
+    button {
+      border-radius: 4px;
+      padding: 0.8rem 1.5rem;
+      margin-bottom: 0.8rem;
+      cursor: pointer;
+      font-weight: 500;
+      
+      &:last-child {
+        margin-bottom: 0;
+      }
+      
+      &.btn-primary {
+        background-color: $primary-color;
+        color: white;
+        border: none;
+        
+        &:hover {
+          background-color: darken($primary-color, 10%);
+        }
+      }
+      
+      &.btn-unit-toggle {
+        background-color: $bg-color;
+        color: $text-primary;
+        border: 1px solid $border-color;
+        
+        &:hover {
+          background-color: darken($bg-color, 5%);
+        }
+      }
+    }
+  }
+}
+
+// Tab navigation
+.device-tabs {
+  display: flex;
+  background-color: $card-bg;
+  border-radius: $card-radius $card-radius 0 0;
+  overflow: hidden;
+  border: 1px solid $border-color;
+  border-bottom: none;
+  
+  @media (max-width: 768px) {
+    flex-wrap: wrap;
+    
+    .tab-button {
+      flex: 1 0 50%;
+    }
+  }
+  
+  .tab-button {
+    flex: 1;
+    background: none;
+    border: none;
+    border-right: 1px solid $border-color;
+    padding: 1rem;
+    font-size: 1rem;
+    color: $text-secondary;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    
+    &:last-child {
+      border-right: none;
+    }
+    
+    &:hover:not(.active) {
+      background-color: rgba($primary-color, 0.05);
+    }
+    
+    &.active {
+      background-color: $primary-color;
+      color: white;
+      font-weight: 500;
+    }
+  }
+}
+
+// Tab content
+.tab-content {
+  background-color: $card-bg;
+  border-radius: 0 0 $card-radius $card-radius;
+  padding: 1.5rem;
+  border: 1px solid $border-color;
+  border-top: none;
+  margin-bottom: 1.5rem;
+}
+
+// Events log
+.events-log-container {
+  margin-top: 1.5rem;
+  
+  .log-header {
+    margin-bottom: 1rem;
+    
+    h3 {
+      margin: 0;
+      font-size: 1.2rem;
+      color: $text-primary;
+    }
+  }
+  
+  .events-list {
+    max-height: 400px;
+    overflow-y: auto;
+    border: 1px solid $border-color;
+    border-radius: $card-radius;
+    
+    .event-item {
+      display: flex;
+      align-items: center;
+      padding: 0.8rem;
+      border-bottom: 1px solid $border-color;
+      
+      &:last-child {
+        border-bottom: none;
+      }
+      
+      &.severity-info {
+        border-left: 4px solid $primary-color;
+      }
+      
+      &.severity-warning {
+        border-left: 4px solid $warning-color;
+      }
+      
+      &.severity-error {
+        border-left: 4px solid $error-color;
+      }
+      
+      .event-time {
+        width: 100px;
+        font-size: 0.8rem;
+        color: $text-secondary;
+      }
+      
+      .event-type {
+        width: 150px;
+        font-weight: 500;
+        color: $text-primary;
+      }
+      
+      .event-message {
+        flex: 1;
+        color: $text-primary;
+      }
+    }
+  }
+  
+  .no-events {
+    padding: 2rem;
+    text-align: center;
+    color: $text-secondary;
+    font-style: italic;
+    border: 1px solid $border-color;
+    border-radius: $card-radius;
+  }
+}
+
+// Time range selector
+.time-range-selector {
+  display: flex;
+  align-items: center;
+  margin-top: 1.5rem;
+  
+  .selector-label {
+    margin-right: 1rem;
+    font-size: 0.9rem;
+    color: $text-secondary;
+  }
+  
+  .selector-buttons {
+    display: flex;
+    border: 1px solid $border-color;
+    border-radius: 4px;
+    overflow: hidden;
+    
+    button {
+      background-color: $card-bg;
+      border: none;
+      border-right: 1px solid $border-color;
+      padding: 0.5rem 1rem;
+      font-size: 0.9rem;
+      color: $text-secondary;
+      cursor: pointer;
+      
+      &:last-child {
+        border-right: none;
+      }
+      
+      &:hover:not(.active) {
+        background-color: rgba($primary-color, 0.05);
+      }
+      
+      &.active {
+        background-color: $primary-color;
+        color: white;
+      }
+    }
+  }
+}
+
+// Metric selector
+.metric-selector {
+  margin-bottom: 1.5rem;
+  
+  h3 {
+    margin: 0 0 1rem 0;
+    font-size: 1.2rem;
+    color: $text-primary;
+  }
+  
+  .metric-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    
+    .metric-option {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      
+      input[type="checkbox"] {
+        margin-right: 0.5rem;
+      }
+      
+      .checkbox-label {
+        font-size: 0.9rem;
+        color: $text-primary;
+      }
+    }
+  }
+}
+
+// Maintenance placeholder
+.maintenance-placeholder {
+  padding: 3rem;
+  text-align: center;
+  color: $text-secondary;
+  
+  h3 {
+    margin: 0 0 1rem 0;
+    font-size: 1.2rem;
+    color: $text-primary;
+  }
+  
+  p {
+    margin: 0.5rem 0;
+  }
+}

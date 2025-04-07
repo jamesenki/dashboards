@@ -1,0 +1,771 @@
+[
+  {
+    "description": "  As a water heater operations manager\n  I want to see real-time updates from water heaters\n  So that I can monitor their current status without refreshing the page",
+    "elements": [
+      {
+        "description": "",
+        "id": "device-real-time-updates;receive-real-time-temperature-updates",
+        "keyword": "Scenario",
+        "line": 10,
+        "name": "Receive real-time temperature updates",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 419562250
+            }
+          },
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 130256583
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 7,
+            "name": "the IoTSphere application is running",
+            "match": {
+              "location": "features/step_definitions/common_steps.js:54"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 22429332
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 8,
+            "name": "I am logged in as an administrator",
+            "match": {
+              "location": "features/step_definitions/common_steps.js:115"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 24312125
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 11,
+            "name": "I navigate to the water heater with ID \"wh-test-001\"",
+            "match": {
+              "location": "features/step_definitions/common_steps.js:159"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 22061666
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 12,
+            "name": "the device sends a new temperature reading of \"140°F\"",
+            "match": {
+              "location": "features/step_definitions/realtime_updates_steps.js:41"
+            },
+            "result": {
+              "status": "failed",
+              "duration": 3798041,
+              "error_message": "Error: Too many arguments. If you need to pass more than 1 argument to the function wrap them in an object.\n    at assertMaxArguments (/Users/lisasimon/repos/IoTSphereAngular/IoTSphere-Refactor/node_modules/playwright-core/lib/client/jsHandle.js:119:26)\n    at Page.evaluate (/Users/lisasimon/repos/IoTSphereAngular/IoTSphere-Refactor/node_modules/playwright-core/lib/client/page.js:451:38)\n    at ShadowDocumentWorld.<anonymous> (/Users/lisasimon/repos/IoTSphereAngular/IoTSphere-Refactor/features/step_definitions/realtime_updates_steps.js:57:19)"
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 13,
+            "name": "the temperature display should update to \"140°F\" automatically",
+            "match": {
+              "location": "features/step_definitions/realtime_updates_steps.js:116"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 14,
+            "name": "the status indicator should show \"connected\"",
+            "match": {
+              "location": "features/step_definitions/realtime_updates_steps.js:378"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 30158625
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 2015042
+            }
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "device-real-time-updates;handle-connection-interruptions",
+        "keyword": "Scenario",
+        "line": 16,
+        "name": "Handle connection interruptions",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 31513999
+            }
+          },
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 127396208
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 7,
+            "name": "the IoTSphere application is running",
+            "match": {
+              "location": "features/step_definitions/common_steps.js:54"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5082832
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 8,
+            "name": "I am logged in as an administrator",
+            "match": {
+              "location": "features/step_definitions/common_steps.js:115"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 13841917
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 17,
+            "name": "I navigate to the water heater with ID \"wh-test-001\"",
+            "match": {
+              "location": "features/step_definitions/common_steps.js:159"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 12205499
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 18,
+            "name": "the WebSocket connection is interrupted",
+            "match": {
+              "location": "features/step_definitions/realtime_updates_steps.js:306"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 502511375
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 19,
+            "name": "the status indicator should show \"disconnected\"",
+            "match": {
+              "location": "features/step_definitions/realtime_updates_steps.js:378"
+            },
+            "result": {
+              "status": "failed",
+              "duration": 5001050459,
+              "error_message": "Error: function timed out, ensure the promise resolves within 5000 milliseconds\n    at Timeout.<anonymous> (/Users/lisasimon/repos/IoTSphereAngular/IoTSphere-Refactor/node_modules/@cucumber/cucumber/lib/time.js:54:20)\n    at listOnTimeout (node:internal/timers:569:17)\n    at process.processTimers (node:internal/timers:512:7)"
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 20,
+            "name": "I should see a reconnection attempt message",
+            "match": {
+              "location": "features/step_definitions/realtime_updates_steps.js:147"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 21,
+            "name": "the connection is restored",
+            "match": {
+              "location": "features/step_definitions/realtime_updates_steps.js:346"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 22,
+            "name": "the status indicator should show \"connected\" again",
+            "match": {
+              "location": "features/step_definitions/realtime_updates_steps.js:165"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 17472500
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 1562791
+            }
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "device-real-time-updates;update-history-chart-with-real-time-data",
+        "keyword": "Scenario",
+        "line": 24,
+        "name": "Update history chart with real-time data",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 34044833
+            }
+          },
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 128398917
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 7,
+            "name": "the IoTSphere application is running",
+            "match": {
+              "location": "features/step_definitions/common_steps.js:54"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5120416
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 8,
+            "name": "I am logged in as an administrator",
+            "match": {
+              "location": "features/step_definitions/common_steps.js:115"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 12167083
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 25,
+            "name": "I navigate to the water heater with ID \"wh-test-001\"",
+            "match": {
+              "location": "features/step_definitions/common_steps.js:159"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 11696291
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 26,
+            "name": "I click on the History tab",
+            "match": {
+              "location": "features/step_definitions/common_steps.js:234"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 68914874
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 27,
+            "name": "the device sends new temperature readings",
+            "match": {
+              "location": "features/step_definitions/realtime_updates_steps.js:172"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 809551041
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 28,
+            "name": "the temperature history chart should update automatically",
+            "match": {
+              "location": "features/step_definitions/realtime_updates_steps.js:233"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 11411957
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 29,
+            "name": "the new data points should appear on the chart",
+            "match": {
+              "location": "features/step_definitions/realtime_updates_steps.js:267"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 8920125
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 19610750
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 1605125
+            }
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      }
+    ],
+    "id": "device-real-time-updates",
+    "line": 1,
+    "keyword": "Feature",
+    "name": "Device Real-Time Updates",
+    "tags": [],
+    "uri": "features/realtime_updates.feature"
+  },
+  {
+    "description": "  As an IoTSphere user\n  I want to see device shadow data in the UI\n  So that I can monitor the current state of devices",
+    "elements": [
+      {
+        "description": "",
+        "id": "device-shadow-document;view-device-shadow-data-on-details-page",
+        "keyword": "Scenario",
+        "line": 11,
+        "name": "View device shadow data on details page",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 36469624
+            }
+          },
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 131611832
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 7,
+            "name": "the IoTSphere application is running",
+            "match": {
+              "location": "features/step_definitions/common_steps.js:54"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5633082
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 8,
+            "name": "I am logged in as an administrator",
+            "match": {
+              "location": "features/step_definitions/common_steps.js:115"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 14388500
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 12,
+            "name": "I navigate to the water heater with ID \"wh-test-001\"",
+            "match": {
+              "location": "features/step_definitions/common_steps.js:159"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 11929291
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 13,
+            "name": "I should see the device shadow information",
+            "result": {
+              "status": "ambiguous",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 14,
+            "name": "the temperature should be displayed",
+            "result": {
+              "status": "ambiguous",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 15,
+            "name": "the status indicators should reflect current device state",
+            "result": {
+              "status": "ambiguous",
+              "duration": 0
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 15150541
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 1025083
+            }
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "device-shadow-document;view-temperature-history-with-shadow-data",
+        "keyword": "Scenario",
+        "line": 17,
+        "name": "View temperature history with shadow data",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 30801458
+            }
+          },
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 124673250
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 7,
+            "name": "the IoTSphere application is running",
+            "match": {
+              "location": "features/step_definitions/common_steps.js:54"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4523375
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 8,
+            "name": "I am logged in as an administrator",
+            "match": {
+              "location": "features/step_definitions/common_steps.js:115"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 19587541
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 18,
+            "name": "I navigate to the water heater with ID \"wh-test-001\"",
+            "match": {
+              "location": "features/step_definitions/common_steps.js:159"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 11134999
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 19,
+            "name": "I click on the History tab",
+            "match": {
+              "location": "features/step_definitions/common_steps.js:234"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 43381916
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 20,
+            "name": "I should see the temperature history chart",
+            "match": {
+              "location": "features/step_definitions/common_steps.js:442"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 2078832
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 21,
+            "name": "the chart should display historical temperature data",
+            "match": {
+              "location": "features/step_definitions/common_steps.js:463"
+            },
+            "result": {
+              "status": "failed",
+              "duration": 899166,
+              "error_message": "AssertionError\n    + expected - actual\n\n    -false\n    +true\n\n    at ShadowDocumentWorld.<anonymous> (/Users/lisasimon/repos/IoTSphereAngular/IoTSphere-Refactor/features/step_definitions/common_steps.js:476:30)"
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 9885667
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 978040
+            }
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "device-shadow-document;show-appropriate-error-when-shadow-document-is-missing",
+        "keyword": "Scenario",
+        "line": 23,
+        "name": "Show appropriate error when shadow document is missing",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 27615457
+            }
+          },
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 130687958
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 7,
+            "name": "the IoTSphere application is running",
+            "match": {
+              "location": "features/step_definitions/common_steps.js:54"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5255124
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 8,
+            "name": "I am logged in as an administrator",
+            "match": {
+              "location": "features/step_definitions/common_steps.js:115"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 12708666
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 24,
+            "name": "I navigate to the water heater with ID \"wh-missing-shadow\"",
+            "match": {
+              "location": "features/step_definitions/common_steps.js:159"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 12226750
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 25,
+            "name": "I should see an error message about missing shadow document",
+            "match": {
+              "location": "features/step_definitions/common_steps.js:479"
+            },
+            "result": {
+              "status": "failed",
+              "duration": 1486624,
+              "error_message": "AssertionError: expected null not to be null\n    at ShadowDocumentWorld.<anonymous> (/Users/lisasimon/repos/IoTSphereAngular/IoTSphere-Refactor/features/step_definitions/common_steps.js:485:33)"
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 26,
+            "name": "the error message should clearly explain the issue",
+            "match": {
+              "location": "features/step_definitions/common_steps.js:492"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 11451792
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 1326667
+            }
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      }
+    ],
+    "id": "device-shadow-document",
+    "line": 1,
+    "keyword": "Feature",
+    "name": "Device Shadow Document",
+    "tags": [],
+    "uri": "features/shadow_document.feature"
+  }
+]
