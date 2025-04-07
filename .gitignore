@@ -51,5 +51,17 @@ htmlcov/
 ehthumbs.db
 Thumbs.db
 
+# Test reports and results
+*.html
+!frontend/templates/**/*.html
+!src/web/templates/**/*.html
+*.log
+coverage/
+cucumber-report.*
+*_report.json
+test-results/
+test_reports/
+Thumbs.db
+
 # Local configuration
 .env
