@@ -35,6 +35,7 @@
     "stylelint-config-standard": "^33.0.0"
   },
   "dependencies": {
-    "chai": "^4.3.7"
+    "chai": "^4.5.0",
+    "playwright": "^1.51.1"
   }
 }
