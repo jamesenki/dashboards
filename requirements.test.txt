@@ -7,7 +7,7 @@ pytest-mock==3.11.1
 # ML and security testing dependencies
 mlflow==2.8.0
 numpy==1.26.4
-pyarrow==13.0.0
+pyarrow==14.0.1
 scikit-learn==1.6.1
 beautifulsoup4==4.13.3
 
