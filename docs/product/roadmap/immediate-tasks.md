@@ -32,13 +32,13 @@ This document outlines the immediate tasks required to deliver a compelling wate
           self.device_id = device_id
           self.model = model
           self.state = initial_state
-      
+
       def start(self):
           # Begin simulation thread
-      
+
       def generate_telemetry(self):
           # Create realistic telemetry data
-      
+
       def handle_command(self, command):
           # Respond to commands like a real device
   ```

@@ -9,19 +9,19 @@ const TestEnvironment = {
   runTests(testSuite, component) {
     console.log(`\n\n🧪 RUNNING TESTS FOR: ${testSuite}`);
     console.log('='.repeat(40));
-    
+
     // Count for test statistics
     let passed = 0;
     let failed = 0;
-    
+
     // Run the test cases
     for (const testCase of testCases[testSuite]) {
       process.stdout.write(`  ◾ ${testCase.description}... `);
-      
+
       try {
         // Execute the test with the component
         const result = testCase.test(component);
-        
+
         if (result) {
           console.log('\x1b[32m%s\x1b[0m', 'PASSED');
           passed++;
@@ -35,11 +35,11 @@ const TestEnvironment = {
         failed++;
       }
     }
-    
+
     // Print summary
     console.log('-'.repeat(40));
     console.log(`Tests: ${passed + failed}, Passed: ${passed}, Failed: ${failed}`);
-    
+
     return failed === 0;
   }
 };
@@ -60,7 +60,7 @@ const DeviceStatusCardComponent = {
   connectionStatus: 'connected',
   lastUpdated: new Date(),
   isSimulated: true,
-  
+
   // Mock methods
   updateFromTelemetry(telemetry) {
     if (telemetry.data) {
@@ -81,7 +81,7 @@ const DeviceStatusCardComponent = {
       this.isSimulated = telemetry.simulated;
     }
   },
-  
+
   handleDeviceEvent(event) {
     switch (event.event_type) {
       case 'error_occurred':
@@ -95,19 +95,19 @@ const DeviceStatusCardComponent = {
         break;
     }
   },
-  
+
   getTemperatureInSelectedUnit(temp) {
     return this.temperatureUnit === 'C' ? (temp - 32) * 5/9 : temp;
   },
-  
+
   getHeatingStatusClass() {
     return this.heatingStatus ? 'heating-active' : 'heating-inactive';
   },
-  
+
   getErrorStatusClass() {
     return this.errorCode ? 'error-active' : '';
   },
-  
+
   temperatureUnit: 'F'
 };
 
@@ -135,36 +135,36 @@ const WaterHeaterDashboardComponent = {
       simulated: false
     }
   ],
-  
+
   filteredWaterHeaters: [],
   manufacturers: ['AquaTech', 'HydroMax'],
   selectedManufacturer: '',
   selectedStatus: '',
   showSimulatedOnly: false,
-  
+
   applyFilters() {
     let filtered = this.waterHeaters;
-    
+
     if (this.selectedManufacturer) {
       filtered = filtered.filter(wh => wh.manufacturer === this.selectedManufacturer);
     }
-    
+
     if (this.selectedStatus) {
       filtered = filtered.filter(wh => wh.connection_status === this.selectedStatus);
     }
-    
+
     if (this.showSimulatedOnly) {
       filtered = filtered.filter(wh => wh.simulated);
     }
-    
+
     this.filteredWaterHeaters = filtered;
     return this.filteredWaterHeaters;
   },
-  
+
   getDeviceCountByStatus(status) {
     return this.waterHeaters.filter(wh => wh.connection_status === status).length;
   },
-  
+
   getSimulatedDeviceCount() {
     return this.waterHeaters.filter(wh => wh.simulated).length;
   }
@@ -187,10 +187,10 @@ const testCases = {
           },
           simulated: true
         };
-        
+
         component.updateFromTelemetry(telemetryData);
-        
-        return component.currentTemperature === 125 && 
+
+        return component.currentTemperature === 125 &&
                component.targetTemperature === 130 &&
                component.heatingStatus === true &&
                component.powerConsumption === 1200;
@@ -208,9 +208,9 @@ const testCases = {
           },
           simulated: true
         };
-        
+
         component.handleDeviceEvent(errorEvent);
-        
+
         return component.errorCode === 'E101';
       }
     },
@@ -218,7 +218,7 @@ const testCases = {
       description: 'should handle error cleared events',
       test: (component) => {
         component.errorCode = 'E101';
-        
+
         const errorClearedEvent = {
           device_id: 'test-device-1',
           event_type: 'error_cleared',
@@ -226,9 +226,9 @@ const testCases = {
           details: {},
           simulated: true
         };
-        
+
         component.handleDeviceEvent(errorClearedEvent);
-        
+
         return component.errorCode === null;
       }
     },
@@ -238,11 +238,11 @@ const testCases = {
         // Fahrenheit (default)
         component.temperatureUnit = 'F';
         const fResult = component.getTemperatureInSelectedUnit(100) === 100;
-        
+
         // Celsius conversion
         component.temperatureUnit = 'C';
         const cResult = Math.abs(component.getTemperatureInSelectedUnit(100) - 37.78) < 0.1;
-        
+
         return fResult && cResult;
       }
     },
@@ -251,15 +251,15 @@ const testCases = {
       test: (component) => {
         component.heatingStatus = true;
         const activeClass = component.getHeatingStatusClass() === 'heating-active';
-        
+
         component.heatingStatus = false;
         const inactiveClass = component.getHeatingStatusClass() === 'heating-inactive';
-        
+
         return activeClass && inactiveClass;
       }
     }
   ],
-  
+
   'WaterHeaterDashboardComponent': [
     {
       description: 'should apply manufacturer filter correctly',
@@ -267,10 +267,10 @@ const testCases = {
         component.selectedManufacturer = 'AquaTech';
         component.selectedStatus = '';
         component.showSimulatedOnly = false;
-        
+
         const filtered = component.applyFilters();
-        
-        return filtered.length === 2 && 
+
+        return filtered.length === 2 &&
                filtered.every(wh => wh.manufacturer === 'AquaTech');
       }
     },
@@ -280,10 +280,10 @@ const testCases = {
         component.selectedManufacturer = '';
         component.selectedStatus = 'disconnected';
         component.showSimulatedOnly = false;
-        
+
         const filtered = component.applyFilters();
-        
-        return filtered.length === 1 && 
+
+        return filtered.length === 1 &&
                filtered[0].connection_status === 'disconnected';
       }
     },
@@ -293,10 +293,10 @@ const testCases = {
         component.selectedManufacturer = '';
         component.selectedStatus = '';
         component.showSimulatedOnly = true;
-        
+
         const filtered = component.applyFilters();
-        
-        return filtered.length === 1 && 
+
+        return filtered.length === 1 &&
                filtered[0].simulated === true;
       }
     },

@@ -136,27 +136,27 @@ export class WebSocketService {
     this.socket.onmessage = (event) => {
       try {
         const message = JSON.parse(event.data) as WebSocketMessage;
-        
+
         // Process based on message type
         switch (message.type) {
           case MessageType.TELEMETRY:
             this.telemetrySource.next(message as TelemetryMessage);
             break;
-          
+
           case MessageType.EVENT:
             this.eventSource.next(message as EventMessage);
             break;
-          
+
           case MessageType.COMMAND_RESPONSE:
             this.commandResponseSource.next(message as CommandResponseMessage);
             break;
-          
+
           // Handle connection acknowledgment
           case 'connection_ack':
             this.clientId = (message as any).client_id;
             console.log(`Connected with client ID: ${this.clientId}`);
             break;
-          
+
           default:
             console.warn('Unknown message type:', message);
         }
@@ -173,7 +173,7 @@ export class WebSocketService {
     if (this.socket) {
       this.socket.close();
     }
-    
+
     if (this.reconnectTimer) {
       clearTimeout(this.reconnectTimer);
       this.reconnectTimer = null;

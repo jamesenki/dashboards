@@ -29,39 +29,39 @@ if (!fs.existsSync(worldPath)) {
    */
   const { setWorldConstructor } = require('@cucumber/cucumber');
   const { chromium } = require('playwright');
-  
+
   // Custom test world with Playwright setup
   class CustomWorld {
     constructor(options) {
       this.parameters = options.parameters;
     }
-    
+
     async init() {
       this.browser = await chromium.launch({ headless: true });
       this.context = await this.browser.newContext();
       this.page = await this.context.newPage();
     }
-    
+
     async navigate(url) {
       const baseUrl = process.env.TEST_APP_URL || 'http://localhost:4200';
       await this.page.goto(\`\${baseUrl}\${url}\`);
     }
-    
+
     async elementExists(selector) {
       const element = await this.page.$(selector);
       return element !== null;
     }
-    
+
     async close() {
       if (this.browser) {
         await this.browser.close();
       }
     }
   }
-  
+
   setWorldConstructor(CustomWorld);
   `;
-  
+
   fs.writeFileSync(worldPath, worldContent);
   console.log(`Created custom world file at ${worldPath}`);
 }
@@ -74,18 +74,18 @@ if (!fs.existsSync(hooksPath)) {
    * Hooks for shadow document tests
    */
   const { Before, After } = require('@cucumber/cucumber');
-  
+
   // Setup browser before each scenario
   Before(async function() {
     await this.init();
   });
-  
+
   // Close browser after each scenario
   After(async function() {
     await this.close();
   });
   `;
-  
+
   fs.writeFileSync(hooksPath, hooksContent);
   console.log(`Created hooks file at ${hooksPath}`);
 }
@@ -101,10 +101,10 @@ try {
     '--format', `html:${reportPath}`,
     '--format', 'summary'
   ].join(' ');
-  
+
   console.log(`Running command: ${command}`);
   execSync(command, { stdio: 'inherit' });
-  
+
   console.log(`\nTest execution complete!`);
   console.log(`Report saved to: ${reportPath}`);
 } catch (error) {

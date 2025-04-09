@@ -28,14 +28,14 @@ fi
 test_endpoint() {
     local endpoint=$1
     local url="ws://localhost:8000${endpoint}?token=${TOKEN}"
-    
+
     echo -e "${BLUE}Testing: ${endpoint}${NC}"
     echo -e "URL: ${url}"
-    echo 
-    
+    echo
+
     # Try connecting to the WebSocket endpoint with a timeout
     timeout 5s wscat -c "${url}" --no-color 2>&1 | tee /tmp/wscat_output.txt
-    
+
     # Check if it was successful
     if grep -q "connected" /tmp/wscat_output.txt; then
         echo -e "${GREEN}✅ Connection succeeded!${NC}"

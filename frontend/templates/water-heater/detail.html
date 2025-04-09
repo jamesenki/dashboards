@@ -15,29 +15,22 @@
 <!-- Load AquaTherm test helper first to ensure UI test elements are available -->
 <!-- DISABLED: Mock water heater injector -->
 <!-- <script src="/static/js/aquatherm-test-helper.js?v={{now.timestamp()}}"></script> -->
-<script src="/static/js/guaranteed-shadow-error.js?v={{now.timestamp()}}"></script>
-<script src="/static/js/details-temp-chart-fix.js?v={{now.timestamp()}}"></script>
 <!-- Shadow Document Support -->
 <script src="/static/js/shadow-document-handler.js?v={{now.timestamp()}}"></script>
-<script src="/static/js/temperature-history-chart.js?v={{now.timestamp()}}"></script>
 <script src="/static/js/api.js?v={{now.timestamp()}}"></script>
 <script src="/static/js/websocket-status-manager.js?v={{now.timestamp()}}"></script>
 <script src="/static/js/status-monitor.js?v={{now.timestamp()}}"></script>
-<script src="/static/js/realtime-status-test.js?v={{now.timestamp()}}"></script>
-<script src="/static/js/status-indicator-tdd-fix.js?v={{now.timestamp()}}"></script>
-<script src="/static/js/direct-temp-history-fix.js?v={{now.timestamp()}}"></script>
-<script src="/static/js/force-temp-history-display.js?v={{now.timestamp()}}"></script>
+<!-- Shadow API Implementation for Details Page Only (No History) -->
+<!-- History scripts REMOVED from details page - only available in History tab -->
+<script src="/static/js/water-heater-details-only.js?v={{now.timestamp()}}"></script>
 <script src="/static/js/realtime-status-formatter.js?v={{now.timestamp()}}"></script>
 <script src="/static/js/dashboard-fixes.js?v={{now.timestamp()}}"></script>
-<script src="/static/js/direct-fix-verification.js?v={{now.timestamp()}}"></script>
-<script src="/static/js/auto-test-runner.js?v={{now.timestamp()}}"></script>
-<script src="/static/js/tab-issue-diagnostic.js?v={{now.timestamp()}}"></script>
 <script src="/static/js/tab-manager.js?v={{now.timestamp()}}"></script>
-<script src="/static/js/tab-diagnostics.js?v={{now.timestamp()}}"></script>
-<script src="/static/js/run-tab-tests.js?v={{now.timestamp()}}"></script>
 <script src="/static/js/websocket-manager.js?v={{now.timestamp()}}"></script>
 <script src="/static/js/realtime-status-fix.js?v={{now.timestamp()}}"></script>
-<script src="/static/tests/water-heater-tabs-tdd.js?v={{now.timestamp()}}"></script>
+<!-- Real-time monitoring integration -->
+<script src="/static/js/realtime-monitor.js?v={{now.timestamp()}}"></script>
+<script src="/static/js/realtime-monitor-integration.js?v={{now.timestamp()}}"></script>
 <script src="/static/js/water-heater-new.js?v={{now.timestamp()}}"></script>
 <script src="/static/js/water-heater-operations.js?v={{now.timestamp()}}"></script>
 <script src="/static/js/water-heater-history.js?v={{now.timestamp()}}"></script>
@@ -46,6 +39,17 @@
 <script src="/static/js/debug-helper.js?v={{now.timestamp()}}"></script>
 <script src="/static/js/websocket-diagnostics.js?v={{now.timestamp()}}"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- Device Shadow Data Integration -->
+<script src="/static/js/device-shadow-api.js?v={{now.timestamp()}}"></script>
+<script src="/static/js/device-shadow-temperature-chart.js?v={{now.timestamp()}}"></script>
+<script src="/static/js/device-shadow-chart-integration.js?v={{now.timestamp()}}"></script>
+<!-- Device data display configuration -->
+<!-- Archived history box fix no longer needed -->
+<!-- Following TDD principles: removing redundant code after implementing the proper solution -->
+<!-- Direct temperature display fix - TOP PRIORITY -->
+<script src="/static/js/direct-temperature-display.js?v={{now.timestamp()}}"></script>
+<!-- Temperature chart validation and diagnostics -->
+<script src="/static/js/temperature-history-validator.js?v={{now.timestamp()}}"></script>
 <style>
   /* Dark theme for operations dashboard */
   .dark-theme {
@@ -399,7 +403,8 @@
   <div class="tab-content-container">
     <!-- Details Tab Content -->
     <div id="details-content" class="tab-content active">
-      <div id="water-heater-detail">
+      <div id="water-heater-detail" data-device-id="{{water_heater.id}}">
+        <input type="hidden" id="device-id" value="{{water_heater.id}}" />
         <!-- Device Shadow Information Card -->
         <div class="card device-info-card mb-4">
           <div class="card-header d-flex justify-content-between align-items-center">
@@ -425,8 +430,21 @@
                   </div>
                 </div>
                 <div class="col-md-6">
-                  <h6>Real-time Temperature</h6>
-                  <div id="temperature-chart" class="chart-container" style="height: 200px;"></div>
+                  <h6>Real-time Status</h6>
+                  <div class="current-status-display">
+                    <div class="data-group mb-3">
+                      <label>Mode:</label>
+                      <span class="device-mode-value">--</span>
+                    </div>
+                    <div class="data-group mb-3">
+                      <label>Heater Status:</label>
+                      <span class="heater-status-value">--</span>
+                    </div>
+                    <div class="data-group mb-3">
+                      <label>Last Updated:</label>
+                      <span class="last-updated-value">--</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -780,16 +798,8 @@
         <!-- Shadow Document Error Message for History Tab -->
         <div class="shadow-document-error alert alert-danger mt-3" style="display: none;"></div>
 
-        <!-- Temperature History Chart -->
-        <div class="card mb-4">
-          <div class="card-header">
-            <h5 class="mb-0">Temperature History</h5>
-          </div>
-          <div class="card-body">
-            <div id="temperature-history-chart" class="chart-container" style="height: 300px;"></div>
-          </div>
-        </div>
-        <div id="history-error" class="error-message"></div>
+        <!-- Device data section completely removed as per user request -->
+        <div id="history-error" class="error-message" style="display: none;"></div>
 
         <div class="dashboard-controls">
           <h2>Historical Data</h2>
@@ -807,14 +817,8 @@
               <p>Loading data...</p>
             </div>
             <div class="chart-container" style="height: 300px;">
-              <!-- Direct fix for shadow document error -->
-              <div id="temp-chart-error" class="error-message shadow-document-error" style="text-align: center; padding: 20px; border: 1px solid #e74c3c; background-color: rgba(231, 76, 60, 0.1); border-radius: 4px; margin: 15px;">
-                <h4 style="color: #e74c3c; margin-bottom: 10px;">Temperature History Unavailable</h4>
-                <p style="margin-bottom: 10px;">No shadow document exists for this device.</p>
-                <p style="margin-bottom: 5px;">Temperature history cannot be displayed until the device has reported data.</p>
-                <p><small style="color: #7f8c8d;">This typically happens when a device is new or has been reset.</small></p>
-              </div>
-              <canvas id="temperature-chart" style="display: none;"></canvas>
+              <!-- Device data error message removed as per user request -->
+              <canvas id="temperature-chart"></canvas>
             </div>
           </div>
         </div>
@@ -1096,5 +1100,10 @@
       window.waterHeaterPredictionsDashboard = new WaterHeaterPredictionsDashboard('water-heater-predictions-dashboard', heaterId);
     }
   });
+
+  // Load the patch script to ensure all water heaters display properly with history data
+  const patchScript = document.createElement('script');
+  patchScript.src = '/static/js/water-heater-patch.js?v=20250408';
+  document.body.appendChild(patchScript);
 </script>
 {% endblock %}

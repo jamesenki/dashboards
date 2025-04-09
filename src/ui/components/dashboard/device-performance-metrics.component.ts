@@ -20,7 +20,7 @@ interface PerformanceMetric {
 
 /**
  * DevicePerformanceMetrics Component
- * 
+ *
  * Displays key performance metrics for a device with real-time updates
  * and status indicators. Supports both real-time and historical trends.
  */
@@ -39,15 +39,15 @@ export class DevicePerformanceMetricsComponent implements OnInit, OnDestroy {
   public isLoading: boolean = true;
   public error: string | null = null;
   public lastUpdated: Date | null = null;
-  
+
   // Anomaly detection
   public anomaliesDetected: number = 0;
   public showAnomalies: boolean = false;
-  
+
   // Efficiency rating
   public efficiencyScore: number = 0;
   public efficiencyRating: 'A+' | 'A' | 'B' | 'C' | 'D' | 'F' = 'C';
-  
+
   // Subscription for real-time updates
   private telemetrySubscription: Subscription | null = null;
   private refreshInterval: any = null;
@@ -60,7 +60,7 @@ export class DevicePerformanceMetricsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     // Load initial performance metrics
     this.loadPerformanceMetrics();
-    
+
     // Subscribe to real-time telemetry updates
     this.telemetrySubscription = this.websocketService.telemetry$.subscribe(
       (telemetry: TelemetryMessage) => {
@@ -69,7 +69,7 @@ export class DevicePerformanceMetricsComponent implements OnInit, OnDestroy {
         }
       }
     );
-    
+
     // Set up periodic refresh (every 10 minutes)
     this.refreshInterval = setInterval(() => {
       this.loadPerformanceMetrics();
@@ -81,7 +81,7 @@ export class DevicePerformanceMetricsComponent implements OnInit, OnDestroy {
     if (this.telemetrySubscription) {
       this.telemetrySubscription.unsubscribe();
     }
-    
+
     if (this.refreshInterval) {
       clearInterval(this.refreshInterval);
     }
@@ -93,9 +93,9 @@ export class DevicePerformanceMetricsComponent implements OnInit, OnDestroy {
   loadPerformanceMetrics(): void {
     this.isLoading = true;
     this.error = null;
-    
+
     const apiUrl = `${environment.apiUrl}/api/devices/${this.deviceId}/performance`;
-    
+
     this.http.get(apiUrl, {
       params: {
         time_range: this.timeRange
@@ -121,22 +121,22 @@ export class DevicePerformanceMetricsComponent implements OnInit, OnDestroy {
       this.error = 'Invalid data format received from server';
       return;
     }
-    
+
     try {
       // Process efficiency rating
       if (data.efficiency) {
         this.efficiencyScore = data.efficiency.score || 0;
         this.efficiencyRating = data.efficiency.rating || 'C';
       }
-      
+
       // Process anomalies
       if (data.anomalies) {
         this.anomaliesDetected = data.anomalies.count || 0;
       }
-      
+
       // Process metrics
       this.metrics = [];
-      
+
       // Energy consumption
       if (data.energy_consumption) {
         this.metrics.push({
@@ -150,7 +150,7 @@ export class DevicePerformanceMetricsComponent implements OnInit, OnDestroy {
           description: 'Total energy consumed in the selected period'
         });
       }
-      
+
       // Water usage
       if (data.water_usage) {
         this.metrics.push({
@@ -164,7 +164,7 @@ export class DevicePerformanceMetricsComponent implements OnInit, OnDestroy {
           description: 'Total water used in the selected period'
         });
       }
-      
+
       // Heating cycles
       if (data.heating_cycles) {
         this.metrics.push({
@@ -178,18 +178,18 @@ export class DevicePerformanceMetricsComponent implements OnInit, OnDestroy {
           description: 'Number of heating cycles in the selected period'
         });
       }
-      
+
       // Average temperature
       if (data.average_temperature) {
         let tempValue = data.average_temperature.current;
         let tempUnit = '°F';
-        
+
         // Convert to Celsius if needed
         if (this.temperatureUnit === 'C') {
           tempValue = this.convertFahrenheitToCelsius(tempValue);
           tempUnit = '°C';
         }
-        
+
         this.metrics.push({
           name: 'Average Temperature',
           value: tempValue,
@@ -201,7 +201,7 @@ export class DevicePerformanceMetricsComponent implements OnInit, OnDestroy {
           description: 'Average water temperature in the selected period'
         });
       }
-      
+
       // Recovery rate
       if (data.recovery_rate) {
         this.metrics.push({
@@ -225,10 +225,10 @@ export class DevicePerformanceMetricsComponent implements OnInit, OnDestroy {
    */
   private updateMetricsWithRealtimeData(telemetry: TelemetryMessage): void {
     if (!telemetry.data) return;
-    
+
     // We'll only update certain metrics in real-time
     // Others require aggregation over time and will be updated with periodic refresh
-    
+
     this.lastUpdated = new Date();
   }
 
@@ -295,10 +295,10 @@ export class DevicePerformanceMetricsComponent implements OnInit, OnDestroy {
    */
   getTrendText(metric: PerformanceMetric): string {
     if (metric.trendValue === null) return 'No trend data';
-    
-    const direction = metric.trend === 'up' ? 'increase' : 
+
+    const direction = metric.trend === 'up' ? 'increase' :
                      (metric.trend === 'down' ? 'decrease' : 'change');
-    
+
     return `${Math.abs(metric.trendValue)}% ${direction} from previous period`;
   }
 

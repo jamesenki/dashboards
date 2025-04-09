@@ -12,11 +12,11 @@ describe('DeviceStatusCardComponent', () => {
   beforeEach(async () => {
     // Create a mock WebSocketService
     mockWebSocketService = jasmine.createSpyObj('WebSocketService', [
-      'subscribeToDevice', 
-      'unsubscribeFromDevice', 
+      'subscribeToDevice',
+      'unsubscribeFromDevice',
       'sendCommand'
     ]);
-    
+
     // Configure the telemetry$ and events$ observables
     mockWebSocketService.telemetry$ = of();
     mockWebSocketService.events$ = of();
@@ -70,10 +70,10 @@ describe('DeviceStatusCardComponent', () => {
       },
       simulated: true
     };
-    
+
     // Act
     component['updateFromTelemetry'](telemetryData);
-    
+
     // Assert
     expect(component.currentTemperature).toBe(125);
     expect(component.targetTemperature).toBe(130);
@@ -96,10 +96,10 @@ describe('DeviceStatusCardComponent', () => {
       },
       simulated: true
     };
-    
+
     // Act
     component['handleDeviceEvent'](errorEvent);
-    
+
     // Assert
     expect(component.errorCode).toBe('E101');
     expect(component.isSimulated).toBe(true);
@@ -108,7 +108,7 @@ describe('DeviceStatusCardComponent', () => {
   it('should handle error cleared events', () => {
     // Set initial error state
     component.errorCode = 'E101';
-    
+
     // Arrange
     const errorClearedEvent = {
       device_id: 'test-device-1',
@@ -117,10 +117,10 @@ describe('DeviceStatusCardComponent', () => {
       details: {},
       simulated: true
     };
-    
+
     // Act
     component['handleDeviceEvent'](errorClearedEvent);
-    
+
     // Assert
     expect(component.errorCode).toBeNull();
   });
@@ -133,7 +133,7 @@ describe('DeviceStatusCardComponent', () => {
       'set_temperature',
       { setpoint: 135 }
     );
-    
+
     // Test mode control
     component.setMode('eco');
     expect(mockWebSocketService.sendCommand).toHaveBeenCalledWith(
@@ -141,7 +141,7 @@ describe('DeviceStatusCardComponent', () => {
       'set_mode',
       { mode: 'eco' }
     );
-    
+
     // Test power toggle
     component.togglePower();
     expect(mockWebSocketService.sendCommand).toHaveBeenCalledWith(
@@ -154,7 +154,7 @@ describe('DeviceStatusCardComponent', () => {
     // Test Fahrenheit (default)
     component.currentTemperature = 100;
     expect(component.getTemperatureInSelectedUnit(100)).toBe(100);
-    
+
     // Test Celsius conversion
     component.temperatureUnit = 'C';
     expect(component.getTemperatureInSelectedUnit(100)).toBeCloseTo(37.78, 1);
@@ -164,21 +164,21 @@ describe('DeviceStatusCardComponent', () => {
     // Heating status
     component.heatingStatus = true;
     expect(component.getHeatingStatusClass()).toBe('heating-active');
-    
+
     component.heatingStatus = false;
     expect(component.getHeatingStatusClass()).toBe('heating-inactive');
-    
+
     // Error status
     component.errorCode = 'E101';
     expect(component.getErrorStatusClass()).toBe('error-active');
-    
+
     component.errorCode = null;
     expect(component.getErrorStatusClass()).toBe('');
-    
+
     // Connection status
     component.connectionStatus = 'connected';
     expect(component.getConnectionStatusClass()).toBe('connected');
-    
+
     component.connectionStatus = 'disconnected';
     expect(component.getConnectionStatusClass()).toBe('disconnected');
   });

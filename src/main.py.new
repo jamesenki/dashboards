@@ -1,0 +1,72 @@
+"""
+IoTSphere Platform main server application.
+
+This module sets up the FastAPI server, registers routes, and initializes dependencies.
+"""
+import argparse
+import asyncio
+import logging
+import os
+import random
+import socket
+from datetime import datetime, timedelta
+import sys
+from datetime import datetime
+from pathlib import Path
+
+import uvicorn
+from fastapi import APIRouter, FastAPI, Request, Response
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
+from starlette.middleware.base import BaseHTTPMiddleware
+
+# Import WebSocket routers
+from src.api.routes.test_websocket import router as test_websocket_router
+from src.api.routes.websocket import router as websocket_router
+from src.api.routes.websocket_debug import router as websocket_debug_router
+from src.api.routes.websocket_fix import router as websocket_fix_router
+from src.api.routes.websocket_noauth import router as websocket_noauth_router
+
+# Import operations and prediction-related routers
+from src.api.operations_router_db import router as operations_db_router
+from src.api.prediction_storage import router as prediction_storage_api_router
+from src.api.predictions import router as predictions_api_router
+
+# Import compatibility and manufacturer-related routers
+from src.api.routes.compatibility_routes import (
+    router as compatibility_router,
+)
+from src.api.routes.manufacturer_history import router as manufacturer_history_router
+from src.api.routes.manufacturer_predictions import (
+    router as manufacturer_predictions_router,
+)
+from src.api.routes.manufacturer_water_heaters import (
+    router as manufacturer_water_heater_router,
+)
+
+# Import shadow and device-related routers
+from src.api.shadow_document_api import router as shadow_document_api_router
+from src.api.device_shadow import router as device_shadow_router
+
+# Import vending machine-related routers
+from src.api.vending_machine import router as vending_machine_api_router
+from src.api.vending_machine_operations import (
+    router as ice_cream_machine_operations_api_router,
+)
+from src.api.vending_machine_realtime_operations import (
+    router as vending_machine_realtime_operations_api_router,
+)
+
+# Now imports will work both when running from project root or from src/
+from src.api.water_heater import router as water_heater_api_router
+from src.api.water_heater.configurable_router import (
+    router as water_heater_configurable_router,
+)
+from src.api.water_heater_history import router as water_heater_history_api_router
+from src.api.water_heater_operations import router as water_heater_operations_api_router
+
+# Database and utility imports
+from src.db.migration import initialize_db
+from src.routes.debug_routes import router as debug_router
+from src.web.routes import router as web_router

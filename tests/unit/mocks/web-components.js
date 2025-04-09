@@ -1,6 +1,6 @@
 /**
  * Web Components Testing Utilities
- * 
+ *
  * This file provides utility functions and mocks for testing Web Components
  * in Jest with JSDOM.
  */
@@ -13,19 +13,19 @@ function extractDefaultProperties(ComponentClass) {
   try {
     // Get constructor source code
     const constructorStr = ComponentClass.toString();
-    
+
     // Find properties assigned with 'this.' in the constructor
     const propRegex = /this\.(\w+)\s*=\s*(.+?);/g;
     const properties = {};
-    
+
     let match;
     while ((match = propRegex.exec(constructorStr)) !== null) {
       const propName = match[1];
       const propValueStr = match[2].trim();
-      
+
       // Skip shadowRoot
       if (propName === 'shadowRoot') continue;
-      
+
       // Try to evaluate the property value
       try {
         // Handle common literals
@@ -49,7 +49,7 @@ function extractDefaultProperties(ComponentClass) {
         properties[propName] = undefined;
       }
     }
-    
+
     return properties;
   } catch (error) {
     console.warn('Error extracting default properties:', error);
@@ -69,7 +69,7 @@ export function patchHTMLElementClass(ComponentClass) {
         querySelectorAll: jest.fn().mockReturnValue([]),
         innerHTML: ''
       };
-      
+
       // Common element properties
       this.getAttribute = jest.fn();
       this.setAttribute = jest.fn();
@@ -82,37 +82,37 @@ export function patchHTMLElementClass(ComponentClass) {
         toggle: jest.fn(),
         contains: jest.fn().mockReturnValue(false)
       };
-      
+
       // Set up default component properties extracted from the original class
       const defaultProps = extractDefaultProperties(ComponentClass);
       Object.assign(this, defaultProps);
-      
+
       // Initialize component's own methods
       // Get property descriptors from the original class prototype
       const originalProto = ComponentClass.prototype;
       Object.getOwnPropertyNames(originalProto).forEach(prop => {
         // Skip constructor
         if (prop === 'constructor') return;
-        
+
         // If it's a method, copy it to the patched instance
         if (typeof originalProto[prop] === 'function') {
           this[prop] = originalProto[prop].bind(this);
         }
       });
     }
-    
+
     // Mock attachShadow method
     attachShadow() {
       return this.shadowRoot;
     }
-    
+
     // Common lifecycle methods that might be overridden
     connectedCallback() {}
     disconnectedCallback() {}
     attributeChangedCallback() {}
     adoptedCallback() {}
   }
-  
+
   return PatchedComponent;
 }
 
@@ -120,7 +120,7 @@ export function patchHTMLElementClass(ComponentClass) {
 export function createPatchedComponent(ComponentClass) {
   const PatchedComponent = patchHTMLElementClass(ComponentClass);
   const instance = new PatchedComponent();
-  
+
   // Handle specific component types with known properties
   if (ComponentClass.name === 'DeviceEvents') {
     // Manual initialization for DeviceEvents
@@ -134,6 +134,6 @@ export function createPatchedComponent(ComponentClass) {
     instance.eventsPerPage = 10;
     instance.totalPages = 1;
   }
-  
+
   return instance;
 }

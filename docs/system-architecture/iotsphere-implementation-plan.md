@@ -72,7 +72,7 @@ To satisfy the business intelligence and predictive maintenance tests:
 
 This self-improving AI pipeline includes:
 - Automated model training based on device telemetry
-- Validation against actual outcomes 
+- Validation against actual outcomes
 - Feedback loop to improve prediction accuracy
 - Storage of predictions for analysis and ROI calculations
 

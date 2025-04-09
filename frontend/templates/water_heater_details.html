@@ -1,10 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
+
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Water Heater Details | IoTSphere</title>
     <link rel="stylesheet" href="/static/css/main.css">
+ <!-- Temperature history box removal script has been archived following successful implementation -->
     <script src="/static/js/device-metadata-handler.js" defer></script>
     <script src="/static/js/shadow-document-handler.js" defer></script>
     <style>
@@ -13,7 +17,7 @@
             grid-template-columns: 1fr 1fr;
             grid-gap: 20px;
         }
-        
+
         .dashboard-card {
             background-color: #fff;
             border-radius: 8px;
@@ -21,14 +25,14 @@
             padding: 20px;
             margin-bottom: 20px;
         }
-        
+
         .dashboard-card h3 {
             margin-top: 0;
             border-bottom: 1px solid #eee;
             padding-bottom: 10px;
             margin-bottom: 15px;
         }
-        
+
         .data-item {
             display: flex;
             justify-content: space-between;
@@ -36,20 +40,20 @@
             padding: 8px;
             border-bottom: 1px solid #f5f5f5;
         }
-        
+
         .data-item:last-child {
             border-bottom: none;
         }
-        
+
         .data-label {
             font-weight: bold;
             color: #555;
         }
-        
+
         .data-value {
             font-weight: 500;
         }
-        
+
         .temperature-value {
             font-size: 2.5rem;
             font-weight: 700;
@@ -57,7 +61,7 @@
             text-align: center;
             margin: 15px 0;
         }
-        
+
         .status-indicator {
             display: inline-block;
             width: 12px;
@@ -65,30 +69,30 @@
             border-radius: 50%;
             margin-right: 8px;
         }
-        
+
         .status-indicator.online {
             background-color: #32b643;
         }
-        
+
         .status-indicator.offline {
             background-color: #e85600;
         }
-        
+
         .status-indicator.warning {
             background-color: #ffb700;
         }
-        
+
         .connection-status {
             display: flex;
             align-items: center;
             font-size: 0.9rem;
             margin-bottom: 10px;
         }
-        
+
         #realtime-connection-status {
             margin-right: 15px;
         }
-        
+
         .connection-status.connected::before {
             content: '';
             display: inline-block;
@@ -98,7 +102,7 @@
             background-color: #32b643;
             margin-right: 5px;
         }
-        
+
         .connection-status.disconnected::before {
             content: '';
             display: inline-block;
@@ -108,38 +112,38 @@
             background-color: #e85600;
             margin-right: 5px;
         }
-        
+
         .heating-element-status {
             padding: 5px 10px;
             border-radius: 4px;
             font-weight: 500;
             text-transform: capitalize;
         }
-        
+
         .heating-element-status.active {
             background-color: #ffb700;
             color: #333;
         }
-        
+
         .heating-element-status.standby {
             background-color: #acb;
             color: #333;
         }
-        
+
         .heating-element-status.off {
             background-color: #eee;
             color: #777;
         }
-        
+
         .tabs {
             margin-top: 20px;
         }
-        
+
         .tab-nav {
             display: flex;
             border-bottom: 1px solid #ddd;
         }
-        
+
         .tab-btn {
             padding: 10px 15px;
             cursor: pointer;
@@ -147,24 +151,24 @@
             background: transparent;
             margin-right: 10px;
         }
-        
+
         .tab-btn.active {
             border-bottom: 3px solid #5755d9;
             font-weight: bold;
         }
-        
+
         .tab-content {
             padding: 20px 0;
         }
-        
+
         .tab-panel {
             display: none;
         }
-        
+
         .tab-panel.active {
             display: block;
         }
-        
+
         .shadow-document-error, .metadata-error {
             background-color: #ffecea;
             color: #e85600;
@@ -173,7 +177,7 @@
             margin: 10px 0;
             display: none;
         }
-        
+
         .reconnection-message {
             background-color: #fffaeb;
             color: #9e7d27;
@@ -182,14 +186,18 @@
             margin: 10px 0;
             display: none;
         }
-        
+
         #temperature-chart {
             height: 250px;
             width: 100%;
         }
     </style>
+
+<!-- CRITICAL FIXES: Injects comprehensive fixes for duplication and temperature history issues -->
+<script src="/static/js/complete-fixes.js"></script>
 </head>
 <body>
+
     <header>
         <nav>
             <div class="container">
@@ -212,9 +220,9 @@
             <a href="/devices">Devices</a> &gt;
             <span id="deviceName">Water Heater</span>
         </div>
-        
+
         <h1>Water Heater Details: <span id="device-id-title">{{ device_id }}</span></h1>
-        
+
         <div class="connection-status-bar">
             <div id="realtime-connection-status" class="connection-status disconnected">
                 State Updates: Disconnected
@@ -223,11 +231,11 @@
                 Metadata: Disconnected
             </div>
         </div>
-        
+
         <div class="shadow-document-error"></div>
         <div class="metadata-error"></div>
         <div class="reconnection-message"></div>
-        
+
         <div class="dashboard-container">
             <!-- Device Metadata Card -->
             <div class="dashboard-card">
@@ -259,7 +267,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Device State Card -->
             <div class="dashboard-card">
                 <h3>Current Status</h3>
@@ -268,7 +276,7 @@
                         <div class="temperature-value">--°F</div>
                         <div class="text-center">Current Temperature</div>
                     </div>
-                    
+
                     <div class="data-item">
                         <span class="data-label">Water Pressure:</span>
                         <span class="pressure-value data-value">-- PSI</span>
@@ -291,27 +299,31 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="tabs">
             <div class="tab-nav">
-                <button class="tab-btn active" data-tab="history">History</button>
-                <button class="tab-btn" data-tab="maintenance">Maintenance</button>
+<button class="tab-btn" data-tab="history">Temperature History</button>
+
+                <button class="tab-btn active" data-tab="maintenance">Maintenance</button>
                 <button class="tab-btn" data-tab="settings">Settings</button>
+
             </div>
-            
+
             <div class="tab-content">
-                <div id="history" class="tab-panel active">
+
+                <div id="history" class="tab-panel">
                     <h3>Temperature History</h3>
-                    <div id="temperature-chart"></div>
+                    <div id="temperature-history">
+                        <p>No temperature history found.</p>
+                    </div>
                 </div>
-                
-                <div id="maintenance" class="tab-panel">
+                <div id="maintenance" class="tab-panel active">
                     <h3>Maintenance History</h3>
                     <div id="maintenance-records">
                         <p>No maintenance records found.</p>
                     </div>
                 </div>
-                
+
                 <div id="settings" class="tab-panel">
                     <h3>Device Settings</h3>
                     <form id="device-settings-form">
@@ -341,28 +353,28 @@
         document.addEventListener('DOMContentLoaded', function() {
             // Get device ID from the page
             const deviceId = document.getElementById('device-id-title').textContent.trim();
-            
+
             // Initialize handlers
             const metadataHandler = new DeviceMetadataHandler(deviceId);
             const shadowHandler = new ShadowDocumentHandler(deviceId);
-            
+
             // Tab functionality
             const tabButtons = document.querySelectorAll('.tab-btn');
             const tabPanels = document.querySelectorAll('.tab-panel');
-            
+
             tabButtons.forEach(button => {
                 button.addEventListener('click', () => {
                     // Remove active class from all buttons and panels
                     tabButtons.forEach(btn => btn.classList.remove('active'));
                     tabPanels.forEach(panel => panel.classList.remove('active'));
-                    
+
                     // Add active class to clicked button and corresponding panel
                     button.classList.add('active');
                     const panelId = button.dataset.tab;
                     document.getElementById(panelId).classList.add('active');
                 });
             });
-            
+
             // Settings form submission
             const settingsForm = document.getElementById('device-settings-form');
             if (settingsForm) {
@@ -370,7 +382,7 @@
                     e.preventDefault();
                     const targetTemp = document.getElementById('target-temperature').value;
                     const ecoMode = document.getElementById('eco-mode').checked;
-                    
+
                     // Update desired state via API call
                     fetch(`/api/device/${deviceId}/shadow/desired`, {
                         method: 'POST',

@@ -16,9 +16,9 @@ class AuthTokenProvider {
    */
   getToken() {
     // Check for development mode
-    const isDevelopment = window.location.hostname === 'localhost' || 
+    const isDevelopment = window.location.hostname === 'localhost' ||
                           window.location.hostname === '127.0.0.1';
-    
+
     // In development, use test token if no auth token exists
     if (isDevelopment) {
       const storedToken = localStorage.getItem(this.tokenKey);
@@ -29,7 +29,7 @@ class AuthTokenProvider {
       }
       return storedToken;
     }
-    
+
     // In production, just return the stored token
     return localStorage.getItem(this.tokenKey) || null;
   }

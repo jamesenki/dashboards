@@ -22,7 +22,7 @@ The BDD tests require support for advanced analytics, real-time operations, and 
 
 We will implement a multi-database architecture with specialized databases for different data domains:
 
-1. **Device Registry Database** (PostgreSQL): 
+1. **Device Registry Database** (PostgreSQL):
    - Focus: Device identity, authentication, and basic status
    - Characteristics: Strong consistency, transactional, relational
    - Schema: Optimized for identity and security operations
@@ -79,7 +79,7 @@ Our tests will define the expected behavior for each data domain, and our implem
 
 ## Alternative Options Considered
 
-1. **Single PostgreSQL Database with Partitioning**: 
+1. **Single PostgreSQL Database with Partitioning**:
    - Pros: Simpler operations, transactional consistency across all data
    - Cons: Performance compromises, scale limitations, complexity in query optimization
    - Rejected because: Cannot optimize for all access patterns simultaneously

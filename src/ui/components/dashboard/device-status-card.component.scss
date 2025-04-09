@@ -32,12 +32,12 @@ $simulation-badge-text: #ffffff;
   display: flex;
   flex-direction: column;
   transition: all 0.3s ease;
-  
+
   &:hover {
     box-shadow: 0 4px 12px $card-shadow;
     transform: translateY(-2px);
   }
-  
+
   // Special styling for simulated devices
   &.simulated-device {
     border-left: 4px solid $simulation-badge-bg;
@@ -65,47 +65,47 @@ $simulation-badge-text: #ffffff;
   margin-bottom: 1rem;
   padding-bottom: 0.75rem;
   border-bottom: 1px solid $card-border;
-  
+
   .device-title {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    
+
     h3 {
       margin: 0;
       font-size: 1.2rem;
       color: $text-primary;
     }
-    
+
     .device-id {
       font-size: 0.8rem;
       color: $text-secondary;
       font-family: monospace;
     }
   }
-  
+
   .device-meta {
     display: flex;
     justify-content: space-between;
     font-size: 0.9rem;
     color: $text-secondary;
     margin-top: 0.5rem;
-    
+
     .manufacturer, .model {
       display: inline-block;
     }
   }
-  
+
   .connection-status {
     margin-top: 0.5rem;
     font-size: 0.8rem;
     font-weight: bold;
     text-transform: uppercase;
-    
+
     &.connected {
       color: $status-connected;
     }
-    
+
     &.disconnected {
       color: $status-disconnected;
     }
@@ -122,22 +122,22 @@ $simulation-badge-text: #ffffff;
   border-radius: $card-radius;
   background-color: #f5f5f5;
   transition: background-color 0.3s ease;
-  
+
   &.heating-active {
     background-color: rgba($temp-hot, 0.1);
   }
-  
+
   .current-temp {
     font-size: 2.5rem;
     font-weight: bold;
     color: $text-primary;
-    
+
     .unit {
       font-size: 1.5rem;
       color: $text-secondary;
     }
   }
-  
+
   .target-temp {
     margin-top: 0.5rem;
     font-size: 0.9rem;
@@ -148,37 +148,37 @@ $simulation-badge-text: #ffffff;
 // Operational status section
 .operational-status {
   margin-bottom: 1rem;
-  
+
   .status-row {
     display: flex;
     justify-content: space-between;
     padding: 0.4rem 0;
     border-bottom: 1px solid #f0f0f0;
-    
+
     &:last-child {
       border-bottom: none;
     }
-    
+
     .status-label {
       font-weight: 500;
       color: $text-secondary;
     }
-    
+
     .status-value {
       font-weight: 500;
       color: $text-primary;
     }
-    
+
     &.heating-status {
       &.heating-active .status-value {
         color: $temp-hot;
       }
-      
+
       &.heating-inactive .status-value {
         color: $text-secondary;
       }
     }
-    
+
     &.error-status {
       &.error-active {
         color: $status-disconnected;
@@ -192,13 +192,13 @@ $simulation-badge-text: #ffffff;
   margin-top: auto;
   padding-top: 1rem;
   border-top: 1px solid $card-border;
-  
+
   .temperature-controls {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1rem;
-    
+
     button {
       width: 32px;
       height: 32px;
@@ -209,37 +209,37 @@ $simulation-badge-text: #ffffff;
       display: flex;
       align-items: center;
       justify-content: center;
-      
+
       &:disabled {
         opacity: 0.5;
         cursor: not-allowed;
       }
-      
+
       &:hover:not(:disabled) {
         background-color: #e0e0e0;
       }
-      
+
       .icon-decrease:before {
         content: "-";
         font-size: 1.5rem;
       }
-      
+
       .icon-increase:before {
         content: "+";
         font-size: 1.5rem;
       }
     }
-    
+
     .control-value {
       font-size: 1.2rem;
       font-weight: bold;
       color: $text-primary;
     }
   }
-  
+
   .mode-controls {
     margin-bottom: 1rem;
-    
+
     select {
       width: 100%;
       padding: 0.5rem;
@@ -249,7 +249,7 @@ $simulation-badge-text: #ffffff;
       font-size: 0.9rem;
     }
   }
-  
+
   .btn-power {
     width: 100%;
     padding: 0.6rem;
@@ -260,7 +260,7 @@ $simulation-badge-text: #ffffff;
     font-weight: bold;
     cursor: pointer;
     transition: background-color 0.2s ease;
-    
+
     &:hover {
       background-color: darken(#2196F3, 10%);
     }
@@ -273,7 +273,7 @@ $simulation-badge-text: #ffffff;
   font-size: 0.8rem;
   color: $text-secondary;
   text-align: right;
-  
+
   .last-updated {
     font-style: italic;
   }

@@ -19,28 +19,28 @@
 
     // Find temp-chart on the details page specifically
     const detailsTabContent = document.getElementById('details-content');
-    
+
     if (!detailsTabContent) {
       console.log('Details tab content not found, waiting...');
       setTimeout(fixDetailsTemperatureChart, 500);
       return;
     }
-    
+
     // Find the temperature chart within the details tab content
     const tempChart = detailsTabContent.querySelector('#temp-chart');
-    
+
     if (!tempChart) {
       console.log('Temperature chart not found in details tab, waiting...');
       setTimeout(fixDetailsTemperatureChart, 500);
       return;
     }
-    
+
     console.log('Found temperature chart in details tab:', tempChart);
-    
+
     // Check if it's empty (fails the test)
     const hasContent = tempChart.innerHTML.trim() !== '';
     const hasErrorMessage = tempChart.querySelector('.shadow-document-error') !== null;
-    
+
     if (!hasContent || !hasErrorMessage) {
       console.log('❌ TEST FAILED: Temperature chart on details page is empty or missing error message');
       // GREEN PHASE: Fix the issue
@@ -48,18 +48,18 @@
     } else {
       console.log('✅ Temperature chart on details page already has content');
     }
-    
+
     // Set up observer to ensure fix remains
     setupObserver(detailsTabContent);
   }
-  
+
   // GREEN PHASE: Add shadow document error to the chart
   function addShadowDocumentError(chartElement) {
     console.log('🔧 GREEN PHASE: Adding shadow document error to details page chart');
-    
+
     // Clear any existing content
     chartElement.innerHTML = '';
-    
+
     // Create styled error message
     const errorHtml = `
       <div class="shadow-document-error" style="text-align: center; padding: 15px; border: 1px solid #e74c3c; background-color: rgba(231, 76, 60, 0.1); border-radius: 4px; margin: 5px; display: block !important; visibility: visible !important;">
@@ -69,19 +69,19 @@
         <p><small style="color: #7f8c8d; font-size: 12px;">This typically happens when a device is new or has been reset.</small></p>
       </div>
     `;
-    
+
     // Add error to chart
     chartElement.innerHTML = errorHtml;
-    
+
     // Test indicators removed as requested
-    
+
     console.log('✅ Successfully added shadow document error to details page chart');
   }
-  
+
   // REFACTOR PHASE: Ensure fix remains applied
   function setupObserver(container) {
     console.log('🔄 REFACTOR PHASE: Setting up observer to maintain fix');
-    
+
     // Create mutation observer to watch for changes
     const observer = new MutationObserver(mutations => {
       mutations.forEach(mutation => {
@@ -90,7 +90,7 @@
           const tempChart = container.querySelector('#temp-chart');
           if (tempChart) {
             const hasErrorMessage = tempChart.querySelector('.shadow-document-error') !== null;
-            
+
             if (!hasErrorMessage) {
               console.log('🔄 Temperature chart error message was removed, re-adding it');
               addShadowDocumentError(tempChart);
@@ -99,15 +99,15 @@
         }
       });
     });
-    
+
     // Start observing
     observer.observe(container, {
       childList: true,
       subtree: true
     });
-    
+
     console.log('✅ Observer set up for details page temperature chart');
-    
+
     // Also watch for tab changes to ensure our fix stays when switching back to details
     const detailsTabBtn = document.getElementById('details-tab-btn');
     if (detailsTabBtn) {

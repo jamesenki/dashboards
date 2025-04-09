@@ -1,6 +1,6 @@
 /**
  * WebSocket and API Diagnostics Tool
- * 
+ *
  * This utility helps diagnose issues with WebSocket connections and API responses
  * for the IoTSphere application.
  */
@@ -30,27 +30,27 @@ class WebSocketDiagnostics {
      */
     async runAllTests() {
         console.log('Starting WebSocket and API diagnostics...');
-        
+
         // Clear previous results
         this.results = {
             websocketChecks: [],
             apiChecks: [],
             uiChecks: []
         };
-        
+
         // Check token availability
         this.checkTokenAvailability();
-        
+
         // Test WebSocket endpoints
         await this.testDeviceStateWebSocket();
         await this.testTelemetryWebSocket();
-        
+
         // Test API endpoints
         await this.testHistoryEndpoints();
-        
+
         // Check UI elements
         this.checkUIElements();
-        
+
         // Display results
         this.displayResults();
     }
@@ -62,15 +62,15 @@ class WebSocketDiagnostics {
         try {
             const token = window.authTokenProvider ? window.authTokenProvider.getToken() : null;
             const hasToken = !!token;
-            
+
             this.results.websocketChecks.push({
                 name: 'Auth Token Available',
                 success: hasToken,
-                details: hasToken ? 
-                    `Token is available ${token.substring(0, 15)}...` : 
+                details: hasToken ?
+                    `Token is available ${token.substring(0, 15)}...` :
                     'No authentication token found'
             });
-            
+
             console.log(`Auth token available: ${hasToken}`);
         } catch (error) {
             this.results.websocketChecks.push({
@@ -89,84 +89,84 @@ class WebSocketDiagnostics {
             // Create a temporary WebSocket
             const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
             const token = window.authTokenProvider ? window.authTokenProvider.getToken() : null;
-            
+
             // Build URL with token
             const url = new URL(`${protocol}//${window.location.host}/ws/devices/${this.deviceId}/state`);
             if (token) {
                 url.searchParams.append('token', token);
             }
-            
+
             console.log(`Testing state WebSocket: ${url.toString()}`);
-            
+
             // Create WebSocket and set timeout
             const socket = new WebSocket(url);
             let messageReceived = false;
             let connectionSuccessful = false;
-            
+
             // Set a timeout to abort the test
             const timeout = setTimeout(() => {
                 if (socket.readyState === WebSocket.OPEN) {
                     socket.close();
                 }
-                
+
                 this.results.websocketChecks.push({
                     name: 'Device State WebSocket',
                     success: connectionSuccessful,
-                    details: connectionSuccessful ? 
-                        (messageReceived ? 'Connected and received state message' : 'Connected but no state message received') : 
+                    details: connectionSuccessful ?
+                        (messageReceived ? 'Connected and received state message' : 'Connected but no state message received') :
                         'Failed to establish connection or timed out'
                 });
-                
+
                 resolve();
             }, 5000);
-            
+
             // Connection opened
             socket.addEventListener('open', event => {
                 connectionSuccessful = true;
                 console.log('State WebSocket connection established');
-                
+
                 // Request state
                 socket.send(JSON.stringify({
                     type: 'get_state'
                 }));
             });
-            
+
             // Listen for messages
             socket.addEventListener('message', event => {
                 messageReceived = true;
                 console.log('State message received:', event.data);
-                
+
                 // If we got a message, we can resolve early
                 clearTimeout(timeout);
-                
+
                 this.results.websocketChecks.push({
                     name: 'Device State WebSocket',
                     success: true,
                     details: `Connected and received message: ${event.data.substring(0, 50)}...`
                 });
-                
+
                 socket.close();
                 resolve();
             });
-            
+
             // Connection closed or error
             socket.addEventListener('close', event => {
                 if (!connectionSuccessful) {
                     console.log(`State WebSocket connection closed with code: ${event.code}`);
-                    
+
                     if (!messageReceived) {
                         this.results.websocketChecks.push({
                             name: 'Device State WebSocket',
                             success: false,
                             details: `Connection closed with code: ${event.code}`
                         });
-                        
+
                         clearTimeout(timeout);
                         resolve();
                     }
                 }
             });
-            
+
             // Connection error
             socket.addEventListener('error', error => {
                 console.error('State WebSocket error:', error);
@@ -182,80 +182,80 @@ class WebSocketDiagnostics {
             // Create a temporary WebSocket
             const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
             const token = window.authTokenProvider ? window.authTokenProvider.getToken() : null;
-            
+
             // Build URL with token and simulate flag
             const url = new URL(`${protocol}//${window.location.host}/ws/devices/${this.deviceId}/telemetry`);
             if (token) {
                 url.searchParams.append('token', token);
             }
             url.searchParams.append('simulate', 'true');
-            
+
             console.log(`Testing telemetry WebSocket: ${url.toString()}`);
-            
+
             // Create WebSocket and set timeout
             const socket = new WebSocket(url);
             let messageReceived = false;
             let connectionSuccessful = false;
-            
+
             // Set a timeout to abort the test
             const timeout = setTimeout(() => {
                 if (socket.readyState === WebSocket.OPEN) {
                     socket.close();
                 }
-                
+
                 this.results.websocketChecks.push({
                     name: 'Telemetry WebSocket',
                     success: connectionSuccessful,
-                    details: connectionSuccessful ? 
-                        (messageReceived ? 'Connected and received telemetry message' : 'Connected but no telemetry message received') : 
+                    details: connectionSuccessful ?
+                        (messageReceived ? 'Connected and received telemetry message' : 'Connected but no telemetry message received') :
                         'Failed to establish connection or timed out'
                 });
-                
+
                 resolve();
             }, 5000);
-            
+
             // Connection opened
             socket.addEventListener('open', event => {
                 connectionSuccessful = true;
                 console.log('Telemetry WebSocket connection established');
             });
-            
+
             // Listen for messages
             socket.addEventListener('message', event => {
                 messageReceived = true;
                 console.log('Telemetry message received:', event.data);
-                
+
                 // If we got a message, we can resolve early
                 clearTimeout(timeout);
-                
+
                 this.results.websocketChecks.push({
                     name: 'Telemetry WebSocket',
                     success: true,
                     details: `Connected and received message: ${event.data.substring(0, 50)}...`
                 });
-                
+
                 socket.close();
                 resolve();
             });
-            
+
             // Connection closed or error
             socket.addEventListener('close', event => {
                 if (!connectionSuccessful) {
                     console.log(`Telemetry WebSocket connection closed with code: ${event.code}`);
-                    
+
                     if (!messageReceived) {
                         this.results.websocketChecks.push({
                             name: 'Telemetry WebSocket',
                             success: false,
                             details: `Connection closed with code: ${event.code}`
                         });
-                        
+
                         clearTimeout(timeout);
                         resolve();
                     }
                 }
             });
-            
+
             // Connection error
             socket.addEventListener('error', error => {
                 console.error('Telemetry WebSocket error:', error);
@@ -274,19 +274,19 @@ class WebSocketDiagnostics {
             `/api/manufacturer/water-heaters/${this.deviceId}/history/pressure-flow?days=7`,
             `/api/manufacturer/water-heaters/${this.deviceId}/history/dashboard?days=7`
         ];
-        
+
         const results = await Promise.all(endpoints.map(async endpoint => {
             try {
                 const response = await fetch(`${endpoint}&_t=${Date.now()}`);
                 const success = response.ok;
                 let details = `Status: ${response.status}`;
-                
+
                 if (success) {
                     try {
                         const data = await response.json();
                         const hasData = !!data;
                         details += ` | Data received: ${hasData ? 'Yes' : 'No'}`;
-                        
+
                         if (hasData) {
                             if (endpoint.includes('temperature')) {
                                 // Check temperature data format
@@ -295,7 +295,7 @@ class WebSocketDiagnostics {
                                 details += ` | Has labels: ${hasLabels} | Has values: ${hasValues}`;
                             }
                         }
-                        
+
                         return {
                             name: `History API: ${endpoint.split('/').pop().split('?')[0]}`,
                             success,
@@ -324,7 +324,7 @@ class WebSocketDiagnostics {
                 };
             }
         }));
-        
+
         this.results.apiChecks.push(...results);
     }
 
@@ -339,7 +339,7 @@ class WebSocketDiagnostics {
             const isConnected = statusClass.includes('connected');
             const isDisconnected = statusClass.includes('disconnected');
             const statusText = statusElement.textContent.trim();
-            
+
             this.results.uiChecks.push({
                 name: 'Connection Status Element',
                 success: true,
@@ -352,14 +352,14 @@ class WebSocketDiagnostics {
                 details: 'Element not found in DOM'
             });
         }
-        
+
         // Check temperature history element
         const tempHistoryElement = document.querySelector('.temperature-history-chart');
         if (tempHistoryElement) {
             const hasCanvas = !!tempHistoryElement.querySelector('canvas');
             const hasNoData = !!tempHistoryElement.querySelector('.no-data');
             const isEmpty = tempHistoryElement.innerHTML.trim() === '';
-            
+
             this.results.uiChecks.push({
                 name: 'Temperature History Element',
                 success: true,
@@ -379,7 +379,7 @@ class WebSocketDiagnostics {
      */
     displayResults() {
         console.log('Diagnostic Results:', this.results);
-        
+
         // Create results container if it doesn't exist
         let resultsContainer = document.getElementById('diagnostics-results');
         if (!resultsContainer) {
@@ -403,13 +403,13 @@ class WebSocketDiagnostics {
             `;
             document.body.appendChild(resultsContainer);
         }
-        
+
         // Generate HTML for results
         const html = `
             <h2 style="margin-top: 0;">IoTSphere Diagnostics</h2>
             <p>Device ID: ${this.deviceId}</p>
             <p>Time: ${new Date().toLocaleTimeString()}</p>
-            
+
             <h3>WebSocket Checks</h3>
             <ul style="padding-left: 20px;">
                 ${this.results.websocketChecks.map(check => `
@@ -421,7 +421,7 @@ class WebSocketDiagnostics {
                     </li>
                 `).join('')}
             </ul>
-            
+
             <h3>API Checks</h3>
             <ul style="padding-left: 20px;">
                 ${this.results.apiChecks.map(check => `
@@ -433,7 +433,7 @@ class WebSocketDiagnostics {
                     </li>
                 `).join('')}
             </ul>
-            
+
             <h3>UI Element Checks</h3>
             <ul style="padding-left: 20px;">
                 ${this.results.uiChecks.map(check => `
@@ -445,7 +445,7 @@ class WebSocketDiagnostics {
                     </li>
                 `).join('')}
             </ul>
-            
+
             <button id="close-diagnostics" style="
                 padding: 5px 10px;
                 background: #f3f3f3;
@@ -455,9 +455,9 @@ class WebSocketDiagnostics {
                 margin-top: 10px;
             ">Close</button>
         `;
-        
+
         resultsContainer.innerHTML = html;
-        
+
         // Add close button handler
         document.getElementById('close-diagnostics').addEventListener('click', () => {
             resultsContainer.remove();
@@ -491,7 +491,7 @@ function addDiagnosticsButton() {
     button.addEventListener('click', () => {
         window.webSocketDiagnostics.runAllTests();
     });
-    
+
     document.body.appendChild(button);
 }
 

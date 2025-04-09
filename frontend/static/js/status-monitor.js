@@ -1,6 +1,6 @@
 /**
  * Status Monitor - Direct fix for status duplication
- * 
+ *
  * This module uses a MutationObserver to detect and prevent status duplication
  * in the operations dashboard. It's a fail-safe mechanism that works even if
  * the other fixes don't catch all cases.
@@ -10,7 +10,7 @@ class StatusMonitor {
     constructor() {
         this.initialized = false;
         this.observer = null;
-        
+
         // Initialize when DOM is ready
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', () => this.initialize());
@@ -18,42 +18,42 @@ class StatusMonitor {
             this.initialize();
         }
     }
-    
+
     initialize() {
         if (this.initialized) return;
         console.log('📊 Status Monitor: Initializing...');
-        
+
         // Set up mutation observer configuration
-        const config = { 
-            childList: true, 
-            subtree: true 
+        const config = {
+            childList: true,
+            subtree: true
         };
-        
+
         // Create a mutation observer to watch for status duplication
         this.observer = new MutationObserver((mutations) => {
             // Check for status container changes
             const statusContainerMutations = mutations.filter(mutation => {
-                return mutation.target.classList && 
-                       (mutation.target.classList.contains('status-container') || 
+                return mutation.target.classList &&
+                       (mutation.target.classList.contains('status-container') ||
                         mutation.target.closest('.status-container'));
             });
-            
+
             if (statusContainerMutations.length > 0) {
                 this.checkForDuplicates();
             }
         });
-        
+
         // Start observing once the operations tab is activated
         this.waitForOperationsTab();
-        
+
         // Also check periodically as a backup
         setInterval(() => this.checkForDuplicates(), 2000);
-        
+
         // Mark as initialized
         this.initialized = true;
         console.log('📊 Status Monitor: Initialized successfully');
     }
-    
+
     waitForOperationsTab() {
         const operationsTab = document.getElementById('operations-tab-btn');
         if (operationsTab) {
@@ -74,17 +74,17 @@ class StatusMonitor {
             setTimeout(() => this.waitForOperationsTab(), 500);
         }
     }
-    
+
     checkForDuplicates() {
         const statusContainer = document.querySelector('.status-container');
         if (!statusContainer) return;
-        
+
         // Get all status items
         const statusItems = statusContainer.querySelectorAll('.status-item');
         if (statusItems.length <= 5) return; // No duplication if 5 or fewer items
-        
+
         console.warn(`📊 Status Monitor: Detected ${statusItems.length} status items (expected 5) - fixing duplication`);
-        
+
         // Get a map of status item texts to identify duplicates
         const statusMap = new Map();
         statusItems.forEach(item => {
@@ -98,11 +98,11 @@ class StatusMonitor {
                 }
             }
         });
-        
+
         // Remove duplicate items
         const duplicates = statusContainer.querySelectorAll('.duplicate-status-item');
         duplicates.forEach(item => item.remove());
-        
+
         console.log(`📊 Status Monitor: Removed ${duplicates.length} duplicate status items`);
     }
 }

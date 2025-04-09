@@ -23,7 +23,7 @@ $card-shadow: rgba(0, 0, 0, 0.1);
   margin-bottom: 1.5rem;
   overflow: hidden;
   position: relative;
-  
+
   &.loading {
     min-height: 200px;
   }
@@ -36,14 +36,14 @@ $card-shadow: rgba(0, 0, 0, 0.1);
   align-items: center;
   padding: 1rem 1.5rem;
   border-bottom: 1px solid $border-color;
-  
+
   h3 {
     margin: 0;
     font-size: 1.2rem;
     color: $text-primary;
     display: flex;
     align-items: center;
-    
+
     &::before {
       content: "";
       display: inline-block;
@@ -54,11 +54,11 @@ $card-shadow: rgba(0, 0, 0, 0.1);
       margin-right: 0.5rem;
     }
   }
-  
+
   .header-actions {
     display: flex;
     align-items: center;
-    
+
     .refresh-btn {
       background: none;
       border: none;
@@ -67,11 +67,11 @@ $card-shadow: rgba(0, 0, 0, 0.1);
       margin-right: 1rem;
       padding: 0.4rem;
       border-radius: 4px;
-      
+
       &:hover {
         background-color: rgba($secondary-color, 0.1);
       }
-      
+
       .icon-refresh::before {
         content: "↻";
         font-size: 1.1rem;
@@ -84,32 +84,32 @@ $card-shadow: rgba(0, 0, 0, 0.1);
 .filter-toggle {
   display: flex;
   align-items: center;
-  
+
   .toggle-switch {
     position: relative;
     display: inline-block;
     width: 36px;
     height: 20px;
     margin-right: 0.5rem;
-    
+
     input {
       opacity: 0;
       width: 0;
       height: 0;
-      
+
       &:checked + .toggle-slider {
         background-color: $primary-color;
       }
-      
+
       &:checked + .toggle-slider:before {
         transform: translateX(16px);
       }
-      
+
       &:focus + .toggle-slider {
         box-shadow: 0 0 1px $primary-color;
       }
     }
-    
+
     .toggle-slider {
       position: absolute;
       cursor: pointer;
@@ -120,7 +120,7 @@ $card-shadow: rgba(0, 0, 0, 0.1);
       background-color: $text-secondary;
       border-radius: 20px;
       transition: .4s;
-      
+
       &:before {
         position: absolute;
         content: "";
@@ -134,7 +134,7 @@ $card-shadow: rgba(0, 0, 0, 0.1);
       }
     }
   }
-  
+
   .toggle-label {
     font-size: 0.8rem;
     color: $text-secondary;
@@ -155,7 +155,7 @@ $card-shadow: rgba(0, 0, 0, 0.1);
   justify-content: center;
   z-index: 10;
   padding: 2rem;
-  
+
   .loading-spinner {
     width: 40px;
     height: 40px;
@@ -165,12 +165,12 @@ $card-shadow: rgba(0, 0, 0, 0.1);
     animation: spin 1s linear infinite;
     margin-bottom: 1rem;
   }
-  
+
   .loading-text {
     font-size: 0.9rem;
     color: $text-secondary;
   }
-  
+
   @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
@@ -184,12 +184,12 @@ $card-shadow: rgba(0, 0, 0, 0.1);
   flex-direction: column;
   align-items: center;
   text-align: center;
-  
+
   .error-message {
     color: $error-color;
     margin-bottom: 1rem;
   }
-  
+
   .btn-retry {
     background-color: $primary-color;
     color: white;
@@ -198,7 +198,7 @@ $card-shadow: rgba(0, 0, 0, 0.1);
     padding: 0.5rem 1rem;
     cursor: pointer;
     font-size: 0.9rem;
-    
+
     &:hover {
       background-color: darken($primary-color, 10%);
     }
@@ -209,22 +209,22 @@ $card-shadow: rgba(0, 0, 0, 0.1);
 .no-alerts {
   padding: 3rem 1.5rem;
   text-align: center;
-  
+
   .empty-state {
     display: flex;
     flex-direction: column;
     align-items: center;
-    
+
     .icon-check-circle {
       font-size: 2.5rem;
       color: $success-color;
       margin-bottom: 1rem;
-      
+
       &::before {
         content: "✓";
       }
     }
-    
+
     p {
       font-size: 1rem;
       color: $text-secondary;
@@ -237,49 +237,49 @@ $card-shadow: rgba(0, 0, 0, 0.1);
 .alerts-list {
   max-height: 500px;
   overflow-y: auto;
-  
+
   .alert-item {
     padding: 1rem 1.5rem;
     border-bottom: 1px solid $border-color;
     border-left: 4px solid $info-color;
     transition: background-color 0.2s ease;
-    
+
     &:last-child {
       border-bottom: none;
     }
-    
+
     &:hover {
       background-color: rgba($bg-color, 0.5);
     }
-    
+
     // Severity variations
     &.severity-info {
       border-left-color: $info-color;
-      
+
       .alert-severity {
         color: $info-color;
       }
     }
-    
+
     &.severity-warning {
       border-left-color: $warning-color;
-      
+
       .alert-severity {
         color: $warning-color;
       }
     }
-    
+
     &.severity-error {
       border-left-color: $error-color;
-      
+
       .alert-severity {
         color: $error-color;
       }
     }
-    
+
     &.severity-critical {
       border-left-color: $critical-color;
-      
+
       .alert-severity {
         color: $critical-color;
       }
@@ -293,16 +293,16 @@ $card-shadow: rgba(0, 0, 0, 0.1);
   justify-content: space-between;
   align-items: center;
   margin-bottom: 0.5rem;
-  
+
   .alert-severity {
     display: flex;
     align-items: center;
     font-weight: 500;
     font-size: 0.9rem;
-    
+
     .icon-alert {
       margin-right: 0.3rem;
-      
+
       &::before {
         content: "!";
         display: inline-block;
@@ -317,7 +317,7 @@ $card-shadow: rgba(0, 0, 0, 0.1);
       }
     }
   }
-  
+
   .alert-time {
     font-size: 0.8rem;
     color: $text-secondary;
@@ -327,19 +327,19 @@ $card-shadow: rgba(0, 0, 0, 0.1);
 // Alert body
 .alert-body {
   margin-bottom: 1rem;
-  
+
   .alert-type {
     font-weight: 500;
     margin-bottom: 0.3rem;
     color: $text-primary;
   }
-  
+
   .alert-description {
     font-size: 0.9rem;
     color: $text-primary;
     margin-bottom: 0.5rem;
   }
-  
+
   .alert-metrics {
     display: flex;
     flex-wrap: wrap;
@@ -347,18 +347,18 @@ $card-shadow: rgba(0, 0, 0, 0.1);
     background-color: rgba($bg-color, 0.5);
     padding: 0.5rem;
     border-radius: 4px;
-    
+
     .metric-item {
       display: flex;
       margin-right: 1rem;
       margin-bottom: 0.3rem;
       font-size: 0.8rem;
-      
+
       .metric-name {
         color: $text-secondary;
         margin-right: 0.3rem;
       }
-      
+
       .metric-value {
         color: $text-primary;
         font-weight: 500;
@@ -372,17 +372,17 @@ $card-shadow: rgba(0, 0, 0, 0.1);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  
+
   .confidence-score {
     display: flex;
     align-items: center;
-    
+
     .label {
       font-size: 0.8rem;
       color: $text-secondary;
       margin-right: 0.5rem;
     }
-    
+
     .confidence-bar {
       width: 100px;
       height: 6px;
@@ -390,25 +390,25 @@ $card-shadow: rgba(0, 0, 0, 0.1);
       border-radius: 3px;
       overflow: hidden;
       margin-right: 0.5rem;
-      
+
       .confidence-fill {
         height: 100%;
         background-color: $primary-color;
         border-radius: 3px;
       }
     }
-    
+
     .confidence-value {
       font-size: 0.8rem;
       color: $text-primary;
       font-weight: 500;
     }
   }
-  
+
   .alert-actions {
     display: flex;
     align-items: center;
-    
+
     .btn-acknowledge {
       background: none;
       border: 1px solid $primary-color;
@@ -418,13 +418,13 @@ $card-shadow: rgba(0, 0, 0, 0.1);
       font-size: 0.8rem;
       cursor: pointer;
       transition: all 0.2s ease;
-      
+
       &:hover {
         background-color: $primary-color;
         color: white;
       }
     }
-    
+
     .acknowledged-badge, .resolved-badge {
       display: flex;
       align-items: center;
@@ -433,11 +433,11 @@ $card-shadow: rgba(0, 0, 0, 0.1);
       border-radius: 4px;
       background-color: rgba($success-color, 0.1);
       color: $success-color;
-      
+
       i {
         margin-right: 0.3rem;
       }
-      
+
       &.resolved-badge {
         margin-left: 0.5rem;
       }
@@ -450,12 +450,12 @@ $card-shadow: rgba(0, 0, 0, 0.1);
   .alert-footer {
     flex-direction: column;
     align-items: flex-start;
-    
+
     .confidence-score {
       margin-bottom: 0.8rem;
     }
   }
-  
+
   .header-actions {
     .filter-toggle {
       .toggle-label {

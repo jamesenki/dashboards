@@ -29,25 +29,27 @@ DEFAULT_PORT = 8000
 DEFAULT_PATH = "/ws/devices/wh-d94a7707/state"
 
 
-async def test_websocket_connection(host=DEFAULT_HOST, port=DEFAULT_PORT, path=DEFAULT_PATH, token=TEST_TOKEN):
+async def test_websocket_connection(
+    host=DEFAULT_HOST, port=DEFAULT_PORT, path=DEFAULT_PATH, token=TEST_TOKEN
+):
     """Test WebSocket connection with authentication token."""
     # Build the WebSocket URL with token
     query_params = {"token": token}
     query_string = urlencode(query_params)
     ws_url = f"ws://{host}:{port}{path}?{query_string}"
-    
+
     logger.info(f"Connecting to: {ws_url}")
-    
+
     try:
         # Connect to the WebSocket server
         async with websockets.connect(ws_url, ping_interval=None) as websocket:
             logger.info("Connection established successfully!")
-            
+
             # Send a test message
             test_message = {"type": "test", "message": "Hello from the test client!"}
             await websocket.send(json.dumps(test_message))
             logger.info(f"Sent message: {test_message}")
-            
+
             # Receive messages for 5 seconds
             for _ in range(5):
                 try:
@@ -62,25 +64,29 @@ async def test_websocket_connection(host=DEFAULT_HOST, port=DEFAULT_PORT, path=D
                         logger.info(f"Received raw message: {response}")
                 except asyncio.TimeoutError:
                     logger.info("No message received (timeout)")
-            
+
             logger.info("Test completed successfully")
             return True
-            
+
     except ConnectionRefusedError:
         logger.error(f"Connection refused to {ws_url}")
-        logger.error("Make sure the server is running and listening on the specified host and port")
-        
+        logger.error(
+            "Make sure the server is running and listening on the specified host and port"
+        )
+
     except websockets.exceptions.InvalidStatusCode as e:
         status_code = getattr(e, "status_code", "unknown")
-        logger.error(f"Server rejected WebSocket connection with status code: {status_code}")
+        logger.error(
+            f"Server rejected WebSocket connection with status code: {status_code}"
+        )
         if status_code == 403:
             logger.error("Authentication failed - check your token")
         elif status_code == 404:
             logger.error("Endpoint not found - check the path")
-            
+
     except Exception as e:
         logger.error(f"Error during WebSocket connection: {e}")
-    
+
     return False
 
 
@@ -91,25 +97,25 @@ async def test_multiple_endpoints():
         "/ws/devices/wh-d94a7707/state",
         "/ws/devices/wh-d94a7707/telemetry",
         "/ws/devices/wh-d94a7707/alerts",
-        "/ws/broadcast"
+        "/ws/broadcast",
     ]
-    
+
     successes = 0
     failures = 0
-    
+
     for path in endpoints:
         logger.info(f"Testing endpoint: {path}")
         result = await test_websocket_connection(path=path)
-        
+
         if result:
             successes += 1
         else:
             failures += 1
-        
+
         logger.info("------------------------------")
-    
+
     logger.info(f"Test Summary: {successes} successes, {failures} failures")
-    
+
     return successes, failures
 
 

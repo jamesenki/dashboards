@@ -19,7 +19,7 @@ class MockDeviceStatusCard {
     this.simulated = false;
     this.temperatureUnit = 'F';
     this.selected = false;
-    
+
     // Initialize telemetry with default values
     this.telemetry = {
       temperature_current: null,
@@ -30,10 +30,10 @@ class MockDeviceStatusCard {
       mode: 'standby',
       last_updated: null
     };
-    
+
     // Mock DOM elements that would normally be in shadowRoot
     this._mockElements = {
-      '.device-card': { 
+      '.device-card': {
         addEventListener: jest.fn(),
         classList: { toggle: jest.fn() }
       },
@@ -45,14 +45,14 @@ class MockDeviceStatusCard {
       '.flow-value': { textContent: '' },
       '.last-updated': { textContent: '' }
     };
-    
+
     // Mock DOM methods
     this.querySelector = jest.fn(selector => this._mockElements[selector] || null);
     this.render = jest.fn();
     this.updateTelemetryUI = jest.fn();
     this.attachShadow = jest.fn();
   }
-  
+
   // Attribute change handler from the custom element
   attributeChangedCallback(name, oldValue, newValue) {
     switch (name) {
@@ -77,33 +77,33 @@ class MockDeviceStatusCard {
     }
     this.render();
   }
-  
+
   // Mock of the actual updateTelemetry method
   updateTelemetry(data) {
     Object.assign(this.telemetry, data);
     this.updateTelemetryUI();
   }
-  
+
   // Mock of the actual updateDevice method
   updateDevice(device) {
     if (device.device_id !== this.deviceId) {
       return;
     }
-    
+
     this.deviceName = device.display_name;
     this.manufacturer = device.manufacturer;
     this.model = device.model;
     this.connectionStatus = device.connection_status;
     this.simulated = device.simulated;
-    
+
     // Update telemetry from device state if available
     if (device.state) {
       Object.assign(this.telemetry, device.state);
     }
-    
+
     this.render();
   }
-  
+
   // Helper methods
   formatTemperature(temp) {
     if (temp === null || isNaN(temp)) {
@@ -111,7 +111,7 @@ class MockDeviceStatusCard {
     }
     return `${temp}°${this.temperatureUnit}`;
   }
-  
+
   formatMode(mode) {
     if (!mode) {
       return 'Unknown';
@@ -132,16 +132,16 @@ afterAll(() => {
 
 describe('DeviceStatusCard Component', () => {
   let element;
-  
+
   beforeEach(() => {
     // Create a new instance of our mock component
     element = new MockDeviceStatusCard();
   });
-  
+
   afterEach(() => {
     jest.clearAllMocks();
   });
-  
+
   /**
    * @current
    * @test Device properties are correctly initialized
@@ -154,14 +154,14 @@ describe('DeviceStatusCard Component', () => {
     expect(element.connectionStatus).toBe('disconnected');
     expect(element.simulated).toBe(false);
     expect(element.temperatureUnit).toBe('F');
-    
+
     // Verify telemetry is initialized with null/default values
     expect(element.telemetry.temperature_current).toBeNull();
     expect(element.telemetry.temperature_setpoint).toBeNull();
     expect(element.telemetry.heating_status).toBe(false);
     expect(element.telemetry.mode).toBe('standby');
   });
-  
+
   /**
    * @current
    * @test Attribute changes update properties
@@ -174,7 +174,7 @@ describe('DeviceStatusCard Component', () => {
     element.attributeChangedCallback('model', '', 'WH2000');
     element.attributeChangedCallback('connection-status', 'disconnected', 'connected');
     element.attributeChangedCallback('simulated', 'false', 'true');
-    
+
     // Verify properties were updated
     expect(element.deviceId).toBe('device123');
     expect(element.deviceName).toBe('Test Water Heater');
@@ -182,11 +182,11 @@ describe('DeviceStatusCard Component', () => {
     expect(element.model).toBe('WH2000');
     expect(element.connectionStatus).toBe('connected');
     expect(element.simulated).toBe(true);
-    
+
     // Verify render was called for each attribute change
     expect(element.render).toHaveBeenCalledTimes(6);
   });
-  
+
   /**
    * @current
    * @test Telemetry updates are handled properly
@@ -194,7 +194,7 @@ describe('DeviceStatusCard Component', () => {
   test('should update telemetry data and UI when telemetry is received', () => {
     // Setup spies
     jest.spyOn(element, 'updateTelemetryUI');
-    
+
     // Call updateTelemetry with new data
     const telemetryData = {
       temperature_current: 120.5,
@@ -205,9 +205,9 @@ describe('DeviceStatusCard Component', () => {
       mode: 'heating',
       last_updated: '2023-06-15T14:30:45Z'
     };
-    
+
     element.updateTelemetry(telemetryData);
-    
+
     // Verify telemetry state was updated
     expect(element.telemetry.temperature_current).toBe(120.5);
     expect(element.telemetry.temperature_setpoint).toBe(125.0);
@@ -216,11 +216,11 @@ describe('DeviceStatusCard Component', () => {
     expect(element.telemetry.water_flow_gpm).toBe(2.5);
     expect(element.telemetry.mode).toBe('heating');
     expect(element.telemetry.last_updated).toBe('2023-06-15T14:30:45Z');
-    
+
     // Verify UI update was called
     expect(element.updateTelemetryUI).toHaveBeenCalledTimes(1);
   });
-  
+
   /**
    * @current
    * @test Device update handled properly
@@ -228,7 +228,7 @@ describe('DeviceStatusCard Component', () => {
   test('should update device properties when device data is received', () => {
     // Setup initial component state
     element.deviceId = 'device123';
-    
+
     // Call updateDevice with new data
     const deviceData = {
       device_id: 'device123',
@@ -241,23 +241,23 @@ describe('DeviceStatusCard Component', () => {
         temperature_current: 130.0
       }
     };
-    
+
     element.updateDevice(deviceData);
-    
+
     // Verify device properties were updated
     expect(element.deviceName).toBe('Updated Water Heater');
     expect(element.manufacturer).toBe('NewCo');
     expect(element.model).toBe('SuperHeater');
     expect(element.connectionStatus).toBe('connected');
     expect(element.simulated).toBe(true);
-    
+
     // Verify telemetry was updated from state
     expect(element.telemetry.temperature_current).toBe(130.0);
-    
+
     // Verify render was called
     expect(element.render).toHaveBeenCalledTimes(1);
   });
-  
+
   /**
    * @current
    * @test Device update ignored for different device id
@@ -266,22 +266,22 @@ describe('DeviceStatusCard Component', () => {
     // Setup initial component state
     element.deviceId = 'device123';
     element.deviceName = 'Original Name';
-    
+
     // Call updateDevice with data for a different device
     const deviceData = {
       device_id: 'different_device',
       display_name: 'Different Device'
     };
-    
+
     element.updateDevice(deviceData);
-    
+
     // Verify device properties were not updated
     expect(element.deviceName).toBe('Original Name');
-    
+
     // Verify render was not called
     expect(element.render).not.toHaveBeenCalled();
   });
-  
+
   /**
    * @current
    * @test Temperature formatting
@@ -289,18 +289,18 @@ describe('DeviceStatusCard Component', () => {
   test('should format temperature values correctly', () => {
     // Test with regular value
     expect(element.formatTemperature(75.5)).toBe('75.5°F');
-    
+
     // Test with null
     expect(element.formatTemperature(null)).toBe('—');
-    
+
     // Test with NaN
     expect(element.formatTemperature(NaN)).toBe('—');
-    
+
     // Change temperature unit and test again
     element.temperatureUnit = 'C';
     expect(element.formatTemperature(25.0)).toBe('25°C');
   });
-  
+
   /**
    * @current
    * @test Mode formatting

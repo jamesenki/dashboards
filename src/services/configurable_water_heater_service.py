@@ -16,6 +16,9 @@ from src.models.water_heater import (
     WaterHeaterReading,
     WaterHeaterStatus,
 )
+from src.repositories.asset_registry_water_heater_repository import (
+    AssetRegistryWaterHeaterRepository,
+)
 from src.repositories.water_heater_repository import (
     MockWaterHeaterRepository,
     SQLiteWaterHeaterRepository,
@@ -118,8 +121,25 @@ class ConfigurableWaterHeaterService:
             db_type = db_settings.DB_TYPE
             fallback_enabled = db_settings.FALLBACK_TO_MOCK
 
+            # Check if we should use asset registry (preferred)
+            use_asset_registry = os.environ.get(
+                "USE_ASSET_REGISTRY", "true"
+            ).lower() in [
+                "true",
+                "1",
+                "yes",
+            ]
+
+            # Use Asset Registry if enabled (default)
+            if use_asset_registry and not (use_mock_data_env or use_mock_data_config):
+                logger.info("Using Asset Registry for water heaters")
+                ConfigurableWaterHeaterService.is_using_mock_data = False
+                ConfigurableWaterHeaterService.data_source_reason = (
+                    "Using Asset Registry and Shadow Service"
+                )
+                self.repository = AssetRegistryWaterHeaterRepository()
             # Use mock data if explicitly configured or set by environment variable
-            if use_mock_data_env or use_mock_data_config:
+            elif use_mock_data_env or use_mock_data_config:
                 logger.warning(
                     f"Using mock data repository for water heaters because: \n"
                     f"  - USE_MOCK_DATA env var: {use_mock_data_env} \n"
@@ -245,17 +265,37 @@ class ConfigurableWaterHeaterService:
                     ).lower() in ["false", "0", "no"]
 
                     if fallback_enabled and not explicit_fallback_disabled:
-                        logger.warning(
-                            f"Database connection failed. Falling back to mock data.\n"
-                            f"  - Error: {e}\n"
-                            f"  - Fallback enabled in config: {fallback_enabled}\n"
-                            f"  - DATABASE_FALLBACK_ENABLED env var: {os.environ.get('DATABASE_FALLBACK_ENABLED', 'Not set')}"
-                        )
-                        ConfigurableWaterHeaterService.is_using_mock_data = True
-                        ConfigurableWaterHeaterService.data_source_reason = (
-                            f"Database connection failed: {str(e)[:100]}"
-                        )
-                        self.repository = MockWaterHeaterRepository()
+                        # Check if we should use asset registry as fallback (preferred over mock data)
+                        use_asset_registry = os.environ.get(
+                            "USE_ASSET_REGISTRY", "true"
+                        ).lower() in [
+                            "true",
+                            "1",
+                            "yes",
+                        ]
+
+                        if use_asset_registry:
+                            logger.info(
+                                f"Database connection failed. Falling back to Asset Registry.\n"
+                                f"  - Error: {e}\n"
+                                f"  - Fallback enabled in config: {fallback_enabled}\n"
+                                f"  - DATABASE_FALLBACK_ENABLED env var: {os.environ.get('DATABASE_FALLBACK_ENABLED', 'Not set')}"
+                            )
+                            ConfigurableWaterHeaterService.is_using_mock_data = False
+                            ConfigurableWaterHeaterService.data_source_reason = f"Using Asset Registry after database connection failed: {str(e)[:100]}"
+                            self.repository = AssetRegistryWaterHeaterRepository()
+                        else:
+                            logger.warning(
+                                f"Database connection failed. Falling back to mock data.\n"
+                                f"  - Error: {e}\n"
+                                f"  - Fallback enabled in config: {fallback_enabled}\n"
+                                f"  - DATABASE_FALLBACK_ENABLED env var: {os.environ.get('DATABASE_FALLBACK_ENABLED', 'Not set')}"
+                            )
+                            ConfigurableWaterHeaterService.is_using_mock_data = True
+                            ConfigurableWaterHeaterService.data_source_reason = (
+                                f"Database connection failed: {str(e)[:100]}"
+                            )
+                            self.repository = MockWaterHeaterRepository()
                     else:
                         logger.error(
                             f"Database connection failed and fallback is disabled:\n"

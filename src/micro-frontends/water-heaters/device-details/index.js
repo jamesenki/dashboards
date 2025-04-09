@@ -1,6 +1,6 @@
 /**
  * Water Heater Device Details Micro-Frontend
- * 
+ *
  * Entry point for the Water Heater Device Details micro-frontend
  * Part of the device-agnostic IoTSphere platform
  */
@@ -24,7 +24,7 @@ customElements.define('anomaly-alerts', AnomalyAlerts);
 
 /**
  * Mount the Water Heater Device Details micro-frontend
- * 
+ *
  * @param {HTMLElement} mountPoint - DOM element to mount the micro-frontend
  * @param {Object} context - Context provided by the shell application
  * @returns {Object} - Interface for controlling the mounted micro-frontend
@@ -32,25 +32,25 @@ customElements.define('anomaly-alerts', AnomalyAlerts);
 export async function mount(mountPoint, context) {
   // Extract context
   const { deviceId, deviceType, auth, eventBus } = context;
-  
+
   if (!deviceId) {
     mountPoint.innerHTML = `<div class="error-container">No device ID provided</div>`;
     return { unmount: () => { mountPoint.innerHTML = ''; } };
   }
-  
+
   // Create services with dependency injection
-  const deviceService = new DeviceService({ 
+  const deviceService = new DeviceService({
     endpoint: '/api/devices',
     deviceType: 'water-heater',
     auth
   });
-  
+
   const telemetryService = new TelemetryService({
     endpoint: '/api/telemetry',
     wsEndpoint: 'ws://localhost:8000/ws/telemetry',
     auth
   });
-  
+
   // Set loading state
   mountPoint.innerHTML = `
     <div class="water-heater-device-details loading">
@@ -60,17 +60,17 @@ export async function mount(mountPoint, context) {
       </div>
     </div>
   `;
-  
+
   try {
     // Load device data
     const device = await deviceService.getDevice(deviceId);
-    
+
     // Set up the micro-frontend structure
     mountPoint.innerHTML = `
       <div class="water-heater-device-details">
         <!-- Header with basic device info -->
         <device-header id="device-header"></device-header>
-        
+
         <!-- Main content with tabs -->
         <div class="device-content">
           <div class="device-tabs">
@@ -79,7 +79,7 @@ export async function mount(mountPoint, context) {
             <button class="tab-button" data-tab="events">Events</button>
             <button class="tab-button" data-tab="settings">Settings</button>
           </div>
-          
+
           <div class="tab-content">
             <!-- Overview tab (default view) -->
             <div class="tab-pane active" id="overview-tab">
@@ -93,17 +93,17 @@ export async function mount(mountPoint, context) {
                 </div>
               </div>
             </div>
-            
+
             <!-- Performance tab -->
             <div class="tab-pane" id="performance-tab">
               <device-performance id="device-performance"></device-performance>
             </div>
-            
+
             <!-- Events tab -->
             <div class="tab-pane" id="events-tab">
               <device-events id="device-events"></device-events>
             </div>
-            
+
             <!-- Settings tab -->
             <div class="tab-pane" id="settings-tab">
               <div class="settings-container">
@@ -115,7 +115,7 @@ export async function mount(mountPoint, context) {
         </div>
       </div>
     `;
-    
+
     // Get references to the custom elements
     const deviceHeader = mountPoint.querySelector('#device-header');
     const deviceTelemetry = mountPoint.querySelector('#device-telemetry');
@@ -123,15 +123,15 @@ export async function mount(mountPoint, context) {
     const devicePerformance = mountPoint.querySelector('#device-performance');
     const deviceEvents = mountPoint.querySelector('#device-events');
     const anomalyAlerts = mountPoint.querySelector('#anomaly-alerts');
-    
+
     // Initialize tab navigation
     initializeTabs(mountPoint);
-    
+
     // Initialize components with device data and services
     deviceHeader.initialize({ device, deviceService });
     deviceTelemetry.initialize({ device, deviceService, telemetryService });
-    deviceControls.initialize({ 
-      device, 
+    deviceControls.initialize({
+      device,
       deviceService,
       onDeviceControlChange: (controlType, value) => {
         // Publish event when device controls change
@@ -142,11 +142,11 @@ export async function mount(mountPoint, context) {
         });
       }
     });
-    
+
     devicePerformance.initialize({ device, deviceId, telemetryService });
     deviceEvents.initialize({ device, deviceId });
     anomalyAlerts.initialize({ device, deviceId });
-    
+
     // Subscribe to real-time updates
     const deviceUpdateSubscription = eventBus.subscribe('device:updated', (updatedDevice) => {
       if (updatedDevice.device_id === deviceId) {
@@ -156,7 +156,7 @@ export async function mount(mountPoint, context) {
         deviceControls.updateDevice(updatedDevice);
       }
     });
-    
+
     // Return interface for controlling the micro-frontend
     return {
       /**
@@ -165,21 +165,21 @@ export async function mount(mountPoint, context) {
       unmount: () => {
         // Unsubscribe from EventBus
         deviceUpdateSubscription();
-        
+
         // Clean up services
         if (deviceTelemetry) deviceTelemetry.cleanup();
         if (telemetryService) telemetryService.disconnect();
-        
+
         // Clear the mount point
         mountPoint.innerHTML = '';
       },
-      
+
       /**
        * Refresh the micro-frontend data
        */
       refresh: async () => {
         const refreshedDevice = await deviceService.getDevice(deviceId);
-        
+
         deviceHeader.updateDevice(refreshedDevice);
         deviceTelemetry.updateDevice(refreshedDevice);
         deviceControls.updateDevice(refreshedDevice);
@@ -190,7 +190,7 @@ export async function mount(mountPoint, context) {
     };
   } catch (error) {
     console.error(`Error loading device details for ${deviceId}:`, error);
-    
+
     // Display error state
     mountPoint.innerHTML = `
       <div class="water-heater-device-details error">
@@ -201,7 +201,7 @@ export async function mount(mountPoint, context) {
         </div>
       </div>
     `;
-    
+
     // Add retry button handler
     const retryButton = mountPoint.querySelector('#retry-button');
     if (retryButton) {
@@ -210,7 +210,7 @@ export async function mount(mountPoint, context) {
         mount(mountPoint, context);
       });
     }
-    
+
     return {
       unmount: () => {
         mountPoint.innerHTML = '';
@@ -229,15 +229,15 @@ export async function mount(mountPoint, context) {
 function initializeTabs(container) {
   const tabButtons = container.querySelectorAll('.tab-button');
   const tabPanes = container.querySelectorAll('.tab-pane');
-  
+
   tabButtons.forEach(button => {
     button.addEventListener('click', () => {
       const targetTab = button.getAttribute('data-tab');
-      
+
       // Deactivate all tabs
       tabButtons.forEach(btn => btn.classList.remove('active'));
       tabPanes.forEach(pane => pane.classList.remove('active'));
-      
+
       // Activate target tab
       button.classList.add('active');
       container.querySelector(`#${targetTab}-tab`).classList.add('active');

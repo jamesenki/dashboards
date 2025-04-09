@@ -15,6 +15,7 @@ class DeviceType(str, Enum):
     VENDING_MACHINE = "vending_machine"
     ELECTRIC_VEHICLE = "electric_vehicle"
     PLANT_EQUIPMENT = "plant_equipment"
+    THERMOSTAT = "thermostat"
 
 
 class DeviceStatus(str, Enum):

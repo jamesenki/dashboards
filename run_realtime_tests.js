@@ -31,7 +31,7 @@ function createTemporaryConfig() {
     path.join(__dirname, 'cucumber.js'),
     `module.exports = ${JSON.stringify(config, null, 2)};`
   );
-  
+
   console.log('Cucumber configuration created for real-time tests');
 }
 
@@ -41,7 +41,7 @@ function createTemporaryConfig() {
 function runTests() {
   const { execSync } = require('child_process');
   console.log('Running real-time update tests...');
-  
+
   try {
     // Execute cucumber-js with our configuration
     execSync('npx cucumber-js --profile default', { stdio: 'inherit' });

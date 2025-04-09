@@ -17,19 +17,19 @@ import { AnomalyAlertsComponent } from './components/dashboard/anomaly-alerts.co
 
 // Dashboard Routes
 const routes: Routes = [
-  { 
-    path: 'dashboard', 
+  {
+    path: 'dashboard',
     children: [
       { path: '', redirectTo: 'water-heaters', pathMatch: 'full' },
       { path: 'water-heaters', component: WaterHeaterDashboardComponent },
       { path: 'water-heaters/:id', component: DeviceDetailsComponent }
-    ] 
+    ]
   }
 ];
 
 /**
  * Dashboard Module
- * 
+ *
  * Contains all dashboard-related components for device monitoring and control.
  * This module is designed to be device-agnostic at its core, with device-specific
  * implementations extending the core functionality.

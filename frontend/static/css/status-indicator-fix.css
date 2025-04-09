@@ -3,7 +3,7 @@
  * Ensures that status indicators display properly without text overlay
  */
 
-/* 
+/*
  * Override any content inside status indicators
  * This prevents text from showing up inside the colored circle
  */

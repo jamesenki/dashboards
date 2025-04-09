@@ -4,7 +4,7 @@ import { WebSocketService, TelemetryMessage, EventMessage } from '../../services
 
 /**
  * DeviceStatusCard Component
- * 
+ *
  * Displays real-time status information for a single water heater device,
  * including temperature, heating status, and other key metrics.
  */
@@ -76,7 +76,7 @@ export class DeviceStatusCardComponent implements OnInit, OnDestroy {
     if (this.telemetrySubscription) {
       this.telemetrySubscription.unsubscribe();
     }
-    
+
     if (this.eventSubscription) {
       this.eventSubscription.unsubscribe();
     }
@@ -94,35 +94,35 @@ export class DeviceStatusCardComponent implements OnInit, OnDestroy {
       if (telemetry.data.temperature_current !== undefined) {
         this.currentTemperature = telemetry.data.temperature_current;
       }
-      
+
       if (telemetry.data.temperature_setpoint !== undefined) {
         this.targetTemperature = telemetry.data.temperature_setpoint;
       }
-      
+
       if (telemetry.data.heating_status !== undefined) {
         this.heatingStatus = telemetry.data.heating_status;
       }
-      
+
       if (telemetry.data.power_consumption_watts !== undefined) {
         this.powerConsumption = telemetry.data.power_consumption_watts;
       }
-      
+
       if (telemetry.data.water_flow_gpm !== undefined) {
         this.waterFlow = telemetry.data.water_flow_gpm;
       }
-      
+
       if (telemetry.data.mode !== undefined) {
         this.mode = telemetry.data.mode;
       }
-      
+
       if (telemetry.data.error_code !== undefined) {
         this.errorCode = telemetry.data.error_code;
       }
-      
+
       // Update connection status and timestamp
       this.connectionStatus = 'connected';
       this.lastUpdated = new Date();
-      
+
       // Track if data is simulated
       this.isSimulated = telemetry.simulated;
     }
@@ -137,20 +137,20 @@ export class DeviceStatusCardComponent implements OnInit, OnDestroy {
       case 'error_occurred':
         this.errorCode = event.details?.error_code || 'unknown';
         break;
-        
+
       case 'error_cleared':
         this.errorCode = null;
         break;
-        
+
       case 'mode_changed':
         this.mode = event.details?.mode || this.mode;
         break;
-        
+
       case 'connection_status_changed':
         this.connectionStatus = event.details?.status === 'connected' ? 'connected' : 'disconnected';
         break;
     }
-    
+
     // Track if event is from simulated device
     this.isSimulated = event.simulated;
   }
@@ -160,35 +160,35 @@ export class DeviceStatusCardComponent implements OnInit, OnDestroy {
    */
   updateState(state: any): void {
     if (!state) return;
-    
+
     if (state.temperature_current !== undefined) {
       this.currentTemperature = state.temperature_current;
     }
-    
+
     if (state.temperature_setpoint !== undefined) {
       this.targetTemperature = state.temperature_setpoint;
     }
-    
+
     if (state.heating_status !== undefined) {
       this.heatingStatus = state.heating_status;
     }
-    
+
     if (state.power_consumption_watts !== undefined) {
       this.powerConsumption = state.power_consumption_watts;
     }
-    
+
     if (state.water_flow_gpm !== undefined) {
       this.waterFlow = state.water_flow_gpm;
     }
-    
+
     if (state.mode !== undefined) {
       this.mode = state.mode;
     }
-    
+
     if (state.error_code !== undefined) {
       this.errorCode = state.error_code;
     }
-    
+
     if (state.simulated !== undefined) {
       this.isSimulated = state.simulated;
     }

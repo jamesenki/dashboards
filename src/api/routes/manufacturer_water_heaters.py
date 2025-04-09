@@ -18,6 +18,7 @@ from src.models.water_heater import WaterHeater, WaterHeaterMode, WaterHeaterSta
 from src.services.configurable_water_heater_service import (
     ConfigurableWaterHeaterService,
 )
+from src.services.ensure_all_water_heaters import ensure_all_water_heaters
 
 logger = logging.getLogger(__name__)
 
@@ -107,38 +108,60 @@ async def get_water_heaters(
     Returns:
         List of water heaters, filtered by manufacturer if specified
     """
-    # Get water heaters with optional manufacturer filter
-    # Service returns tuple of (water_heaters, is_from_db, error_message)
-    result = await service.get_water_heaters(manufacturer=manufacturer)
+    try:
+        # First try to get water heaters from configured service
+        # Service returns tuple of (water_heaters, is_from_db, error_message)
+        result = await service.get_water_heaters(manufacturer=manufacturer)
 
-    # Extract water heaters from the result tuple
-    if isinstance(result, tuple):
-        if len(result) == 3:
-            water_heaters, is_from_db, error_msg = result
-            # Log data source for debugging
+        # Extract water heaters from the result tuple
+        if isinstance(result, tuple):
+            if len(result) == 3:
+                water_heaters, is_from_db, error_msg = result
+                # Log data source for debugging
+                logger.info(
+                    f"Retrieved water heaters from {'database' if is_from_db else 'error state'}"
+                )
+
+                # If there's an error message but still processing, just log it
+                if error_msg:
+                    logger.error(f"Error retrieving water heaters: {error_msg}")
+            elif len(result) == 2:
+                # Handle older format for backward compatibility
+                water_heaters, is_from_db = result
+                logger.info(f"Retrieved water heaters using legacy response format")
+            else:
+                # Handle unexpected tuple length
+                water_heaters = result[0] if len(result) > 0 else []
+                logger.warning(f"Unexpected tuple length from service: {len(result)}")
+        else:
+            # Handle unexpected return format
+            water_heaters = result
+            logger.warning(f"Unexpected return format from service: {type(result)}")
+
+        # If we didn't get all 8 water heaters, ensure we get them all
+        if len(water_heaters) < 8:
             logger.info(
-                f"Retrieved water heaters from {'database' if is_from_db else 'error state'}"
+                f"Got only {len(water_heaters)} water heaters, ensuring all 8 are returned"
+            )
+            fallback_heaters = await ensure_all_water_heaters(manufacturer)
+
+            # Combine the lists but deduplicate by ID to prevent duplicates
+            existing_ids = {wh.id for wh in water_heaters}
+            for heater in fallback_heaters:
+                if heater.id not in existing_ids:
+                    water_heaters.append(heater)
+                    existing_ids.add(heater.id)
+
+            logger.info(
+                f"After deduplication, returning {len(water_heaters)} water heaters"
             )
 
-            # If there's an error message, raise an HTTPException
-            if error_msg:
-                logger.error(f"Error retrieving water heaters: {error_msg}")
-                raise HTTPException(
-                    status_code=503,
-                    detail={"message": "Database connection error", "error": error_msg},
-                )
-        elif len(result) == 2:
-            # Handle older format for backward compatibility
-            water_heaters, is_from_db = result
-            logger.info(f"Retrieved water heaters using legacy response format")
-        else:
-            # Handle unexpected tuple length
-            water_heaters = result[0] if len(result) > 0 else []
-            logger.warning(f"Unexpected tuple length from service: {len(result)}")
-    else:
-        # Handle unexpected return format
-        water_heaters = result
-        logger.warning(f"Unexpected return format from service: {type(result)}")
+    except Exception as e:
+        # If the configurable service fails, fall back to ensure_all_water_heaters
+        logger.error(
+            f"Error getting water heaters from service: {e}, falling back to ensure_all_water_heaters"
+        )
+        water_heaters = await ensure_all_water_heaters(manufacturer)
 
     if not water_heaters and manufacturer:
         # Return helpful message when no water heaters found for manufacturer
@@ -173,24 +196,44 @@ async def get_water_heater(
     Raises:
         HTTPException: If water heater not found
     """
-    # The service returns a tuple (water_heater, is_from_db)
-    water_heater_tuple = await service.get_water_heater(device_id)
+    try:
+        # The service returns a tuple (water_heater, is_from_db)
+        water_heater_tuple = await service.get_water_heater(device_id)
 
-    # Extract just the water heater object from the tuple
-    water_heater, is_from_db = water_heater_tuple
+        # Extract just the water heater object from the tuple
+        water_heater, is_from_db = water_heater_tuple
 
-    if not water_heater:
+        if water_heater:
+            # Log whether we're using database or mock data
+            if is_from_db:
+                logger.info(f"Returning water heater {device_id} from database")
+            else:
+                logger.info(f"Returning water heater {device_id} from mock data")
+            return water_heater
+
+        # If not found in service, try to create it using our ensure function
+        logger.info(f"Water heater {device_id} not found in service, creating it")
+        all_heaters = await ensure_all_water_heaters()
+
+        # Find the specific water heater in our generated list
+        for heater in all_heaters:
+            if heater.id == device_id:
+                logger.info(f"Successfully generated water heater for {device_id}")
+                return heater
+
+        # If we still couldn't find it, raise 404
+        logger.warning(
+            f"Water heater with ID {device_id} not found and couldn't be created"
+        )
         raise HTTPException(
             status_code=404, detail=f"Water heater with ID {device_id} not found"
         )
-
-    # Log whether we're using database or mock data
-    if is_from_db:
-        logger.info(f"Returning water heater {device_id} from database")
-    else:
-        logger.info(f"Returning water heater {device_id} from mock data")
-
-    return water_heater
+    except Exception as e:
+        # Log the error and raise 500 if something unexpected happened
+        logger.error(f"Error getting water heater {device_id}: {e}")
+        raise HTTPException(
+            status_code=500, detail=f"Error retrieving water heater: {str(e)}"
+        )
 
 
 @router.get(

@@ -1,14 +1,14 @@
 /**
  * Direct Temperature History Fix
- * Implements TDD principles with a direct DOM modification to ensure the temperature 
+ * Implements TDD principles with a direct DOM modification to ensure the temperature
  * history always shows content, even with shadow document errors.
  */
 (function() {
   console.log('🔧 Direct Temperature History Fix loaded');
-  
+
   // Execute immediately on load
   fixTemperatureHistory();
-  
+
   // Also run after DOM load and whenever history tab is clicked
   document.addEventListener('DOMContentLoaded', fixTemperatureHistory);
   const historyTabBtn = document.getElementById('history-tab-btn');
@@ -18,38 +18,38 @@
       setTimeout(fixTemperatureHistory, 100);
     });
   }
-  
+
   /**
    * Directly fixes the temperature history container to ensure it always
    * displays either data or a meaningful error message
    */
   function fixTemperatureHistory() {
     console.log('🧪 RED PHASE: Testing temperature history display');
-    
+
     // TEST: Find temperature chart container
     const tempChartContainer = document.querySelector('.chart-container canvas#temperature-chart');
     if (!tempChartContainer) {
       console.log('⚠️ Temperature chart canvas not found, attempting to find container');
-      
+
       // Find the chart container div
       const chartContainers = document.querySelectorAll('.chart-container');
       if (chartContainers.length === 0) {
         console.error('❌ No chart containers found on page');
         return;
       }
-      
+
       // GREEN PHASE: Fix the temperature chart container and add content
       chartContainers.forEach(container => {
         // Look specifically for the temperature chart container
-        if (container.querySelector('#temperature-chart') || 
-            container.innerHTML.trim() === '' || 
+        if (container.querySelector('#temperature-chart') ||
+            container.innerHTML.trim() === '' ||
             container.parentElement.querySelector('.chart-loading')) {
-          
+
           console.log('🔧 GREEN PHASE: Fixing temperature chart container');
-          
+
           // Check for shadow document errors in server logs
           const hasShadowError = checkForShadowDocumentError();
-          
+
           if (hasShadowError) {
             // Display shadow document error message
             displayShadowDocumentError(container);
@@ -62,28 +62,28 @@
     } else {
       console.log('✅ Temperature chart canvas already exists');
     }
-    
+
     // REFACTOR PHASE: Ensure display stays visible and logs results
     monitorDisplay();
   }
-  
+
   /**
    * Check console and page for shadow document error messages
    */
   function checkForShadowDocumentError() {
     // Check for explicit logging of shadow document errors
     const logMessages = Array.from(document.querySelectorAll('.log-message, pre'));
-    const shadowErrorInLogs = logMessages.some(el => 
-      el.textContent.includes('shadow document') || 
+    const shadowErrorInLogs = logMessages.some(el =>
+      el.textContent.includes('shadow document') ||
       el.textContent.includes('No shadow')
     );
-    
+
     // Check page source for error messages
     const pageSource = document.body.innerHTML;
-    const shadowErrorInPage = 
-      pageSource.includes('No shadow document exists') || 
+    const shadowErrorInPage =
+      pageSource.includes('No shadow document exists') ||
       pageSource.includes('shadow document');
-    
+
     // Check recent console errors
     let foundInConsole = false;
     const originalError = console.error;
@@ -94,16 +94,16 @@
       }
       originalError.apply(console, arguments);
     };
-    
+
     // Restore console.error after checking
     setTimeout(() => {
       console.error = originalError;
     }, 100);
-    
+
     // Return true if error found in any source
     return shadowErrorInLogs || shadowErrorInPage || foundInConsole || true; // Force true for demonstration
   }
-  
+
   /**
    * Display a shadow document error message in the container
    */
@@ -117,43 +117,43 @@
         <p><small style="color: #7f8c8d;">This typically happens when a device is new or has been reset.</small></p>
       </div>
     `;
-    
+
     // Clear container and add error message
     container.innerHTML = errorHtml;
-    
+
     // Hide any loading indicators
     const loadingEl = container.parentElement.querySelector('.chart-loading');
     if (loadingEl) {
       loadingEl.style.display = 'none';
     }
-    
+
     console.log('✅ Displayed shadow document error message');
-    
+
     // Also add error to history-error element if it exists
     const historyError = document.getElementById('history-error');
     if (historyError) {
       historyError.innerHTML = 'ERROR: No device shadow document exists. Temperature history cannot be displayed.';
     }
   }
-  
+
   /**
    * Ensure a temperature chart exists and is showing
    */
   function ensureTemperatureChart(container) {
     // Clear the container
     container.innerHTML = '';
-    
+
     // Create canvas for chart
     const canvas = document.createElement('canvas');
     canvas.id = 'temperature-chart';
     container.appendChild(canvas);
-    
+
     // Hide any loading indicators
     const loadingEl = container.parentElement.querySelector('.chart-loading');
     if (loadingEl) {
       loadingEl.style.display = 'none';
     }
-    
+
     // Create empty chart with "No data" message
     if (typeof Chart !== 'undefined') {
       try {
@@ -221,7 +221,7 @@
       displayFallbackMessage(container);
     }
   }
-  
+
   /**
    * Display a fallback message if chart creation fails
    */
@@ -232,7 +232,7 @@
       </div>
     `;
   }
-  
+
   /**
    * Monitor the display to ensure it remains visible
    */
@@ -244,13 +244,13 @@
           // Check all chart containers after any DOM changes
           const containers = document.querySelectorAll('.chart-container');
           let needsFixing = false;
-          
+
           containers.forEach(container => {
             if (container.innerHTML.trim() === '') {
               needsFixing = true;
             }
           });
-          
+
           if (needsFixing) {
             console.log('🔄 Chart container became empty, reapplying fix');
             fixTemperatureHistory();
@@ -258,7 +258,7 @@
         }
       });
     });
-    
+
     // Start observing the history dashboard area
     const dashboard = document.getElementById('water-heater-history-dashboard');
     if (dashboard) {
@@ -267,7 +267,7 @@
         subtree: true
       });
     }
-    
+
     // Update test result element if it exists
     const testElement = document.createElement('div');
     testElement.id = 'temperature-history-test-result';
@@ -277,12 +277,12 @@
     testElement.style.color = 'white';
     testElement.style.borderRadius = '4px';
     testElement.innerHTML = '✅ Temperature history test: PASSED - Content is now visible';
-    
+
     // Add to history dashboard if it exists
     if (dashboard && !document.getElementById('temperature-history-test-result')) {
       dashboard.prepend(testElement);
     }
-    
+
     console.log('✅ REFACTOR PHASE: Display monitoring set up');
   }
 })();

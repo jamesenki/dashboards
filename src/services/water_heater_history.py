@@ -28,69 +28,114 @@ class WaterHeaterHistoryService:
             Chart data for temperature history
         """
         try:
-            # Get the water heater
-            water_heater_service = WaterHeaterService()
-            heater = await water_heater_service.get_water_heater(heater_id)
+            # Import the shadow service here to avoid circular imports
+            from src.services.device_shadow import DeviceShadowService
 
-            if not heater or not hasattr(heater, "readings") or not heater.readings:
-                # Return mock data in development mode
-                if os.getenv("IOTSPHERE_ENV", "development") == "development":
-                    logging.info(f"Generating mock temperature history for {heater_id}")
-                    return self._generate_mock_temperature_history(heater_id, days)
-                return None
+            # Get device shadow service
+            shadow_service = DeviceShadowService()
 
-            # Filter readings to the specified time period
-            cutoff_date = datetime.now() - timedelta(days=days)
-            filtered_readings = [
-                r for r in heater.readings if r.timestamp >= cutoff_date
-            ]
+            try:
+                # Get the shadow and shadow history
+                shadow = await shadow_service.get_device_shadow(heater_id)
+                shadow_history = await shadow_service.get_shadow_history(
+                    heater_id, limit=100
+                )
 
-            if not filtered_readings:
-                # Return mock data in development mode if no readings found
-                if os.getenv("IOTSPHERE_ENV", "development") == "development":
-                    logging.info(
-                        f"No readings found, generating mock temperature history for {heater_id}"
+                # Filter history to the specified time period
+                cutoff_date = datetime.now() - timedelta(days=days)
+                filtered_history = []
+
+                for entry in shadow_history:
+                    entry_time = datetime.fromisoformat(
+                        entry["timestamp"].replace("Z", "+00:00")
                     )
-                    return self._generate_mock_temperature_history(heater_id, days)
-                return None
+                    if (
+                        entry_time >= cutoff_date
+                        and "reported" in entry
+                        and "temperature" in entry["reported"]
+                    ):
+                        filtered_history.append(
+                            {
+                                "temperature": entry["reported"]["temperature"],
+                                "timestamp": entry_time,
+                            }
+                        )
 
-            # Sort readings by timestamp
-            sorted_readings = sorted(filtered_readings, key=lambda r: r.timestamp)
+                # Sort by timestamp (oldest first)
+                filtered_history.sort(key=lambda x: x["timestamp"])
 
-            # Prepare chart data
-            labels = [r.timestamp.strftime("%m/%d %H:%M") for r in sorted_readings]
-            temperature_data = [r.temperature for r in sorted_readings]
+                # Return mock data if no shadow history found
+                if not filtered_history:
+                    if os.getenv("IOTSPHERE_ENV", "development") == "development":
+                        logging.info(
+                            f"No shadow history found, generating mock temperature history for {heater_id}"
+                        )
+                        return self._generate_mock_temperature_history(heater_id, days)
+                    return None
 
-            # Add target temperature as a separate line
-            target_temperature = getattr(
-                heater, "target_temperature", 120
-            )  # Default to 120 if not set
-            target_temperature_data = [target_temperature] * len(labels)
+                # Prepare chart data
+                labels = [
+                    entry["timestamp"].strftime("%m/%d %H:%M")
+                    for entry in filtered_history
+                ]
+                temperature_data = [entry["temperature"] for entry in filtered_history]
 
-            # Prepare datasets
-            datasets = [
-                {
-                    "label": "Temperature (°C)",
-                    "data": temperature_data,
-                    "borderColor": "#FF6384",
-                    "backgroundColor": "rgba(255, 99, 132, 0.2)",
-                    "borderWidth": 2,
-                    "fill": False,
-                    "tension": 0.4,
-                },
-                {
-                    "label": "Target Temperature (°C)",
-                    "data": target_temperature_data,
-                    "borderColor": "#36A2EB",
-                    "backgroundColor": "rgba(54, 162, 235, 0.2)",
-                    "borderWidth": 2,
-                    "borderDash": [5, 5],
-                    "fill": False,
-                    "tension": 0,
-                },
-            ]
+                # Add target temperature as a separate line
+                # Get target temperature from current shadow if available
+                target_temperature = 120  # Default
+                if (
+                    shadow
+                    and "desired" in shadow
+                    and "target_temperature" in shadow["desired"]
+                ):
+                    target_temperature = shadow["desired"]["target_temperature"]
+                elif (
+                    shadow
+                    and "reported" in shadow
+                    and "target_temperature" in shadow["reported"]
+                ):
+                    target_temperature = shadow["reported"]["target_temperature"]
 
-            return {"labels": labels, "datasets": datasets}
+                target_temperature_data = [target_temperature] * len(labels)
+
+                # Prepare datasets
+                datasets = [
+                    {
+                        "label": "Temperature (°C)",
+                        "data": temperature_data,
+                        "borderColor": "#FF6384",
+                        "backgroundColor": "rgba(255, 99, 132, 0.2)",
+                        "borderWidth": 2,
+                        "fill": False,
+                        "tension": 0.4,
+                    },
+                    {
+                        "label": "Target Temperature (°C)",
+                        "data": target_temperature_data,
+                        "borderColor": "#36A2EB",
+                        "backgroundColor": "rgba(54, 162, 235, 0.2)",
+                        "borderWidth": 2,
+                        "borderDash": [5, 5],
+                        "fill": False,
+                        "tension": 0,
+                    },
+                ]
+
+                # Format data for chart with source information
+                chart_data = {
+                    "labels": labels,
+                    "datasets": datasets,
+                    "source": "device_shadow",
+                }
+
+                return chart_data
+
+            except ValueError as e:
+                # Shadow document doesn't exist error - provide informative error
+                logging.error(f"Shadow document error for {heater_id}: {str(e)}")
+                # Re-raise to allow proper error handling in the API
+                raise ValueError(f"No shadow document exists for device {heater_id}")
+
         except Exception as e:
             logging.error(
                 f"Error getting temperature history for {heater_id}: {str(e)}"

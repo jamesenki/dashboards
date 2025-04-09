@@ -29,10 +29,10 @@ cat >> features/step_definitions/realtime_updates_steps.js << 'END'
 When('the WebSocket connection is interrupted', async function() {
   // Store the connection status for verification
   this.connectionStatus = 'disconnected';
-  
+
   // Log for TDD verification
   console.log('Simulating WebSocket connection interruption');
-  
+
   // Simulate WebSocket disconnection
   await this.page.evaluate(() => {
     // Update status indicator
@@ -41,7 +41,7 @@ When('the WebSocket connection is interrupted', async function() {
       statusIndicator.className = 'connection-status disconnected';
       statusIndicator.textContent = 'disconnected';
     }
-    
+
     // Show reconnection message
     const reconnectMsg = document.querySelector('.reconnect-message');
     if (reconnectMsg) {
@@ -54,14 +54,14 @@ When('the WebSocket connection is interrupted', async function() {
       msgElement.textContent = 'Attempting to reconnect...';
       document.body.appendChild(msgElement);
     }
-    
+
     // Dispatch event for components that listen for connection changes
-    const disconnectEvent = new CustomEvent('connection-changed', { 
+    const disconnectEvent = new CustomEvent('connection-changed', {
       detail: { status: 'disconnected' }
     });
     document.dispatchEvent(disconnectEvent);
   });
-  
+
   // Wait for UI to update
   await this.page.waitForTimeout(500);
 });
@@ -69,10 +69,10 @@ When('the WebSocket connection is interrupted', async function() {
 When('the connection is restored', async function() {
   // Store the connection status for verification
   this.connectionStatus = 'connected';
-  
+
   // Log for TDD verification
   console.log('Simulating connection restoration');
-  
+
   // Simulate WebSocket reconnection
   await this.page.evaluate(() => {
     // Update status indicator
@@ -81,19 +81,19 @@ When('the connection is restored', async function() {
       statusIndicator.className = 'connection-status connected';
       statusIndicator.textContent = 'connected';
     }
-    
+
     // Hide reconnection message if present
     const reconnectMsg = document.querySelector('.reconnect-message');
     if (reconnectMsg) {
       reconnectMsg.style.display = 'none';
     }
-    
+
     // Dispatch custom event for tests
     document.dispatchEvent(new CustomEvent('connection-status-changed', {
       detail: { status: 'connected' }
     }));
   });
-  
+
   // Wait for UI to update
   await this.page.waitForTimeout(500);
 });
@@ -101,13 +101,13 @@ When('the connection is restored', async function() {
 Then('the status indicator should show {string}', async function(status) {
   // Wait for status indicator to update
   await this.page.waitForSelector('.connection-status, .status-indicator', { timeout: 5000 });
-  
+
   // Check if status indicator shows the expected status
   const statusText = await this.page.evaluate(() => {
     const indicator = document.querySelector('.connection-status, .status-indicator');
     return indicator ? indicator.textContent.trim().toLowerCase() : null;
   });
-  
+
   expect(statusText).to.include(status.toLowerCase());
 });
 END

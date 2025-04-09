@@ -10,7 +10,7 @@ const glob = require('glob');
 function extractDefinedSteps(filePath) {
   const content = fs.readFileSync(filePath, 'utf8');
   const stepRegex = /(Given|When|Then)\(['"](.*?)['"],/g;
-  
+
   const steps = [];
   let match;
   while ((match = stepRegex.exec(content)) !== null) {
@@ -20,7 +20,7 @@ function extractDefinedSteps(filePath) {
       file: path.basename(filePath)
     });
   }
-  
+
   return steps;
 }
 
@@ -28,7 +28,7 @@ function extractDefinedSteps(filePath) {
 function extractFeatureSteps(filePath) {
   const content = fs.readFileSync(filePath, 'utf8');
   const stepRegex = /(Given|When|Then|And) (.*?)$/gm;
-  
+
   const steps = [];
   let match;
   while ((match = stepRegex.exec(content)) !== null) {
@@ -42,7 +42,7 @@ function extractFeatureSteps(filePath) {
       line: content.substring(0, match.index).split('\n').length
     });
   }
-  
+
   return steps;
 }
 
@@ -71,14 +71,14 @@ const undefinedSteps = [];
 featureSteps.forEach(featureStep => {
   // Skip background steps as they often have special handling
   if (featureStep.step.includes('Background:')) return;
-  
+
   // Convert And steps to their real type
   let stepType = featureStep.type;
   if (stepType === 'And') {
     // Assume the same type as the previous step (simplification)
     stepType = 'Then'; // default fallback
   }
-  
+
   // Check if step is defined
   const isDefined = definedSteps.some(definedStep => {
     // Check if pattern matches
@@ -89,11 +89,11 @@ featureSteps.forEach(featureStep => {
       .replace(/\{string\}/g, '"([^"]*)"')
       .replace(/\{word\}/g, '(\\S+)')
       .replace(/\{int\}/g, '(\\d+)');
-    
+
     const regex = new RegExp(`^${regexStr}$`);
     return regex.test(featureStep.step);
   });
-  
+
   if (!isDefined) {
     undefinedSteps.push(featureStep);
   }

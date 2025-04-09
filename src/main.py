@@ -2,9 +2,10 @@ import argparse
 import asyncio
 import logging
 import os
+import random
 import socket
 import sys
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 
 import uvicorn
@@ -42,6 +43,9 @@ from src.api.routes.compatibility_routes import (
     aquatherm_standalone_router,
     compatibility_router,
 )
+
+# Device Shadows API
+from src.api.routes.device_shadows import router as device_shadows_router
 from src.api.routes.manufacturer_history import router as manufacturer_history_router
 
 # Import brand-agnostic manufacturer prediction and history APIs
@@ -192,14 +196,34 @@ app.mount("/static", StaticFiles(directory=static_dir), name="static")
 templates = Jinja2Templates(directory=templates_dir)
 
 # Include WebSocket routes directly on the app (not under /api prefix)
-# Order is important - fixed routes must be registered first to take precedence
-app.include_router(
-    websocket_fix_router
-)  # Fixed WebSocket routes - these override the originals
-app.include_router(test_websocket_router)  # Test WebSocket routes
-app.include_router(websocket_debug_router)  # Debug WebSocket routes
-app.include_router(websocket_noauth_router)  # No-auth WebSocket routes
-app.include_router(websocket_router)  # Original WebSocket routes - lowest precedence
+# Selectively include WebSocket routers based on environment to reduce duplication
+
+# Get environment settings
+env = os.environ.get("APP_ENV", "development").lower()
+is_debug = os.environ.get("DEBUG_WEBSOCKET", "false").lower() == "true"
+
+# In production, only include the primary WebSocket router
+if env == "production" and not is_debug:
+    app.include_router(websocket_fix_router)  # Only use the fixed router in production
+    logging.info("Using production WebSocket routes (websocket_fix_router only)")
+else:
+    # In development/debug, include required routers in order of precedence
+    app.include_router(
+        websocket_fix_router
+    )  # Fixed WebSocket routes - highest precedence
+
+    if is_debug:
+        app.include_router(websocket_debug_router)  # Debug WebSocket routes
+        app.include_router(test_websocket_router)  # Test WebSocket routes
+        app.include_router(websocket_noauth_router)  # No-auth WebSocket routes
+        logging.info("Using extended WebSocket routes for development/testing")
+
+    # Original router always has lowest precedence (only used as fallback)
+    # This should eventually be removed when all clients use the fix router
+    app.include_router(websocket_router)
+    logging.info(
+        "Including legacy WebSocket routes (websocket_router) for compatibility"
+    )
 
 # Create API router with prefix
 api_router = APIRouter(prefix="/api")
@@ -221,7 +245,7 @@ api_router.include_router(ice_cream_machine_operations_api_router)
 api_router.include_router(vending_machine_realtime_operations_api_router)
 # Include database-backed operations router
 api_router.include_router(operations_db_router)
-# Include shadow document API
+# Commenting out old shadow document API to avoid route conflicts
 api_router.include_router(shadow_document_api_router)
 # Include debug routes
 api_router.include_router(debug_router)
@@ -329,9 +353,12 @@ app.include_router(db_water_heater_router)  # Database-backed API
 # DISABLED: Mock water heater router that injects mock data
 # app.include_router(mock_water_heater_router)  # Mock data API
 app.include_router(manufacturer_water_heater_router)  # New manufacturer-agnostic API
+app.include_router(water_heater_history_api_router)  # Water heater history endpoints
 app.include_router(water_heater_health_router)  # Water heater health endpoints
 app.include_router(health_api_router)  # Application health API
-app.include_router(web_router)
+app.include_router(device_shadows_router)  # Device shadows API
+app.include_router(web_router)  # Web routes
+# Note: device_shadow_router is included by setup_shadow_api
 
 # Set up logging for this module if not already configured
 import logging
@@ -342,29 +369,72 @@ logger = logging.getLogger(__name__)
 try:
     # Try to load the messaging infrastructure
     try:
-        from infrastructure.messaging.message_bus import create_message_bus
-        from infrastructure.websocket.websocket_service import WebSocketService
+        from src.infrastructure.messaging.message_bus import create_message_bus
 
-        # Create a local message bus for in-memory communication
+        # Create a local message bus for in-memory communication regardless
+        # This is needed for various services even if we don't use the infrastructure WebSocket
         message_bus = create_message_bus(bus_type="local")
+        app.state.message_bus = message_bus
 
-        # Initialize WebSocket service for real-time updates
-        ws_host = os.environ.get("WS_HOST", "0.0.0.0")
-        ws_port = int(
-            os.environ.get("WS_PORT", 9999)
-        )  # Changed to use a distinct port not likely to be in use
-        websocket_service = WebSocketService(
-            message_bus=message_bus, host=ws_host, port=ws_port
+        # CRITICAL: Add hard defense against duplicate WebSocket servers
+        # Always check if the port is already in use before attempting to start
+        import socket
+
+        # Get configured WebSocket port
+        websocket_port = int(os.environ.get("WEBSOCKET_PORT", "7777"))
+
+        # Test if port is available by attempting to bind to it
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        try:
+            # Set socket options to allow immediate reuse
+            sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            # Use a short timeout for quick response
+            sock.settimeout(0.5)
+            # Try to bind to the port
+            sock.bind(("0.0.0.0", websocket_port))
+            port_available = True
+            # If bind succeeds, immediately close the socket to free it
+            sock.close()
+        except socket.error:
+            port_available = False
+            sock.close()
+
+        # Check environment flag for explicit disabling
+        disable_infrastructure_websocket = (
+            os.environ.get("DISABLE_INFRASTRUCTURE_WEBSOCKET", "false").lower()
+            == "true"
         )
 
-        # Start WebSocket service
-        websocket_service.start()
+        # Disable if explicitly requested OR if port is already taken
+        if disable_infrastructure_websocket or not port_available:
+            if disable_infrastructure_websocket:
+                logger.warning(
+                    "Infrastructure WebSocket server disabled by configuration"
+                )
+            if not port_available:
+                logger.warning(
+                    f"WebSocket port {websocket_port} already in use - disabling infrastructure WebSocket server"
+                )
+            app.state.websocket_service = None
+        else:
+            # Import and initialize the infrastructure WebSocket service
+            from src.infrastructure.websocket.websocket_service import WebSocketService
 
-        # Store these services in the app state for access in other parts of the application
-        app.state.message_bus = message_bus
-        app.state.websocket_service = websocket_service
+            # Initialize WebSocket service for real-time updates
+            ws_host = os.environ.get("WS_HOST", "0.0.0.0")
+            ws_port = int(
+                os.environ.get("WS_PORT", 9999)
+            )  # Changed to use a distinct port not likely to be in use
+            websocket_service = WebSocketService(
+                message_bus=message_bus, host=ws_host, port=ws_port
+            )
 
-        logger.info("Real-time telemetry services initialized successfully")
+            # Start WebSocket service
+            websocket_service.start()
+
+            # Store service in app state
+            app.state.websocket_service = websocket_service
+            logger.info(f"Infrastructure WebSocket service started on port {ws_port}")
     except ImportError as import_err:
         logger.warning(f"Real-time telemetry services not available: {import_err}")
         logger.warning(
@@ -437,6 +507,17 @@ def setup_environment_configuration():
         action="store_true",
         help="Enable WebSocket debugging mode",
     )
+    parser.add_argument(
+        "--in-memory",
+        action="store_true",
+        help="Use in-memory storage instead of MongoDB (not recommended)",
+    )
+    parser.add_argument(
+        "--websocket-port",
+        type=int,
+        default=int(os.environ.get("WEBSOCKET_PORT", "8888")),
+        help="Port for WebSocket server",
+    )
     args, _ = parser.parse_known_args()
 
     # Set APP_ENV environment variable based on arguments
@@ -459,6 +540,34 @@ def setup_environment_configuration():
         "FORCED WebSocket debugging mode enabled for testing - remove in production"
     )
 
+    # SET UP MONGODB CONFIGURATION BY DEFAULT
+    if not args.in_memory:
+        # Use MongoDB for both Shadow Storage and Asset Registry
+        os.environ["SHADOW_STORAGE_TYPE"] = "mongodb"
+        os.environ["ASSET_REGISTRY_STORAGE"] = "mongodb"
+        os.environ["MONGODB_URI"] = os.environ.get(
+            "MONGODB_URI", "mongodb://localhost:27017/"
+        )
+        os.environ["MONGODB_DB_NAME"] = os.environ.get("MONGODB_DB_NAME", "iotsphere")
+
+        # Force use of real database repositories instead of mock
+        os.environ["USE_MOCK_DATA"] = "false"
+        os.environ["FORCE_DATABASE_REPOSITORY"] = "true"
+
+        logging.info(
+            "MongoDB configured for ALL services (Shadow Storage and Asset Registry)"
+        )
+        logging.info(f"MongoDB URI: {os.environ.get('MONGODB_URI')}")
+        logging.info(f"MongoDB Database: {os.environ.get('MONGODB_DB_NAME')}")
+    else:
+        logging.warning(
+            "USING IN-MEMORY STORAGE - DATA WILL NOT PERSIST BETWEEN RESTARTS"
+        )
+
+    # Set WebSocket port
+    os.environ["WEBSOCKET_PORT"] = str(args.websocket_port)
+    logging.info(f"WebSocket server will run on port {os.environ['WEBSOCKET_PORT']}")
+
     # Get project root directory
     project_root = Path(__file__).parent.parent
     config_dir = project_root / "config"
@@ -473,6 +582,71 @@ def setup_environment_configuration():
     logging.info(f"Application running in {env_provider.get_environment()} environment")
 
     return env_provider.get_environment()
+
+
+# Helper function to generate shadow history for a device
+async def generate_shadow_history(
+    shadow_service, device_id, base_temp, target_temp, days=7
+):
+    """
+    Generate shadow history entries for a water heater for the past week.
+
+    Args:
+        shadow_service: Instance of DeviceShadowService
+        device_id: ID of the device
+        base_temp: Base temperature value
+        target_temp: Target temperature value
+        days: Number of days of history to generate (default: 7)
+    """
+    logging.info(f"Generating shadow history for {device_id} for the past {days} days")
+
+    current_time = datetime.now()
+
+    # Generate one entry every 3 hours for the past week
+    hours = days * 24
+    for i in range(hours, 0, -3):  # Step by 3 hours
+        # Calculate timestamp (going backwards from now)
+        point_time = current_time - timedelta(hours=i)
+
+        # Add daily cycle (hotter during day, cooler at night)
+        hour = point_time.hour
+        time_factor = ((hour - 12) / 12) * 3  # ±3 degree variation by time of day
+
+        # Add some randomness
+        random_factor = random.uniform(-1.0, 1.0)
+
+        # Calculate temperature
+        temp = base_temp + time_factor + random_factor
+        temp = round(
+            max(min(temp, target_temp + 5), target_temp - 10), 1
+        )  # Keep within reasonable range
+
+        # Determine heater status based on temperature and target
+        if temp < target_temp - 1.0:
+            heater_status = "HEATING"
+        else:
+            heater_status = "STANDBY"
+
+        # Update shadow with historical data
+        reported_state = {
+            "temperature": temp,
+            "heater_status": heater_status,
+            "status": "ONLINE",  # Device status remains online
+            "timestamp": point_time.isoformat() + "Z",
+        }
+
+        # Update shadow (this will create history entries)
+        try:
+            await shadow_service.update_device_shadow(
+                device_id=device_id, reported_state=reported_state
+            )
+            logging.debug(
+                f"Added history entry for {device_id} at {point_time}: temp={temp}"
+            )
+        except Exception as e:
+            logging.error(f"Error adding history for {device_id} at {point_time}: {e}")
+
+    logging.info(f"Completed generating {days} days of history for {device_id}")
 
 
 @app.on_event("startup")
@@ -539,39 +713,410 @@ async def startup_event():
 
     # Try to initialize the rest of the real-time services if available
     try:
+        from src.infrastructure.device_shadow.storage_factory import (
+            create_shadow_storage_provider,
+        )
         from src.services.device_shadow import DeviceShadowService
+        from src.services.device_update_handler import DeviceUpdateHandler
+        from src.services.frontend_request_handler import FrontendRequestHandler
+        from src.services.shadow_notification_service import ShadowNotificationService
         from src.services.websocket_manager import WebSocketManager
 
-        # Initialize singleton instances
-        shadow_service = DeviceShadowService()
+        # FORCE MongoDB shadow storage regardless of environment for temperature history debugging
+        os.environ["SHADOW_STORAGE_TYPE"] = "mongodb"
+        logging.info(
+            "⚠️ FORCING MongoDB for shadow storage (debugging temperature history)"
+        )
+
+        try:
+            # Import MongoDB storage class directly to bypass factory fallback logic
+            from src.infrastructure.device_shadow.mongodb_shadow_storage import (
+                MongoDBShadowStorage,
+            )
+
+            # Create MongoDB storage directly with explicit configuration
+            mongo_uri = "mongodb://localhost:27017/"
+            db_name = "iotsphere"
+            logging.info(
+                f"⚠️ Creating MongoDB storage with URI: {mongo_uri}, DB: {db_name}"
+            )
+
+            # Create storage and initialize it
+            mongo_storage = MongoDBShadowStorage(mongo_uri=mongo_uri, db_name=db_name)
+
+            logging.info("⚠️ Initializing MongoDB connection directly...")
+            await mongo_storage.initialize()
+            logging.info("✅ MongoDB connection successful!")
+
+            # Set as storage provider
+            storage_provider = mongo_storage
+
+            # Verify shadow exists for wh-001
+            try:
+                device_id = "wh-001"
+                exists = await mongo_storage.shadow_exists(device_id)
+                logging.info(f"✅ Shadow exists for {device_id}: {exists}")
+
+                if exists:
+                    shadow = await mongo_storage.get_shadow(device_id)
+                    logging.info(
+                        f"✅ Retrieved shadow for {device_id}, version: {shadow.get('version')}"
+                    )
+                    history = shadow.get("history", [])
+                    logging.info(f"✅ Shadow has {len(history)} history entries")
+            except Exception as e:
+                logging.error(f"❌ Error checking shadow: {str(e)}")
+
+        except Exception as e:
+            logging.error(f"❌ MongoDB initialization failed: {str(e)}")
+            import traceback
+
+            logging.error(f"❌ Stack trace: {traceback.format_exc()}")
+            logging.warning(
+                "⚠️ Using fallback storage. Temperature history will not work correctly."
+            )
+
+            # Create the appropriate storage provider through factory (will use in-memory)
+            storage_provider = await create_shadow_storage_provider()
+
+        # Initialize core services
+        shadow_service = DeviceShadowService(storage_provider=storage_provider)
         ws_manager = WebSocketManager()
+        frontend_request_handler = FrontendRequestHandler(shadow_service=shadow_service)
+        device_update_handler = DeviceUpdateHandler(shadow_service=shadow_service)
+
+        # Initialize notification service
+        notification_service = ShadowNotificationService(
+            shadow_service=shadow_service, ws_manager=ws_manager
+        )
+        await notification_service.start()
 
         # Store instances in app state for access in routes
         app.state.shadow_service = shadow_service
         app.state.ws_manager = ws_manager
+        app.state.frontend_request_handler = frontend_request_handler
+        app.state.device_update_handler = device_update_handler
+        app.state.shadow_notification_service = notification_service
 
-        # Create device shadows for test devices if in development
+        # Set up device shadow API
+        from src.api.setup_shadow_api import setup_shadow_api
+
+        setup_shadow_api(app)
+
+        # Register mock devices for testing if in development
         if env != "production":
             try:
-                # Create test device shadow for wh-001
-                await shadow_service.create_device_shadow(
-                    device_id="wh-001",
+                from src.models.device import DeviceStatus, DeviceType
+                from src.services.manifest_processor import ManifestProcessor
+
+                # Create mock services required for manifest processor
+                # Mock registration service with properly awaitable methods
+                class MockRegistrationService:
+                    async def register_device(self, device_id, manifest):
+                        return True
+
+                    async def get_device(self, device_id):
+                        # Simply return a dictionary simulating device registration
+                        return {"device_id": device_id, "registered": True}
+
+                registration_service = MockRegistrationService()
+
+                # Mock asset registry with properly awaitable methods
+                class MockAssetRegistry:
+                    async def create_asset(self, asset_id, asset_data):
+                        return asset_data
+
+                    async def get_asset(self, asset_id):
+                        return None
+
+                    async def update_asset(self, asset_id, asset_data):
+                        return asset_data
+
+                asset_registry = MockAssetRegistry()
+
+                # Create manifest processor with all required dependencies
+                manifest_processor = ManifestProcessor(
+                    registration_service=registration_service,
+                    asset_registry=asset_registry,
+                    shadow_service=shadow_service,
+                )
+
+                # Water Heater manifest
+                water_heater_manifest = {
+                    "device_id": "wh-001",
+                    "name": "Master Bathroom Water Heater",
+                    "manufacturer": "EcoTemp",
+                    "model": "Pro X7500",
+                    "device_type": DeviceType.WATER_HEATER.value,
+                    "capabilities": {
+                        "temperature": {
+                            "min": 40,
+                            "max": 180,
+                            "unit": "F",
+                            "read_only": True,
+                        },
+                        "target_temperature": {
+                            "min": 80,
+                            "max": 140,
+                            "unit": "F",
+                            "default": 120,
+                            "read_only": False,
+                        },
+                        "mode": {
+                            "options": ["NORMAL", "ECO", "VACATION", "HIGH_DEMAND"],
+                            "default": "NORMAL",
+                            "read_only": False,
+                        },
+                        "status": {
+                            "options": ["ONLINE", "OFFLINE", "MAINTENANCE", "ERROR"],
+                            "default": "ONLINE",
+                            "read_only": True,
+                        },
+                        "heater_status": {
+                            "options": ["HEATING", "STANDBY", "OFF"],
+                            "default": "STANDBY",
+                            "read_only": True,
+                        },
+                    },
+                    "firmware": {
+                        "version": "3.1.4",
+                        "last_updated": "2025-01-15T00:00:00Z",
+                    },
+                    "location": {"room": "Master Bathroom", "floor": 2},
+                }
+
+                # Second Water Heater manifest (same manufacturer, different model)
+                water_heater_manifest_2 = {
+                    "device_id": "wh-002",
+                    "name": "Guest Bathroom Water Heater",
+                    "manufacturer": "AquaTemp",
+                    "model": "AT-500Pro",
+                    "device_type": DeviceType.WATER_HEATER.value,
+                    "capabilities": {
+                        "temperature": {
+                            "min": 90,
+                            "max": 180,
+                            "unit": "F",
+                            "read_only": True,
+                        },
+                        "target_temperature": {
+                            "min": 90,
+                            "max": 140,
+                            "unit": "F",
+                            "default": 125,
+                            "read_only": False,
+                        },
+                        "pressure": {
+                            "min": 0,
+                            "max": 150,
+                            "unit": "PSI",
+                            "read_only": True,
+                        },
+                        "flow_rate": {
+                            "min": 0,
+                            "max": 20,
+                            "unit": "GPM",
+                            "read_only": True,
+                        },
+                        "energy_usage": {
+                            "min": 0,
+                            "max": 6000,
+                            "unit": "W",
+                            "read_only": True,
+                        },
+                        "mode": {
+                            "options": ["NORMAL", "ECO", "VACATION", "HIGH_DEMAND"],
+                            "default": "NORMAL",
+                            "read_only": False,
+                        },
+                        "status": {
+                            "options": ["ONLINE", "OFFLINE", "MAINTENANCE", "ERROR"],
+                            "default": "ONLINE",
+                            "read_only": True,
+                        },
+                        "heater_status": {
+                            "options": ["HEATING", "STANDBY", "OFF"],
+                            "default": "STANDBY",
+                            "read_only": True,
+                        },
+                    },
+                    "firmware": {
+                        "version": "3.0.2",
+                        "last_updated": "2025-02-10T00:00:00Z",
+                    },
+                    "location": {"room": "Living Room", "floor": 1},
+                }
+
+                # Register devices
+                await manifest_processor.process_device_manifest(
+                    device_id=water_heater_manifest["device_id"],
+                    manifest=water_heater_manifest,
+                )
+
+                await manifest_processor.process_device_manifest(
+                    device_id=water_heater_manifest_2["device_id"],
+                    manifest=water_heater_manifest_2,
+                )
+
+                # Update with initial state data
+                await shadow_service.update_device_shadow(
+                    device_id=water_heater_manifest["device_id"],
                     reported_state={
-                        "temperature": 65.5,
-                        "pressure": 2.3,
-                        "flow_rate": 12.5,
-                        "energy_usage": 4500,
-                        "mode": "normal",
-                        "connection_status": "connected",
+                        "temperature": 118,
+                        "status": DeviceStatus.ONLINE.value,
+                        "heater_status": "HEATING",
                         "last_updated": datetime.now().isoformat() + "Z",
                     },
                 )
-                logging.info("Test device shadow created successfully")
+
+                await shadow_service.update_device_shadow(
+                    device_id=water_heater_manifest_2["device_id"],
+                    reported_state={
+                        "temperature": 125,
+                        "pressure": 60,
+                        "flow_rate": 2.5,
+                        "energy_usage": 1800,
+                        "status": DeviceStatus.ONLINE.value,
+                        "heater_status": "STANDBY",
+                        "mode": "NORMAL",
+                        "last_updated": datetime.now().isoformat() + "Z",
+                    },
+                )
+
+                logging.info(
+                    "Mock devices registered successfully with shadow documents"
+                )
+
+                # Create shadow documents for remaining water heaters
+                # These are needed for the complete water heater list to appear
+                water_heater_ids = [
+                    "wh-e0ae2f58",
+                    "wh-e1ae2f59",
+                    "wh-e2ae2f60",
+                    "wh-e3ae2f61",
+                    "wh-e4ae2f62",
+                    "wh-e5ae2f63",
+                    "wh-001",
+                    "wh-002",  # Ensure all 8 heaters are included
+                ]
+
+                # Get asset registry service for device registration
+                from src.services.asset_registry import AssetRegistryService
+
+                asset_service = AssetRegistryService()
+
+                # Register all water heaters in the Asset Registry and create shadow documents
+                for device_id in water_heater_ids:
+                    try:
+                        # Register device in Asset Registry if not already there
+                        try:
+                            device_info = await asset_service.get_device_info(device_id)
+                            if not device_info:
+                                # Register device in asset registry
+                                await asset_service.register_device(
+                                    {
+                                        "device_id": device_id,
+                                        "name": f"Water Heater {device_id.replace('wh-', '')}",
+                                        "manufacturer": "AquaTherm"
+                                        if "wh-e" in device_id
+                                        else "Rheem",
+                                        "model": "Pro Series XL"
+                                        if "wh-e" in device_id
+                                        else "Performance Plus",
+                                        "device_type": "water_heater",
+                                        "status": "ONLINE",
+                                        "location": "Building A"
+                                        if int(device_id.split("-")[-1][-1]) % 2 == 0
+                                        else "Building B",
+                                        "installation_date": (
+                                            datetime.now()
+                                            - timedelta(days=random.randint(30, 365))
+                                        ).isoformat(),
+                                    }
+                                )
+                                logging.info(
+                                    f"Registered {device_id} in Asset Registry"
+                                )
+                            else:
+                                logging.info(
+                                    f"Device {device_id} already in Asset Registry"
+                                )
+                        except Exception as asset_error:
+                            logging.error(
+                                f"Error registering device {device_id} in Asset Registry: {asset_error}"
+                            )
+
+                        # Create shadow document if it doesn't exist
+                        try:
+                            # Try to get existing shadow
+                            existing_shadow = await shadow_service.get_device_shadow(
+                                device_id
+                            )
+
+                            if not existing_shadow:
+                                # Create shadow document if it doesn't exist
+                                await shadow_service.create_device_shadow(
+                                    device_id=device_id,
+                                    reported_state={
+                                        "temperature": random.uniform(118.0, 122.0),
+                                        "target_temperature": 125.0,
+                                        "status": "ONLINE",
+                                        "heater_status": "STANDBY",
+                                        "mode": "ECO",
+                                        "last_updated": datetime.now().isoformat()
+                                        + "Z",
+                                    },
+                                    desired_state={
+                                        "target_temperature": 125.0,
+                                        "mode": "ECO",
+                                    },
+                                )
+                                logging.info(f"Created shadow document for {device_id}")
+
+                                # Generate history for this device
+                                if device_id in ["wh-e0ae2f58", "wh-001"]:
+                                    # Add history entries for the past week for this specific device
+                                    await generate_shadow_history(
+                                        shadow_service, device_id, 120.5, 125.0
+                                    )
+                                    logging.info(
+                                        f"Generated history data for {device_id}"
+                                    )
+                            else:
+                                logging.info(
+                                    f"Shadow document already exists for {device_id}"
+                                )
+                        except Exception as shadow_error:
+                            logging.error(
+                                f"Error creating shadow for {device_id}: {shadow_error}"
+                            )
+                    except Exception as e:
+                        logging.error(f"Error creating shadow for {device_id}: {e}")
             except ValueError:
                 # Shadow likely already exists
                 logging.info("Test device shadow already exists")
             except Exception as e:
                 logging.warning(f"Error creating test device shadow: {e}")
+
+        # Create comprehensive shadow documents with history for all water heaters
+        try:
+            # Dynamically import to avoid circular imports
+            sys.path.insert(
+                0, os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+            )
+            from create_water_heater_shadows import create_water_heater_shadows
+
+            logging.info(
+                "Creating comprehensive water heater shadow documents with history data..."
+            )
+            await create_water_heater_shadows()
+            logging.info(
+                "Shadow documents with history created successfully for all water heaters"
+            )
+        except Exception as shadow_error:
+            logging.error(
+                f"Error creating comprehensive shadow documents: {shadow_error}"
+            )
 
         logging.info("Device Shadow and WebSocket services initialized")
     except ImportError:

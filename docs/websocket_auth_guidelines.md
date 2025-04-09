@@ -48,19 +48,19 @@ async def my_endpoint(websocket: WebSocket):
     Handle the endpoint logic, assuming the connection is already accepted by middleware.
     """
     # DO NOT call websocket.accept() here - the middleware has already done it
-    
+
     # Connection already accepted and authenticated in middleware
     logger.info(f"Handler running for endpoint: {websocket.url.path}")
-    
+
     # Access user info from the WebSocket state
     user = websocket.state.user
-    
+
     try:
         # Process messages
         while True:
             message = await websocket.receive_text()
             # Handle message...
-            
+
     except WebSocketDisconnect:
         logger.info("Client disconnected")
     finally:

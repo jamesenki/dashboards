@@ -8,7 +8,9 @@ import os
 from datetime import timedelta
 
 # JWT Settings
-SECRET_KEY = os.environ.get("JWT_SECRET_KEY", "iotsphere_development_key_do_not_use_in_production")
+SECRET_KEY = os.environ.get(
+    "JWT_SECRET_KEY", "iotsphere_development_key_do_not_use_in_production"
+)
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.environ.get("ACCESS_TOKEN_EXPIRE_MINUTES", "30"))
 
@@ -19,23 +21,12 @@ COOKIE_SAMESITE = "lax"  # Options: "lax", "strict", or "none"
 
 # CORS Settings
 CORS_ALLOW_ORIGINS = os.environ.get(
-    "CORS_ALLOW_ORIGINS", 
-    "http://localhost:8000,http://localhost:5000"
+    "CORS_ALLOW_ORIGINS", "http://localhost:8000,http://localhost:5000"
 ).split(",")
 
-CORS_ALLOW_METHODS = [
-    "GET", 
-    "POST", 
-    "PUT", 
-    "DELETE", 
-    "OPTIONS"
-]
+CORS_ALLOW_METHODS = ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
 
-CORS_ALLOW_HEADERS = [
-    "Content-Type", 
-    "Authorization", 
-    "Accept"
-]
+CORS_ALLOW_HEADERS = ["Content-Type", "Authorization", "Accept"]
 
 # Password Settings
 PASSWORD_MIN_LENGTH = 8

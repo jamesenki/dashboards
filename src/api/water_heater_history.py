@@ -7,7 +7,7 @@ from fastapi import APIRouter, HTTPException, Path, Query
 
 from src.services.water_heater_history import WaterHeaterHistoryService
 
-router = APIRouter(tags=["water_heater_history"])
+router = APIRouter(prefix="/api", tags=["water_heater_history"])
 
 
 @router.get("/water-heaters/{heater_id}/history", response_model=Dict[str, Any])

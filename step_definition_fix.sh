@@ -14,7 +14,7 @@ sed -i '' 's/When('"'"'I navigate to the water heater with ID {string}'"'"'/\/\/
 
 # Fix the WebSocket connection step definitions in realtime_updates_steps.js
 # Find duplicate definitions of "the WebSocket connection is interrupted"
-grep -n "the WebSocket connection is interrupted" features/step_definitions/realtime_updates_steps.js | 
+grep -n "the WebSocket connection is interrupted" features/step_definitions/realtime_updates_steps.js |
 while read -r line; do
   if [[ $line != *":205:"* ]]; then  # Keep the first occurrence (around line 205)
     line_num=$(echo "$line" | cut -d: -f1)
@@ -22,7 +22,7 @@ while read -r line; do
   fi
 done
 
-# Find duplicate definitions of "the connection is restored" 
+# Find duplicate definitions of "the connection is restored"
 grep -n "the connection is restored" features/step_definitions/realtime_updates_steps.js |
 while read -r line; do
   if [[ $line != *":287:"* ]]; then  # Keep the first occurrence (around line 287)
@@ -31,7 +31,7 @@ while read -r line; do
   fi
 done
 
-# Find duplicate definitions of "the status indicator should show" 
+# Find duplicate definitions of "the status indicator should show"
 grep -n "the status indicator should show" features/step_definitions/realtime_updates_steps.js |
 while read -r line; do
   if [[ $line != *":156:"* ]]; then  # Keep the first occurrence (around line 156)

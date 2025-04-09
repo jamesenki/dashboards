@@ -7,7 +7,7 @@ import { environment } from '../../../environments/environment';
 
 /**
  * Component for displaying real-time anomaly alerts from device telemetry
- * 
+ *
  * This component is designed to be device-agnostic and will work with any
  * IoT device type that implements the standard anomaly detection interfaces
  */
@@ -19,28 +19,28 @@ import { environment } from '../../../environments/environment';
 export class AnomalyAlertsComponent implements OnInit, OnDestroy {
   /** Device ID to monitor for anomalies */
   @Input() deviceId: string;
-  
+
   /** Optional limit to number of alerts shown */
   @Input() limit: number = 5;
-  
+
   /** Specify whether to show all alerts or only unacknowledged ones */
   @Input() showOnlyUnacknowledged: boolean = false;
-  
+
   /** List of detected anomalies */
   anomalies: any[] = [];
-  
+
   /** Loading state */
   isLoading: boolean = true;
-  
+
   /** Error state */
   error: string = null;
-  
+
   /** WebSocket subscription for real-time alerts */
   private wsSubscription: Subscription;
-  
+
   /** Polling subscription for fallback to REST API */
   private pollingSubscription: Subscription;
-  
+
   constructor(
     private deviceService: DeviceService,
     private wsService: WebSocketService
@@ -55,7 +55,7 @@ export class AnomalyAlertsComponent implements OnInit, OnDestroy {
     if (this.wsSubscription) {
       this.wsSubscription.unsubscribe();
     }
-    
+
     if (this.pollingSubscription) {
       this.pollingSubscription.unsubscribe();
     }
@@ -67,7 +67,7 @@ export class AnomalyAlertsComponent implements OnInit, OnDestroy {
   loadAnomalies(): void {
     this.isLoading = true;
     this.error = null;
-    
+
     this.deviceService.getDeviceAnomalies(this.deviceId)
       .subscribe(
         (data) => {
@@ -88,7 +88,7 @@ export class AnomalyAlertsComponent implements OnInit, OnDestroy {
    */
   subscribeToRealtimeAlerts(): void {
     const wsUrl = `${environment.wsUrl}/devices/${this.deviceId}/anomalies`;
-    
+
     // First try WebSocket connection
     this.wsSubscription = this.wsService.connect(wsUrl)
       .subscribe(
@@ -133,20 +133,20 @@ export class AnomalyAlertsComponent implements OnInit, OnDestroy {
   processAnomalies(data: any): void {
     if (data && data.items) {
       // Filter only unacknowledged if necessary
-      let filteredAnomalies = this.showOnlyUnacknowledged 
+      let filteredAnomalies = this.showOnlyUnacknowledged
         ? data.items.filter(a => !a.acknowledged)
         : data.items;
-      
+
       // Sort by timestamp (newest first)
-      filteredAnomalies.sort((a, b) => 
+      filteredAnomalies.sort((a, b) =>
         new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
       );
-      
+
       // Apply limit if specified
       if (this.limit > 0) {
         filteredAnomalies = filteredAnomalies.slice(0, this.limit);
       }
-      
+
       this.anomalies = filteredAnomalies;
     }
   }
@@ -158,7 +158,7 @@ export class AnomalyAlertsComponent implements OnInit, OnDestroy {
     // Only add if it doesn't already exist
     if (!this.anomalies.some(a => a.id === anomaly.id)) {
       this.anomalies.unshift(anomaly);
-      
+
       // Maintain limit
       if (this.limit > 0 && this.anomalies.length > this.limit) {
         this.anomalies = this.anomalies.slice(0, this.limit);
@@ -186,7 +186,7 @@ export class AnomalyAlertsComponent implements OnInit, OnDestroy {
           const index = this.anomalies.findIndex(a => a.id === anomalyId);
           if (index !== -1) {
             this.anomalies[index].acknowledged = true;
-            
+
             // Remove from view if only showing unacknowledged
             if (this.showOnlyUnacknowledged) {
               this.anomalies = this.anomalies.filter(a => !a.acknowledged);
@@ -222,13 +222,13 @@ export class AnomalyAlertsComponent implements OnInit, OnDestroy {
     const now = new Date().getTime();
     const time = new Date(timestamp).getTime();
     const diff = now - time;
-    
+
     // Convert to appropriate unit
     const seconds = Math.floor(diff / 1000);
     const minutes = Math.floor(seconds / 60);
     const hours = Math.floor(minutes / 60);
     const days = Math.floor(hours / 24);
-    
+
     if (days > 0) {
       return `${days}d ago`;
     } else if (hours > 0) {

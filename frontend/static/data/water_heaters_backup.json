@@ -1,0 +1,5546 @@
+[
+  {
+    "id": "wh-001",
+    "device_id": "wh-001",
+    "name": "Water Heater 001",
+    "manufacturer": "AquaSmart",
+    "model": "SmartTank Pro",
+    "type": "water_heater",
+    "status": "ONLINE",
+    "temperature": 122.5,
+    "current_temperature": 122.5,
+    "target_temperature": 127.9,
+    "min_temperature": 40.0,
+    "max_temperature": 140.0,
+    "pressure": 58.6,
+    "flow_rate": 3.17,
+    "energy_usage": 449.7,
+    "heater_status": "STANDBY",
+    "mode": "ECO",
+    "readings": [
+      {
+        "timestamp": "2025-04-01T12:06:35.999998Z",
+        "temperature": 121.4,
+        "pressure": 54.3,
+        "flow_rate": 3.18,
+        "energy_usage": 520.63,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-01T14:06:35.999998Z",
+        "temperature": 121.6,
+        "pressure": 61.6,
+        "flow_rate": 3.02,
+        "energy_usage": 517.64,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-01T16:06:35.999998Z",
+        "temperature": 123.9,
+        "pressure": 62.3,
+        "flow_rate": 3.16,
+        "energy_usage": 515.47,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-01T18:06:35.999998Z",
+        "temperature": 122.9,
+        "pressure": 56.1,
+        "flow_rate": 3.32,
+        "energy_usage": 521.88,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-01T20:06:35.999998Z",
+        "temperature": 124.1,
+        "pressure": 59.5,
+        "flow_rate": 2.87,
+        "energy_usage": 506.92,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-01T22:06:35.999998Z",
+        "temperature": 123.7,
+        "pressure": 57.8,
+        "flow_rate": 3.59,
+        "energy_usage": 526.26,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T00:06:35.999998Z",
+        "temperature": 120.2,
+        "pressure": 61.2,
+        "flow_rate": 3.52,
+        "energy_usage": 504.65,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T02:06:35.999998Z",
+        "temperature": 120.1,
+        "pressure": 56.2,
+        "flow_rate": 3.51,
+        "energy_usage": 503.18,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T04:06:35.999998Z",
+        "temperature": 120.0,
+        "pressure": 61.2,
+        "flow_rate": 3.11,
+        "energy_usage": 521.48,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T06:06:35.999998Z",
+        "temperature": 120.2,
+        "pressure": 58.1,
+        "flow_rate": 2.98,
+        "energy_usage": 495.51,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T08:06:35.999998Z",
+        "temperature": 121.6,
+        "pressure": 62.6,
+        "flow_rate": 3.63,
+        "energy_usage": 518.62,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T10:06:35.999998Z",
+        "temperature": 121.5,
+        "pressure": 58.3,
+        "flow_rate": 3.03,
+        "energy_usage": 529.31,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T12:06:35.999998Z",
+        "temperature": 123.7,
+        "pressure": 62.5,
+        "flow_rate": 3.2,
+        "energy_usage": 523.22,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T14:06:35.999998Z",
+        "temperature": 122.2,
+        "pressure": 56.4,
+        "flow_rate": 2.71,
+        "energy_usage": 490.91,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T16:06:35.999998Z",
+        "temperature": 124.8,
+        "pressure": 61.7,
+        "flow_rate": 3.25,
+        "energy_usage": 506.9,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T18:06:35.999998Z",
+        "temperature": 123.8,
+        "pressure": 57.6,
+        "flow_rate": 3.45,
+        "energy_usage": 519.42,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T20:06:35.999998Z",
+        "temperature": 124.0,
+        "pressure": 62.3,
+        "flow_rate": 2.94,
+        "energy_usage": 504.98,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T22:06:35.999998Z",
+        "temperature": 125.6,
+        "pressure": 56.1,
+        "flow_rate": 2.69,
+        "energy_usage": 491.14,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T00:06:35.999998Z",
+        "temperature": 120.0,
+        "pressure": 57.6,
+        "flow_rate": 2.93,
+        "energy_usage": 521.85,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T02:06:35.999998Z",
+        "temperature": 119.2,
+        "pressure": 61.1,
+        "flow_rate": 2.92,
+        "energy_usage": 498.37,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T04:06:35.999998Z",
+        "temperature": 120.4,
+        "pressure": 59.9,
+        "flow_rate": 2.79,
+        "energy_usage": 522.34,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T06:06:35.999998Z",
+        "temperature": 119.6,
+        "pressure": 62.6,
+        "flow_rate": 3.44,
+        "energy_usage": 501.31,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T08:06:35.999998Z",
+        "temperature": 120.6,
+        "pressure": 61.2,
+        "flow_rate": 3.14,
+        "energy_usage": 497.19,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T10:06:35.999998Z",
+        "temperature": 122.1,
+        "pressure": 62.1,
+        "flow_rate": 3.27,
+        "energy_usage": 493.17,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T12:06:35.999998Z",
+        "temperature": 124.0,
+        "pressure": 55.6,
+        "flow_rate": 3.42,
+        "energy_usage": 481.82,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T14:06:35.999998Z",
+        "temperature": 122.8,
+        "pressure": 56.4,
+        "flow_rate": 3.4,
+        "energy_usage": 500.4,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T16:06:35.999998Z",
+        "temperature": 122.6,
+        "pressure": 55.6,
+        "flow_rate": 3.1,
+        "energy_usage": 497.48,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T18:06:35.999998Z",
+        "temperature": 125.1,
+        "pressure": 55.2,
+        "flow_rate": 3.1,
+        "energy_usage": 495.82,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T20:06:35.999998Z",
+        "temperature": 125.0,
+        "pressure": 59.7,
+        "flow_rate": 3.48,
+        "energy_usage": 505.8,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T22:06:35.999998Z",
+        "temperature": 124.5,
+        "pressure": 54.4,
+        "flow_rate": 3.35,
+        "energy_usage": 493.06,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T00:06:35.999998Z",
+        "temperature": 118.5,
+        "pressure": 54.7,
+        "flow_rate": 3.66,
+        "energy_usage": 494.48,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T02:06:35.999998Z",
+        "temperature": 121.3,
+        "pressure": 54.3,
+        "flow_rate": 3.29,
+        "energy_usage": 504.63,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T04:06:35.999998Z",
+        "temperature": 121.6,
+        "pressure": 53.8,
+        "flow_rate": 2.82,
+        "energy_usage": 503.36,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T06:06:35.999998Z",
+        "temperature": 120.6,
+        "pressure": 55.2,
+        "flow_rate": 3.07,
+        "energy_usage": 494.97,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T08:06:35.999998Z",
+        "temperature": 121.8,
+        "pressure": 54.3,
+        "flow_rate": 3.49,
+        "energy_usage": 502.76,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T10:06:35.999998Z",
+        "temperature": 122.1,
+        "pressure": 60.7,
+        "flow_rate": 3.37,
+        "energy_usage": 507.54,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T12:06:35.999998Z",
+        "temperature": 121.3,
+        "pressure": 58.3,
+        "flow_rate": 2.69,
+        "energy_usage": 499.4,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T14:06:35.999998Z",
+        "temperature": 123.3,
+        "pressure": 63.1,
+        "flow_rate": 3.37,
+        "energy_usage": 497.19,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T16:06:35.999998Z",
+        "temperature": 122.8,
+        "pressure": 61.3,
+        "flow_rate": 2.81,
+        "energy_usage": 469.33,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T18:06:35.999998Z",
+        "temperature": 125.1,
+        "pressure": 57.4,
+        "flow_rate": 3.31,
+        "energy_usage": 470.74,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T20:06:35.999998Z",
+        "temperature": 123.2,
+        "pressure": 59.0,
+        "flow_rate": 3.52,
+        "energy_usage": 489.74,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T22:06:35.999998Z",
+        "temperature": 124.2,
+        "pressure": 63.0,
+        "flow_rate": 3.42,
+        "energy_usage": 493.85,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T00:06:35.999998Z",
+        "temperature": 118.1,
+        "pressure": 55.9,
+        "flow_rate": 3.45,
+        "energy_usage": 480.96,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T02:06:35.999998Z",
+        "temperature": 120.9,
+        "pressure": 54.3,
+        "flow_rate": 2.69,
+        "energy_usage": 499.06,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T04:06:35.999998Z",
+        "temperature": 120.4,
+        "pressure": 61.8,
+        "flow_rate": 2.88,
+        "energy_usage": 486.94,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T06:06:35.999998Z",
+        "temperature": 120.9,
+        "pressure": 62.5,
+        "flow_rate": 3.05,
+        "energy_usage": 479.77,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T08:06:35.999998Z",
+        "temperature": 122.3,
+        "pressure": 59.7,
+        "flow_rate": 3.36,
+        "energy_usage": 464.55,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T10:06:35.999998Z",
+        "temperature": 122.2,
+        "pressure": 58.8,
+        "flow_rate": 2.74,
+        "energy_usage": 463.61,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T12:06:35.999998Z",
+        "temperature": 124.0,
+        "pressure": 57.0,
+        "flow_rate": 3.17,
+        "energy_usage": 460.03,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T14:06:35.999998Z",
+        "temperature": 121.9,
+        "pressure": 58.0,
+        "flow_rate": 3.29,
+        "energy_usage": 465.04,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T16:06:35.999998Z",
+        "temperature": 123.6,
+        "pressure": 56.9,
+        "flow_rate": 2.84,
+        "energy_usage": 459.35,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T18:06:35.999998Z",
+        "temperature": 123.1,
+        "pressure": 56.1,
+        "flow_rate": 3.56,
+        "energy_usage": 472.68,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T20:06:35.999998Z",
+        "temperature": 123.2,
+        "pressure": 59.7,
+        "flow_rate": 2.93,
+        "energy_usage": 487.17,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T22:06:35.999998Z",
+        "temperature": 125.9,
+        "pressure": 63.1,
+        "flow_rate": 3.0,
+        "energy_usage": 481.69,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T00:06:35.999998Z",
+        "temperature": 120.4,
+        "pressure": 53.8,
+        "flow_rate": 3.31,
+        "energy_usage": 479.97,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T02:06:35.999998Z",
+        "temperature": 120.3,
+        "pressure": 62.1,
+        "flow_rate": 2.94,
+        "energy_usage": 480.47,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T04:06:35.999998Z",
+        "temperature": 120.2,
+        "pressure": 63.0,
+        "flow_rate": 3.6,
+        "energy_usage": 471.34,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T06:06:35.999998Z",
+        "temperature": 121.7,
+        "pressure": 54.6,
+        "flow_rate": 3.15,
+        "energy_usage": 483.08,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T08:06:35.999998Z",
+        "temperature": 122.1,
+        "pressure": 59.1,
+        "flow_rate": 3.32,
+        "energy_usage": 466.08,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T10:06:35.999998Z",
+        "temperature": 120.6,
+        "pressure": 54.1,
+        "flow_rate": 3.61,
+        "energy_usage": 460.52,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T12:06:35.999998Z",
+        "temperature": 122.6,
+        "pressure": 56.7,
+        "flow_rate": 3.51,
+        "energy_usage": 479.91,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T14:06:35.999998Z",
+        "temperature": 124.4,
+        "pressure": 57.8,
+        "flow_rate": 2.88,
+        "energy_usage": 473.47,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T16:06:35.999998Z",
+        "temperature": 123.3,
+        "pressure": 60.4,
+        "flow_rate": 3.41,
+        "energy_usage": 464.07,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T18:06:35.999998Z",
+        "temperature": 123.9,
+        "pressure": 56.9,
+        "flow_rate": 3.53,
+        "energy_usage": 465.81,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T20:06:35.999998Z",
+        "temperature": 123.7,
+        "pressure": 55.5,
+        "flow_rate": 2.77,
+        "energy_usage": 477.54,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T22:06:35.999998Z",
+        "temperature": 126.5,
+        "pressure": 53.7,
+        "flow_rate": 3.41,
+        "energy_usage": 480.58,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T00:06:35.999998Z",
+        "temperature": 119.2,
+        "pressure": 60.2,
+        "flow_rate": 3.33,
+        "energy_usage": 466.9,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T02:06:35.999998Z",
+        "temperature": 119.0,
+        "pressure": 55.9,
+        "flow_rate": 2.99,
+        "energy_usage": 455.39,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T04:06:35.999998Z",
+        "temperature": 120.9,
+        "pressure": 60.6,
+        "flow_rate": 2.79,
+        "energy_usage": 465.49,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T06:06:35.999998Z",
+        "temperature": 120.1,
+        "pressure": 58.8,
+        "flow_rate": 3.58,
+        "energy_usage": 446.19,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T08:06:35.999998Z",
+        "temperature": 121.9,
+        "pressure": 59.0,
+        "flow_rate": 3.16,
+        "energy_usage": 464.25,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T10:06:35.999998Z",
+        "temperature": 122.2,
+        "pressure": 56.2,
+        "flow_rate": 3.58,
+        "energy_usage": 470.91,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T12:06:35.999998Z",
+        "temperature": 122.5,
+        "pressure": 63.6,
+        "flow_rate": 3.39,
+        "energy_usage": 454.29,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T14:06:35.999998Z",
+        "temperature": 124.0,
+        "pressure": 62.3,
+        "flow_rate": 3.33,
+        "energy_usage": 461.36,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T16:06:35.999998Z",
+        "temperature": 122.2,
+        "pressure": 54.3,
+        "flow_rate": 2.73,
+        "energy_usage": 447.07,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T18:06:35.999998Z",
+        "temperature": 124.3,
+        "pressure": 57.6,
+        "flow_rate": 3.07,
+        "energy_usage": 469.52,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T20:06:35.999998Z",
+        "temperature": 124.2,
+        "pressure": 56.8,
+        "flow_rate": 3.04,
+        "energy_usage": 444.63,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T22:06:35.999998Z",
+        "temperature": 125.9,
+        "pressure": 57.4,
+        "flow_rate": 3.25,
+        "energy_usage": 475.2,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-08T00:06:35.999998Z",
+        "temperature": 120.2,
+        "pressure": 62.9,
+        "flow_rate": 3.4,
+        "energy_usage": 458.7,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-08T02:06:35.999998Z",
+        "temperature": 121.2,
+        "pressure": 55.3,
+        "flow_rate": 3.55,
+        "energy_usage": 470.31,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-08T04:06:35.999998Z",
+        "temperature": 120.1,
+        "pressure": 59.9,
+        "flow_rate": 3.46,
+        "energy_usage": 466.93,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-08T06:06:35.999998Z",
+        "temperature": 119.6,
+        "pressure": 59.2,
+        "flow_rate": 3.45,
+        "energy_usage": 433.25,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-08T08:06:35.999998Z",
+        "temperature": 120.5,
+        "pressure": 61.5,
+        "flow_rate": 3.19,
+        "energy_usage": 446.74,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-08T10:06:35.999998Z",
+        "temperature": 123.2,
+        "pressure": 62.0,
+        "flow_rate": 3.24,
+        "energy_usage": 468.86,
+        "heater_status": "HEATING"
+      }
+    ]
+  },
+  {
+    "id": "wh-002",
+    "device_id": "wh-002",
+    "name": "Water Heater 002",
+    "manufacturer": "AquaSmart",
+    "model": "SmartTank Pro",
+    "type": "water_heater",
+    "status": "ONLINE",
+    "temperature": 122.9,
+    "current_temperature": 122.9,
+    "target_temperature": 125.6,
+    "min_temperature": 40.0,
+    "max_temperature": 140.0,
+    "pressure": 62.9,
+    "flow_rate": 3.3,
+    "energy_usage": 429.6,
+    "heater_status": "STANDBY",
+    "mode": "ECO",
+    "readings": [
+      {
+        "timestamp": "2025-04-01T12:06:36.000281Z",
+        "temperature": 124.0,
+        "pressure": 58.0,
+        "flow_rate": 2.86,
+        "energy_usage": 506.38,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-01T14:06:36.000281Z",
+        "temperature": 122.7,
+        "pressure": 63.7,
+        "flow_rate": 3.12,
+        "energy_usage": 485.79,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-01T16:06:36.000281Z",
+        "temperature": 123.4,
+        "pressure": 58.6,
+        "flow_rate": 3.11,
+        "energy_usage": 487.71,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-01T18:06:36.000281Z",
+        "temperature": 125.7,
+        "pressure": 62.9,
+        "flow_rate": 2.83,
+        "energy_usage": 480.6,
+        "heater_status": "STANDBY"
+      },
+      {
+        "timestamp": "2025-04-01T20:06:36.000281Z",
+        "temperature": 125.7,
+        "pressure": 67.6,
+        "flow_rate": 3.36,
+        "energy_usage": 500.05,
+        "heater_status": "STANDBY"
+      },
+      {
+        "timestamp": "2025-04-01T22:06:36.000281Z",
+        "temperature": 125.6,
+        "pressure": 58.0,
+        "flow_rate": 3.15,
+        "energy_usage": 513.64,
+        "heater_status": "STANDBY"
+      },
+      {
+        "timestamp": "2025-04-02T00:06:36.000281Z",
+        "temperature": 120.6,
+        "pressure": 59.3,
+        "flow_rate": 3.0,
+        "energy_usage": 507.51,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T02:06:36.000281Z",
+        "temperature": 120.3,
+        "pressure": 63.2,
+        "flow_rate": 3.17,
+        "energy_usage": 507.07,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T04:06:36.000281Z",
+        "temperature": 120.1,
+        "pressure": 60.9,
+        "flow_rate": 3.29,
+        "energy_usage": 478.03,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T06:06:36.000281Z",
+        "temperature": 122.9,
+        "pressure": 59.0,
+        "flow_rate": 3.58,
+        "energy_usage": 480.78,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T08:06:36.000281Z",
+        "temperature": 122.7,
+        "pressure": 67.6,
+        "flow_rate": 2.98,
+        "energy_usage": 504.46,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T10:06:36.000281Z",
+        "temperature": 123.1,
+        "pressure": 62.6,
+        "flow_rate": 3.29,
+        "energy_usage": 498.75,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T12:06:36.000281Z",
+        "temperature": 121.8,
+        "pressure": 61.8,
+        "flow_rate": 3.5,
+        "energy_usage": 472.25,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T14:06:36.000281Z",
+        "temperature": 123.9,
+        "pressure": 65.3,
+        "flow_rate": 2.96,
+        "energy_usage": 469.84,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T16:06:36.000281Z",
+        "temperature": 125.1,
+        "pressure": 67.9,
+        "flow_rate": 3.16,
+        "energy_usage": 490.74,
+        "heater_status": "STANDBY"
+      },
+      {
+        "timestamp": "2025-04-02T18:06:36.000281Z",
+        "temperature": 125.6,
+        "pressure": 67.7,
+        "flow_rate": 3.76,
+        "energy_usage": 497.72,
+        "heater_status": "STANDBY"
+      },
+      {
+        "timestamp": "2025-04-02T20:06:36.000281Z",
+        "temperature": 123.8,
+        "pressure": 65.2,
+        "flow_rate": 3.18,
+        "energy_usage": 475.45,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T22:06:36.000281Z",
+        "temperature": 125.7,
+        "pressure": 62.0,
+        "flow_rate": 3.49,
+        "energy_usage": 500.53,
+        "heater_status": "STANDBY"
+      },
+      {
+        "timestamp": "2025-04-03T00:06:36.000281Z",
+        "temperature": 119.5,
+        "pressure": 65.4,
+        "flow_rate": 3.07,
+        "energy_usage": 478.23,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T02:06:36.000281Z",
+        "temperature": 118.9,
+        "pressure": 67.5,
+        "flow_rate": 3.13,
+        "energy_usage": 497.07,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T04:06:36.000281Z",
+        "temperature": 119.6,
+        "pressure": 66.8,
+        "flow_rate": 3.47,
+        "energy_usage": 491.14,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T06:06:36.000281Z",
+        "temperature": 121.0,
+        "pressure": 62.5,
+        "flow_rate": 3.41,
+        "energy_usage": 493.33,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T08:06:36.000281Z",
+        "temperature": 120.5,
+        "pressure": 64.6,
+        "flow_rate": 3.77,
+        "energy_usage": 486.62,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T10:06:36.000281Z",
+        "temperature": 122.5,
+        "pressure": 66.9,
+        "flow_rate": 3.75,
+        "energy_usage": 490.91,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T12:06:36.000281Z",
+        "temperature": 123.4,
+        "pressure": 67.1,
+        "flow_rate": 3.28,
+        "energy_usage": 491.14,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T14:06:36.000281Z",
+        "temperature": 123.2,
+        "pressure": 64.3,
+        "flow_rate": 2.84,
+        "energy_usage": 488.02,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T16:06:36.000281Z",
+        "temperature": 123.2,
+        "pressure": 61.2,
+        "flow_rate": 3.55,
+        "energy_usage": 467.41,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T18:06:36.000281Z",
+        "temperature": 125.5,
+        "pressure": 60.5,
+        "flow_rate": 3.23,
+        "energy_usage": 471.7,
+        "heater_status": "STANDBY"
+      },
+      {
+        "timestamp": "2025-04-03T20:06:36.000281Z",
+        "temperature": 123.5,
+        "pressure": 67.5,
+        "flow_rate": 3.44,
+        "energy_usage": 488.51,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T22:06:36.000281Z",
+        "temperature": 124.3,
+        "pressure": 67.7,
+        "flow_rate": 3.57,
+        "energy_usage": 488.79,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T00:06:36.000281Z",
+        "temperature": 119.3,
+        "pressure": 59.1,
+        "flow_rate": 2.83,
+        "energy_usage": 463.31,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T02:06:36.000281Z",
+        "temperature": 120.3,
+        "pressure": 58.4,
+        "flow_rate": 3.45,
+        "energy_usage": 476.51,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T04:06:36.000281Z",
+        "temperature": 119.4,
+        "pressure": 59.3,
+        "flow_rate": 3.51,
+        "energy_usage": 469.29,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T06:06:36.000281Z",
+        "temperature": 122.7,
+        "pressure": 60.8,
+        "flow_rate": 2.96,
+        "energy_usage": 453.53,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T08:06:36.000281Z",
+        "temperature": 122.7,
+        "pressure": 63.0,
+        "flow_rate": 3.14,
+        "energy_usage": 474.65,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T10:06:36.000281Z",
+        "temperature": 122.9,
+        "pressure": 63.9,
+        "flow_rate": 3.0,
+        "energy_usage": 467.27,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T12:06:36.000281Z",
+        "temperature": 121.9,
+        "pressure": 62.5,
+        "flow_rate": 3.63,
+        "energy_usage": 484.67,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T14:06:36.000281Z",
+        "temperature": 123.8,
+        "pressure": 65.2,
+        "flow_rate": 3.54,
+        "energy_usage": 464.25,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T16:06:36.000281Z",
+        "temperature": 124.8,
+        "pressure": 64.7,
+        "flow_rate": 3.34,
+        "energy_usage": 474.38,
+        "heater_status": "STANDBY"
+      },
+      {
+        "timestamp": "2025-04-04T18:06:36.000281Z",
+        "temperature": 125.1,
+        "pressure": 61.5,
+        "flow_rate": 3.53,
+        "energy_usage": 476.87,
+        "heater_status": "STANDBY"
+      },
+      {
+        "timestamp": "2025-04-04T20:06:36.000281Z",
+        "temperature": 124.2,
+        "pressure": 63.6,
+        "flow_rate": 3.45,
+        "energy_usage": 464.06,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T22:06:36.000281Z",
+        "temperature": 124.9,
+        "pressure": 60.0,
+        "flow_rate": 2.88,
+        "energy_usage": 464.32,
+        "heater_status": "STANDBY"
+      },
+      {
+        "timestamp": "2025-04-05T00:06:36.000281Z",
+        "temperature": 121.3,
+        "pressure": 64.4,
+        "flow_rate": 3.61,
+        "energy_usage": 460.08,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T02:06:36.000281Z",
+        "temperature": 120.2,
+        "pressure": 67.7,
+        "flow_rate": 3.09,
+        "energy_usage": 470.05,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T04:06:36.000281Z",
+        "temperature": 121.2,
+        "pressure": 61.3,
+        "flow_rate": 2.84,
+        "energy_usage": 469.15,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T06:06:36.000281Z",
+        "temperature": 120.8,
+        "pressure": 63.0,
+        "flow_rate": 3.58,
+        "energy_usage": 479.3,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T08:06:36.000281Z",
+        "temperature": 121.3,
+        "pressure": 67.2,
+        "flow_rate": 3.35,
+        "energy_usage": 467.81,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T10:06:36.000281Z",
+        "temperature": 122.8,
+        "pressure": 66.7,
+        "flow_rate": 3.01,
+        "energy_usage": 453.04,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T12:06:36.000281Z",
+        "temperature": 122.5,
+        "pressure": 59.1,
+        "flow_rate": 3.41,
+        "energy_usage": 465.78,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T14:06:36.000281Z",
+        "temperature": 123.1,
+        "pressure": 64.2,
+        "flow_rate": 3.7,
+        "energy_usage": 478.48,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T16:06:36.000281Z",
+        "temperature": 124.9,
+        "pressure": 63.2,
+        "flow_rate": 3.46,
+        "energy_usage": 474.26,
+        "heater_status": "STANDBY"
+      },
+      {
+        "timestamp": "2025-04-05T18:06:36.000281Z",
+        "temperature": 125.9,
+        "pressure": 62.9,
+        "flow_rate": 3.73,
+        "energy_usage": 439.35,
+        "heater_status": "STANDBY"
+      },
+      {
+        "timestamp": "2025-04-05T20:06:36.000281Z",
+        "temperature": 125.7,
+        "pressure": 58.5,
+        "flow_rate": 3.5,
+        "energy_usage": 445.63,
+        "heater_status": "STANDBY"
+      },
+      {
+        "timestamp": "2025-04-05T22:06:36.000281Z",
+        "temperature": 126.3,
+        "pressure": 59.0,
+        "flow_rate": 3.76,
+        "energy_usage": 447.09,
+        "heater_status": "STANDBY"
+      },
+      {
+        "timestamp": "2025-04-06T00:06:36.000281Z",
+        "temperature": 120.2,
+        "pressure": 61.6,
+        "flow_rate": 3.36,
+        "energy_usage": 451.08,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T02:06:36.000281Z",
+        "temperature": 119.8,
+        "pressure": 61.1,
+        "flow_rate": 2.82,
+        "energy_usage": 442.63,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T04:06:36.000281Z",
+        "temperature": 122.1,
+        "pressure": 62.5,
+        "flow_rate": 3.43,
+        "energy_usage": 463.47,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T06:06:36.000281Z",
+        "temperature": 120.0,
+        "pressure": 61.1,
+        "flow_rate": 3.6,
+        "energy_usage": 436.32,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T08:06:36.000281Z",
+        "temperature": 123.0,
+        "pressure": 65.1,
+        "flow_rate": 2.84,
+        "energy_usage": 450.87,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T10:06:36.000281Z",
+        "temperature": 121.9,
+        "pressure": 64.8,
+        "flow_rate": 3.64,
+        "energy_usage": 433.05,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T12:06:36.000281Z",
+        "temperature": 121.6,
+        "pressure": 58.3,
+        "flow_rate": 3.74,
+        "energy_usage": 438.97,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T14:06:36.000281Z",
+        "temperature": 122.1,
+        "pressure": 58.3,
+        "flow_rate": 3.5,
+        "energy_usage": 435.22,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T16:06:36.000281Z",
+        "temperature": 123.6,
+        "pressure": 63.3,
+        "flow_rate": 3.54,
+        "energy_usage": 440.7,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T18:06:36.000281Z",
+        "temperature": 125.7,
+        "pressure": 66.7,
+        "flow_rate": 3.74,
+        "energy_usage": 454.0,
+        "heater_status": "STANDBY"
+      },
+      {
+        "timestamp": "2025-04-06T20:06:36.000281Z",
+        "temperature": 124.1,
+        "pressure": 65.8,
+        "flow_rate": 3.46,
+        "energy_usage": 462.7,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T22:06:36.000281Z",
+        "temperature": 124.8,
+        "pressure": 67.9,
+        "flow_rate": 3.11,
+        "energy_usage": 455.03,
+        "heater_status": "STANDBY"
+      },
+      {
+        "timestamp": "2025-04-07T00:06:36.000281Z",
+        "temperature": 119.3,
+        "pressure": 63.2,
+        "flow_rate": 3.49,
+        "energy_usage": 452.22,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T02:06:36.000281Z",
+        "temperature": 121.9,
+        "pressure": 60.1,
+        "flow_rate": 3.34,
+        "energy_usage": 442.4,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T04:06:36.000281Z",
+        "temperature": 120.3,
+        "pressure": 59.9,
+        "flow_rate": 3.21,
+        "energy_usage": 448.33,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T06:06:36.000281Z",
+        "temperature": 122.4,
+        "pressure": 58.9,
+        "flow_rate": 3.11,
+        "energy_usage": 429.2,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T08:06:36.000281Z",
+        "temperature": 122.1,
+        "pressure": 65.1,
+        "flow_rate": 3.4,
+        "energy_usage": 447.62,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T10:06:36.000281Z",
+        "temperature": 121.5,
+        "pressure": 61.7,
+        "flow_rate": 3.28,
+        "energy_usage": 439.65,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T12:06:36.000281Z",
+        "temperature": 121.5,
+        "pressure": 59.4,
+        "flow_rate": 3.15,
+        "energy_usage": 447.88,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T14:06:36.000281Z",
+        "temperature": 122.1,
+        "pressure": 66.3,
+        "flow_rate": 3.28,
+        "energy_usage": 429.59,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T16:06:36.000281Z",
+        "temperature": 124.0,
+        "pressure": 60.7,
+        "flow_rate": 3.1,
+        "energy_usage": 446.41,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T18:06:36.000281Z",
+        "temperature": 123.2,
+        "pressure": 64.8,
+        "flow_rate": 3.8,
+        "energy_usage": 456.77,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T20:06:36.000281Z",
+        "temperature": 124.6,
+        "pressure": 62.4,
+        "flow_rate": 2.97,
+        "energy_usage": 421.56,
+        "heater_status": "STANDBY"
+      },
+      {
+        "timestamp": "2025-04-07T22:06:36.000281Z",
+        "temperature": 126.2,
+        "pressure": 67.0,
+        "flow_rate": 3.29,
+        "energy_usage": 419.94,
+        "heater_status": "STANDBY"
+      },
+      {
+        "timestamp": "2025-04-08T00:06:36.000281Z",
+        "temperature": 119.2,
+        "pressure": 67.8,
+        "flow_rate": 3.35,
+        "energy_usage": 439.68,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-08T02:06:36.000281Z",
+        "temperature": 120.1,
+        "pressure": 60.2,
+        "flow_rate": 3.39,
+        "energy_usage": 441.81,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-08T04:06:36.000281Z",
+        "temperature": 120.7,
+        "pressure": 66.1,
+        "flow_rate": 3.76,
+        "energy_usage": 447.52,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-08T06:06:36.000281Z",
+        "temperature": 121.6,
+        "pressure": 64.7,
+        "flow_rate": 3.14,
+        "energy_usage": 445.76,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-08T08:06:36.000281Z",
+        "temperature": 122.4,
+        "pressure": 59.0,
+        "flow_rate": 3.55,
+        "energy_usage": 433.26,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-08T10:06:36.000281Z",
+        "temperature": 123.5,
+        "pressure": 64.7,
+        "flow_rate": 3.28,
+        "energy_usage": 433.36,
+        "heater_status": "HEATING"
+      }
+    ]
+  },
+  {
+    "id": "wh-e0ae2f58",
+    "device_id": "wh-e0ae2f58",
+    "name": "Water Heater e0ae2f58",
+    "manufacturer": "AquaSmart",
+    "model": "SmartTank Pro",
+    "type": "water_heater",
+    "status": "ONLINE",
+    "temperature": 122.4,
+    "current_temperature": 122.4,
+    "target_temperature": 126.1,
+    "min_temperature": 40.0,
+    "max_temperature": 140.0,
+    "pressure": 62.3,
+    "flow_rate": 3.13,
+    "energy_usage": 474.6,
+    "heater_status": "STANDBY",
+    "mode": "ECO",
+    "readings": [
+      {
+        "timestamp": "2025-04-01T12:06:36.000525Z",
+        "temperature": 121.9,
+        "pressure": 58.8,
+        "flow_rate": 2.93,
+        "energy_usage": 547.02,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-01T14:06:36.000525Z",
+        "temperature": 122.0,
+        "pressure": 66.8,
+        "flow_rate": 2.87,
+        "energy_usage": 542.35,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-01T16:06:36.000525Z",
+        "temperature": 123.4,
+        "pressure": 60.0,
+        "flow_rate": 3.45,
+        "energy_usage": 557.52,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-01T18:06:36.000525Z",
+        "temperature": 123.4,
+        "pressure": 67.0,
+        "flow_rate": 3.57,
+        "energy_usage": 531.35,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-01T20:06:36.000525Z",
+        "temperature": 125.2,
+        "pressure": 64.4,
+        "flow_rate": 3.13,
+        "energy_usage": 550.06,
+        "heater_status": "STANDBY"
+      },
+      {
+        "timestamp": "2025-04-01T22:06:36.000525Z",
+        "temperature": 125.0,
+        "pressure": 63.3,
+        "flow_rate": 3.35,
+        "energy_usage": 537.44,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T00:06:36.000525Z",
+        "temperature": 119.1,
+        "pressure": 64.7,
+        "flow_rate": 3.21,
+        "energy_usage": 548.91,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T02:06:36.000525Z",
+        "temperature": 118.5,
+        "pressure": 62.4,
+        "flow_rate": 3.12,
+        "energy_usage": 558.04,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T04:06:36.000525Z",
+        "temperature": 120.8,
+        "pressure": 63.8,
+        "flow_rate": 3.6,
+        "energy_usage": 552.12,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T06:06:36.000525Z",
+        "temperature": 122.3,
+        "pressure": 63.1,
+        "flow_rate": 3.61,
+        "energy_usage": 545.92,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T08:06:36.000525Z",
+        "temperature": 122.5,
+        "pressure": 62.7,
+        "flow_rate": 2.78,
+        "energy_usage": 537.93,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T10:06:36.000525Z",
+        "temperature": 121.6,
+        "pressure": 64.8,
+        "flow_rate": 3.53,
+        "energy_usage": 548.06,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T12:06:36.000525Z",
+        "temperature": 121.6,
+        "pressure": 59.5,
+        "flow_rate": 2.86,
+        "energy_usage": 537.59,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T14:06:36.000525Z",
+        "temperature": 121.5,
+        "pressure": 62.5,
+        "flow_rate": 2.74,
+        "energy_usage": 526.51,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T16:06:36.000525Z",
+        "temperature": 122.0,
+        "pressure": 62.0,
+        "flow_rate": 2.68,
+        "energy_usage": 533.31,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T18:06:36.000525Z",
+        "temperature": 123.9,
+        "pressure": 67.0,
+        "flow_rate": 2.8,
+        "energy_usage": 532.2,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T20:06:36.000525Z",
+        "temperature": 124.3,
+        "pressure": 64.8,
+        "flow_rate": 3.25,
+        "energy_usage": 515.68,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T22:06:36.000525Z",
+        "temperature": 124.0,
+        "pressure": 67.1,
+        "flow_rate": 3.56,
+        "energy_usage": 544.54,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T00:06:36.000525Z",
+        "temperature": 119.7,
+        "pressure": 63.5,
+        "flow_rate": 3.27,
+        "energy_usage": 513.81,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T02:06:36.000525Z",
+        "temperature": 120.2,
+        "pressure": 66.1,
+        "flow_rate": 2.92,
+        "energy_usage": 523.02,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T04:06:36.000525Z",
+        "temperature": 120.6,
+        "pressure": 62.8,
+        "flow_rate": 2.89,
+        "energy_usage": 541.86,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T06:06:36.000525Z",
+        "temperature": 121.8,
+        "pressure": 63.3,
+        "flow_rate": 3.43,
+        "energy_usage": 528.88,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T08:06:36.000525Z",
+        "temperature": 121.6,
+        "pressure": 59.9,
+        "flow_rate": 3.49,
+        "energy_usage": 534.53,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T10:06:36.000525Z",
+        "temperature": 121.0,
+        "pressure": 66.4,
+        "flow_rate": 2.77,
+        "energy_usage": 539.24,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T12:06:36.000525Z",
+        "temperature": 122.9,
+        "pressure": 60.6,
+        "flow_rate": 3.4,
+        "energy_usage": 510.39,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T14:06:36.000525Z",
+        "temperature": 122.7,
+        "pressure": 67.0,
+        "flow_rate": 3.31,
+        "energy_usage": 517.71,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T16:06:36.000525Z",
+        "temperature": 123.0,
+        "pressure": 65.1,
+        "flow_rate": 3.5,
+        "energy_usage": 529.73,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T18:06:36.000525Z",
+        "temperature": 123.6,
+        "pressure": 57.7,
+        "flow_rate": 2.98,
+        "energy_usage": 503.15,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T20:06:36.000525Z",
+        "temperature": 125.7,
+        "pressure": 60.1,
+        "flow_rate": 3.28,
+        "energy_usage": 529.88,
+        "heater_status": "STANDBY"
+      },
+      {
+        "timestamp": "2025-04-03T22:06:36.000525Z",
+        "temperature": 124.7,
+        "pressure": 62.2,
+        "flow_rate": 3.58,
+        "energy_usage": 505.82,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T00:06:36.000525Z",
+        "temperature": 118.8,
+        "pressure": 63.8,
+        "flow_rate": 3.12,
+        "energy_usage": 539.46,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T02:06:36.000525Z",
+        "temperature": 119.7,
+        "pressure": 62.2,
+        "flow_rate": 3.54,
+        "energy_usage": 501.8,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T04:06:36.000525Z",
+        "temperature": 121.2,
+        "pressure": 60.8,
+        "flow_rate": 2.85,
+        "energy_usage": 521.91,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T06:06:36.000525Z",
+        "temperature": 121.2,
+        "pressure": 67.2,
+        "flow_rate": 2.66,
+        "energy_usage": 500.84,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T08:06:36.000525Z",
+        "temperature": 122.8,
+        "pressure": 57.6,
+        "flow_rate": 2.64,
+        "energy_usage": 509.0,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T10:06:36.000525Z",
+        "temperature": 122.8,
+        "pressure": 66.4,
+        "flow_rate": 3.18,
+        "energy_usage": 529.52,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T12:06:36.000525Z",
+        "temperature": 122.2,
+        "pressure": 66.5,
+        "flow_rate": 2.97,
+        "energy_usage": 518.99,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T14:06:36.000525Z",
+        "temperature": 121.7,
+        "pressure": 64.9,
+        "flow_rate": 2.76,
+        "energy_usage": 502.55,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T16:06:36.000525Z",
+        "temperature": 122.1,
+        "pressure": 61.6,
+        "flow_rate": 3.29,
+        "energy_usage": 531.59,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T18:06:36.000525Z",
+        "temperature": 123.6,
+        "pressure": 65.9,
+        "flow_rate": 3.28,
+        "energy_usage": 492.18,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T20:06:36.000525Z",
+        "temperature": 125.7,
+        "pressure": 63.0,
+        "flow_rate": 3.19,
+        "energy_usage": 495.2,
+        "heater_status": "STANDBY"
+      },
+      {
+        "timestamp": "2025-04-04T22:06:36.000525Z",
+        "temperature": 124.2,
+        "pressure": 65.7,
+        "flow_rate": 3.52,
+        "energy_usage": 490.68,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T00:06:36.000525Z",
+        "temperature": 118.2,
+        "pressure": 62.0,
+        "flow_rate": 3.55,
+        "energy_usage": 492.46,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T02:06:36.000525Z",
+        "temperature": 120.4,
+        "pressure": 66.4,
+        "flow_rate": 3.5,
+        "energy_usage": 514.04,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T04:06:36.000525Z",
+        "temperature": 121.7,
+        "pressure": 63.4,
+        "flow_rate": 3.0,
+        "energy_usage": 505.43,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T06:06:36.000525Z",
+        "temperature": 121.4,
+        "pressure": 67.3,
+        "flow_rate": 2.83,
+        "energy_usage": 516.8,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T08:06:36.000525Z",
+        "temperature": 120.1,
+        "pressure": 65.9,
+        "flow_rate": 3.61,
+        "energy_usage": 520.52,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T10:06:36.000525Z",
+        "temperature": 123.3,
+        "pressure": 64.3,
+        "flow_rate": 2.72,
+        "energy_usage": 512.55,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T12:06:36.000525Z",
+        "temperature": 123.8,
+        "pressure": 63.7,
+        "flow_rate": 2.89,
+        "energy_usage": 487.61,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T14:06:36.000525Z",
+        "temperature": 122.4,
+        "pressure": 65.7,
+        "flow_rate": 3.07,
+        "energy_usage": 522.12,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T16:06:36.000525Z",
+        "temperature": 122.8,
+        "pressure": 57.5,
+        "flow_rate": 3.02,
+        "energy_usage": 514.91,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T18:06:36.000525Z",
+        "temperature": 124.3,
+        "pressure": 59.3,
+        "flow_rate": 2.7,
+        "energy_usage": 499.08,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T20:06:36.000525Z",
+        "temperature": 124.3,
+        "pressure": 64.7,
+        "flow_rate": 2.75,
+        "energy_usage": 512.33,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T22:06:36.000525Z",
+        "temperature": 126.0,
+        "pressure": 58.4,
+        "flow_rate": 3.35,
+        "energy_usage": 492.62,
+        "heater_status": "STANDBY"
+      },
+      {
+        "timestamp": "2025-04-06T00:06:36.000525Z",
+        "temperature": 118.8,
+        "pressure": 58.6,
+        "flow_rate": 2.93,
+        "energy_usage": 480.57,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T02:06:36.000525Z",
+        "temperature": 118.6,
+        "pressure": 61.3,
+        "flow_rate": 3.28,
+        "energy_usage": 509.64,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T04:06:36.000525Z",
+        "temperature": 121.5,
+        "pressure": 57.5,
+        "flow_rate": 3.62,
+        "energy_usage": 496.07,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T06:06:36.000525Z",
+        "temperature": 119.9,
+        "pressure": 65.9,
+        "flow_rate": 3.52,
+        "energy_usage": 488.26,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T08:06:36.000525Z",
+        "temperature": 120.7,
+        "pressure": 65.8,
+        "flow_rate": 3.57,
+        "energy_usage": 499.27,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T10:06:36.000525Z",
+        "temperature": 121.9,
+        "pressure": 61.0,
+        "flow_rate": 3.23,
+        "energy_usage": 483.23,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T12:06:36.000525Z",
+        "temperature": 122.9,
+        "pressure": 63.9,
+        "flow_rate": 3.31,
+        "energy_usage": 480.34,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T14:06:36.000525Z",
+        "temperature": 121.7,
+        "pressure": 59.5,
+        "flow_rate": 2.79,
+        "energy_usage": 513.1,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T16:06:36.000525Z",
+        "temperature": 123.1,
+        "pressure": 58.2,
+        "flow_rate": 2.77,
+        "energy_usage": 511.47,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T18:06:36.000525Z",
+        "temperature": 125.1,
+        "pressure": 62.9,
+        "flow_rate": 2.68,
+        "energy_usage": 500.99,
+        "heater_status": "STANDBY"
+      },
+      {
+        "timestamp": "2025-04-06T20:06:36.000525Z",
+        "temperature": 125.0,
+        "pressure": 64.1,
+        "flow_rate": 2.68,
+        "energy_usage": 504.51,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T22:06:36.000525Z",
+        "temperature": 124.9,
+        "pressure": 63.8,
+        "flow_rate": 2.76,
+        "energy_usage": 487.12,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T00:06:36.000525Z",
+        "temperature": 119.5,
+        "pressure": 65.3,
+        "flow_rate": 3.57,
+        "energy_usage": 475.14,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T02:06:36.000525Z",
+        "temperature": 121.2,
+        "pressure": 58.2,
+        "flow_rate": 2.65,
+        "energy_usage": 503.2,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T04:06:36.000525Z",
+        "temperature": 120.3,
+        "pressure": 61.4,
+        "flow_rate": 3.05,
+        "energy_usage": 478.66,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T06:06:36.000525Z",
+        "temperature": 120.9,
+        "pressure": 63.6,
+        "flow_rate": 2.75,
+        "energy_usage": 477.41,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T08:06:36.000525Z",
+        "temperature": 121.2,
+        "pressure": 66.6,
+        "flow_rate": 2.96,
+        "energy_usage": 478.69,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T10:06:36.000525Z",
+        "temperature": 121.0,
+        "pressure": 62.2,
+        "flow_rate": 3.39,
+        "energy_usage": 474.21,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T12:06:36.000525Z",
+        "temperature": 121.5,
+        "pressure": 62.1,
+        "flow_rate": 2.9,
+        "energy_usage": 489.99,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T14:06:36.000525Z",
+        "temperature": 123.1,
+        "pressure": 65.7,
+        "flow_rate": 3.04,
+        "energy_usage": 479.38,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T16:06:36.000525Z",
+        "temperature": 122.8,
+        "pressure": 61.0,
+        "flow_rate": 3.48,
+        "energy_usage": 467.73,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T18:06:36.000525Z",
+        "temperature": 124.7,
+        "pressure": 66.5,
+        "flow_rate": 3.09,
+        "energy_usage": 493.62,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T20:06:36.000525Z",
+        "temperature": 123.3,
+        "pressure": 57.3,
+        "flow_rate": 2.8,
+        "energy_usage": 493.99,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T22:06:36.000525Z",
+        "temperature": 125.7,
+        "pressure": 62.7,
+        "flow_rate": 3.54,
+        "energy_usage": 469.01,
+        "heater_status": "STANDBY"
+      },
+      {
+        "timestamp": "2025-04-08T00:06:36.000525Z",
+        "temperature": 120.4,
+        "pressure": 66.4,
+        "flow_rate": 3.56,
+        "energy_usage": 480.22,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-08T02:06:36.000525Z",
+        "temperature": 120.5,
+        "pressure": 60.5,
+        "flow_rate": 3.25,
+        "energy_usage": 477.71,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-08T04:06:36.000525Z",
+        "temperature": 119.4,
+        "pressure": 60.7,
+        "flow_rate": 3.33,
+        "energy_usage": 488.99,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-08T06:06:36.000525Z",
+        "temperature": 120.3,
+        "pressure": 59.4,
+        "flow_rate": 2.88,
+        "energy_usage": 457.55,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-08T08:06:36.000525Z",
+        "temperature": 120.5,
+        "pressure": 59.8,
+        "flow_rate": 3.17,
+        "energy_usage": 461.1,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-08T10:06:36.000525Z",
+        "temperature": 121.4,
+        "pressure": 66.4,
+        "flow_rate": 3.28,
+        "energy_usage": 484.55,
+        "heater_status": "HEATING"
+      }
+    ]
+  },
+  {
+    "id": "wh-e1ae2f59",
+    "device_id": "wh-e1ae2f59",
+    "name": "Water Heater e1ae2f59",
+    "manufacturer": "AquaSmart",
+    "model": "SmartTank Pro",
+    "type": "water_heater",
+    "status": "ONLINE",
+    "temperature": 121.1,
+    "current_temperature": 121.1,
+    "target_temperature": 122.6,
+    "min_temperature": 40.0,
+    "max_temperature": 140.0,
+    "pressure": 64.9,
+    "flow_rate": 3.04,
+    "energy_usage": 437.6,
+    "heater_status": "STANDBY",
+    "mode": "ECO",
+    "readings": [
+      {
+        "timestamp": "2025-04-01T12:06:36.000769Z",
+        "temperature": 122.5,
+        "pressure": 64.1,
+        "flow_rate": 3.53,
+        "energy_usage": 520.84,
+        "heater_status": "STANDBY"
+      },
+      {
+        "timestamp": "2025-04-01T14:06:36.000769Z",
+        "temperature": 122.6,
+        "pressure": 64.8,
+        "flow_rate": 3.46,
+        "energy_usage": 488.34,
+        "heater_status": "STANDBY"
+      },
+      {
+        "timestamp": "2025-04-01T16:06:36.000769Z",
+        "temperature": 123.4,
+        "pressure": 63.2,
+        "flow_rate": 3.19,
+        "energy_usage": 488.75,
+        "heater_status": "STANDBY"
+      },
+      {
+        "timestamp": "2025-04-01T18:06:36.000769Z",
+        "temperature": 123.2,
+        "pressure": 63.5,
+        "flow_rate": 3.5,
+        "energy_usage": 521.2,
+        "heater_status": "STANDBY"
+      },
+      {
+        "timestamp": "2025-04-01T20:06:36.000769Z",
+        "temperature": 121.7,
+        "pressure": 65.3,
+        "flow_rate": 2.93,
+        "energy_usage": 509.78,
+        "heater_status": "STANDBY"
+      },
+      {
+        "timestamp": "2025-04-01T22:06:36.000769Z",
+        "temperature": 124.8,
+        "pressure": 66.7,
+        "flow_rate": 3.32,
+        "energy_usage": 506.03,
+        "heater_status": "STANDBY"
+      },
+      {
+        "timestamp": "2025-04-02T00:06:36.000769Z",
+        "temperature": 117.3,
+        "pressure": 69.6,
+        "flow_rate": 2.57,
+        "energy_usage": 510.77,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T02:06:36.000769Z",
+        "temperature": 119.8,
+        "pressure": 69.1,
+        "flow_rate": 2.79,
+        "energy_usage": 517.29,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T04:06:36.000769Z",
+        "temperature": 119.8,
+        "pressure": 68.5,
+        "flow_rate": 3.53,
+        "energy_usage": 517.26,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T06:06:36.000769Z",
+        "temperature": 120.7,
+        "pressure": 60.2,
+        "flow_rate": 3.16,
+        "energy_usage": 506.1,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T08:06:36.000769Z",
+        "temperature": 120.4,
+        "pressure": 63.2,
+        "flow_rate": 2.86,
+        "energy_usage": 513.18,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T10:06:36.000769Z",
+        "temperature": 121.4,
+        "pressure": 67.0,
+        "flow_rate": 3.21,
+        "energy_usage": 508.12,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T12:06:36.000769Z",
+        "temperature": 120.9,
+        "pressure": 62.3,
+        "flow_rate": 3.2,
+        "energy_usage": 501.51,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T14:06:36.000769Z",
+        "temperature": 122.2,
+        "pressure": 68.5,
+        "flow_rate": 2.59,
+        "energy_usage": 505.98,
+        "heater_status": "STANDBY"
+      },
+      {
+        "timestamp": "2025-04-02T16:06:36.000769Z",
+        "temperature": 122.1,
+        "pressure": 69.0,
+        "flow_rate": 2.63,
+        "energy_usage": 479.34,
+        "heater_status": "STANDBY"
+      },
+      {
+        "timestamp": "2025-04-02T18:06:36.000769Z",
+        "temperature": 122.1,
+        "pressure": 60.4,
+        "flow_rate": 2.63,
+        "energy_usage": 476.77,
+        "heater_status": "STANDBY"
+      },
+      {
+        "timestamp": "2025-04-02T20:06:36.000769Z",
+        "temperature": 124.2,
+        "pressure": 61.4,
+        "flow_rate": 2.95,
+        "energy_usage": 481.21,
+        "heater_status": "STANDBY"
+      },
+      {
+        "timestamp": "2025-04-02T22:06:36.000769Z",
+        "temperature": 123.1,
+        "pressure": 60.6,
+        "flow_rate": 2.69,
+        "energy_usage": 485.91,
+        "heater_status": "STANDBY"
+      },
+      {
+        "timestamp": "2025-04-03T00:06:36.000769Z",
+        "temperature": 118.2,
+        "pressure": 65.6,
+        "flow_rate": 3.53,
+        "energy_usage": 493.81,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T02:06:36.000769Z",
+        "temperature": 119.6,
+        "pressure": 60.1,
+        "flow_rate": 2.61,
+        "energy_usage": 498.96,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T04:06:36.000769Z",
+        "temperature": 118.7,
+        "pressure": 65.9,
+        "flow_rate": 3.11,
+        "energy_usage": 497.53,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T06:06:36.000769Z",
+        "temperature": 118.4,
+        "pressure": 65.3,
+        "flow_rate": 2.97,
+        "energy_usage": 489.79,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T08:06:36.000769Z",
+        "temperature": 120.0,
+        "pressure": 62.4,
+        "flow_rate": 2.81,
+        "energy_usage": 481.22,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T10:06:36.000769Z",
+        "temperature": 120.2,
+        "pressure": 68.7,
+        "flow_rate": 3.4,
+        "energy_usage": 492.22,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T12:06:36.000769Z",
+        "temperature": 120.2,
+        "pressure": 67.2,
+        "flow_rate": 3.03,
+        "energy_usage": 476.43,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T14:06:36.000769Z",
+        "temperature": 121.0,
+        "pressure": 69.3,
+        "flow_rate": 2.71,
+        "energy_usage": 493.63,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T16:06:36.000769Z",
+        "temperature": 122.5,
+        "pressure": 64.3,
+        "flow_rate": 3.13,
+        "energy_usage": 482.18,
+        "heater_status": "STANDBY"
+      },
+      {
+        "timestamp": "2025-04-03T18:06:36.000769Z",
+        "temperature": 121.4,
+        "pressure": 60.1,
+        "flow_rate": 2.61,
+        "energy_usage": 497.75,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T20:06:36.000769Z",
+        "temperature": 122.8,
+        "pressure": 64.2,
+        "flow_rate": 3.04,
+        "energy_usage": 466.16,
+        "heater_status": "STANDBY"
+      },
+      {
+        "timestamp": "2025-04-03T22:06:36.000769Z",
+        "temperature": 123.7,
+        "pressure": 62.8,
+        "flow_rate": 2.72,
+        "energy_usage": 472.72,
+        "heater_status": "STANDBY"
+      },
+      {
+        "timestamp": "2025-04-04T00:06:36.000769Z",
+        "temperature": 119.5,
+        "pressure": 67.9,
+        "flow_rate": 3.5,
+        "energy_usage": 497.91,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T02:06:36.000769Z",
+        "temperature": 119.0,
+        "pressure": 61.2,
+        "flow_rate": 3.28,
+        "energy_usage": 483.15,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T04:06:36.000769Z",
+        "temperature": 119.2,
+        "pressure": 61.2,
+        "flow_rate": 3.06,
+        "energy_usage": 486.8,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T06:06:36.000769Z",
+        "temperature": 120.9,
+        "pressure": 61.3,
+        "flow_rate": 2.79,
+        "energy_usage": 496.77,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T08:06:36.000769Z",
+        "temperature": 121.4,
+        "pressure": 67.6,
+        "flow_rate": 3.28,
+        "energy_usage": 464.23,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T10:06:36.000769Z",
+        "temperature": 119.9,
+        "pressure": 65.1,
+        "flow_rate": 3.38,
+        "energy_usage": 489.2,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T12:06:36.000769Z",
+        "temperature": 121.0,
+        "pressure": 65.2,
+        "flow_rate": 3.14,
+        "energy_usage": 487.45,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T14:06:36.000769Z",
+        "temperature": 120.4,
+        "pressure": 63.0,
+        "flow_rate": 3.09,
+        "energy_usage": 461.09,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T16:06:36.000769Z",
+        "temperature": 122.6,
+        "pressure": 65.1,
+        "flow_rate": 3.48,
+        "energy_usage": 470.57,
+        "heater_status": "STANDBY"
+      },
+      {
+        "timestamp": "2025-04-04T18:06:36.000769Z",
+        "temperature": 121.3,
+        "pressure": 61.3,
+        "flow_rate": 3.37,
+        "energy_usage": 480.34,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T20:06:36.000769Z",
+        "temperature": 123.5,
+        "pressure": 67.1,
+        "flow_rate": 3.31,
+        "energy_usage": 488.06,
+        "heater_status": "STANDBY"
+      },
+      {
+        "timestamp": "2025-04-04T22:06:36.000769Z",
+        "temperature": 123.7,
+        "pressure": 64.9,
+        "flow_rate": 3.45,
+        "energy_usage": 474.4,
+        "heater_status": "STANDBY"
+      },
+      {
+        "timestamp": "2025-04-05T00:06:36.000769Z",
+        "temperature": 119.6,
+        "pressure": 60.7,
+        "flow_rate": 2.8,
+        "energy_usage": 484.57,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T02:06:36.000769Z",
+        "temperature": 120.0,
+        "pressure": 62.3,
+        "flow_rate": 2.9,
+        "energy_usage": 457.1,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T04:06:36.000769Z",
+        "temperature": 119.0,
+        "pressure": 61.7,
+        "flow_rate": 3.06,
+        "energy_usage": 458.84,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T06:06:36.000769Z",
+        "temperature": 119.4,
+        "pressure": 62.0,
+        "flow_rate": 3.07,
+        "energy_usage": 467.6,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T08:06:36.000769Z",
+        "temperature": 120.6,
+        "pressure": 68.3,
+        "flow_rate": 3.1,
+        "energy_usage": 488.68,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T10:06:36.000769Z",
+        "temperature": 120.7,
+        "pressure": 64.6,
+        "flow_rate": 3.11,
+        "energy_usage": 455.26,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T12:06:36.000769Z",
+        "temperature": 121.7,
+        "pressure": 66.5,
+        "flow_rate": 3.15,
+        "energy_usage": 460.41,
+        "heater_status": "STANDBY"
+      },
+      {
+        "timestamp": "2025-04-05T14:06:36.000769Z",
+        "temperature": 122.7,
+        "pressure": 61.9,
+        "flow_rate": 3.41,
+        "energy_usage": 480.02,
+        "heater_status": "STANDBY"
+      },
+      {
+        "timestamp": "2025-04-05T16:06:36.000769Z",
+        "temperature": 121.6,
+        "pressure": 60.7,
+        "flow_rate": 2.62,
+        "energy_usage": 468.56,
+        "heater_status": "STANDBY"
+      },
+      {
+        "timestamp": "2025-04-05T18:06:36.000769Z",
+        "temperature": 122.2,
+        "pressure": 63.4,
+        "flow_rate": 3.17,
+        "energy_usage": 448.54,
+        "heater_status": "STANDBY"
+      },
+      {
+        "timestamp": "2025-04-05T20:06:36.000769Z",
+        "temperature": 121.9,
+        "pressure": 69.6,
+        "flow_rate": 3.15,
+        "energy_usage": 472.88,
+        "heater_status": "STANDBY"
+      },
+      {
+        "timestamp": "2025-04-05T22:06:36.000769Z",
+        "temperature": 124.1,
+        "pressure": 63.7,
+        "flow_rate": 3.11,
+        "energy_usage": 461.41,
+        "heater_status": "STANDBY"
+      },
+      {
+        "timestamp": "2025-04-06T00:06:36.000769Z",
+        "temperature": 117.5,
+        "pressure": 64.7,
+        "flow_rate": 3.01,
+        "energy_usage": 448.66,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T02:06:36.000769Z",
+        "temperature": 119.4,
+        "pressure": 60.6,
+        "flow_rate": 3.39,
+        "energy_usage": 480.64,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T04:06:36.000769Z",
+        "temperature": 119.8,
+        "pressure": 64.2,
+        "flow_rate": 3.02,
+        "energy_usage": 460.06,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T06:06:36.000769Z",
+        "temperature": 118.9,
+        "pressure": 62.4,
+        "flow_rate": 3.24,
+        "energy_usage": 464.43,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T08:06:36.000769Z",
+        "temperature": 121.2,
+        "pressure": 65.8,
+        "flow_rate": 3.47,
+        "energy_usage": 471.19,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T10:06:36.000769Z",
+        "temperature": 121.6,
+        "pressure": 61.5,
+        "flow_rate": 3.36,
+        "energy_usage": 476.86,
+        "heater_status": "STANDBY"
+      },
+      {
+        "timestamp": "2025-04-06T12:06:36.000769Z",
+        "temperature": 122.6,
+        "pressure": 63.0,
+        "flow_rate": 2.61,
+        "energy_usage": 443.44,
+        "heater_status": "STANDBY"
+      },
+      {
+        "timestamp": "2025-04-06T14:06:36.000769Z",
+        "temperature": 122.8,
+        "pressure": 65.1,
+        "flow_rate": 2.57,
+        "energy_usage": 470.43,
+        "heater_status": "STANDBY"
+      },
+      {
+        "timestamp": "2025-04-06T16:06:36.000769Z",
+        "temperature": 122.5,
+        "pressure": 62.8,
+        "flow_rate": 2.83,
+        "energy_usage": 439.19,
+        "heater_status": "STANDBY"
+      },
+      {
+        "timestamp": "2025-04-06T18:06:36.000769Z",
+        "temperature": 121.3,
+        "pressure": 68.6,
+        "flow_rate": 3.37,
+        "energy_usage": 466.27,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T20:06:36.000769Z",
+        "temperature": 123.2,
+        "pressure": 66.4,
+        "flow_rate": 2.59,
+        "energy_usage": 434.93,
+        "heater_status": "STANDBY"
+      },
+      {
+        "timestamp": "2025-04-06T22:06:36.000769Z",
+        "temperature": 123.9,
+        "pressure": 65.5,
+        "flow_rate": 3.1,
+        "energy_usage": 456.75,
+        "heater_status": "STANDBY"
+      },
+      {
+        "timestamp": "2025-04-07T00:06:36.000769Z",
+        "temperature": 118.8,
+        "pressure": 64.4,
+        "flow_rate": 2.66,
+        "energy_usage": 442.72,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T02:06:36.000769Z",
+        "temperature": 118.5,
+        "pressure": 61.2,
+        "flow_rate": 2.93,
+        "energy_usage": 441.01,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T04:06:36.000769Z",
+        "temperature": 119.8,
+        "pressure": 66.2,
+        "flow_rate": 3.36,
+        "energy_usage": 460.02,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T06:06:36.000769Z",
+        "temperature": 119.4,
+        "pressure": 65.2,
+        "flow_rate": 3.04,
+        "energy_usage": 451.67,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T08:06:36.000769Z",
+        "temperature": 119.8,
+        "pressure": 63.0,
+        "flow_rate": 3.39,
+        "energy_usage": 450.72,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T10:06:36.000769Z",
+        "temperature": 119.2,
+        "pressure": 61.1,
+        "flow_rate": 3.06,
+        "energy_usage": 458.67,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T12:06:36.000769Z",
+        "temperature": 120.6,
+        "pressure": 64.3,
+        "flow_rate": 3.34,
+        "energy_usage": 444.54,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T14:06:36.000769Z",
+        "temperature": 122.9,
+        "pressure": 63.6,
+        "flow_rate": 2.99,
+        "energy_usage": 443.13,
+        "heater_status": "STANDBY"
+      },
+      {
+        "timestamp": "2025-04-07T16:06:36.000769Z",
+        "temperature": 121.2,
+        "pressure": 66.3,
+        "flow_rate": 2.84,
+        "energy_usage": 437.07,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T18:06:36.000769Z",
+        "temperature": 121.3,
+        "pressure": 66.9,
+        "flow_rate": 2.56,
+        "energy_usage": 462.64,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T20:06:36.000769Z",
+        "temperature": 121.8,
+        "pressure": 66.1,
+        "flow_rate": 3.33,
+        "energy_usage": 460.8,
+        "heater_status": "STANDBY"
+      },
+      {
+        "timestamp": "2025-04-07T22:06:36.000769Z",
+        "temperature": 124.2,
+        "pressure": 62.8,
+        "flow_rate": 2.99,
+        "energy_usage": 432.25,
+        "heater_status": "STANDBY"
+      },
+      {
+        "timestamp": "2025-04-08T00:06:36.000769Z",
+        "temperature": 117.7,
+        "pressure": 65.3,
+        "flow_rate": 3.43,
+        "energy_usage": 457.77,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-08T02:06:36.000769Z",
+        "temperature": 119.1,
+        "pressure": 69.7,
+        "flow_rate": 3.49,
+        "energy_usage": 434.04,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-08T04:06:36.000769Z",
+        "temperature": 120.1,
+        "pressure": 63.4,
+        "flow_rate": 2.79,
+        "energy_usage": 455.28,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-08T06:06:36.000769Z",
+        "temperature": 119.5,
+        "pressure": 62.1,
+        "flow_rate": 3.18,
+        "energy_usage": 452.67,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-08T08:06:36.000769Z",
+        "temperature": 120.2,
+        "pressure": 67.6,
+        "flow_rate": 3.49,
+        "energy_usage": 431.23,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-08T10:06:36.000769Z",
+        "temperature": 121.4,
+        "pressure": 61.5,
+        "flow_rate": 2.97,
+        "energy_usage": 419.85,
+        "heater_status": "HEATING"
+      }
+    ]
+  },
+  {
+    "id": "wh-e2ae2f60",
+    "device_id": "wh-e2ae2f60",
+    "name": "Water Heater e2ae2f60",
+    "manufacturer": "AquaSmart",
+    "model": "SmartTank Pro",
+    "type": "water_heater",
+    "status": "ONLINE",
+    "temperature": 118.6,
+    "current_temperature": 118.6,
+    "target_temperature": 126.2,
+    "min_temperature": 40.0,
+    "max_temperature": 140.0,
+    "pressure": 60.9,
+    "flow_rate": 3.31,
+    "energy_usage": 461.4,
+    "heater_status": "STANDBY",
+    "mode": "ECO",
+    "readings": [
+      {
+        "timestamp": "2025-04-01T12:06:36.001015Z",
+        "temperature": 119.3,
+        "pressure": 57.0,
+        "flow_rate": 2.83,
+        "energy_usage": 534.28,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-01T14:06:36.001015Z",
+        "temperature": 118.9,
+        "pressure": 60.2,
+        "flow_rate": 3.06,
+        "energy_usage": 531.2,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-01T16:06:36.001015Z",
+        "temperature": 120.4,
+        "pressure": 60.7,
+        "flow_rate": 3.51,
+        "energy_usage": 536.01,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-01T18:06:36.001015Z",
+        "temperature": 120.2,
+        "pressure": 61.9,
+        "flow_rate": 3.22,
+        "energy_usage": 510.17,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-01T20:06:36.001015Z",
+        "temperature": 119.1,
+        "pressure": 65.3,
+        "flow_rate": 3.3,
+        "energy_usage": 546.12,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-01T22:06:36.001015Z",
+        "temperature": 121.7,
+        "pressure": 61.5,
+        "flow_rate": 3.36,
+        "energy_usage": 511.13,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T00:06:36.001015Z",
+        "temperature": 116.2,
+        "pressure": 61.6,
+        "flow_rate": 2.97,
+        "energy_usage": 538.13,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T02:06:36.001015Z",
+        "temperature": 116.2,
+        "pressure": 58.9,
+        "flow_rate": 3.57,
+        "energy_usage": 516.58,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T04:06:36.001015Z",
+        "temperature": 116.2,
+        "pressure": 61.1,
+        "flow_rate": 3.29,
+        "energy_usage": 513.47,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T06:06:36.001015Z",
+        "temperature": 118.4,
+        "pressure": 57.0,
+        "flow_rate": 3.39,
+        "energy_usage": 535.86,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T08:06:36.001015Z",
+        "temperature": 117.0,
+        "pressure": 60.7,
+        "flow_rate": 2.95,
+        "energy_usage": 506.43,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T10:06:36.001015Z",
+        "temperature": 119.5,
+        "pressure": 59.8,
+        "flow_rate": 3.44,
+        "energy_usage": 503.75,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T12:06:36.001015Z",
+        "temperature": 117.7,
+        "pressure": 62.5,
+        "flow_rate": 2.89,
+        "energy_usage": 524.21,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T14:06:36.001015Z",
+        "temperature": 118.0,
+        "pressure": 61.0,
+        "flow_rate": 3.16,
+        "energy_usage": 514.05,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T16:06:36.001015Z",
+        "temperature": 120.2,
+        "pressure": 56.2,
+        "flow_rate": 3.19,
+        "energy_usage": 508.94,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T18:06:36.001015Z",
+        "temperature": 120.3,
+        "pressure": 63.8,
+        "flow_rate": 3.3,
+        "energy_usage": 529.2,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T20:06:36.001015Z",
+        "temperature": 119.5,
+        "pressure": 57.0,
+        "flow_rate": 3.43,
+        "energy_usage": 506.23,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T22:06:36.001015Z",
+        "temperature": 120.7,
+        "pressure": 64.1,
+        "flow_rate": 3.61,
+        "energy_usage": 518.86,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T00:06:36.001015Z",
+        "temperature": 116.7,
+        "pressure": 62.1,
+        "flow_rate": 3.1,
+        "energy_usage": 512.75,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T02:06:36.001015Z",
+        "temperature": 117.5,
+        "pressure": 56.7,
+        "flow_rate": 3.38,
+        "energy_usage": 521.84,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T04:06:36.001015Z",
+        "temperature": 117.0,
+        "pressure": 56.9,
+        "flow_rate": 2.83,
+        "energy_usage": 504.18,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T06:06:36.001015Z",
+        "temperature": 116.8,
+        "pressure": 62.1,
+        "flow_rate": 3.23,
+        "energy_usage": 503.22,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T08:06:36.001015Z",
+        "temperature": 117.4,
+        "pressure": 65.6,
+        "flow_rate": 2.89,
+        "energy_usage": 509.42,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T10:06:36.001015Z",
+        "temperature": 117.4,
+        "pressure": 62.6,
+        "flow_rate": 3.49,
+        "energy_usage": 493.61,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T12:06:36.001015Z",
+        "temperature": 117.7,
+        "pressure": 56.0,
+        "flow_rate": 3.21,
+        "energy_usage": 515.17,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T14:06:36.001015Z",
+        "temperature": 118.8,
+        "pressure": 64.4,
+        "flow_rate": 3.5,
+        "energy_usage": 503.07,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T16:06:36.001015Z",
+        "temperature": 119.4,
+        "pressure": 64.2,
+        "flow_rate": 3.06,
+        "energy_usage": 490.67,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T18:06:36.001015Z",
+        "temperature": 119.3,
+        "pressure": 62.4,
+        "flow_rate": 3.66,
+        "energy_usage": 517.69,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T20:06:36.001015Z",
+        "temperature": 119.6,
+        "pressure": 56.0,
+        "flow_rate": 3.58,
+        "energy_usage": 515.36,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T22:06:36.001015Z",
+        "temperature": 121.9,
+        "pressure": 61.8,
+        "flow_rate": 3.0,
+        "energy_usage": 525.5,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T00:06:36.001015Z",
+        "temperature": 116.7,
+        "pressure": 65.5,
+        "flow_rate": 3.69,
+        "energy_usage": 519.34,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T02:06:36.001015Z",
+        "temperature": 117.4,
+        "pressure": 62.6,
+        "flow_rate": 3.06,
+        "energy_usage": 522.01,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T04:06:36.001015Z",
+        "temperature": 116.2,
+        "pressure": 59.9,
+        "flow_rate": 3.08,
+        "energy_usage": 500.31,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T06:06:36.001015Z",
+        "temperature": 116.7,
+        "pressure": 60.4,
+        "flow_rate": 3.44,
+        "energy_usage": 503.1,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T08:06:36.001015Z",
+        "temperature": 118.8,
+        "pressure": 62.3,
+        "flow_rate": 3.21,
+        "energy_usage": 517.83,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T10:06:36.001015Z",
+        "temperature": 119.3,
+        "pressure": 63.1,
+        "flow_rate": 3.58,
+        "energy_usage": 496.89,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T12:06:36.001015Z",
+        "temperature": 120.1,
+        "pressure": 64.7,
+        "flow_rate": 3.57,
+        "energy_usage": 488.9,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T14:06:36.001015Z",
+        "temperature": 118.8,
+        "pressure": 59.2,
+        "flow_rate": 3.37,
+        "energy_usage": 500.99,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T16:06:36.001015Z",
+        "temperature": 119.7,
+        "pressure": 63.8,
+        "flow_rate": 3.36,
+        "energy_usage": 493.0,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T18:06:36.001015Z",
+        "temperature": 121.5,
+        "pressure": 61.2,
+        "flow_rate": 2.95,
+        "energy_usage": 514.02,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T20:06:36.001015Z",
+        "temperature": 119.5,
+        "pressure": 56.8,
+        "flow_rate": 3.26,
+        "energy_usage": 497.68,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T22:06:36.001015Z",
+        "temperature": 122.4,
+        "pressure": 60.7,
+        "flow_rate": 3.31,
+        "energy_usage": 498.86,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T00:06:36.001015Z",
+        "temperature": 116.2,
+        "pressure": 57.4,
+        "flow_rate": 3.55,
+        "energy_usage": 484.07,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T02:06:36.001015Z",
+        "temperature": 117.5,
+        "pressure": 60.7,
+        "flow_rate": 3.34,
+        "energy_usage": 490.03,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T04:06:36.001015Z",
+        "temperature": 117.8,
+        "pressure": 56.6,
+        "flow_rate": 3.0,
+        "energy_usage": 502.39,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T06:06:36.001015Z",
+        "temperature": 118.5,
+        "pressure": 61.6,
+        "flow_rate": 3.73,
+        "energy_usage": 480.58,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T08:06:36.001015Z",
+        "temperature": 117.1,
+        "pressure": 63.6,
+        "flow_rate": 3.12,
+        "energy_usage": 511.5,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T10:06:36.001015Z",
+        "temperature": 116.7,
+        "pressure": 57.6,
+        "flow_rate": 3.03,
+        "energy_usage": 476.29,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T12:06:36.001015Z",
+        "temperature": 117.4,
+        "pressure": 56.2,
+        "flow_rate": 3.07,
+        "energy_usage": 494.2,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T14:06:36.001015Z",
+        "temperature": 118.3,
+        "pressure": 56.4,
+        "flow_rate": 3.23,
+        "energy_usage": 482.18,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T16:06:36.001015Z",
+        "temperature": 118.8,
+        "pressure": 64.1,
+        "flow_rate": 2.98,
+        "energy_usage": 482.29,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T18:06:36.001015Z",
+        "temperature": 120.6,
+        "pressure": 63.7,
+        "flow_rate": 3.38,
+        "energy_usage": 496.87,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T20:06:36.001015Z",
+        "temperature": 120.8,
+        "pressure": 59.3,
+        "flow_rate": 3.07,
+        "energy_usage": 493.03,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T22:06:36.001015Z",
+        "temperature": 122.3,
+        "pressure": 56.7,
+        "flow_rate": 3.36,
+        "energy_usage": 488.85,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T00:06:36.001015Z",
+        "temperature": 116.2,
+        "pressure": 57.1,
+        "flow_rate": 3.51,
+        "energy_usage": 482.55,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T02:06:36.001015Z",
+        "temperature": 116.2,
+        "pressure": 57.4,
+        "flow_rate": 3.37,
+        "energy_usage": 475.4,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T04:06:36.001015Z",
+        "temperature": 117.6,
+        "pressure": 60.6,
+        "flow_rate": 3.23,
+        "energy_usage": 489.97,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T06:06:36.001015Z",
+        "temperature": 116.2,
+        "pressure": 65.4,
+        "flow_rate": 3.34,
+        "energy_usage": 466.23,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T08:06:36.001015Z",
+        "temperature": 116.6,
+        "pressure": 64.2,
+        "flow_rate": 3.74,
+        "energy_usage": 479.99,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T10:06:36.001015Z",
+        "temperature": 118.4,
+        "pressure": 64.5,
+        "flow_rate": 3.77,
+        "energy_usage": 473.3,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T12:06:36.001015Z",
+        "temperature": 117.8,
+        "pressure": 56.1,
+        "flow_rate": 3.57,
+        "energy_usage": 490.65,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T14:06:36.001015Z",
+        "temperature": 117.8,
+        "pressure": 58.9,
+        "flow_rate": 3.51,
+        "energy_usage": 487.58,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T16:06:36.001015Z",
+        "temperature": 121.0,
+        "pressure": 62.4,
+        "flow_rate": 3.73,
+        "energy_usage": 483.71,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T18:06:36.001015Z",
+        "temperature": 119.7,
+        "pressure": 62.0,
+        "flow_rate": 3.3,
+        "energy_usage": 481.43,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T20:06:36.001015Z",
+        "temperature": 119.7,
+        "pressure": 64.5,
+        "flow_rate": 3.71,
+        "energy_usage": 497.2,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T22:06:36.001015Z",
+        "temperature": 120.6,
+        "pressure": 63.7,
+        "flow_rate": 3.09,
+        "energy_usage": 461.26,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T00:06:36.001015Z",
+        "temperature": 116.5,
+        "pressure": 60.3,
+        "flow_rate": 3.57,
+        "energy_usage": 495.42,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T02:06:36.001015Z",
+        "temperature": 116.3,
+        "pressure": 61.1,
+        "flow_rate": 2.86,
+        "energy_usage": 480.6,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T04:06:36.001015Z",
+        "temperature": 116.5,
+        "pressure": 59.2,
+        "flow_rate": 3.48,
+        "energy_usage": 463.24,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T06:06:36.001015Z",
+        "temperature": 117.9,
+        "pressure": 63.1,
+        "flow_rate": 3.06,
+        "energy_usage": 480.58,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T08:06:36.001015Z",
+        "temperature": 117.8,
+        "pressure": 56.8,
+        "flow_rate": 2.85,
+        "energy_usage": 453.72,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T10:06:36.001015Z",
+        "temperature": 117.1,
+        "pressure": 63.2,
+        "flow_rate": 2.91,
+        "energy_usage": 489.19,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T12:06:36.001015Z",
+        "temperature": 120.0,
+        "pressure": 60.3,
+        "flow_rate": 3.37,
+        "energy_usage": 487.5,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T14:06:36.001015Z",
+        "temperature": 117.8,
+        "pressure": 62.6,
+        "flow_rate": 2.84,
+        "energy_usage": 465.99,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T16:06:36.001015Z",
+        "temperature": 118.6,
+        "pressure": 60.2,
+        "flow_rate": 3.48,
+        "energy_usage": 472.0,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T18:06:36.001015Z",
+        "temperature": 120.0,
+        "pressure": 59.1,
+        "flow_rate": 2.92,
+        "energy_usage": 461.39,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T20:06:36.001015Z",
+        "temperature": 120.8,
+        "pressure": 59.5,
+        "flow_rate": 3.3,
+        "energy_usage": 467.17,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T22:06:36.001015Z",
+        "temperature": 120.9,
+        "pressure": 57.4,
+        "flow_rate": 2.98,
+        "energy_usage": 479.39,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-08T00:06:36.001015Z",
+        "temperature": 116.9,
+        "pressure": 56.5,
+        "flow_rate": 3.72,
+        "energy_usage": 451.69,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-08T02:06:36.001015Z",
+        "temperature": 116.2,
+        "pressure": 64.9,
+        "flow_rate": 2.98,
+        "energy_usage": 460.43,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-08T04:06:36.001015Z",
+        "temperature": 118.0,
+        "pressure": 62.9,
+        "flow_rate": 3.44,
+        "energy_usage": 445.13,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-08T06:06:36.001015Z",
+        "temperature": 117.6,
+        "pressure": 60.4,
+        "flow_rate": 3.03,
+        "energy_usage": 460.26,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-08T08:06:36.001015Z",
+        "temperature": 118.3,
+        "pressure": 60.6,
+        "flow_rate": 3.59,
+        "energy_usage": 454.75,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-08T10:06:36.001015Z",
+        "temperature": 117.2,
+        "pressure": 63.0,
+        "flow_rate": 3.17,
+        "energy_usage": 444.28,
+        "heater_status": "HEATING"
+      }
+    ]
+  },
+  {
+    "id": "wh-e3ae2f61",
+    "device_id": "wh-e3ae2f61",
+    "name": "Water Heater e3ae2f61",
+    "manufacturer": "AquaSmart",
+    "model": "SmartTank Pro",
+    "type": "water_heater",
+    "status": "ONLINE",
+    "temperature": 121.3,
+    "current_temperature": 121.3,
+    "target_temperature": 127.1,
+    "min_temperature": 40.0,
+    "max_temperature": 140.0,
+    "pressure": 57.9,
+    "flow_rate": 3.19,
+    "energy_usage": 475.6,
+    "heater_status": "STANDBY",
+    "mode": "ECO",
+    "readings": [
+      {
+        "timestamp": "2025-04-01T12:06:36.001256Z",
+        "temperature": 120.0,
+        "pressure": 54.0,
+        "flow_rate": 3.62,
+        "energy_usage": 545.13,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-01T14:06:36.001256Z",
+        "temperature": 122.9,
+        "pressure": 61.2,
+        "flow_rate": 3.54,
+        "energy_usage": 551.85,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-01T16:06:36.001256Z",
+        "temperature": 123.1,
+        "pressure": 57.4,
+        "flow_rate": 3.64,
+        "energy_usage": 548.05,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-01T18:06:36.001256Z",
+        "temperature": 123.2,
+        "pressure": 61.8,
+        "flow_rate": 3.54,
+        "energy_usage": 524.19,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-01T20:06:36.001256Z",
+        "temperature": 122.5,
+        "pressure": 57.1,
+        "flow_rate": 3.6,
+        "energy_usage": 551.95,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-01T22:06:36.001256Z",
+        "temperature": 123.3,
+        "pressure": 56.3,
+        "flow_rate": 3.15,
+        "energy_usage": 544.36,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T00:06:36.001256Z",
+        "temperature": 118.2,
+        "pressure": 53.9,
+        "flow_rate": 3.53,
+        "energy_usage": 559.5,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T02:06:36.001256Z",
+        "temperature": 118.6,
+        "pressure": 56.9,
+        "flow_rate": 3.26,
+        "energy_usage": 537.77,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T04:06:36.001256Z",
+        "temperature": 118.9,
+        "pressure": 57.4,
+        "flow_rate": 2.83,
+        "energy_usage": 535.26,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T06:06:36.001256Z",
+        "temperature": 119.2,
+        "pressure": 53.0,
+        "flow_rate": 3.64,
+        "energy_usage": 553.52,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T08:06:36.001256Z",
+        "temperature": 120.6,
+        "pressure": 58.6,
+        "flow_rate": 2.99,
+        "energy_usage": 556.26,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T10:06:36.001256Z",
+        "temperature": 120.5,
+        "pressure": 62.6,
+        "flow_rate": 3.39,
+        "energy_usage": 554.53,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T12:06:36.001256Z",
+        "temperature": 120.4,
+        "pressure": 58.7,
+        "flow_rate": 3.01,
+        "energy_usage": 525.37,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T14:06:36.001256Z",
+        "temperature": 123.0,
+        "pressure": 61.5,
+        "flow_rate": 3.03,
+        "energy_usage": 539.41,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T16:06:36.001256Z",
+        "temperature": 123.3,
+        "pressure": 53.5,
+        "flow_rate": 3.11,
+        "energy_usage": 545.38,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T18:06:36.001256Z",
+        "temperature": 123.3,
+        "pressure": 56.1,
+        "flow_rate": 3.51,
+        "energy_usage": 518.73,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T20:06:36.001256Z",
+        "temperature": 124.7,
+        "pressure": 60.4,
+        "flow_rate": 3.08,
+        "energy_usage": 543.59,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T22:06:36.001256Z",
+        "temperature": 123.9,
+        "pressure": 53.4,
+        "flow_rate": 3.31,
+        "energy_usage": 548.25,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T00:06:36.001256Z",
+        "temperature": 117.3,
+        "pressure": 55.8,
+        "flow_rate": 3.43,
+        "energy_usage": 521.73,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T02:06:36.001256Z",
+        "temperature": 118.7,
+        "pressure": 57.1,
+        "flow_rate": 3.44,
+        "energy_usage": 538.81,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T04:06:36.001256Z",
+        "temperature": 120.3,
+        "pressure": 54.5,
+        "flow_rate": 2.77,
+        "energy_usage": 548.21,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T06:06:36.001256Z",
+        "temperature": 120.8,
+        "pressure": 60.1,
+        "flow_rate": 3.61,
+        "energy_usage": 512.08,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T08:06:36.001256Z",
+        "temperature": 119.4,
+        "pressure": 56.2,
+        "flow_rate": 3.64,
+        "energy_usage": 535.33,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T10:06:36.001256Z",
+        "temperature": 119.7,
+        "pressure": 60.5,
+        "flow_rate": 2.74,
+        "energy_usage": 507.05,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T12:06:36.001256Z",
+        "temperature": 121.8,
+        "pressure": 54.4,
+        "flow_rate": 3.49,
+        "energy_usage": 523.84,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T14:06:36.001256Z",
+        "temperature": 122.8,
+        "pressure": 59.2,
+        "flow_rate": 3.61,
+        "energy_usage": 531.66,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T16:06:36.001256Z",
+        "temperature": 123.2,
+        "pressure": 60.8,
+        "flow_rate": 3.61,
+        "energy_usage": 520.47,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T18:06:36.001256Z",
+        "temperature": 123.5,
+        "pressure": 60.0,
+        "flow_rate": 3.35,
+        "energy_usage": 534.71,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T20:06:36.001256Z",
+        "temperature": 121.9,
+        "pressure": 61.4,
+        "flow_rate": 2.74,
+        "energy_usage": 513.5,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T22:06:36.001256Z",
+        "temperature": 123.0,
+        "pressure": 53.9,
+        "flow_rate": 3.53,
+        "energy_usage": 531.84,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T00:06:36.001256Z",
+        "temperature": 117.5,
+        "pressure": 53.3,
+        "flow_rate": 2.76,
+        "energy_usage": 500.97,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T02:06:36.001256Z",
+        "temperature": 119.8,
+        "pressure": 56.3,
+        "flow_rate": 2.83,
+        "energy_usage": 506.14,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T04:06:36.001256Z",
+        "temperature": 119.0,
+        "pressure": 62.4,
+        "flow_rate": 3.22,
+        "energy_usage": 510.77,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T06:06:36.001256Z",
+        "temperature": 120.7,
+        "pressure": 53.5,
+        "flow_rate": 2.9,
+        "energy_usage": 510.27,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T08:06:36.001256Z",
+        "temperature": 120.2,
+        "pressure": 53.6,
+        "flow_rate": 2.72,
+        "energy_usage": 514.25,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T10:06:36.001256Z",
+        "temperature": 119.5,
+        "pressure": 60.0,
+        "flow_rate": 3.0,
+        "energy_usage": 525.07,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T12:06:36.001256Z",
+        "temperature": 122.8,
+        "pressure": 57.2,
+        "flow_rate": 3.53,
+        "energy_usage": 505.63,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T14:06:36.001256Z",
+        "temperature": 120.4,
+        "pressure": 53.4,
+        "flow_rate": 3.61,
+        "energy_usage": 497.99,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T16:06:36.001256Z",
+        "temperature": 121.5,
+        "pressure": 58.5,
+        "flow_rate": 2.75,
+        "energy_usage": 533.33,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T18:06:36.001256Z",
+        "temperature": 123.6,
+        "pressure": 55.5,
+        "flow_rate": 3.19,
+        "energy_usage": 520.4,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T20:06:36.001256Z",
+        "temperature": 124.5,
+        "pressure": 55.4,
+        "flow_rate": 3.37,
+        "energy_usage": 507.08,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T22:06:36.001256Z",
+        "temperature": 122.4,
+        "pressure": 57.0,
+        "flow_rate": 3.53,
+        "energy_usage": 507.63,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T00:06:36.001256Z",
+        "temperature": 117.7,
+        "pressure": 60.3,
+        "flow_rate": 3.64,
+        "energy_usage": 520.63,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T02:06:36.001256Z",
+        "temperature": 119.6,
+        "pressure": 57.6,
+        "flow_rate": 2.8,
+        "energy_usage": 507.22,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T04:06:36.001256Z",
+        "temperature": 120.1,
+        "pressure": 57.5,
+        "flow_rate": 3.59,
+        "energy_usage": 506.22,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T06:06:36.001256Z",
+        "temperature": 118.6,
+        "pressure": 54.0,
+        "flow_rate": 3.42,
+        "energy_usage": 489.1,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T08:06:36.001256Z",
+        "temperature": 119.1,
+        "pressure": 58.9,
+        "flow_rate": 3.48,
+        "energy_usage": 504.54,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T10:06:36.001256Z",
+        "temperature": 121.9,
+        "pressure": 55.8,
+        "flow_rate": 3.14,
+        "energy_usage": 509.02,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T12:06:36.001256Z",
+        "temperature": 120.1,
+        "pressure": 55.0,
+        "flow_rate": 3.17,
+        "energy_usage": 494.26,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T14:06:36.001256Z",
+        "temperature": 122.3,
+        "pressure": 58.1,
+        "flow_rate": 3.08,
+        "energy_usage": 522.85,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T16:06:36.001256Z",
+        "temperature": 123.7,
+        "pressure": 57.2,
+        "flow_rate": 3.34,
+        "energy_usage": 497.73,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T18:06:36.001256Z",
+        "temperature": 123.6,
+        "pressure": 59.6,
+        "flow_rate": 3.41,
+        "energy_usage": 518.88,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T20:06:36.001256Z",
+        "temperature": 123.4,
+        "pressure": 54.0,
+        "flow_rate": 3.13,
+        "energy_usage": 513.99,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T22:06:36.001256Z",
+        "temperature": 125.1,
+        "pressure": 54.6,
+        "flow_rate": 3.52,
+        "energy_usage": 508.6,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T00:06:36.001256Z",
+        "temperature": 117.1,
+        "pressure": 55.0,
+        "flow_rate": 3.23,
+        "energy_usage": 486.31,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T02:06:36.001256Z",
+        "temperature": 118.0,
+        "pressure": 56.2,
+        "flow_rate": 2.73,
+        "energy_usage": 483.93,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T04:06:36.001256Z",
+        "temperature": 118.4,
+        "pressure": 53.6,
+        "flow_rate": 2.85,
+        "energy_usage": 483.39,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T06:06:36.001256Z",
+        "temperature": 118.5,
+        "pressure": 62.6,
+        "flow_rate": 3.16,
+        "energy_usage": 508.4,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T08:06:36.001256Z",
+        "temperature": 120.2,
+        "pressure": 53.0,
+        "flow_rate": 2.92,
+        "energy_usage": 495.52,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T10:06:36.001256Z",
+        "temperature": 121.3,
+        "pressure": 58.1,
+        "flow_rate": 3.47,
+        "energy_usage": 498.17,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T12:06:36.001256Z",
+        "temperature": 120.0,
+        "pressure": 57.0,
+        "flow_rate": 3.57,
+        "energy_usage": 503.07,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T14:06:36.001256Z",
+        "temperature": 123.0,
+        "pressure": 62.3,
+        "flow_rate": 2.99,
+        "energy_usage": 501.88,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T16:06:36.001256Z",
+        "temperature": 123.4,
+        "pressure": 57.1,
+        "flow_rate": 3.24,
+        "energy_usage": 509.19,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T18:06:36.001256Z",
+        "temperature": 122.8,
+        "pressure": 56.4,
+        "flow_rate": 3.31,
+        "energy_usage": 491.19,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T20:06:36.001256Z",
+        "temperature": 122.3,
+        "pressure": 57.8,
+        "flow_rate": 3.39,
+        "energy_usage": 483.71,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T22:06:36.001256Z",
+        "temperature": 122.6,
+        "pressure": 59.8,
+        "flow_rate": 3.05,
+        "energy_usage": 472.79,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T00:06:36.001256Z",
+        "temperature": 119.3,
+        "pressure": 56.6,
+        "flow_rate": 3.02,
+        "energy_usage": 509.93,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T02:06:36.001256Z",
+        "temperature": 118.4,
+        "pressure": 61.5,
+        "flow_rate": 3.15,
+        "energy_usage": 477.14,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T04:06:36.001256Z",
+        "temperature": 119.1,
+        "pressure": 61.9,
+        "flow_rate": 3.24,
+        "energy_usage": 494.15,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T06:06:36.001256Z",
+        "temperature": 120.8,
+        "pressure": 61.9,
+        "flow_rate": 3.18,
+        "energy_usage": 485.84,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T08:06:36.001256Z",
+        "temperature": 120.8,
+        "pressure": 53.1,
+        "flow_rate": 3.66,
+        "energy_usage": 473.67,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T10:06:36.001256Z",
+        "temperature": 121.1,
+        "pressure": 61.3,
+        "flow_rate": 3.46,
+        "energy_usage": 486.29,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T12:06:36.001256Z",
+        "temperature": 120.1,
+        "pressure": 59.2,
+        "flow_rate": 3.46,
+        "energy_usage": 500.59,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T14:06:36.001256Z",
+        "temperature": 120.6,
+        "pressure": 61.5,
+        "flow_rate": 2.73,
+        "energy_usage": 490.65,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T16:06:36.001256Z",
+        "temperature": 122.9,
+        "pressure": 54.8,
+        "flow_rate": 3.28,
+        "energy_usage": 499.35,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T18:06:36.001256Z",
+        "temperature": 122.7,
+        "pressure": 58.0,
+        "flow_rate": 3.67,
+        "energy_usage": 498.71,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T20:06:36.001256Z",
+        "temperature": 122.9,
+        "pressure": 62.3,
+        "flow_rate": 3.43,
+        "energy_usage": 494.7,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T22:06:36.001256Z",
+        "temperature": 124.3,
+        "pressure": 60.2,
+        "flow_rate": 3.23,
+        "energy_usage": 483.07,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-08T00:06:36.001256Z",
+        "temperature": 117.3,
+        "pressure": 61.2,
+        "flow_rate": 3.61,
+        "energy_usage": 498.68,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-08T02:06:36.001256Z",
+        "temperature": 119.0,
+        "pressure": 61.8,
+        "flow_rate": 3.56,
+        "energy_usage": 463.32,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-08T04:06:36.001256Z",
+        "temperature": 120.5,
+        "pressure": 61.6,
+        "flow_rate": 3.32,
+        "energy_usage": 498.36,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-08T06:06:36.001256Z",
+        "temperature": 120.3,
+        "pressure": 57.5,
+        "flow_rate": 2.88,
+        "energy_usage": 491.22,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-08T08:06:36.001256Z",
+        "temperature": 121.2,
+        "pressure": 60.8,
+        "flow_rate": 3.55,
+        "energy_usage": 472.18,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-08T10:06:36.001256Z",
+        "temperature": 119.9,
+        "pressure": 59.9,
+        "flow_rate": 3.03,
+        "energy_usage": 463.32,
+        "heater_status": "HEATING"
+      }
+    ]
+  },
+  {
+    "id": "wh-e4ae2f62",
+    "device_id": "wh-e4ae2f62",
+    "name": "Water Heater e4ae2f62",
+    "manufacturer": "AquaSmart",
+    "model": "SmartTank Pro",
+    "type": "water_heater",
+    "status": "ONLINE",
+    "temperature": 122.3,
+    "current_temperature": 122.3,
+    "target_temperature": 125.8,
+    "min_temperature": 40.0,
+    "max_temperature": 140.0,
+    "pressure": 62.5,
+    "flow_rate": 3.21,
+    "energy_usage": 453.7,
+    "heater_status": "STANDBY",
+    "mode": "ECO",
+    "readings": [
+      {
+        "timestamp": "2025-04-01T12:06:36.001528Z",
+        "temperature": 121.7,
+        "pressure": 62.6,
+        "flow_rate": 3.58,
+        "energy_usage": 505.38,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-01T14:06:36.001528Z",
+        "temperature": 123.8,
+        "pressure": 62.2,
+        "flow_rate": 3.23,
+        "energy_usage": 504.17,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-01T16:06:36.001528Z",
+        "temperature": 124.6,
+        "pressure": 62.4,
+        "flow_rate": 3.27,
+        "energy_usage": 523.45,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-01T18:06:36.001528Z",
+        "temperature": 123.8,
+        "pressure": 64.8,
+        "flow_rate": 3.56,
+        "energy_usage": 521.17,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-01T20:06:36.001528Z",
+        "temperature": 125.6,
+        "pressure": 63.2,
+        "flow_rate": 3.61,
+        "energy_usage": 522.62,
+        "heater_status": "STANDBY"
+      },
+      {
+        "timestamp": "2025-04-01T22:06:36.001528Z",
+        "temperature": 124.3,
+        "pressure": 58.2,
+        "flow_rate": 3.58,
+        "energy_usage": 516.34,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T00:06:36.001528Z",
+        "temperature": 118.4,
+        "pressure": 60.9,
+        "flow_rate": 3.39,
+        "energy_usage": 517.14,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T02:06:36.001528Z",
+        "temperature": 120.4,
+        "pressure": 66.3,
+        "flow_rate": 3.69,
+        "energy_usage": 526.58,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T04:06:36.001528Z",
+        "temperature": 120.8,
+        "pressure": 64.4,
+        "flow_rate": 3.21,
+        "energy_usage": 507.86,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T06:06:36.001528Z",
+        "temperature": 120.0,
+        "pressure": 67.2,
+        "flow_rate": 2.78,
+        "energy_usage": 535.82,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T08:06:36.001528Z",
+        "temperature": 120.7,
+        "pressure": 58.0,
+        "flow_rate": 3.2,
+        "energy_usage": 520.98,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T10:06:36.001528Z",
+        "temperature": 122.6,
+        "pressure": 64.5,
+        "flow_rate": 3.52,
+        "energy_usage": 510.61,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T12:06:36.001528Z",
+        "temperature": 123.5,
+        "pressure": 64.6,
+        "flow_rate": 3.31,
+        "energy_usage": 514.8,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T14:06:36.001528Z",
+        "temperature": 122.7,
+        "pressure": 66.2,
+        "flow_rate": 3.28,
+        "energy_usage": 513.91,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T16:06:36.001528Z",
+        "temperature": 124.1,
+        "pressure": 61.1,
+        "flow_rate": 2.97,
+        "energy_usage": 508.84,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T18:06:36.001528Z",
+        "temperature": 124.1,
+        "pressure": 63.0,
+        "flow_rate": 3.54,
+        "energy_usage": 497.29,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T20:06:36.001528Z",
+        "temperature": 123.2,
+        "pressure": 62.2,
+        "flow_rate": 2.89,
+        "energy_usage": 498.47,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T22:06:36.001528Z",
+        "temperature": 123.7,
+        "pressure": 57.9,
+        "flow_rate": 3.49,
+        "energy_usage": 510.84,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T00:06:36.001528Z",
+        "temperature": 118.7,
+        "pressure": 60.4,
+        "flow_rate": 3.28,
+        "energy_usage": 516.64,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T02:06:36.001528Z",
+        "temperature": 121.0,
+        "pressure": 64.3,
+        "flow_rate": 3.17,
+        "energy_usage": 499.21,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T04:06:36.001528Z",
+        "temperature": 119.5,
+        "pressure": 63.5,
+        "flow_rate": 2.91,
+        "energy_usage": 507.39,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T06:06:36.001528Z",
+        "temperature": 119.3,
+        "pressure": 63.7,
+        "flow_rate": 3.62,
+        "energy_usage": 513.47,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T08:06:36.001528Z",
+        "temperature": 122.5,
+        "pressure": 61.9,
+        "flow_rate": 3.11,
+        "energy_usage": 485.79,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T10:06:36.001528Z",
+        "temperature": 122.6,
+        "pressure": 63.2,
+        "flow_rate": 2.8,
+        "energy_usage": 498.43,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T12:06:36.001528Z",
+        "temperature": 123.6,
+        "pressure": 60.3,
+        "flow_rate": 2.89,
+        "energy_usage": 492.57,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T14:06:36.001528Z",
+        "temperature": 124.0,
+        "pressure": 60.6,
+        "flow_rate": 3.67,
+        "energy_usage": 514.05,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T16:06:36.001528Z",
+        "temperature": 123.5,
+        "pressure": 65.4,
+        "flow_rate": 3.48,
+        "energy_usage": 509.35,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T18:06:36.001528Z",
+        "temperature": 123.6,
+        "pressure": 60.6,
+        "flow_rate": 3.69,
+        "energy_usage": 514.22,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T20:06:36.001528Z",
+        "temperature": 123.4,
+        "pressure": 65.7,
+        "flow_rate": 3.46,
+        "energy_usage": 519.3,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T22:06:36.001528Z",
+        "temperature": 124.8,
+        "pressure": 60.6,
+        "flow_rate": 3.67,
+        "energy_usage": 517.8,
+        "heater_status": "STANDBY"
+      },
+      {
+        "timestamp": "2025-04-04T00:06:36.001528Z",
+        "temperature": 118.5,
+        "pressure": 67.1,
+        "flow_rate": 3.17,
+        "energy_usage": 498.67,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T02:06:36.001528Z",
+        "temperature": 119.2,
+        "pressure": 65.1,
+        "flow_rate": 2.9,
+        "energy_usage": 484.12,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T04:06:36.001528Z",
+        "temperature": 119.9,
+        "pressure": 63.2,
+        "flow_rate": 3.33,
+        "energy_usage": 495.94,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T06:06:36.001528Z",
+        "temperature": 120.0,
+        "pressure": 61.7,
+        "flow_rate": 2.8,
+        "energy_usage": 492.48,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T08:06:36.001528Z",
+        "temperature": 120.5,
+        "pressure": 66.7,
+        "flow_rate": 3.3,
+        "energy_usage": 498.78,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T10:06:36.001528Z",
+        "temperature": 120.9,
+        "pressure": 65.5,
+        "flow_rate": 3.53,
+        "energy_usage": 512.66,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T12:06:36.001528Z",
+        "temperature": 120.8,
+        "pressure": 58.1,
+        "flow_rate": 3.22,
+        "energy_usage": 492.62,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T14:06:36.001528Z",
+        "temperature": 123.4,
+        "pressure": 66.7,
+        "flow_rate": 3.18,
+        "energy_usage": 510.22,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T16:06:36.001528Z",
+        "temperature": 122.2,
+        "pressure": 66.5,
+        "flow_rate": 3.6,
+        "energy_usage": 476.05,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T18:06:36.001528Z",
+        "temperature": 125.0,
+        "pressure": 63.5,
+        "flow_rate": 3.63,
+        "energy_usage": 505.76,
+        "heater_status": "STANDBY"
+      },
+      {
+        "timestamp": "2025-04-04T20:06:36.001528Z",
+        "temperature": 123.9,
+        "pressure": 63.8,
+        "flow_rate": 3.01,
+        "energy_usage": 470.72,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T22:06:36.001528Z",
+        "temperature": 125.0,
+        "pressure": 60.9,
+        "flow_rate": 3.61,
+        "energy_usage": 485.71,
+        "heater_status": "STANDBY"
+      },
+      {
+        "timestamp": "2025-04-05T00:06:36.001528Z",
+        "temperature": 119.1,
+        "pressure": 57.5,
+        "flow_rate": 3.55,
+        "energy_usage": 501.44,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T02:06:36.001528Z",
+        "temperature": 120.6,
+        "pressure": 58.2,
+        "flow_rate": 3.38,
+        "energy_usage": 480.33,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T04:06:36.001528Z",
+        "temperature": 118.8,
+        "pressure": 57.9,
+        "flow_rate": 2.89,
+        "energy_usage": 492.85,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T06:06:36.001528Z",
+        "temperature": 120.6,
+        "pressure": 62.5,
+        "flow_rate": 3.36,
+        "energy_usage": 475.55,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T08:06:36.001528Z",
+        "temperature": 121.7,
+        "pressure": 66.5,
+        "flow_rate": 3.44,
+        "energy_usage": 473.59,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T10:06:36.001528Z",
+        "temperature": 120.4,
+        "pressure": 62.4,
+        "flow_rate": 3.31,
+        "energy_usage": 491.5,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T12:06:36.001528Z",
+        "temperature": 121.7,
+        "pressure": 66.8,
+        "flow_rate": 3.56,
+        "energy_usage": 492.46,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T14:06:36.001528Z",
+        "temperature": 122.6,
+        "pressure": 58.5,
+        "flow_rate": 3.44,
+        "energy_usage": 472.23,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T16:06:36.001528Z",
+        "temperature": 124.0,
+        "pressure": 65.8,
+        "flow_rate": 3.55,
+        "energy_usage": 500.74,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T18:06:36.001528Z",
+        "temperature": 124.2,
+        "pressure": 62.9,
+        "flow_rate": 2.73,
+        "energy_usage": 484.16,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T20:06:36.001528Z",
+        "temperature": 123.0,
+        "pressure": 63.5,
+        "flow_rate": 3.34,
+        "energy_usage": 488.93,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T22:06:36.001528Z",
+        "temperature": 124.9,
+        "pressure": 63.3,
+        "flow_rate": 3.53,
+        "energy_usage": 470.91,
+        "heater_status": "STANDBY"
+      },
+      {
+        "timestamp": "2025-04-06T00:06:36.001528Z",
+        "temperature": 118.6,
+        "pressure": 61.4,
+        "flow_rate": 3.2,
+        "energy_usage": 490.1,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T02:06:36.001528Z",
+        "temperature": 118.3,
+        "pressure": 67.3,
+        "flow_rate": 3.6,
+        "energy_usage": 490.14,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T04:06:36.001528Z",
+        "temperature": 121.7,
+        "pressure": 62.3,
+        "flow_rate": 3.39,
+        "energy_usage": 460.75,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T06:06:36.001528Z",
+        "temperature": 119.7,
+        "pressure": 66.3,
+        "flow_rate": 3.12,
+        "energy_usage": 482.32,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T08:06:36.001528Z",
+        "temperature": 121.7,
+        "pressure": 60.8,
+        "flow_rate": 3.46,
+        "energy_usage": 490.43,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T10:06:36.001528Z",
+        "temperature": 122.7,
+        "pressure": 67.2,
+        "flow_rate": 3.62,
+        "energy_usage": 474.65,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T12:06:36.001528Z",
+        "temperature": 123.5,
+        "pressure": 59.2,
+        "flow_rate": 2.73,
+        "energy_usage": 467.53,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T14:06:36.001528Z",
+        "temperature": 123.0,
+        "pressure": 61.7,
+        "flow_rate": 3.42,
+        "energy_usage": 467.11,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T16:06:36.001528Z",
+        "temperature": 124.4,
+        "pressure": 62.3,
+        "flow_rate": 3.54,
+        "energy_usage": 482.57,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T18:06:36.001528Z",
+        "temperature": 123.7,
+        "pressure": 58.0,
+        "flow_rate": 3.2,
+        "energy_usage": 485.3,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T20:06:36.001528Z",
+        "temperature": 123.3,
+        "pressure": 61.3,
+        "flow_rate": 2.72,
+        "energy_usage": 471.01,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T22:06:36.001528Z",
+        "temperature": 124.3,
+        "pressure": 63.4,
+        "flow_rate": 3.23,
+        "energy_usage": 477.54,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T00:06:36.001528Z",
+        "temperature": 119.8,
+        "pressure": 64.9,
+        "flow_rate": 3.26,
+        "energy_usage": 487.8,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T02:06:36.001528Z",
+        "temperature": 121.3,
+        "pressure": 58.3,
+        "flow_rate": 2.97,
+        "energy_usage": 456.43,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T04:06:36.001528Z",
+        "temperature": 121.4,
+        "pressure": 58.6,
+        "flow_rate": 2.78,
+        "energy_usage": 485.15,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T06:06:36.001528Z",
+        "temperature": 121.2,
+        "pressure": 64.6,
+        "flow_rate": 3.02,
+        "energy_usage": 455.94,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T08:06:36.001528Z",
+        "temperature": 119.9,
+        "pressure": 62.9,
+        "flow_rate": 3.57,
+        "energy_usage": 461.23,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T10:06:36.001528Z",
+        "temperature": 121.9,
+        "pressure": 66.9,
+        "flow_rate": 3.12,
+        "energy_usage": 460.95,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T12:06:36.001528Z",
+        "temperature": 121.7,
+        "pressure": 63.1,
+        "flow_rate": 3.28,
+        "energy_usage": 453.69,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T14:06:36.001528Z",
+        "temperature": 123.6,
+        "pressure": 61.7,
+        "flow_rate": 3.66,
+        "energy_usage": 479.47,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T16:06:36.001528Z",
+        "temperature": 122.9,
+        "pressure": 60.2,
+        "flow_rate": 3.06,
+        "energy_usage": 473.4,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T18:06:36.001528Z",
+        "temperature": 125.0,
+        "pressure": 63.5,
+        "flow_rate": 3.47,
+        "energy_usage": 452.14,
+        "heater_status": "STANDBY"
+      },
+      {
+        "timestamp": "2025-04-07T20:06:36.001528Z",
+        "temperature": 123.1,
+        "pressure": 59.4,
+        "flow_rate": 3.45,
+        "energy_usage": 473.37,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T22:06:36.001528Z",
+        "temperature": 126.0,
+        "pressure": 64.3,
+        "flow_rate": 3.05,
+        "energy_usage": 446.81,
+        "heater_status": "STANDBY"
+      },
+      {
+        "timestamp": "2025-04-08T00:06:36.001528Z",
+        "temperature": 117.8,
+        "pressure": 57.5,
+        "flow_rate": 2.81,
+        "energy_usage": 440.24,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-08T02:06:36.001528Z",
+        "temperature": 119.6,
+        "pressure": 64.6,
+        "flow_rate": 3.23,
+        "energy_usage": 445.87,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-08T04:06:36.001528Z",
+        "temperature": 119.3,
+        "pressure": 60.3,
+        "flow_rate": 3.14,
+        "energy_usage": 476.41,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-08T06:06:36.001528Z",
+        "temperature": 120.2,
+        "pressure": 57.9,
+        "flow_rate": 3.2,
+        "energy_usage": 475.79,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-08T08:06:36.001528Z",
+        "temperature": 122.0,
+        "pressure": 57.7,
+        "flow_rate": 2.72,
+        "energy_usage": 458.05,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-08T10:06:36.001528Z",
+        "temperature": 121.4,
+        "pressure": 59.8,
+        "flow_rate": 3.52,
+        "energy_usage": 463.8,
+        "heater_status": "HEATING"
+      }
+    ]
+  },
+  {
+    "id": "wh-e5ae2f63",
+    "device_id": "wh-e5ae2f63",
+    "name": "Water Heater e5ae2f63",
+    "manufacturer": "AquaSmart",
+    "model": "SmartTank Pro",
+    "type": "water_heater",
+    "status": "ONLINE",
+    "temperature": 119.0,
+    "current_temperature": 119.0,
+    "target_temperature": 123.7,
+    "min_temperature": 40.0,
+    "max_temperature": 140.0,
+    "pressure": 62.3,
+    "flow_rate": 2.97,
+    "energy_usage": 435.4,
+    "heater_status": "STANDBY",
+    "mode": "ECO",
+    "readings": [
+      {
+        "timestamp": "2025-04-01T12:06:36.001770Z",
+        "temperature": 119.2,
+        "pressure": 65.8,
+        "flow_rate": 2.74,
+        "energy_usage": 506.32,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-01T14:06:36.001770Z",
+        "temperature": 119.3,
+        "pressure": 62.4,
+        "flow_rate": 2.96,
+        "energy_usage": 513.49,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-01T16:06:36.001770Z",
+        "temperature": 118.9,
+        "pressure": 58.6,
+        "flow_rate": 3.07,
+        "energy_usage": 520.55,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-01T18:06:36.001770Z",
+        "temperature": 121.7,
+        "pressure": 65.3,
+        "flow_rate": 2.55,
+        "energy_usage": 519.76,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-01T20:06:36.001770Z",
+        "temperature": 120.7,
+        "pressure": 58.3,
+        "flow_rate": 3.39,
+        "energy_usage": 513.16,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-01T22:06:36.001770Z",
+        "temperature": 122.5,
+        "pressure": 59.2,
+        "flow_rate": 2.55,
+        "energy_usage": 485.09,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T00:06:36.001770Z",
+        "temperature": 115.5,
+        "pressure": 57.8,
+        "flow_rate": 2.73,
+        "energy_usage": 487.13,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T02:06:36.001770Z",
+        "temperature": 116.2,
+        "pressure": 60.1,
+        "flow_rate": 2.49,
+        "energy_usage": 509.8,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T04:06:36.001770Z",
+        "temperature": 117.1,
+        "pressure": 62.1,
+        "flow_rate": 3.3,
+        "energy_usage": 480.9,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T06:06:36.001770Z",
+        "temperature": 116.1,
+        "pressure": 60.9,
+        "flow_rate": 2.92,
+        "energy_usage": 511.22,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T08:06:36.001770Z",
+        "temperature": 118.3,
+        "pressure": 64.9,
+        "flow_rate": 3.01,
+        "energy_usage": 495.5,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T10:06:36.001770Z",
+        "temperature": 117.6,
+        "pressure": 62.2,
+        "flow_rate": 2.5,
+        "energy_usage": 488.56,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T12:06:36.001770Z",
+        "temperature": 117.6,
+        "pressure": 57.7,
+        "flow_rate": 3.39,
+        "energy_usage": 502.4,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T14:06:36.001770Z",
+        "temperature": 120.0,
+        "pressure": 60.7,
+        "flow_rate": 2.78,
+        "energy_usage": 488.2,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T16:06:36.001770Z",
+        "temperature": 120.7,
+        "pressure": 58.1,
+        "flow_rate": 3.11,
+        "energy_usage": 490.79,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T18:06:36.001770Z",
+        "temperature": 119.4,
+        "pressure": 65.9,
+        "flow_rate": 2.9,
+        "energy_usage": 508.5,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T20:06:36.001770Z",
+        "temperature": 121.4,
+        "pressure": 60.8,
+        "flow_rate": 2.8,
+        "energy_usage": 491.14,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-02T22:06:36.001770Z",
+        "temperature": 122.3,
+        "pressure": 63.1,
+        "flow_rate": 2.61,
+        "energy_usage": 507.61,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T00:06:36.001770Z",
+        "temperature": 116.1,
+        "pressure": 60.5,
+        "flow_rate": 3.0,
+        "energy_usage": 503.9,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T02:06:36.001770Z",
+        "temperature": 117.3,
+        "pressure": 60.9,
+        "flow_rate": 3.4,
+        "energy_usage": 492.23,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T04:06:36.001770Z",
+        "temperature": 117.4,
+        "pressure": 57.5,
+        "flow_rate": 3.04,
+        "energy_usage": 502.15,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T06:06:36.001770Z",
+        "temperature": 116.6,
+        "pressure": 57.7,
+        "flow_rate": 3.46,
+        "energy_usage": 502.65,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T08:06:36.001770Z",
+        "temperature": 119.1,
+        "pressure": 58.4,
+        "flow_rate": 3.06,
+        "energy_usage": 467.69,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T10:06:36.001770Z",
+        "temperature": 117.7,
+        "pressure": 63.7,
+        "flow_rate": 2.5,
+        "energy_usage": 485.83,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T12:06:36.001770Z",
+        "temperature": 120.4,
+        "pressure": 65.8,
+        "flow_rate": 3.01,
+        "energy_usage": 471.33,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T14:06:36.001770Z",
+        "temperature": 118.6,
+        "pressure": 63.0,
+        "flow_rate": 3.23,
+        "energy_usage": 501.47,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T16:06:36.001770Z",
+        "temperature": 120.0,
+        "pressure": 62.2,
+        "flow_rate": 3.03,
+        "energy_usage": 480.63,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T18:06:36.001770Z",
+        "temperature": 120.6,
+        "pressure": 60.2,
+        "flow_rate": 3.32,
+        "energy_usage": 473.33,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T20:06:36.001770Z",
+        "temperature": 120.1,
+        "pressure": 66.5,
+        "flow_rate": 3.03,
+        "energy_usage": 488.14,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-03T22:06:36.001770Z",
+        "temperature": 121.8,
+        "pressure": 58.0,
+        "flow_rate": 2.65,
+        "energy_usage": 469.99,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T00:06:36.001770Z",
+        "temperature": 114.5,
+        "pressure": 61.4,
+        "flow_rate": 2.8,
+        "energy_usage": 491.13,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T02:06:36.001770Z",
+        "temperature": 116.6,
+        "pressure": 65.3,
+        "flow_rate": 3.13,
+        "energy_usage": 483.97,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T04:06:36.001770Z",
+        "temperature": 116.9,
+        "pressure": 64.7,
+        "flow_rate": 3.07,
+        "energy_usage": 484.13,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T06:06:36.001770Z",
+        "temperature": 116.5,
+        "pressure": 65.4,
+        "flow_rate": 2.83,
+        "energy_usage": 474.71,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T08:06:36.001770Z",
+        "temperature": 119.4,
+        "pressure": 62.9,
+        "flow_rate": 3.21,
+        "energy_usage": 495.95,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T10:06:36.001770Z",
+        "temperature": 118.0,
+        "pressure": 60.9,
+        "flow_rate": 3.46,
+        "energy_usage": 483.68,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T12:06:36.001770Z",
+        "temperature": 119.8,
+        "pressure": 66.4,
+        "flow_rate": 3.08,
+        "energy_usage": 488.19,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T14:06:36.001770Z",
+        "temperature": 120.8,
+        "pressure": 59.3,
+        "flow_rate": 2.78,
+        "energy_usage": 490.05,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T16:06:36.001770Z",
+        "temperature": 119.2,
+        "pressure": 61.8,
+        "flow_rate": 3.35,
+        "energy_usage": 458.45,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T18:06:36.001770Z",
+        "temperature": 121.9,
+        "pressure": 62.5,
+        "flow_rate": 3.39,
+        "energy_usage": 464.47,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T20:06:36.001770Z",
+        "temperature": 120.9,
+        "pressure": 61.2,
+        "flow_rate": 3.03,
+        "energy_usage": 478.74,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-04T22:06:36.001770Z",
+        "temperature": 121.6,
+        "pressure": 63.4,
+        "flow_rate": 2.76,
+        "energy_usage": 463.99,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T00:06:36.001770Z",
+        "temperature": 116.0,
+        "pressure": 61.8,
+        "flow_rate": 3.21,
+        "energy_usage": 487.85,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T02:06:36.001770Z",
+        "temperature": 115.4,
+        "pressure": 65.4,
+        "flow_rate": 2.62,
+        "energy_usage": 473.11,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T04:06:36.001770Z",
+        "temperature": 116.8,
+        "pressure": 60.9,
+        "flow_rate": 2.73,
+        "energy_usage": 465.45,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T06:06:36.001770Z",
+        "temperature": 116.5,
+        "pressure": 64.8,
+        "flow_rate": 2.98,
+        "energy_usage": 458.91,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T08:06:36.001770Z",
+        "temperature": 118.4,
+        "pressure": 57.5,
+        "flow_rate": 2.78,
+        "energy_usage": 483.72,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T10:06:36.001770Z",
+        "temperature": 118.4,
+        "pressure": 60.6,
+        "flow_rate": 2.97,
+        "energy_usage": 471.87,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T12:06:36.001770Z",
+        "temperature": 118.6,
+        "pressure": 63.0,
+        "flow_rate": 3.08,
+        "energy_usage": 460.27,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T14:06:36.001770Z",
+        "temperature": 119.3,
+        "pressure": 64.5,
+        "flow_rate": 2.78,
+        "energy_usage": 459.87,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T16:06:36.001770Z",
+        "temperature": 120.3,
+        "pressure": 59.3,
+        "flow_rate": 2.98,
+        "energy_usage": 451.54,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T18:06:36.001770Z",
+        "temperature": 119.6,
+        "pressure": 62.0,
+        "flow_rate": 2.94,
+        "energy_usage": 451.15,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T20:06:36.001770Z",
+        "temperature": 121.7,
+        "pressure": 60.1,
+        "flow_rate": 2.8,
+        "energy_usage": 445.24,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-05T22:06:36.001770Z",
+        "temperature": 122.7,
+        "pressure": 62.9,
+        "flow_rate": 3.03,
+        "energy_usage": 460.75,
+        "heater_status": "STANDBY"
+      },
+      {
+        "timestamp": "2025-04-06T00:06:36.001770Z",
+        "temperature": 115.2,
+        "pressure": 65.3,
+        "flow_rate": 2.69,
+        "energy_usage": 456.79,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T02:06:36.001770Z",
+        "temperature": 117.9,
+        "pressure": 58.0,
+        "flow_rate": 2.51,
+        "energy_usage": 455.67,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T04:06:36.001770Z",
+        "temperature": 117.5,
+        "pressure": 60.9,
+        "flow_rate": 2.94,
+        "energy_usage": 461.35,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T06:06:36.001770Z",
+        "temperature": 117.6,
+        "pressure": 59.2,
+        "flow_rate": 2.58,
+        "energy_usage": 440.99,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T08:06:36.001770Z",
+        "temperature": 118.3,
+        "pressure": 62.7,
+        "flow_rate": 3.01,
+        "energy_usage": 455.46,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T10:06:36.001770Z",
+        "temperature": 117.7,
+        "pressure": 65.6,
+        "flow_rate": 2.91,
+        "energy_usage": 469.86,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T12:06:36.001770Z",
+        "temperature": 119.4,
+        "pressure": 63.9,
+        "flow_rate": 2.89,
+        "energy_usage": 467.1,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T14:06:36.001770Z",
+        "temperature": 120.6,
+        "pressure": 62.0,
+        "flow_rate": 2.61,
+        "energy_usage": 453.75,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T16:06:36.001770Z",
+        "temperature": 120.2,
+        "pressure": 59.4,
+        "flow_rate": 2.59,
+        "energy_usage": 454.3,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T18:06:36.001770Z",
+        "temperature": 120.9,
+        "pressure": 64.7,
+        "flow_rate": 2.88,
+        "energy_usage": 461.02,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T20:06:36.001770Z",
+        "temperature": 121.7,
+        "pressure": 61.5,
+        "flow_rate": 2.83,
+        "energy_usage": 464.55,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-06T22:06:36.001770Z",
+        "temperature": 120.9,
+        "pressure": 58.4,
+        "flow_rate": 2.55,
+        "energy_usage": 444.99,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T00:06:36.001770Z",
+        "temperature": 115.2,
+        "pressure": 59.2,
+        "flow_rate": 2.53,
+        "energy_usage": 444.67,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T02:06:36.001770Z",
+        "temperature": 116.9,
+        "pressure": 57.9,
+        "flow_rate": 2.54,
+        "energy_usage": 454.17,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T04:06:36.001770Z",
+        "temperature": 115.9,
+        "pressure": 64.4,
+        "flow_rate": 2.64,
+        "energy_usage": 460.4,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T06:06:36.001770Z",
+        "temperature": 118.7,
+        "pressure": 60.6,
+        "flow_rate": 2.69,
+        "energy_usage": 452.99,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T08:06:36.001770Z",
+        "temperature": 118.3,
+        "pressure": 63.6,
+        "flow_rate": 2.55,
+        "energy_usage": 449.92,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T10:06:36.001770Z",
+        "temperature": 117.2,
+        "pressure": 67.0,
+        "flow_rate": 3.29,
+        "energy_usage": 466.02,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T12:06:36.001770Z",
+        "temperature": 119.1,
+        "pressure": 58.8,
+        "flow_rate": 2.64,
+        "energy_usage": 432.83,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T14:06:36.001770Z",
+        "temperature": 119.6,
+        "pressure": 58.5,
+        "flow_rate": 2.52,
+        "energy_usage": 445.1,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T16:06:36.001770Z",
+        "temperature": 119.8,
+        "pressure": 63.4,
+        "flow_rate": 2.65,
+        "energy_usage": 446.78,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T18:06:36.001770Z",
+        "temperature": 121.7,
+        "pressure": 61.6,
+        "flow_rate": 2.49,
+        "energy_usage": 423.61,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T20:06:36.001770Z",
+        "temperature": 122.0,
+        "pressure": 66.7,
+        "flow_rate": 2.97,
+        "energy_usage": 432.78,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-07T22:06:36.001770Z",
+        "temperature": 121.3,
+        "pressure": 61.5,
+        "flow_rate": 3.12,
+        "energy_usage": 446.51,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-08T00:06:36.001770Z",
+        "temperature": 114.9,
+        "pressure": 63.3,
+        "flow_rate": 3.18,
+        "energy_usage": 452.86,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-08T02:06:36.001770Z",
+        "temperature": 116.9,
+        "pressure": 66.7,
+        "flow_rate": 3.4,
+        "energy_usage": 435.54,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-08T04:06:36.001770Z",
+        "temperature": 116.7,
+        "pressure": 58.2,
+        "flow_rate": 3.06,
+        "energy_usage": 436.15,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-08T06:06:36.001770Z",
+        "temperature": 116.4,
+        "pressure": 63.5,
+        "flow_rate": 3.33,
+        "energy_usage": 440.74,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-08T08:06:36.001770Z",
+        "temperature": 118.6,
+        "pressure": 63.1,
+        "flow_rate": 3.1,
+        "energy_usage": 447.76,
+        "heater_status": "HEATING"
+      },
+      {
+        "timestamp": "2025-04-08T10:06:36.001770Z",
+        "temperature": 118.4,
+        "pressure": 66.9,
+        "flow_rate": 3.18,
+        "energy_usage": 426.06,
+        "heater_status": "HEATING"
+      }
+    ]
+  }
+]

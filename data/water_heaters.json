@@ -1,1 +1,34 @@
-{}
+{
+  "wh-e0ae2f58": {
+    "id": "wh-e0ae2f58",
+    "name": "Water Heater wh-e0ae2f58",
+    "manufacturer": "Generic",
+    "brand": null,
+    "model": "Standard Model",
+    "type": "water_heater",
+    "status": "ONLINE",
+    "location": "Building A",
+    "last_seen": "2025-04-08 09:38:58.962742",
+    "target_temperature": 125.0,
+    "current_temperature": 120.0,
+    "min_temperature": 100.0,
+    "max_temperature": 140.0,
+    "mode": "ECO",
+    "heater_status": "STANDBY",
+    "heater_type": "Tank",
+    "specification_link": null,
+    "size": null,
+    "capacity": null,
+    "efficiency_rating": null,
+    "installation_date": null,
+    "warranty_expiry": null,
+    "last_maintenance": null,
+    "health_status": null,
+    "series": null,
+    "features": [],
+    "operation_modes": [],
+    "readings": [],
+    "diagnostic_codes": [],
+    "metadata": {}
+  }
+}

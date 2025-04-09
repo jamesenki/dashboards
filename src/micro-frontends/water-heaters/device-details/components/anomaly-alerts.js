@@ -1,6 +1,6 @@
 /**
  * Anomaly Alerts Component
- * 
+ *
  * Displays real-time anomaly alerts and predictive maintenance warnings
  * for water heater devices. Part of the device-agnostic IoTSphere architecture.
  */
@@ -8,89 +8,89 @@ export class AnomalyAlerts extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
-    
+
     // Component state
     this.device = null;
     this.deviceId = null;
     this.alerts = [];
     this.isLoading = true;
     this.error = null;
-    
+
     // Alert polling
     this.pollInterval = null;
     this.pollRate = 60000; // 1 minute
   }
-  
+
   /**
    * Initialize the component
    */
   initialize({ device, deviceId }) {
     this.device = device;
     this.deviceId = deviceId || (device ? device.device_id : null);
-    
+
     if (this.deviceId) {
       this.loadAlerts();
       this.startPolling();
     }
-    
+
     this.render();
   }
-  
+
   /**
    * Called when the element is connected to the DOM
    */
   connectedCallback() {
     this.render();
   }
-  
+
   /**
    * Called when the element is disconnected from the DOM
    */
   disconnectedCallback() {
     this.stopPolling();
   }
-  
+
   /**
    * Load alerts from the API
    */
   async loadAlerts() {
     if (!this.deviceId) return;
-    
+
     this.isLoading = true;
     this.error = null;
     this.render();
-    
+
     try {
       // In a real implementation, this would call an actual API
       // For now, we'll simulate the API response
       const response = await this.fetchAnomalyAlerts(this.deviceId);
-      
+
       this.alerts = response.alerts;
       this.isLoading = false;
       this.render();
-      
+
       return response.alerts;
     } catch (error) {
       console.error('Error loading anomaly alerts:', error);
       this.error = 'Failed to load alerts';
       this.isLoading = false;
       this.render();
-      
+
       return [];
     }
   }
-  
+
   /**
    * Start polling for alert updates
    */
   startPolling() {
     this.stopPolling(); // Clear any existing interval
-    
+
     this.pollInterval = setInterval(() => {
       this.loadAlerts();
     }, this.pollRate);
   }
-  
+
   /**
    * Stop polling for alert updates
    */
@@ -100,14 +100,14 @@ export class AnomalyAlerts extends HTMLElement {
       this.pollInterval = null;
     }
   }
-  
+
   /**
    * Refresh alerts data
    */
   refresh() {
     return this.loadAlerts();
   }
-  
+
   /**
    * Update device data
    */
@@ -115,7 +115,7 @@ export class AnomalyAlerts extends HTMLElement {
     this.device = updatedDevice;
     this.render();
   }
-  
+
   /**
    * Handle alert dismissal
    */
@@ -124,7 +124,7 @@ export class AnomalyAlerts extends HTMLElement {
       // In a real implementation, this would call an API
       // to mark the alert as dismissed
       await this.dismissAnomalyAlert(alertId);
-      
+
       // Remove the alert from the local list
       this.alerts = this.alerts.filter(alert => alert.id !== alertId);
       this.render();
@@ -133,7 +133,7 @@ export class AnomalyAlerts extends HTMLElement {
       // Show error message
     }
   }
-  
+
   /**
    * Render the component
    */
@@ -144,7 +144,7 @@ export class AnomalyAlerts extends HTMLElement {
         display: block;
         width: 100%;
       }
-      
+
       .alerts-container {
         background-color: white;
         border-radius: 8px;
@@ -152,7 +152,7 @@ export class AnomalyAlerts extends HTMLElement {
         overflow: hidden;
         margin-bottom: 1.5rem;
       }
-      
+
       .alerts-header {
         padding: 1rem 1.5rem;
         background-color: #F5F5F5;
@@ -161,7 +161,7 @@ export class AnomalyAlerts extends HTMLElement {
         justify-content: space-between;
         align-items: center;
       }
-      
+
       .alerts-title {
         margin: 0;
         font-size: 1.1rem;
@@ -169,7 +169,7 @@ export class AnomalyAlerts extends HTMLElement {
         display: flex;
         align-items: center;
       }
-      
+
       .alerts-count {
         display: inline-flex;
         align-items: center;
@@ -183,7 +183,7 @@ export class AnomalyAlerts extends HTMLElement {
         margin-left: 0.5rem;
         padding: 0 6px;
       }
-      
+
       .refresh-button {
         background: none;
         border: none;
@@ -193,44 +193,44 @@ export class AnomalyAlerts extends HTMLElement {
         align-items: center;
         font-size: 0.9rem;
       }
-      
+
       .refresh-button:hover {
         color: #424242;
       }
-      
+
       .alerts-body {
         max-height: 400px;
         overflow-y: auto;
       }
-      
+
       .alert-item {
         padding: 1rem 1.5rem;
         border-bottom: 1px solid #E0E0E0;
         position: relative;
       }
-      
+
       .alert-item:last-child {
         border-bottom: none;
       }
-      
+
       .alert-item.critical {
         background-color: #FFEBEE;
       }
-      
+
       .alert-item.warning {
         background-color: #FFF8E1;
       }
-      
+
       .alert-item.info {
         background-color: #E1F5FE;
       }
-      
+
       .alert-header {
         display: flex;
         justify-content: space-between;
         margin-bottom: 0.5rem;
       }
-      
+
       .alert-severity {
         display: inline-block;
         padding: 0.2rem 0.4rem;
@@ -239,38 +239,38 @@ export class AnomalyAlerts extends HTMLElement {
         font-weight: 500;
         text-transform: uppercase;
       }
-      
+
       .alert-severity.critical {
         background-color: #EF5350;
         color: white;
       }
-      
+
       .alert-severity.warning {
         background-color: #FFC107;
         color: #212121;
       }
-      
+
       .alert-severity.info {
         background-color: #29B6F6;
         color: white;
       }
-      
+
       .alert-time {
         font-size: 0.8rem;
         color: #757575;
       }
-      
+
       .alert-title {
         font-weight: 500;
         margin: 0 0 0.5rem 0;
       }
-      
+
       .alert-description {
         font-size: 0.9rem;
         margin: 0 0 0.5rem 0;
         color: #424242;
       }
-      
+
       .alert-recommendation {
         font-size: 0.9rem;
         margin: 0.5rem 0 0 0;
@@ -278,13 +278,13 @@ export class AnomalyAlerts extends HTMLElement {
         border-left: 3px solid #2196F3;
         color: #424242;
       }
-      
+
       .alert-actions {
         display: flex;
         justify-content: flex-end;
         margin-top: 0.75rem;
       }
-      
+
       .alert-button {
         padding: 0.3rem 0.6rem;
         border-radius: 4px;
@@ -296,25 +296,25 @@ export class AnomalyAlerts extends HTMLElement {
         display: flex;
         align-items: center;
       }
-      
+
       .alert-button.dismiss {
         color: #757575;
       }
-      
+
       .alert-button.dismiss:hover {
         background-color: #EEEEEE;
       }
-      
+
       .alert-button.action {
         background-color: #2196F3;
         color: white;
         border: none;
       }
-      
+
       .alert-button.action:hover {
         background-color: #1E88E5;
       }
-      
+
       .loading-container {
         padding: 2rem;
         display: flex;
@@ -322,7 +322,7 @@ export class AnomalyAlerts extends HTMLElement {
         align-items: center;
         justify-content: center;
       }
-      
+
       .loading-spinner {
         width: 30px;
         height: 30px;
@@ -332,34 +332,34 @@ export class AnomalyAlerts extends HTMLElement {
         animation: spin 1s linear infinite;
         margin-bottom: 1rem;
       }
-      
+
       @keyframes spin {
         0% { transform: rotate(0deg); }
         100% { transform: rotate(360deg); }
       }
-      
+
       .error-container {
         padding: 1.5rem;
         text-align: center;
         color: #F44336;
       }
-      
+
       .empty-container {
         padding: 2rem;
         text-align: center;
         color: #757575;
       }
-      
+
       .empty-icon {
         font-size: 2rem;
         margin-bottom: 1rem;
         opacity: 0.5;
       }
     `;
-    
+
     // Define HTML template
     let alertsBody;
-    
+
     if (this.isLoading) {
       alertsBody = `
         <div class="loading-container">
@@ -389,7 +389,7 @@ export class AnomalyAlerts extends HTMLElement {
         </div>
       `;
     }
-    
+
     const template = `
       <div class="alerts-container">
         <div class="alerts-header">
@@ -401,18 +401,18 @@ export class AnomalyAlerts extends HTMLElement {
             <span>🔄</span>
           </button>
         </div>
-        
+
         ${alertsBody}
       </div>
     `;
-    
+
     // Set the shadow DOM content
     this.shadowRoot.innerHTML = `<style>${styles}</style>${template}`;
-    
+
     // Add event listeners
     this.addEventListeners();
   }
-  
+
   /**
    * Render a single alert
    */
@@ -423,23 +423,23 @@ export class AnomalyAlerts extends HTMLElement {
           <span class="alert-severity ${alert.severity}">${alert.severity}</span>
           <span class="alert-time">${this.formatTimestamp(alert.timestamp)}</span>
         </div>
-        
+
         <h4 class="alert-title">${alert.title}</h4>
         <div class="alert-description">${alert.description}</div>
-        
+
         ${alert.recommendation ? `
           <div class="alert-recommendation">
             <strong>Recommendation:</strong> ${alert.recommendation}
           </div>
         ` : ''}
-        
+
         <div class="alert-actions">
           ${alert.action ? `
             <button class="alert-button action" data-action="${alert.action}" data-alert-id="${alert.id}">
               ${alert.actionText || 'Take Action'}
             </button>
           ` : ''}
-          
+
           <button class="alert-button dismiss" data-dismiss-alert="${alert.id}">
             Dismiss
           </button>
@@ -447,7 +447,7 @@ export class AnomalyAlerts extends HTMLElement {
       </div>
     `;
   }
-  
+
   /**
    * Add event listeners
    */
@@ -459,7 +459,7 @@ export class AnomalyAlerts extends HTMLElement {
         this.refresh();
       });
     }
-    
+
     // Retry button
     const retryButton = this.shadowRoot.querySelector('#retry-button');
     if (retryButton) {
@@ -467,7 +467,7 @@ export class AnomalyAlerts extends HTMLElement {
         this.refresh();
       });
     }
-    
+
     // Dismiss alert buttons
     const dismissButtons = this.shadowRoot.querySelectorAll('[data-dismiss-alert]');
     dismissButtons.forEach(button => {
@@ -476,7 +476,7 @@ export class AnomalyAlerts extends HTMLElement {
         this.dismissAlert(alertId);
       });
     });
-    
+
     // Action buttons
     const actionButtons = this.shadowRoot.querySelectorAll('[data-action]');
     actionButtons.forEach(button => {
@@ -487,17 +487,17 @@ export class AnomalyAlerts extends HTMLElement {
       });
     });
   }
-  
+
   /**
    * Handle alert action click
    */
   handleAlertAction(action, alertId) {
     // In a real implementation, this would trigger the specific action
     console.log(`Taking action "${action}" for alert ${alertId}`);
-    
+
     // For demonstration, we'll just dismiss the alert after action
     this.dismissAlert(alertId);
-    
+
     // Dispatch an event that could be handled by parent components
     this.dispatchEvent(new CustomEvent('alert-action', {
       bubbles: true,
@@ -508,36 +508,36 @@ export class AnomalyAlerts extends HTMLElement {
       }
     }));
   }
-  
+
   /**
    * Format timestamp for display
    */
   formatTimestamp(timestamp) {
     if (!timestamp) return 'Unknown time';
-    
+
     try {
       const date = new Date(timestamp);
-      
+
       // If it's today, show time only
       const today = new Date();
       if (date.toDateString() === today.toDateString()) {
         return `Today at ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
       }
-      
+
       // If it's yesterday, show "Yesterday"
       const yesterday = new Date();
       yesterday.setDate(yesterday.getDate() - 1);
       if (date.toDateString() === yesterday.toDateString()) {
         return `Yesterday at ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
       }
-      
+
       // Otherwise, show full date
       return date.toLocaleString();
     } catch (e) {
       return timestamp;
     }
   }
-  
+
   /**
    * Simulate fetching anomaly alerts from an API
    * In a real implementation, this would be an actual API call
@@ -545,13 +545,13 @@ export class AnomalyAlerts extends HTMLElement {
   async fetchAnomalyAlerts(deviceId) {
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 500));
-    
+
     // Generate some mock alerts based on device ID to ensure consistency
     const hash = this.hashCode(deviceId);
     const numAlerts = hash % 5; // 0-4 alerts
-    
+
     const alerts = [];
-    
+
     if (numAlerts > 0) {
       // Add a critical alert for some devices
       if (hash % 7 === 0) {
@@ -566,7 +566,7 @@ export class AnomalyAlerts extends HTMLElement {
           actionText: 'Schedule Maintenance'
         });
       }
-      
+
       // Add some warning alerts
       if (hash % 3 === 1 || numAlerts > 2) {
         alerts.push({
@@ -579,7 +579,7 @@ export class AnomalyAlerts extends HTMLElement {
           action: null
         });
       }
-      
+
       if (hash % 4 === 2 || numAlerts > 3) {
         alerts.push({
           id: `alert-w2-${deviceId}-${Date.now()}`,
@@ -592,7 +592,7 @@ export class AnomalyAlerts extends HTMLElement {
           actionText: 'View History'
         });
       }
-      
+
       // Add some info alerts
       if (hash % 5 === 3 || numAlerts > 1) {
         alerts.push({
@@ -607,10 +607,10 @@ export class AnomalyAlerts extends HTMLElement {
         });
       }
     }
-    
+
     return { alerts };
   }
-  
+
   /**
    * Simulate dismissing an anomaly alert
    * In a real implementation, this would be an API call
@@ -618,24 +618,24 @@ export class AnomalyAlerts extends HTMLElement {
   async dismissAnomalyAlert(alertId) {
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 300));
-    
+
     // Simulate successful API response
     return { success: true };
   }
-  
+
   /**
    * Simple string hash code function for generating deterministic mock data
    */
   hashCode(str) {
     let hash = 0;
     if (str.length === 0) return hash;
-    
+
     for (let i = 0; i < str.length; i++) {
       const char = str.charCodeAt(i);
       hash = ((hash << 5) - hash) + char;
       hash = hash & hash; // Convert to 32bit integer
     }
-    
+
     return Math.abs(hash);
   }
 }

@@ -1,0 +1,181 @@
+@startuml DeviceShadowDataFlow
+' Device Shadow Data Flow Sequence Diagram
+
+skinparam backgroundColor white
+skinparam sequenceArrowThickness 2
+skinparam sequenceGroupBorderThickness 1
+skinparam noteBorderThickness 1
+skinparam sequenceLifeLineBorderColor gray
+skinparam sequenceGroupBorderColor gray
+skinparam sequenceGroupBackgroundColor lightyellow
+
+actor "IoT Device" as Device
+participant "Device Shadow API" as ShadowAPI
+participant "DeviceShadowService" as ShadowService
+participant "WebSocketManager" as WSManager
+database "Persistent Storage" as DB
+participant "FrontendRequestHandler" as FrontHandler
+participant "MemCache" as Cache
+actor "Frontend UI" as UI
+actor "Admin User" as Admin
+
+== Device Registration ==
+note over Device, ShadowService
+  Device registration happens once before regular operation
+end note
+
+Device -> ShadowAPI: Register device with manifest
+ShadowAPI -> ShadowService: Process manifest
+ShadowService -> DB: Create initial shadow document
+ShadowService --> ShadowAPI: Registration confirmation
+ShadowAPI --> Device: Registered successfully
+
+== Normal Operation - Device State Reporting ==
+Device -> ShadowAPI: Report current state
+activate ShadowAPI
+ShadowAPI -> ShadowService: Update reported state
+activate ShadowService
+
+alt Shadow document exists
+    ShadowService -> DB: Read current shadow document
+    DB --> ShadowService: Return shadow document
+    ShadowService -> ShadowService: Validate and merge new state
+    ShadowService -> DB: Write updated shadow document
+    ShadowService -> WSManager: Notify about shadow change
+    ShadowAPI --> Device: Confirm state received
+else Shadow document doesn't exist
+    ShadowService -> ShadowService: Create new shadow document
+    ShadowService -> DB: Store new shadow document
+    ShadowService -> WSManager: Notify about new shadow
+    ShadowAPI --> Device: Confirm state received with new shadow
+end
+
+deactivate ShadowService
+deactivate ShadowAPI
+
+WSManager -> UI: Send real-time update via WebSocket
+activate UI
+UI -> UI: Update display with new data
+UI -> Cache: Cache latest state locally
+deactivate UI
+
+== User Interface State Retrieval ==
+Admin -> UI: Navigate to device details page
+activate UI
+UI -> Cache: Check for cached data
+
+alt Cache hit
+    Cache --> UI: Return cached data
+    UI -> UI: Display cached data initially
+    opt Background refresh for fresh data
+        UI -> FrontHandler: Request shadow update (HTTP)
+        activate FrontHandler
+        FrontHandler -> ShadowService: Get device shadow
+        activate ShadowService
+        ShadowService -> DB: Read shadow document
+        DB --> ShadowService: Return shadow document
+        ShadowService --> FrontHandler: Return shadow document
+        deactivate ShadowService
+        FrontHandler --> UI: Return device state (HTTP response)
+        deactivate FrontHandler
+        UI -> Cache: Update local cache
+        UI -> UI: Update display if data changed
+    end
+else Cache miss
+    Cache --> UI: No cached data
+    UI -> FrontHandler: Request device shadow (HTTP)
+    activate FrontHandler
+    FrontHandler -> ShadowService: Get device shadow
+    activate ShadowService
+    ShadowService -> DB: Read shadow document
+    DB --> ShadowService: Return shadow document
+    ShadowService --> FrontHandler: Return shadow document
+    deactivate ShadowService
+    FrontHandler --> UI: Return device state (HTTP response)
+    deactivate FrontHandler
+    UI -> Cache: Store in local cache
+    UI -> UI: Render device details view
+end
+
+deactivate UI
+
+== Device State Change Request ==
+Admin -> UI: Request state change (e.g., temperature)
+activate UI
+UI -> FrontHandler: Submit desired state change (HTTP)
+activate FrontHandler
+FrontHandler -> ShadowService: Update desired state
+activate ShadowService
+
+alt Device exists and available
+    ShadowService -> DB: Read current shadow document
+    DB --> ShadowService: Return shadow document
+    ShadowService -> ShadowService: Update desired state with pending flag
+    ShadowService -> DB: Write updated shadow document
+    ShadowService -> WSManager: Notify about desired state change
+    ShadowService --> FrontHandler: Confirm state change requested
+    FrontHandler --> UI: Return confirmation (HTTP response)
+    UI -> UI: Update UI to show pending state
+    UI -> Cache: Update local cache with pending state
+else Device not found or unavailable
+    ShadowService --> FrontHandler: Return error (device not available)
+    FrontHandler --> UI: Return error response
+    UI -> UI: Display error message
+end
+
+deactivate ShadowService
+deactivate FrontHandler
+deactivate UI
+
+WSManager -> UI: Notify of pending state via WebSocket
+
+== Device Applies Desired State ==
+Device -> ShadowAPI: Request pending changes
+activate ShadowAPI
+ShadowAPI -> ShadowService: Get desired state
+activate ShadowService
+ShadowService -> DB: Read shadow document
+DB --> ShadowService: Return shadow document with desired state
+
+alt Has pending changes
+    ShadowService --> ShadowAPI: Return desired state changes with pending flag
+    ShadowAPI --> Device: Return desired state to apply
+    Device -> Device: Apply state changes
+    Device -> ShadowAPI: Report updated state (matching desired)
+    ShadowAPI -> ShadowService: Update reported state
+    ShadowService -> DB: Read shadow document
+    DB --> ShadowService: Return shadow document
+    ShadowService -> ShadowService: Clear pending flag, update reported state
+    ShadowService -> DB: Write updated shadow document
+    ShadowService -> WSManager: Notify about resolved pending state
+else No pending changes
+    ShadowService --> ShadowAPI: Return empty desired state
+    ShadowAPI --> Device: No changes to apply
+end
+
+deactivate ShadowService
+deactivate ShadowAPI
+
+Device -> Device: Apply state changes
+Device -> ShadowAPI: Report updated state (matching desired)
+activate ShadowAPI
+ShadowAPI -> ShadowService: Update reported state
+activate ShadowService
+ShadowService -> DB: Read shadow document
+DB --> ShadowService: Return shadow document
+ShadowService -> ShadowService: Clear pending flag, update reported state
+ShadowService -> DB: Write updated shadow document
+ShadowService -> WSManager: Notify about resolved pending state
+ShadowService --> ShadowAPI: Confirm state update
+deactivate ShadowService
+ShadowAPI --> Device: Confirm state received
+deactivate ShadowAPI
+
+WSManager -> UI: Send real-time update via WebSocket
+activate UI
+UI -> UI: Update display with resolved state
+UI -> Cache: Update local cache with resolved state
+UI -> UI: Update history chart with new data point
+deactivate UI
+
+@enduml

@@ -93,10 +93,10 @@ describe('WaterHeaterDashboardComponent', () => {
     // Expect HTTP request to be made
     const req = httpMock.expectOne(`${environment.apiUrl}/api/devices/water-heaters`);
     expect(req.request.method).toBe('GET');
-    
+
     // Respond with mock data
     req.flush(mockWaterHeaters);
-    
+
     // Check if data is correctly processed
     expect(component.waterHeaters.length).toBe(3);
     expect(component.manufacturers).toContain('AquaTech');
@@ -108,13 +108,13 @@ describe('WaterHeaterDashboardComponent', () => {
   it('should handle HTTP error', () => {
     // Expect HTTP request to be made
     const req = httpMock.expectOne(`${environment.apiUrl}/api/devices/water-heaters`);
-    
+
     // Respond with error
-    req.flush('Error loading devices', { 
-      status: 500, 
-      statusText: 'Server Error' 
+    req.flush('Error loading devices', {
+      status: 500,
+      statusText: 'Server Error'
     });
-    
+
     // Check error handling
     expect(component.isLoading).toBeFalse();
     expect(component.error).toContain('Failed to load water heaters');
@@ -123,7 +123,7 @@ describe('WaterHeaterDashboardComponent', () => {
   it('should update realTimeActive based on WebSocket connection status', () => {
     // Initial state (set in beforeEach)
     expect(component.realTimeActive).toBeTrue();
-    
+
     // Simulate WebSocket disconnection
     mockConnectionStatus$.next(false);
     expect(component.realTimeActive).toBeFalse();
@@ -132,11 +132,11 @@ describe('WaterHeaterDashboardComponent', () => {
   it('should apply manufacturer filter correctly', () => {
     // Load mock data
     component.waterHeaters = mockWaterHeaters;
-    
+
     // Apply manufacturer filter
     component.selectedManufacturer = 'AquaTech';
     component.applyFilters();
-    
+
     // Check filtered results
     expect(component.filteredWaterHeaters.length).toBe(2);
     expect(component.filteredWaterHeaters[0].manufacturer).toBe('AquaTech');
@@ -146,11 +146,11 @@ describe('WaterHeaterDashboardComponent', () => {
   it('should apply connection status filter correctly', () => {
     // Load mock data
     component.waterHeaters = mockWaterHeaters;
-    
+
     // Apply status filter
     component.selectedStatus = 'disconnected';
     component.applyFilters();
-    
+
     // Check filtered results
     expect(component.filteredWaterHeaters.length).toBe(1);
     expect(component.filteredWaterHeaters[0].connection_status).toBe('disconnected');
@@ -159,11 +159,11 @@ describe('WaterHeaterDashboardComponent', () => {
   it('should apply simulated filter correctly', () => {
     // Load mock data
     component.waterHeaters = mockWaterHeaters;
-    
+
     // Apply simulation filter
     component.showSimulatedOnly = true;
     component.applyFilters();
-    
+
     // Check filtered results
     expect(component.filteredWaterHeaters.length).toBe(1);
     expect(component.filteredWaterHeaters[0].simulated).toBeTrue();
@@ -174,10 +174,10 @@ describe('WaterHeaterDashboardComponent', () => {
     component.selectedManufacturer = 'AquaTech';
     component.selectedStatus = 'connected';
     component.showSimulatedOnly = true;
-    
+
     // Clear filters
     component.clearFilters();
-    
+
     // Check filters are reset
     expect(component.selectedManufacturer).toBe('');
     expect(component.selectedStatus).toBe('');
@@ -187,7 +187,7 @@ describe('WaterHeaterDashboardComponent', () => {
   it('should calculate device counts correctly', () => {
     // Load mock data
     component.waterHeaters = mockWaterHeaters;
-    
+
     // Check count calculations
     expect(component.getDeviceCountByStatus('connected')).toBe(2);
     expect(component.getDeviceCountByStatus('disconnected')).toBe(1);
@@ -198,7 +198,7 @@ describe('WaterHeaterDashboardComponent', () => {
     // Device with display_name
     let device = mockWaterHeaters[0];
     expect(component.getDeviceDisplayName(device)).toBe('Kitchen Water Heater');
-    
+
     // Device without display_name
     device = mockWaterHeaters[1];
     expect(component.getDeviceDisplayName(device))
@@ -208,14 +208,14 @@ describe('WaterHeaterDashboardComponent', () => {
   it('should refresh data when refresh() is called', () => {
     // Call refresh method
     component.refresh();
-    
+
     // Expect HTTP request to be made
     const req = httpMock.expectOne(`${environment.apiUrl}/api/devices/water-heaters`);
     expect(req.request.method).toBe('GET');
-    
+
     // Fulfill request
     req.flush(mockWaterHeaters);
-    
+
     // Check loading state
     expect(component.isLoading).toBeFalse();
   });

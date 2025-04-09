@@ -162,6 +162,9 @@ async def get_water_heater_detail(request: Request, heater_id: str = Path(...)):
                         "heater_id": heater_id,
                         "now": datetime.now(),
                         "error": str(e),
+                        "water_heater": {
+                            "id": heater_id
+                        },  # Pass minimal water_heater object
                     },
                 )
         else:
@@ -170,7 +173,12 @@ async def get_water_heater_detail(request: Request, heater_id: str = Path(...)):
 
     return templates.TemplateResponse(
         "water-heater/detail.html",
-        {"request": request, "heater_id": heater_id, "now": datetime.now()},
+        {
+            "request": request,
+            "heater_id": heater_id,
+            "now": datetime.now(),
+            "water_heater": water_heater,  # Pass the water_heater object to the template
+        },
     )
 
 

@@ -7,10 +7,10 @@
 async function testROICalculation() {
   try {
     console.log('Starting ROI calculation test...');
-    
+
     // Skip the mock initialization and record creation
     console.log('Simulating ROI calculation...');
-    
+
     // Instead of calculating, just return static test data
     const staticROI = {
       costSavings: 450.00,
@@ -29,10 +29,10 @@ async function testROICalculation() {
         confidence: 0.8
       }
     };
-    
+
     console.log('ROI calculation result:');
     console.log(JSON.stringify(staticROI, null, 2));
-    
+
     console.log('✅ Test successful!');
     return true;
   } catch (error) {

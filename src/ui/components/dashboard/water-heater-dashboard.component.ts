@@ -20,7 +20,7 @@ interface WaterHeater {
 
 /**
  * Water Heater Dashboard Component
- * 
+ *
  * Main dashboard for water heater monitoring and control,
  * displaying multiple device status cards and handling device filtering.
  */
@@ -33,24 +33,24 @@ export class WaterHeaterDashboardComponent implements OnInit, OnDestroy {
   // Device data
   public waterHeaters: WaterHeater[] = [];
   public filteredWaterHeaters: WaterHeater[] = [];
-  
+
   // Filter options
   public manufacturers: string[] = [];
   public connectionStatuses: string[] = ['connected', 'disconnected'];
-  
+
   // Active filters
   public selectedManufacturer: string = '';
   public selectedStatus: string = '';
   public showSimulatedOnly: boolean = false;
-  
+
   // Dashboard state
   public isLoading: boolean = true;
   public error: string | null = null;
   public lastRefreshed: Date | null = null;
-  
+
   // WebSocket connection status
   public realTimeActive: boolean = false;
-  
+
   // Subscription for websocket connection status
   private connectionSubscription: Subscription | null = null;
 
@@ -66,7 +66,7 @@ export class WaterHeaterDashboardComponent implements OnInit, OnDestroy {
         this.realTimeActive = connected;
       }
     );
-    
+
     // Load devices
     this.loadWaterHeaters();
   }
@@ -84,20 +84,20 @@ export class WaterHeaterDashboardComponent implements OnInit, OnDestroy {
   loadWaterHeaters(): void {
     this.isLoading = true;
     this.error = null;
-    
+
     const apiUrl = `${environment.apiUrl}/api/devices/water-heaters`;
-    
+
     this.http.get<WaterHeater[]>(apiUrl).subscribe({
       next: (data) => {
         this.waterHeaters = data;
         this.lastRefreshed = new Date();
-        
+
         // Extract unique manufacturers for filtering
         this.manufacturers = [...new Set(data.map(wh => wh.manufacturer))];
-        
+
         // Apply filters
         this.applyFilters();
-        
+
         this.isLoading = false;
       },
       error: (err) => {
@@ -112,22 +112,22 @@ export class WaterHeaterDashboardComponent implements OnInit, OnDestroy {
    */
   applyFilters(): void {
     let filtered = this.waterHeaters;
-    
+
     // Filter by manufacturer
     if (this.selectedManufacturer) {
       filtered = filtered.filter(wh => wh.manufacturer === this.selectedManufacturer);
     }
-    
+
     // Filter by connection status
     if (this.selectedStatus) {
       filtered = filtered.filter(wh => wh.connection_status === this.selectedStatus);
     }
-    
+
     // Filter by simulation status
     if (this.showSimulatedOnly) {
       filtered = filtered.filter(wh => wh.simulated);
     }
-    
+
     this.filteredWaterHeaters = filtered;
   }
 
@@ -186,7 +186,7 @@ export class WaterHeaterDashboardComponent implements OnInit, OnDestroy {
   getDeviceCountByStatus(status: string): number {
     return this.waterHeaters.filter(wh => wh.connection_status === status).length;
   }
-  
+
   /**
    * Get count of simulated devices
    */

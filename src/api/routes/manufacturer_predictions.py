@@ -11,7 +11,11 @@ from typing import Any, Dict, List, Optional
 
 from fastapi import APIRouter, HTTPException, Path, Query
 
-from src.predictions.interfaces import ActionSeverity, PredictionResult, RecommendedAction
+from src.predictions.interfaces import (
+    ActionSeverity,
+    PredictionResult,
+    RecommendedAction,
+)
 from src.services.prediction import PredictionService
 
 logger = logging.getLogger(__name__)
@@ -32,7 +36,7 @@ def create_mock_lifespan_prediction(device_id: str) -> PredictionResult:
     """Create mock lifespan prediction for development mode."""
     current_time = datetime.now()
     due_date = current_time + timedelta(days=30)
-    
+
     return PredictionResult(
         prediction_type="lifespan_estimation",
         device_id=device_id,
@@ -60,13 +64,13 @@ def create_mock_lifespan_prediction(device_id: str) -> PredictionResult:
                     "heating_element": {"estimated_days": 1825, "confidence": 0.95},
                     "thermostat": {"estimated_days": 2190, "confidence": 0.92},
                     "tank": {"estimated_days": 2555, "confidence": 0.90},
-                }
+                },
             },
             "environmental_factors": {
                 "water_hardness": "medium",
                 "temperature_range": "normal",
-                "usage_intensity": "moderate"
-            }
+                "usage_intensity": "moderate",
+            },
         },
     )
 
@@ -75,13 +79,17 @@ def create_mock_anomaly_prediction(device_id: str) -> PredictionResult:
     """Create mock anomaly detection for development mode."""
     current_time = datetime.now()
     due_date = current_time + timedelta(days=7)
-    
+
     return PredictionResult(
         prediction_type="anomaly_detection",
         device_id=device_id,
         predicted_value=0.15,  # 15% chance of anomaly
         confidence=0.88,
-        features_used=["temperature_pattern", "pressure_readings", "energy_consumption"],
+        features_used=[
+            "temperature_pattern",
+            "pressure_readings",
+            "energy_consumption",
+        ],
         timestamp=current_time,
         recommended_actions=[
             RecommendedAction(
@@ -101,7 +109,7 @@ def create_mock_anomaly_prediction(device_id: str) -> PredictionResult:
                     "type": "temperature_fluctuation",
                     "severity": "low",
                     "first_detected": (current_time - timedelta(days=2)).isoformat(),
-                    "confidence": 0.82
+                    "confidence": 0.82,
                 }
             ],
             "trend_analysis": {
@@ -120,7 +128,7 @@ def create_mock_anomaly_prediction(device_id: str) -> PredictionResult:
 def create_mock_usage_prediction(device_id: str) -> PredictionResult:
     """Create mock usage pattern prediction for development mode."""
     current_time = datetime.now()
-    
+
     return PredictionResult(
         prediction_type="usage_patterns",
         device_id=device_id,
@@ -132,7 +140,11 @@ def create_mock_usage_prediction(device_id: str) -> PredictionResult:
         raw_details={
             "daily_patterns": {
                 "morning_peak": {"start": "06:30", "end": "08:30", "intensity": "high"},
-                "evening_peak": {"start": "18:00", "end": "21:00", "intensity": "medium"},
+                "evening_peak": {
+                    "start": "18:00",
+                    "end": "21:00",
+                    "intensity": "medium",
+                },
             },
             "weekly_patterns": {
                 "weekday_avg_gallons": 45.2,
@@ -146,7 +158,7 @@ def create_mock_usage_prediction(device_id: str) -> PredictionResult:
             "energy_efficiency_recommendations": {
                 "optimal_temperature": 120,
                 "potential_savings_percent": 8.5,
-            }
+            },
         },
     )
 
@@ -155,13 +167,18 @@ def create_mock_multifactor_prediction(device_id: str) -> PredictionResult:
     """Create mock multi-factor analysis for development mode."""
     current_time = datetime.now()
     due_date = current_time + timedelta(days=90)
-    
+
     return PredictionResult(
         prediction_type="multi_factor",
         device_id=device_id,
         predicted_value=0.78,  # Efficiency score
         confidence=0.91,
-        features_used=["efficiency", "maintenance_history", "water_quality", "usage_patterns"],
+        features_used=[
+            "efficiency",
+            "maintenance_history",
+            "water_quality",
+            "usage_patterns",
+        ],
         timestamp=current_time,
         recommended_actions=[
             RecommendedAction(
@@ -209,13 +226,13 @@ def create_mock_multifactor_prediction(device_id: str) -> PredictionResult:
                     "annual_cost": 430,
                     "installation_cost": 350,
                 },
-            }
+            },
         },
     )
 
 
 @router.get(
-    "/{device_id}/predictions/lifespan", 
+    "/{device_id}/predictions/lifespan",
     response_model=PredictionResult,
     summary="Get Lifespan Prediction",
     description="Returns lifespan estimation prediction for a specific water heater",
@@ -247,7 +264,8 @@ async def get_lifespan_prediction(
                 logger.info(f"Returning mock lifespan prediction for {device_id}")
                 return create_mock_lifespan_prediction(device_id)
             raise HTTPException(
-                status_code=404, detail="Water heater not found or prediction unavailable"
+                status_code=404,
+                detail="Water heater not found or prediction unavailable",
             )
 
         return prediction
@@ -261,7 +279,7 @@ async def get_lifespan_prediction(
 
 
 @router.get(
-    "/{device_id}/predictions/anomalies", 
+    "/{device_id}/predictions/anomalies",
     response_model=PredictionResult,
     summary="Get Anomaly Detection",
     description="Returns anomaly detection prediction for a specific water heater",
@@ -282,9 +300,9 @@ async def get_anomaly_detection_prediction(
     """
     try:
         prediction = await prediction_service.get_prediction(
-            device_id=device_id, 
-            prediction_type="anomaly_detection", 
-            force_refresh=refresh
+            device_id=device_id,
+            prediction_type="anomaly_detection",
+            force_refresh=refresh,
         )
 
         if not prediction:
@@ -293,7 +311,8 @@ async def get_anomaly_detection_prediction(
                 logger.info(f"Returning mock anomaly detection for {device_id}")
                 return create_mock_anomaly_prediction(device_id)
             raise HTTPException(
-                status_code=404, detail="Water heater not found or prediction unavailable"
+                status_code=404,
+                detail="Water heater not found or prediction unavailable",
             )
 
         return prediction
@@ -307,7 +326,7 @@ async def get_anomaly_detection_prediction(
 
 
 @router.get(
-    "/{device_id}/predictions/usage", 
+    "/{device_id}/predictions/usage",
     response_model=PredictionResult,
     summary="Get Usage Pattern Prediction",
     description="Returns usage pattern prediction for a specific water heater",
@@ -328,9 +347,7 @@ async def get_usage_pattern_prediction(
     """
     try:
         prediction = await prediction_service.get_prediction(
-            device_id=device_id, 
-            prediction_type="usage_patterns", 
-            force_refresh=refresh
+            device_id=device_id, prediction_type="usage_patterns", force_refresh=refresh
         )
 
         if not prediction:
@@ -339,7 +356,8 @@ async def get_usage_pattern_prediction(
                 logger.info(f"Returning mock usage patterns for {device_id}")
                 return create_mock_usage_prediction(device_id)
             raise HTTPException(
-                status_code=404, detail="Water heater not found or prediction unavailable"
+                status_code=404,
+                detail="Water heater not found or prediction unavailable",
             )
 
         return prediction
@@ -353,7 +371,7 @@ async def get_usage_pattern_prediction(
 
 
 @router.get(
-    "/{device_id}/predictions/factors", 
+    "/{device_id}/predictions/factors",
     response_model=PredictionResult,
     summary="Get Multi-Factor Prediction",
     description="Returns multi-factor prediction analysis for a specific water heater",
@@ -374,9 +392,7 @@ async def get_multi_factor_prediction(
     """
     try:
         prediction = await prediction_service.get_prediction(
-            device_id=device_id, 
-            prediction_type="multi_factor", 
-            force_refresh=refresh
+            device_id=device_id, prediction_type="multi_factor", force_refresh=refresh
         )
 
         if not prediction:
@@ -385,7 +401,8 @@ async def get_multi_factor_prediction(
                 logger.info(f"Returning mock multi-factor analysis for {device_id}")
                 return create_mock_multifactor_prediction(device_id)
             raise HTTPException(
-                status_code=404, detail="Water heater not found or prediction unavailable"
+                status_code=404,
+                detail="Water heater not found or prediction unavailable",
             )
 
         return prediction
@@ -399,7 +416,7 @@ async def get_multi_factor_prediction(
 
 
 @router.get(
-    "/{device_id}/predictions/all", 
+    "/{device_id}/predictions/all",
     response_model=List[PredictionResult],
     summary="Get All Predictions",
     description="Returns all available predictions for a specific water heater",
@@ -429,9 +446,9 @@ async def get_all_predictions(
     for prediction_type in prediction_types:
         try:
             prediction = await prediction_service.get_prediction(
-                device_id=device_id, 
-                prediction_type=prediction_type, 
-                force_refresh=refresh
+                device_id=device_id,
+                prediction_type=prediction_type,
+                force_refresh=refresh,
             )
             if prediction:
                 results.append(prediction)

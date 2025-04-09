@@ -3,24 +3,27 @@
 PostgreSQL Migration Script for IoTSphere Asset Database
 Creates tables for device registry, device metadata, and asset management.
 """
+import logging
 import os
 import sys
-import logging
+
 import psycopg2
 from psycopg2 import sql
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 # Setup logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+)
 logger = logging.getLogger(__name__)
 
 # Database connection parameters
 DB_PARAMS = {
-    'host': os.environ.get('DB_HOST', 'localhost'),
-    'port': os.environ.get('DB_PORT', '5432'),
-    'user': os.environ.get('DB_USER', 'iotsphere'),
-    'password': os.environ.get('DB_PASSWORD', 'iotsphere'),
-    'dbname': os.environ.get('DB_NAME', 'iotsphere')
+    "host": os.environ.get("DB_HOST", "localhost"),
+    "port": os.environ.get("DB_PORT", "5432"),
+    "user": os.environ.get("DB_USER", "iotsphere"),
+    "password": os.environ.get("DB_PASSWORD", "iotsphere"),
+    "dbname": os.environ.get("DB_NAME", "iotsphere"),
 }
 
 # SQL statements for device registry tables
@@ -133,8 +136,9 @@ CREATE_INDEXES = [
     "CREATE INDEX IF NOT EXISTS idx_device_registry_connection ON device_registry (connection_status);",
     "CREATE INDEX IF NOT EXISTS idx_device_capabilities_name ON device_capabilities (capability_name);",
     "CREATE INDEX IF NOT EXISTS idx_maintenance_history_date ON maintenance_history (maintenance_date);",
-    "CREATE INDEX IF NOT EXISTS idx_maintenance_history_type ON maintenance_history (maintenance_type);"
+    "CREATE INDEX IF NOT EXISTS idx_maintenance_history_type ON maintenance_history (maintenance_type);",
 ]
+
 
 def create_tables():
     """Create all required tables in the PostgreSQL database"""
@@ -145,28 +149,28 @@ def create_tables():
         conn = psycopg2.connect(**DB_PARAMS)
         conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cursor = conn.cursor()
-        
+
         # Create tables
         logger.info("Creating device registry tables...")
         cursor.execute(CREATE_DEVICE_REGISTRY_TABLE)
         cursor.execute(CREATE_DEVICE_CAPABILITIES_TABLE)
         cursor.execute(CREATE_DEVICE_AUTH_TABLE)
-        
+
         logger.info("Creating asset database tables...")
         cursor.execute(CREATE_LOCATION_TABLE)
         cursor.execute(CREATE_DEVICE_LOCATION_TABLE)
         cursor.execute(CREATE_MAINTENANCE_HISTORY_TABLE)
-        
+
         logger.info("Creating water heater specific tables...")
         cursor.execute(CREATE_WATER_HEATER_METADATA_TABLE)
-        
+
         # Create indexes
         logger.info("Creating indexes...")
         for query in CREATE_INDEXES:
             cursor.execute(query)
-            
+
         logger.info("Asset database setup completed successfully!")
-        
+
     except Exception as e:
         logger.error(f"Database error: {e}")
         return False
@@ -174,6 +178,7 @@ def create_tables():
         if conn:
             conn.close()
     return True
+
 
 if __name__ == "__main__":
     if create_tables():

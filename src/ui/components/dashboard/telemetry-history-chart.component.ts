@@ -6,7 +6,7 @@ import { environment } from '../../../environments/environment';
 
 /**
  * TelemetryHistoryChart Component
- * 
+ *
  * Displays historical time-series data for device telemetry, supporting multiple
  * metrics and configurable time ranges. Supports real-time updates via WebSocket.
  */
@@ -17,7 +17,7 @@ import { environment } from '../../../environments/environment';
 })
 export class TelemetryHistoryChartComponent implements OnInit, OnDestroy {
   @ViewChild('chartContainer') chartContainer: ElementRef;
-  
+
   @Input() deviceId: string = '';
   @Input() metrics: string[] = ['temperature_current'];
   @Input() timeRange: '1h' | '6h' | '24h' | '7d' | '30d' = '24h';
@@ -28,7 +28,7 @@ export class TelemetryHistoryChartComponent implements OnInit, OnDestroy {
   @Input() temperatureUnit: 'F' | 'C' = 'F';
   @Input() autoRefresh: boolean = true;
   @Input() aggregationType: 'raw' | 'avg' | 'min' | 'max' = 'raw';
-  
+
   // Chart data
   public chartOptions: any;
   public chartInstance: any;
@@ -36,7 +36,7 @@ export class TelemetryHistoryChartComponent implements OnInit, OnDestroy {
   public isLoading: boolean = true;
   public error: string | null = null;
   public lastUpdated: Date | null = null;
-  
+
   // Chart Y-axis display units
   public displayUnits: {[key: string]: string} = {
     'temperature_current': '°F',
@@ -47,7 +47,7 @@ export class TelemetryHistoryChartComponent implements OnInit, OnDestroy {
     'energy_usage_kwh': 'kWh',
     'water_usage_gallons': 'Gal'
   };
-  
+
   // Chart colors for different metrics
   public metricColors: {[key: string]: string} = {
     'temperature_current': '#F44336',
@@ -58,7 +58,7 @@ export class TelemetryHistoryChartComponent implements OnInit, OnDestroy {
     'energy_usage_kwh': '#795548',
     'water_usage_gallons': '#00BCD4'
   };
-  
+
   // Display names for metrics
   public metricDisplayNames: {[key: string]: string} = {
     'temperature_current': 'Current Temperature',
@@ -69,20 +69,20 @@ export class TelemetryHistoryChartComponent implements OnInit, OnDestroy {
     'energy_usage_kwh': 'Energy Usage',
     'water_usage_gallons': 'Water Usage'
   };
-  
+
   // Subscriptions
   private telemetrySubscription: Subscription | null = null;
   private refreshInterval: any = null;
-  
+
   constructor(
     private http: HttpClient,
     private websocketService: WebSocketService
   ) {}
-  
+
   ngOnInit(): void {
     // Load initial historical data
     this.loadHistoricalData();
-    
+
     // Set up real-time updates if auto-refresh is enabled
     if (this.autoRefresh) {
       // Subscribe to telemetry for this device
@@ -93,39 +93,39 @@ export class TelemetryHistoryChartComponent implements OnInit, OnDestroy {
           }
         }
       );
-      
+
       // Set up periodic refresh of historical data (every 5 minutes)
       this.refreshInterval = setInterval(() => {
         this.loadHistoricalData();
       }, 300000); // 5 minutes
     }
   }
-  
+
   ngOnDestroy(): void {
     // Clean up subscriptions
     if (this.telemetrySubscription) {
       this.telemetrySubscription.unsubscribe();
     }
-    
+
     if (this.refreshInterval) {
       clearInterval(this.refreshInterval);
     }
-    
+
     // Destroy chart instance if it exists
     if (this.chartInstance) {
       this.chartInstance.destroy();
     }
   }
-  
+
   /**
    * Load historical telemetry data from API
    */
   loadHistoricalData(): void {
     this.isLoading = true;
     this.error = null;
-    
+
     const apiUrl = `${environment.apiUrl}/api/telemetry/history/${this.deviceId}`;
-    
+
     this.http.get(apiUrl, {
       params: {
         metrics: this.metrics.join(','),
@@ -144,7 +144,7 @@ export class TelemetryHistoryChartComponent implements OnInit, OnDestroy {
       }
     });
   }
-  
+
   /**
    * Process historical data and initialize chart
    */
@@ -153,22 +153,22 @@ export class TelemetryHistoryChartComponent implements OnInit, OnDestroy {
       this.error = 'Invalid data format received from server';
       return;
     }
-    
+
     try {
       // Prepare chart series data
       this.chartData = this.metrics.map(metric => {
         const metricData = data.series[metric] || [];
-        
+
         return {
           name: this.metricDisplayNames[metric] || metric,
           data: metricData.map((point: any) => {
             // Convert temperature if needed
             let value = point.value;
-            if ((metric === 'temperature_current' || metric === 'temperature_setpoint') 
+            if ((metric === 'temperature_current' || metric === 'temperature_setpoint')
                 && this.temperatureUnit === 'C') {
               value = this.convertFahrenheitToCelsius(value);
             }
-            
+
             return {
               x: new Date(point.timestamp).getTime(),
               y: value
@@ -177,33 +177,33 @@ export class TelemetryHistoryChartComponent implements OnInit, OnDestroy {
           color: this.metricColors[metric] || '#607D8B'
         };
       });
-      
+
       // Initialize or update chart
       this.initializeChart();
     } catch (err: any) {
       this.error = `Error processing chart data: ${err.message}`;
     }
   }
-  
+
   /**
    * Initialize chart with ApexCharts
    */
   private initializeChart(): void {
     if (!this.chartContainer) return;
-    
+
     // Prepare Y-axis labels
     const yAxisLabels = this.metrics.map(metric => {
       let unit = this.displayUnits[metric] || '';
-      
+
       // Adjust temperature unit
-      if ((metric === 'temperature_current' || metric === 'temperature_setpoint') 
+      if ((metric === 'temperature_current' || metric === 'temperature_setpoint')
           && this.temperatureUnit === 'C') {
         unit = '°C';
       }
-      
+
       return unit;
     });
-    
+
     // Configure chart options
     this.chartOptions = {
       series: this.chartData,
@@ -278,7 +278,7 @@ export class TelemetryHistoryChartComponent implements OnInit, OnDestroy {
         }
       }
     };
-    
+
     // Render the chart
     if (typeof ApexCharts !== 'undefined') {
       if (this.chartInstance) {
@@ -294,37 +294,37 @@ export class TelemetryHistoryChartComponent implements OnInit, OnDestroy {
       console.error('ApexCharts is not loaded. Please include the library.');
     }
   }
-  
+
   /**
    * Update chart with real-time telemetry data
    */
   private updateChartWithRealtimeData(telemetry: TelemetryMessage): void {
     if (!this.chartInstance || !telemetry.data) return;
-    
+
     const timestamp = new Date(telemetry.timestamp).getTime();
-    
+
     // Update each metric in the chart if it has new data
     this.metrics.forEach((metric, index) => {
       if (telemetry.data[metric] !== undefined) {
         let value = telemetry.data[metric];
-        
+
         // Convert temperature if needed
-        if ((metric === 'temperature_current' || metric === 'temperature_setpoint') 
+        if ((metric === 'temperature_current' || metric === 'temperature_setpoint')
             && this.temperatureUnit === 'C') {
           value = this.convertFahrenheitToCelsius(value);
         }
-        
+
         // Add new data point
         const newData = { x: timestamp, y: value };
         this.chartInstance.appendData([{
           name: this.metricDisplayNames[metric] || metric,
           data: [newData]
         }]);
-        
+
         // Update component data
         if (this.chartData[index]) {
           this.chartData[index].data.push(newData);
-          
+
           // Trim array to avoid memory issues (keep last 1000 points)
           if (this.chartData[index].data.length > 1000) {
             this.chartData[index].data.shift();
@@ -332,10 +332,10 @@ export class TelemetryHistoryChartComponent implements OnInit, OnDestroy {
         }
       }
     });
-    
+
     this.lastUpdated = new Date();
   }
-  
+
   /**
    * Get appropriate date format based on time range
    */
@@ -354,21 +354,21 @@ export class TelemetryHistoryChartComponent implements OnInit, OnDestroy {
         return 'dd MMM, HH:mm';
     }
   }
-  
+
   /**
    * Convert Fahrenheit to Celsius
    */
   private convertFahrenheitToCelsius(fahrenheit: number): number {
     return (fahrenheit - 32) * 5/9;
   }
-  
+
   /**
    * Refresh chart data manually
    */
   refreshData(): void {
     this.loadHistoricalData();
   }
-  
+
   /**
    * Change time range
    */
@@ -376,13 +376,13 @@ export class TelemetryHistoryChartComponent implements OnInit, OnDestroy {
     this.timeRange = range;
     this.loadHistoricalData();
   }
-  
+
   /**
    * Change chart type
    */
   changeChartType(type: 'line' | 'bar' | 'area'): void {
     this.chartType = type;
-    
+
     if (this.chartInstance) {
       this.chartInstance.updateOptions({
         chart: {

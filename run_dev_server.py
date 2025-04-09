@@ -6,15 +6,16 @@ This script sets up the development environment with appropriate variables for
 testing and debugging WebSockets and other features, then starts the uvicorn server.
 """
 import os
-import sys
 import subprocess
+import sys
 from pathlib import Path
 
 # Set environment variables needed for development
 env_vars = {
     "APP_ENV": "development",
     "DEBUG_WEBSOCKET": "true",
-    "LOG_LEVEL": "INFO" 
+    "LOG_LEVEL": "INFO",
+    "ASSET_REGISTRY_STORAGE": "mongodb",
 }
 
 # Update the environment
@@ -29,11 +30,14 @@ print(f"Starting server with app at: {app_path}")
 # Command for uvicorn with reload
 cmd = [
     sys.executable,
-    "-m", "uvicorn",
+    "-m",
+    "uvicorn",
     "src.main:app",
     "--reload",
-    "--host", "127.0.0.1",
-    "--port", "8000"
+    "--host",
+    "127.0.0.1",
+    "--port",
+    "8000",
 ]
 
 # Print the command for reference
@@ -44,7 +48,9 @@ print("Environment:")
 for key, value in env_vars.items():
     print(f"  {key}: {value}")
 print("\nTest Token for WebSockets:")
-print("  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoidGVzdC11c2VyLTAwMSIsInVzZXJuYW1lIjoidGVzdF91c2VyIiwicm9sZSI6ImFkbWluIiwiZXhwIjoxNzQ0MDYwMDAwfQ.thisIsATestToken")
+print(
+    "  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoidGVzdC11c2VyLTAwMSIsInVzZXJuYW1lIjoidGVzdF91c2VyIiwicm9sZSI6ImFkbWluIiwiZXhwIjoxNzQ0MDYwMDAwfQ.thisIsATestToken"
+)
 print("\nTest Endpoints:")
 print("  /ws/test/device/wh-d94a7707")
 print("  /ws/test/broadcast")

@@ -7,7 +7,7 @@ which is useful for isolating connection issues from authentication issues.
 import asyncio
 import json
 import logging
-from typing import Dict, Any
+from typing import Any, Dict
 
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 
@@ -19,34 +19,40 @@ logger = logging.getLogger(__name__)
 async def websocket_noauth(websocket: WebSocket):
     """
     Debug endpoint with no authentication for basic connectivity testing.
-    
+
     This endpoint:
     1. Accepts WebSocket connections without any authentication
     2. Echoes back any messages received
     3. Sends periodic heartbeat messages
-    
+
     WARNING: This endpoint should NEVER be used in production as it has no security.
     """
     await websocket.accept()
-    logger.warning(f"NO-AUTH WebSocket connection accepted from {websocket.client} - FOR TESTING ONLY")
-    
+    logger.warning(
+        f"NO-AUTH WebSocket connection accepted from {websocket.client} - FOR TESTING ONLY"
+    )
+
     # Send initial connection info
-    await websocket.send_text(json.dumps({
-        "type": "connect_info",
-        "message": "WebSocket NO-AUTH connection established (testing only)",
-        "authenticated": False,
-        "warning": "This is an unauthenticated connection for testing only"
-    }))
-    
+    await websocket.send_text(
+        json.dumps(
+            {
+                "type": "connect_info",
+                "message": "WebSocket NO-AUTH connection established (testing only)",
+                "authenticated": False,
+                "warning": "This is an unauthenticated connection for testing only",
+            }
+        )
+    )
+
     # Start heartbeat task
     heartbeat_task = asyncio.create_task(send_heartbeats(websocket))
-    
+
     try:
         # Echo messages back to client
         while True:
             message = await websocket.receive_text()
             logger.info(f"Received message from {websocket.client}: {message}")
-            
+
             # Try to parse as JSON
             try:
                 data = json.loads(message)
@@ -54,13 +60,13 @@ async def websocket_noauth(websocket: WebSocket):
                 response = {
                     "type": "echo",
                     "original": data,
-                    "timestamp": asyncio.get_event_loop().time()
+                    "timestamp": asyncio.get_event_loop().time(),
                 }
                 await websocket.send_text(json.dumps(response))
             except json.JSONDecodeError:
                 # Not JSON, echo as string
                 await websocket.send_text(f"Echo: {message}")
-                
+
     except WebSocketDisconnect:
         logger.info(f"NO-AUTH WebSocket client disconnected: {websocket.client}")
     except Exception as e:
@@ -83,7 +89,7 @@ async def send_heartbeats(websocket: WebSocket):
             heartbeat = {
                 "type": "heartbeat",
                 "count": count,
-                "timestamp": asyncio.get_event_loop().time()
+                "timestamp": asyncio.get_event_loop().time(),
             }
             await websocket.send_text(json.dumps(heartbeat))
             await asyncio.sleep(30)  # Heartbeat every 30 seconds

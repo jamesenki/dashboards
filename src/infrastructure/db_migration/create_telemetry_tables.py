@@ -3,24 +3,27 @@
 TimescaleDB Migration Script for IoTSphere Telemetry
 Creates tables optimized for time-series data with appropriate hypertable configurations.
 """
+import logging
 import os
 import sys
-import logging
+
 import psycopg2
 from psycopg2 import sql
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 # Setup logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+)
 logger = logging.getLogger(__name__)
 
 # Database connection parameters
 DB_PARAMS = {
-    'host': os.environ.get('DB_HOST', 'localhost'),
-    'port': os.environ.get('DB_PORT', '5432'),
-    'user': os.environ.get('DB_USER', 'iotsphere'),
-    'password': os.environ.get('DB_PASSWORD', 'iotsphere'),
-    'dbname': os.environ.get('DB_NAME', 'iotsphere')
+    "host": os.environ.get("DB_HOST", "localhost"),
+    "port": os.environ.get("DB_PORT", "5432"),
+    "user": os.environ.get("DB_USER", "iotsphere"),
+    "password": os.environ.get("DB_PASSWORD", "iotsphere"),
+    "dbname": os.environ.get("DB_NAME", "iotsphere"),
 }
 
 # SQL statements for table creation
@@ -76,7 +79,7 @@ CREATE TABLE IF NOT EXISTS device_events (
 CREATE_HYPERTABLES = [
     "SELECT create_hypertable('device_telemetry', 'timestamp', if_not_exists => TRUE);",
     "SELECT create_hypertable('water_heater_telemetry', 'timestamp', if_not_exists => TRUE);",
-    "SELECT create_hypertable('device_events', 'timestamp', if_not_exists => TRUE);"
+    "SELECT create_hypertable('device_events', 'timestamp', if_not_exists => TRUE);",
 ]
 
 # Create indexes for frequent queries
@@ -85,8 +88,9 @@ CREATE_INDEXES = [
     "CREATE INDEX IF NOT EXISTS idx_water_heater_telemetry_device_id_timestamp ON water_heater_telemetry (device_id, timestamp DESC);",
     "CREATE INDEX IF NOT EXISTS idx_device_events_device_id_timestamp ON device_events (device_id, timestamp DESC);",
     "CREATE INDEX IF NOT EXISTS idx_device_telemetry_type ON device_telemetry (telemetry_type);",
-    "CREATE INDEX IF NOT EXISTS idx_device_events_type ON device_events (event_type);"
+    "CREATE INDEX IF NOT EXISTS idx_device_events_type ON device_events (event_type);",
 ]
+
 
 def create_tables():
     """Create all required tables in the TimescaleDB database"""
@@ -97,31 +101,33 @@ def create_tables():
         conn = psycopg2.connect(**DB_PARAMS)
         conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cursor = conn.cursor()
-        
+
         # Check if TimescaleDB extension is installed
-        cursor.execute("SELECT extname FROM pg_extension WHERE extname = 'timescaledb';")
+        cursor.execute(
+            "SELECT extname FROM pg_extension WHERE extname = 'timescaledb';"
+        )
         if cursor.fetchone() is None:
             logger.info("Creating TimescaleDB extension...")
             cursor.execute("CREATE EXTENSION IF NOT EXISTS timescaledb CASCADE;")
-        
+
         # Create tables
         logger.info("Creating telemetry tables...")
         cursor.execute(CREATE_DEVICE_TELEMETRY_TABLE)
         cursor.execute(CREATE_WATER_HEATER_TELEMETRY_TABLE)
         cursor.execute(CREATE_DEVICE_EVENTS_TABLE)
-        
+
         # Create hypertables
         logger.info("Converting tables to hypertables...")
         for query in CREATE_HYPERTABLES:
             cursor.execute(query)
-        
+
         # Create indexes
         logger.info("Creating indexes...")
         for query in CREATE_INDEXES:
             cursor.execute(query)
-            
+
         logger.info("TimescaleDB setup completed successfully!")
-        
+
     except Exception as e:
         logger.error(f"Database error: {e}")
         return False
@@ -129,6 +135,7 @@ def create_tables():
         if conn:
             conn.close()
     return True
+
 
 if __name__ == "__main__":
     if create_tables():

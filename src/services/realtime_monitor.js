@@ -30,25 +30,25 @@ class RealTimeMonitor {
     if (this.ws && this.ws.readyState === WebSocket.OPEN) {
       this.ws.close();
     }
-    
+
     this.deviceId = deviceId;
     const wsUrl = `${this.baseUrl}${this.endpoint}?deviceId=${deviceId}`;
-    
+
     try {
       this.ws = new WebSocket(wsUrl);
-      
+
       this.ws.onopen = this._handleOpen.bind(this);
       this.ws.onmessage = this._handleMessage.bind(this);
       this.ws.onclose = this._handleClose.bind(this);
       this.ws.onerror = this._handleError.bind(this);
-      
+
       // Set up a timeout to notify if connection takes too long
       this.connectionTimeout = setTimeout(() => {
         if (this.connectionStatus !== 'connected') {
           this._updateConnectionStatus('timeout');
         }
       }, 10000);
-      
+
       return true;
     } catch (error) {
       this._notifyError('Failed to establish WebSocket connection', error);
@@ -64,16 +64,16 @@ class RealTimeMonitor {
       this.ws.close();
       this.ws = null;
     }
-    
+
     this._updateConnectionStatus('disconnected');
     this.deviceId = null;
     this.reconnectAttempts = 0;
-    
+
     if (this.reconnectTimer) {
       clearTimeout(this.reconnectTimer);
       this.reconnectTimer = null;
     }
-    
+
     if (this.connectionTimeout) {
       clearTimeout(this.connectionTimeout);
       this.connectionTimeout = null;
@@ -86,12 +86,12 @@ class RealTimeMonitor {
   _handleOpen() {
     this._updateConnectionStatus('connected');
     this.reconnectAttempts = 0;
-    
+
     if (this.connectionTimeout) {
       clearTimeout(this.connectionTimeout);
       this.connectionTimeout = null;
     }
-    
+
     // Send subscription message to server
     if (this.deviceId) {
       this.ws.send(JSON.stringify({
@@ -99,7 +99,7 @@ class RealTimeMonitor {
         deviceId: this.deviceId
       }));
     }
-    
+
     console.log(`WebSocket connected for device ${this.deviceId}`);
   }
 
@@ -110,7 +110,7 @@ class RealTimeMonitor {
   _handleMessage(event) {
     try {
       const data = JSON.parse(event.data);
-      
+
       // Handle different message types
       switch(data.messageType) {
         case 'update':
@@ -140,14 +140,14 @@ class RealTimeMonitor {
       clearTimeout(this.connectionTimeout);
       this.connectionTimeout = null;
     }
-    
+
     this._updateConnectionStatus('disconnected');
-    
+
     // Attempt reconnection if not intentionally closed
     if (event.code !== 1000 && this.deviceId) {
       this._attemptReconnect();
     }
-    
+
     console.log(`WebSocket disconnected: ${event.code} - ${event.reason}`);
   }
 
@@ -157,7 +157,7 @@ class RealTimeMonitor {
    */
   _handleError(error) {
     this._notifyError('WebSocket connection error', error);
-    
+
     // Update connection status
     this._updateConnectionStatus('error');
   }
@@ -167,7 +167,7 @@ class RealTimeMonitor {
    */
   _attemptReconnect() {
     this._updateConnectionStatus('reconnecting');
-    
+
     // Check if we've exceeded max reconnect attempts
     if (this.reconnectAttempts >= this.maxReconnectAttempts) {
       this._notifyError('Maximum reconnection attempts reached', {
@@ -176,20 +176,20 @@ class RealTimeMonitor {
       this._updateConnectionStatus('failed');
       return;
     }
-    
+
     // Increment reconnect attempts
     this.reconnectAttempts++;
-    
+
     // Schedule reconnect attempt
     const delay = this.reconnectDelay * Math.pow(1.5, this.reconnectAttempts - 1);
     console.log(`Scheduling reconnect attempt ${this.reconnectAttempts} in ${delay}ms`);
-    
+
     this.reconnectTimer = setTimeout(() => {
       if (this.deviceId) {
         this.connect(this.deviceId);
       }
     }, delay);
-    
+
     // Notify listeners of reconnection attempt
     this._notifyListeners('connectionChange', {
       status: 'reconnecting',
@@ -204,13 +204,13 @@ class RealTimeMonitor {
    */
   _processUpdate(data) {
     const update = data.update;
-    
+
     // Process temperature updates
-    if (update.state && update.state.reported && 
+    if (update.state && update.state.reported &&
         update.state.reported.temperature !== undefined) {
       const temperature = update.state.reported.temperature;
       const unit = update.state.reported.temperature_unit || 'F';
-      
+
       this._notifyListeners('temperature', {
         value: temperature,
         unit: unit,
@@ -218,7 +218,7 @@ class RealTimeMonitor {
         timestamp: data.timestamp || new Date().toISOString()
       });
     }
-    
+
     // Process other updates here as needed
   }
 
@@ -242,7 +242,7 @@ class RealTimeMonitor {
   _updateConnectionStatus(status) {
     const oldStatus = this.connectionStatus;
     this.connectionStatus = status;
-    
+
     // Notify listeners of connection status change
     if (oldStatus !== status) {
       this._notifyListeners('connectionChange', {
@@ -264,7 +264,7 @@ class RealTimeMonitor {
       details: details,
       timestamp: new Date().toISOString()
     });
-    
+
     console.error(`RealTimeMonitor Error: ${message}`, details);
   }
 

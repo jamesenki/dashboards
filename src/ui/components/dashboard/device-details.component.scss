@@ -19,7 +19,7 @@ $card-shadow: rgba(0, 0, 0, 0.1);
   padding: 1rem;
   background-color: $bg-color;
   min-height: 100vh;
-  
+
   &.loading {
     position: relative;
   }
@@ -28,7 +28,7 @@ $card-shadow: rgba(0, 0, 0, 0.1);
 // Back navigation link
 .back-navigation {
   margin-bottom: 1.5rem;
-  
+
   .back-link {
     display: inline-flex;
     align-items: center;
@@ -36,15 +36,15 @@ $card-shadow: rgba(0, 0, 0, 0.1);
     text-decoration: none;
     font-size: 0.9rem;
     transition: color 0.2s ease;
-    
+
     &:hover {
       color: darken($primary-color, 10%);
       text-decoration: underline;
     }
-    
+
     .icon-back {
       margin-right: 0.5rem;
-      
+
       &:before {
         content: "←";
       }
@@ -65,7 +65,7 @@ $card-shadow: rgba(0, 0, 0, 0.1);
   align-items: center;
   justify-content: center;
   z-index: 10;
-  
+
   .loading-spinner {
     width: 60px;
     height: 60px;
@@ -75,12 +75,12 @@ $card-shadow: rgba(0, 0, 0, 0.1);
     animation: spin 1s linear infinite;
     margin-bottom: 1.5rem;
   }
-  
+
   .loading-text {
     font-size: 1.1rem;
     color: $text-primary;
   }
-  
+
   @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
@@ -98,7 +98,7 @@ $card-shadow: rgba(0, 0, 0, 0.1);
   background-color: $card-bg;
   border-radius: $card-radius;
   box-shadow: 0 2px 8px $card-shadow;
-  
+
   .error-icon {
     display: flex;
     align-items: center;
@@ -112,14 +112,14 @@ $card-shadow: rgba(0, 0, 0, 0.1);
     font-weight: bold;
     margin-bottom: 1.5rem;
   }
-  
+
   .error-message {
     color: $text-primary;
     margin-bottom: 1.5rem;
     max-width: 600px;
     font-size: 1.1rem;
   }
-  
+
   .btn-retry {
     background-color: $primary-color;
     border: none;
@@ -128,7 +128,7 @@ $card-shadow: rgba(0, 0, 0, 0.1);
     cursor: pointer;
     padding: 0.8rem 1.5rem;
     font-size: 1rem;
-    
+
     &:hover {
       background-color: darken($primary-color, 10%);
     }
@@ -143,27 +143,27 @@ $card-shadow: rgba(0, 0, 0, 0.1);
   padding: 1.5rem;
   margin-bottom: 1.5rem;
   box-shadow: 0 2px 4px $card-shadow;
-  
+
   @media (max-width: 768px) {
     flex-direction: column;
-    
+
     .device-image {
       margin-right: 0;
       margin-bottom: 1.5rem;
     }
-    
+
     .device-actions {
       margin-top: 1.5rem;
     }
   }
-  
+
   .device-image {
     position: relative;
     width: 160px;
     height: 160px;
     margin-right: 2rem;
     flex-shrink: 0;
-    
+
     img {
       width: 100%;
       height: 100%;
@@ -172,7 +172,7 @@ $card-shadow: rgba(0, 0, 0, 0.1);
       background-color: $bg-color;
       padding: 1rem;
     }
-    
+
     .device-status {
       position: absolute;
       top: -10px;
@@ -183,16 +183,16 @@ $card-shadow: rgba(0, 0, 0, 0.1);
       font-size: 0.8rem;
       font-weight: bold;
       text-transform: uppercase;
-      
+
       &.connected {
         background-color: $success-color;
       }
-      
+
       &.disconnected {
         background-color: $error-color;
       }
     }
-    
+
     .simulation-badge {
       position: absolute;
       bottom: -10px;
@@ -208,31 +208,31 @@ $card-shadow: rgba(0, 0, 0, 0.1);
       border-radius: 2px;
     }
   }
-  
+
   .device-info {
     flex: 1;
-    
+
     .device-name {
       margin: 0 0 1rem 0;
       font-size: 1.8rem;
       color: $text-primary;
     }
-    
+
     .device-meta {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
       gap: 0.8rem;
-      
+
       .meta-item {
         display: flex;
         flex-direction: column;
-        
+
         .meta-label {
           font-size: 0.8rem;
           color: $text-secondary;
           margin-bottom: 0.2rem;
         }
-        
+
         .meta-value {
           font-size: 1rem;
           color: $text-primary;
@@ -241,39 +241,39 @@ $card-shadow: rgba(0, 0, 0, 0.1);
       }
     }
   }
-  
+
   .device-actions {
     display: flex;
     flex-direction: column;
     justify-content: center;
     margin-left: 1.5rem;
-    
+
     button {
       border-radius: 4px;
       padding: 0.8rem 1.5rem;
       margin-bottom: 0.8rem;
       cursor: pointer;
       font-weight: 500;
-      
+
       &:last-child {
         margin-bottom: 0;
       }
-      
+
       &.btn-primary {
         background-color: $primary-color;
         color: white;
         border: none;
-        
+
         &:hover {
           background-color: darken($primary-color, 10%);
         }
       }
-      
+
       &.btn-unit-toggle {
         background-color: $bg-color;
         color: $text-primary;
         border: 1px solid $border-color;
-        
+
         &:hover {
           background-color: darken($bg-color, 5%);
         }
@@ -290,15 +290,15 @@ $card-shadow: rgba(0, 0, 0, 0.1);
   overflow: hidden;
   border: 1px solid $border-color;
   border-bottom: none;
-  
+
   @media (max-width: 768px) {
     flex-wrap: wrap;
-    
+
     .tab-button {
       flex: 1 0 50%;
     }
   }
-  
+
   .tab-button {
     flex: 1;
     background: none;
@@ -309,15 +309,15 @@ $card-shadow: rgba(0, 0, 0, 0.1);
     color: $text-secondary;
     cursor: pointer;
     transition: all 0.2s ease;
-    
+
     &:last-child {
       border-right: none;
     }
-    
+
     &:hover:not(.active) {
       background-color: rgba($primary-color, 0.05);
     }
-    
+
     &.active {
       background-color: $primary-color;
       color: white;
@@ -339,64 +339,64 @@ $card-shadow: rgba(0, 0, 0, 0.1);
 // Events log
 .events-log-container {
   margin-top: 1.5rem;
-  
+
   .log-header {
     margin-bottom: 1rem;
-    
+
     h3 {
       margin: 0;
       font-size: 1.2rem;
       color: $text-primary;
     }
   }
-  
+
   .events-list {
     max-height: 400px;
     overflow-y: auto;
     border: 1px solid $border-color;
     border-radius: $card-radius;
-    
+
     .event-item {
       display: flex;
       align-items: center;
       padding: 0.8rem;
       border-bottom: 1px solid $border-color;
-      
+
       &:last-child {
         border-bottom: none;
       }
-      
+
       &.severity-info {
         border-left: 4px solid $primary-color;
       }
-      
+
       &.severity-warning {
         border-left: 4px solid $warning-color;
       }
-      
+
       &.severity-error {
         border-left: 4px solid $error-color;
       }
-      
+
       .event-time {
         width: 100px;
         font-size: 0.8rem;
         color: $text-secondary;
       }
-      
+
       .event-type {
         width: 150px;
         font-weight: 500;
         color: $text-primary;
       }
-      
+
       .event-message {
         flex: 1;
         color: $text-primary;
       }
     }
   }
-  
+
   .no-events {
     padding: 2rem;
     text-align: center;
@@ -412,19 +412,19 @@ $card-shadow: rgba(0, 0, 0, 0.1);
   display: flex;
   align-items: center;
   margin-top: 1.5rem;
-  
+
   .selector-label {
     margin-right: 1rem;
     font-size: 0.9rem;
     color: $text-secondary;
   }
-  
+
   .selector-buttons {
     display: flex;
     border: 1px solid $border-color;
     border-radius: 4px;
     overflow: hidden;
-    
+
     button {
       background-color: $card-bg;
       border: none;
@@ -433,15 +433,15 @@ $card-shadow: rgba(0, 0, 0, 0.1);
       font-size: 0.9rem;
       color: $text-secondary;
       cursor: pointer;
-      
+
       &:last-child {
         border-right: none;
       }
-      
+
       &:hover:not(.active) {
         background-color: rgba($primary-color, 0.05);
       }
-      
+
       &.active {
         background-color: $primary-color;
         color: white;
@@ -453,27 +453,27 @@ $card-shadow: rgba(0, 0, 0, 0.1);
 // Metric selector
 .metric-selector {
   margin-bottom: 1.5rem;
-  
+
   h3 {
     margin: 0 0 1rem 0;
     font-size: 1.2rem;
     color: $text-primary;
   }
-  
+
   .metric-options {
     display: flex;
     flex-wrap: wrap;
     gap: 1rem;
-    
+
     .metric-option {
       display: flex;
       align-items: center;
       cursor: pointer;
-      
+
       input[type="checkbox"] {
         margin-right: 0.5rem;
       }
-      
+
       .checkbox-label {
         font-size: 0.9rem;
         color: $text-primary;
@@ -487,13 +487,13 @@ $card-shadow: rgba(0, 0, 0, 0.1);
   padding: 3rem;
   text-align: center;
   color: $text-secondary;
-  
+
   h3 {
     margin: 0 0 1rem 0;
     font-size: 1.2rem;
     color: $text-primary;
   }
-  
+
   p {
     margin: 0.5rem 0;
   }

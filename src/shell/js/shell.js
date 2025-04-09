@@ -60,7 +60,7 @@ class Router {
 
     // Listen for hash changes
     window.addEventListener('hashchange', this.handleRouteChange.bind(this));
-    
+
     // Handle initial route
     this.handleRouteChange();
   }
@@ -79,7 +79,7 @@ class Router {
   handleRouteChange() {
     const hash = window.location.hash || '#/';
     let matchedRoute = null;
-    
+
     // Find matching route
     const paths = Object.keys(this.routes);
     for (const path of paths) {
@@ -90,28 +90,28 @@ class Router {
         break;
       }
     }
-    
+
     // Fall back to default route if no match
     if (!matchedRoute && this.routes['#/']) {
       matchedRoute = '#/';
     }
-    
+
     // If we have a matched route, execute its handler
     if (matchedRoute && this.routes[matchedRoute]) {
       // Clean up previous micro-frontend if any
       if (this.currentMicroFrontend && this.currentMicroFrontend.unmount) {
         this.currentMicroFrontend.unmount();
       }
-      
+
       // Mark active navigation item
       this.updateActiveNavigation(matchedRoute);
-      
+
       // Execute route handler
       this.currentRoute = matchedRoute;
       this.currentMicroFrontend = this.routes[matchedRoute](hash);
     }
   }
-  
+
   /**
    * Update active navigation item in the UI
    */
@@ -120,12 +120,12 @@ class Router {
     document.querySelectorAll('.nav-item').forEach(item => {
       item.classList.remove('active');
     });
-    
+
     // Add active class to matching nav item
     document.querySelectorAll(`.nav-item[href="${route}"]`).forEach(item => {
       item.classList.add('active');
     });
-    
+
     // Handle device type navigation in sidebar
     if (route.includes('water-heater')) {
       this.updateActiveDeviceType('water-heater');
@@ -135,7 +135,7 @@ class Router {
       this.updateActiveDeviceType('robot');
     }
   }
-  
+
   /**
    * Update active device type in the sidebar
    */
@@ -144,7 +144,7 @@ class Router {
     document.querySelectorAll('.device-type').forEach(item => {
       item.classList.remove('active');
     });
-    
+
     // Add active class to matching device type
     document.querySelectorAll(`.device-type[data-type="${deviceType}"]`).forEach(item => {
       item.classList.add('active');
@@ -166,23 +166,23 @@ class MicroFrontendLoader {
       console.error(`No configuration found for ${deviceType}/${feature}`);
       return this.showError(`The ${feature} for ${deviceType} is not available.`);
     }
-    
+
     // Show loading state
     this.showLoading();
-    
+
     try {
       // Load CSS if specified
       if (config.css) {
         await this.loadCSS(config.css);
       }
-      
+
       // Load and mount the micro-frontend
       const module = await import(config.js);
       const mountPoint = document.getElementById(config.mountPoint);
-      
+
       // Clear loading state
       mountPoint.innerHTML = '';
-      
+
       // Mount the micro-frontend
       const microFrontendInstance = await module.mount(mountPoint, {
         deviceType,
@@ -190,14 +190,14 @@ class MicroFrontendLoader {
         auth: authState,
         eventBus: window.EventBus
       });
-      
+
       return microFrontendInstance;
     } catch (error) {
       console.error('Failed to load micro-frontend:', error);
       return this.showError('Failed to load the requested feature. Please try again later.');
     }
   }
-  
+
   /**
    * Show loading state
    */
@@ -210,7 +210,7 @@ class MicroFrontendLoader {
       </div>
     `;
   }
-  
+
   /**
    * Show error state
    */
@@ -227,7 +227,7 @@ class MicroFrontendLoader {
       unmount: () => {} // No-op for error state
     };
   }
-  
+
   /**
    * Load CSS file
    */
@@ -263,7 +263,7 @@ const router = new Router()
     // Handle specific water heater detail view
     // Extract ID from route, e.g., #/dashboard/water-heaters/wh-001
     const deviceId = route.split('/').pop();
-    
+
     // Pass context to the micro-frontend
     return MicroFrontendLoader.load('water-heaters', 'details', { deviceId });
   });

@@ -1,6 +1,6 @@
 /**
  * Temperature History Chart
- * 
+ *
  * Displays temperature history data in a chart
  * Part of the GREEN phase implementation for our TDD cycle
  */
@@ -19,9 +19,9 @@ class TemperatureHistoryChart {
             labels: [],
             temperatures: []
         };
-        
+
         this.options = Object.assign({
-            title: 'Temperature History',
+            title: 'Temperature Data', // Changed from 'Temperature History' to follow TDD principles
             color: 'rgba(3, 169, 244, 1)',
             backgroundColor: 'rgba(3, 169, 244, 0.1)',
             dataPoints: 10,
@@ -29,12 +29,12 @@ class TemperatureHistoryChart {
             displayGrid: false,
             errorSelector: '.shadow-document-error'
         }, options);
-        
+
         // Initialize chart
         this.findErrorElement();
         this.initializeChart();
     }
-    
+
     /**
      * Find error element for displaying errors
      */
@@ -43,18 +43,18 @@ class TemperatureHistoryChart {
         if (this.chartElement) {
             const parent = this.chartElement.closest('.card') || this.chartElement.parentElement;
             this.errorElement = parent.querySelector(this.options.errorSelector);
-            
+
             // If not found in parent, try to find globally
             if (!this.errorElement) {
                 this.errorElement = document.querySelector(this.options.errorSelector);
             }
-            
+
             if (!this.errorElement) {
                 console.warn(`No error element found for chart ${this.elementId}, errors will not be displayed`);
             }
         }
     }
-    
+
     /**
      * Initialize the chart
      */
@@ -63,16 +63,16 @@ class TemperatureHistoryChart {
             console.error(`Chart element with ID '${this.elementId}' not found`);
             return;
         }
-        
+
         // Create a canvas element if needed
         let canvas = this.chartElement.querySelector('canvas');
         if (!canvas) {
             canvas = document.createElement('canvas');
             this.chartElement.appendChild(canvas);
         }
-        
+
         const ctx = canvas.getContext('2d');
-        
+
         this.chart = new Chart(ctx, {
             type: 'line',
             data: {
@@ -129,7 +129,7 @@ class TemperatureHistoryChart {
             }
         });
     }
-    
+
     /**
      * Add a new data point to the chart
      * @param {number} temperature - Temperature value to add
@@ -140,22 +140,22 @@ class TemperatureHistoryChart {
             console.warn('Invalid temperature value:', temperature);
             return;
         }
-        
+
         // Format timestamp for display
-        const label = typeof timestamp === 'string' ? 
-            new Date(timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 
+        const label = typeof timestamp === 'string' ?
+            new Date(timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) :
             timestamp.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-        
+
         // Add data to arrays
         this.data.labels.push(label);
         this.data.temperatures.push(temperature);
-        
+
         // Limit the number of data points shown
         if (this.data.labels.length > this.options.dataPoints) {
             this.data.labels.shift();
             this.data.temperatures.shift();
         }
-        
+
         // Update chart
         this.updateChart();
     }
@@ -174,14 +174,14 @@ class TemperatureHistoryChart {
         } else {
             label = timestamp.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
         }
-        
+
         this.data.labels.push(label);
         this.data.temperatures.push(temperature);
-        
+
         // Update chart
         this.updateChart();
     }
-    
+
     /**
      * Update the chart with current data
      */
@@ -190,20 +190,20 @@ class TemperatureHistoryChart {
             console.warn('Chart not initialized yet');
             return;
         }
-        
+
         // Hide error if we have data
         if (this.data.temperatures.length > 0) {
             this.hideError();
         }
-        
+
         // Update chart data
         this.chart.data.labels = this.data.labels;
         this.chart.data.datasets[0].data = this.data.temperatures;
-        
+
         // Update chart
         this.chart.update();
     }
-    
+
     /**
      * Show an error message
      * @param {string} message - Error message to display
@@ -215,13 +215,13 @@ class TemperatureHistoryChart {
         } else {
             console.error('Temperature chart error:', message);
         }
-        
+
         // Hide the chart
         if (this.chartElement) {
             this.chartElement.style.display = 'none';
         }
     }
-    
+
     /**
      * Hide the error message
      */
@@ -229,13 +229,13 @@ class TemperatureHistoryChart {
         if (this.errorElement) {
             this.errorElement.style.display = 'none';
         }
-        
+
         // Show the chart
         if (this.chartElement) {
             this.chartElement.style.display = 'block';
         }
     }
-    
+
     /**
      * Set chart data directly (useful for testing)
      * @param {Array} labels - Array of label strings
@@ -246,15 +246,15 @@ class TemperatureHistoryChart {
             console.error('Invalid data provided to temperature chart');
             return;
         }
-        
+
         if (labels.length !== temperatures.length) {
             console.error('Labels and temperatures arrays must have the same length');
             return;
         }
-        
+
         this.data.labels = labels;
         this.data.temperatures = temperatures;
-        
+
         this.updateChart();
     }
 }

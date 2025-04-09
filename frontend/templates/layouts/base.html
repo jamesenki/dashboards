@@ -11,6 +11,9 @@
     <link rel="stylesheet" href="/static/css/operations-dashboard.css">
     <link rel="stylesheet" href="/static/css/model-monitoring.css">
     {% block head %}{% endblock %}
+
+<!-- CRITICAL FIXES: Injects comprehensive fixes for duplication and temperature history issues -->
+<script src="/static/js/complete-fixes.js"></script>
 </head>
 <body class="{% block body_class %}{% endblock %}">
     <header>
@@ -63,6 +66,10 @@
     <script src="/static/js/auth-token-provider.js"></script>
     <script src="/static/js/icons.js"></script>
     <script src="/static/js/data-source-indicator.js"></script>
+    <script src="/static/js/device-shadow-api.js"></script>
+    <script src="/static/js/waterheaters-deduplication.js"></script>
+    <script src="/static/js/time-series-history-fix.js"></script>
+    <script src="/static/js/fix-verification-test.js"></script>
     {% block scripts %}{% endblock %}
 
     <!-- Database connection status indicator -->
