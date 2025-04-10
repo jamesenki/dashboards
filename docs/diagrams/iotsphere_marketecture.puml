@@ -1,0 +1,124 @@
+@startuml iotsphere_marketecture
+title IoTSphere Marketecture
+'IMPORTANT: This is an executive-level diagram that follows Clean Architecture principles
+
+' Custom styles for an executive-friendly, clean look
+skinparam roundCorner 20
+skinparam backgroundColor white
+skinparam ArrowColor #486B8A
+skinparam BorderColor #486B8A
+
+skinparam component {
+  BackgroundColor #FFFFFF
+  BorderColor #486B8A
+  BorderThickness 2
+}
+
+skinparam package {
+  BackgroundColor #F8F9FA
+  BorderColor #486B8A
+  BorderThickness 2
+  FontSize 14
+}
+
+' Clean Architecture Layers
+rectangle "IoTSphere Platform" {
+  ' UI & Presentation Layer (outermost)
+  package "Presentation Layer" {
+    component "Web Dashboard\nAngular Frontend" as UI #B6DEE7
+    component "Mobile Application\nField Service Tools" as Mobile #B6DEE7
+    component "API Gateway\nRouting & Authentication" as APIGateway #B6DEE7
+    component "WebSocket Service\nRealtime Updates" as WebSocket #B6DEE7
+  }
+
+  ' Interface Adapters Layer
+  package "Interface Adapters" {
+    component "REST Controllers\nDevice API Endpoints" as Controllers #A9CCEA
+    component "WebSocket Manager\nPush Notifications" as WSManager #A9CCEA
+    component "Repository Adapters\nData Access Objects" as RepoAdapters #A9CCEA
+  }
+
+  ' Use Cases Layer
+  package "Business Logic (Use Cases)" {
+    component "Device Shadow Service\nState Synchronization" as ShadowService #9BB3D8
+    component "Telemetry Service\nSensor Data Processing" as TelemetryService #9BB3D8
+    component "Device Management\nConfiguration & Control" as DeviceManagement #9BB3D8
+    component "Analytics Engine\nPredictive Insights" as Analytics #9BB3D8
+    component "Notification Service\nAlerts & Messaging" as Notifications #9BB3D8
+  }
+
+  ' Entities Layer (innermost)
+  package "Core Business Entities" {
+    component "Device Models\nCapability-Based Entities" as DeviceEntities #8697C5
+    component "Shadow Documents\nReported & Desired States" as ShadowEntities #8697C5
+    component "Telemetry Models\nTime Series Data" as TelemetryEntities #8697C5
+    component "Alert Entities\nConditions & Priorities" as AlertEntities #8697C5
+  }
+
+  ' External Systems & Frameworks (Peripheral)
+  package "External Systems & Frameworks" {
+    database "MongoDB\nDevice Shadow Storage" as MongoDB #E6B9C8
+    database "PostgreSQL\nDevice Registry" as PostgreSQL #E6B9C8
+    database "TimescaleDB\nTime Series Data" as TimescaleDB #E6B9C8
+    component "Message Broker\nKafka/RabbitMQ" as MessageBroker #E6B9C8
+  }
+}
+
+' External Stakeholders and Devices
+actor "Facility Managers" as Managers
+actor "Field Technicians" as Technicians
+actor "Business Analysts" as Analysts
+
+cloud "IoT Device Fleet" {
+  [Water Heaters] as WaterHeaters
+  [Vending Machines] as VendingMachines
+  [Future Devices] as FutureDevices
+}
+
+' Key relationships - simplified for executive audience
+Managers --> UI
+Technicians --> Mobile
+Analysts --> UI
+
+UI --> APIGateway
+Mobile --> APIGateway
+APIGateway --> Controllers
+Controllers --> ShadowService
+Controllers --> TelemetryService
+Controllers --> DeviceManagement
+
+WSManager --> WebSocket : Push updates
+Notifications --> WSManager : Send alerts
+
+ShadowService --> DeviceEntities
+ShadowService --> ShadowEntities
+TelemetryService --> TelemetryEntities
+DeviceManagement --> DeviceEntities
+Analytics --> TelemetryEntities
+Notifications --> AlertEntities
+
+RepoAdapters --> MongoDB
+RepoAdapters --> PostgreSQL
+RepoAdapters --> TimescaleDB
+
+ShadowService --> MessageBroker : Change data
+MessageBroker --> WSManager : Notify changes
+
+WaterHeaters --> APIGateway
+VendingMachines --> APIGateway
+FutureDevices --> APIGateway
+
+legend right
+  <b>IoTSphere Clean Architecture</b>
+  |= Layer |= Description |= Color |
+  | Presentation | User interfaces & API gateways | <back:#B6DEE7>   </back> |
+  | Interface Adapters | Controllers & adapters | <back:#A9CCEA>   </back> |
+  | Business Logic | Application use cases | <back:#9BB3D8>   </back> |
+  | Core Entities | Business rules & models | <back:#8697C5>   </back> |
+  | External Systems | Databases & frameworks | <back:#E6B9C8>   </back> |
+endlegend
+
+title IoTSphere Platform: Clean Architecture-based IoT Solution
+caption Figure 1: Executive-level architecture showing Clean Architecture layers and key components
+
+@enduml

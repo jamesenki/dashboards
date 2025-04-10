@@ -15,11 +15,60 @@ This document describes the revised architecture for IoTSphere, emphasizing a pr
 
 ## 3. System Architecture
 
-### 3.1 High-Level Architecture
+### 3.1 Executive Marketecture
 
-![IoTSphere High-Level Architecture](../diagrams/iotsphere_high_level_architecture.png)
+For executive stakeholders, we provide a high-level marketecture overview that illustrates the Clean Architecture principles and device-agnostic approach of the IoTSphere platform.
 
-**Figure 1: High-Level Architecture**
+![IoTSphere Marketecture](../diagrams/iotsphere_marketecture.png)
+*Figure 1: Clean Architecture-based IoT Platform Marketecture*
+
+Please refer to the [IoTSphere Marketecture Document](marketecture.md) for a comprehensive executive-level overview of the system architecture.
+
+*Figure 1: Clean Architecture-based IoT Platform Marketecture*
+
+> **Note:** The above diagram is generated from the PlantUML source file at `docs/diagrams/iotsphere_marketecture.puml`. See [Architecture Diagram Notes](architecture-note.md) for details on viewing these diagrams.
+
+### 3.2 High-Level Architecture
+
+The following diagram shows the high-level architecture with key components and their relationships:
+
+```
+┌───────────────────────────────────────────────────────────────┐
+│                     Client Applications                        │
+└───────────────────────────────────────────────────────────────┘
+                            ▲
+                            │
+┌───────────────────────────────────────────────────────────────┐
+│                         API Gateway                            │
+└───────────────────────────────────────────────────────────────┘
+                            ▲
+                            │
+           ┌───────────────┴───────────────┐
+           │                               │
+┌─────────────────────┐         ┌─────────────────────┐
+│    REST APIs        │         │  WebSocket Service  │
+│  (Device Control)   │         │  (Real-time Events) │
+└─────────────────────┘         └─────────────────────┘
+           ▲                               ▲
+           │                               │
+┌─────────────────────┐         ┌─────────────────────┐
+│   Service Layer     │         │     Event Bus       │
+│ (Business Logic)    │◄────────┤    (Kafka/RabbitMQ) │
+└─────────────────────┘         └─────────────────────┘
+           ▲                               ▲
+           │                               │
+           │                     ┌─────────────────────┐
+           │                     │ Device Shadow Service│
+           │                     └─────────────────────┘
+           │                               ▲
+           │                               │
+┌─────────────────────┐         ┌─────────────────────┐
+│  Persistent Storage │         │   NoSQL Database    │
+│    (PostgreSQL)     │         │     (MongoDB)       │
+└─────────────────────┘         └─────────────────────┘
+```
+
+**Figure 1: High-Level System Architecture**
 
 The IoTSphere platform consists of the following major components:
 
