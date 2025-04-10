@@ -1,0 +1,17 @@
+{
+  "username": "facility_manager",
+  "password": "secure_password",
+  "role": "facility_manager",
+  "permissions": [
+    "monitor_water_heaters",
+    "adjust_temperature",
+    "schedule_maintenance",
+    "view_predictions",
+    "emergency_shutdown"
+  ],
+  "preferences": {
+    "dashboard_view": "grid",
+    "alert_notifications": true,
+    "maintenance_reminders": true
+  }
+}

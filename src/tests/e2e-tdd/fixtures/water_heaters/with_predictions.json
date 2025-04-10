@@ -1,0 +1,91 @@
+{
+  "id": "wh-002",
+  "name": "Main Building Water Heater",
+  "manufacturer": "AquaTech",
+  "model": "AT-5000",
+  "serial_number": "AT5K-12345",
+  "location": "Building A, Basement",
+  "installation_date": "2023-01-15",
+  "last_maintenance": "2024-12-01",
+  "status": "ONLINE",
+  "is_simulated": false,
+  "alert_status": "normal",
+  "telemetry": {
+    "temperature": 125,
+    "target_temperature": 125,
+    "pressure": 50,
+    "flow_rate": 3.5,
+    "power_consumption": 4200,
+    "heating_status": "IDLE",
+    "timestamp": "2025-04-10T19:45:00Z"
+  },
+  "thresholds": {
+    "temperature": {
+      "min": 100,
+      "normal_min": 110,
+      "normal_max": 140,
+      "max": 180
+    },
+    "pressure": {
+      "min": 40,
+      "normal_min": 45,
+      "normal_max": 60,
+      "max": 70
+    }
+  },
+  "predictions": {
+    "lifespan": {
+      "remaining_days": 547,
+      "estimated_end_date": "2026-10-10",
+      "confidence": 85,
+      "factors": [
+        "Normal wear and tear",
+        "Regular usage patterns",
+        "Consistent water quality"
+      ]
+    },
+    "anomalies": [
+      {
+        "type": "heating_element",
+        "confidence": 72,
+        "description": "Heating element showing early signs of inefficiency",
+        "severity": "low",
+        "estimated_time_to_failure": "90 days",
+        "detected_on": "2025-04-05T10:23:15Z"
+      },
+      {
+        "type": "pressure_sensor",
+        "confidence": 63,
+        "description": "Pressure sensor readings show minor fluctuations outside normal range",
+        "severity": "very_low",
+        "estimated_time_to_failure": "180 days",
+        "detected_on": "2025-04-07T14:45:30Z"
+      }
+    ],
+    "usage_patterns": {
+      "peak_hours": ["07:00-09:00", "18:00-21:00"],
+      "average_daily_usage": 145,
+      "usage_trend": "stable",
+      "efficiency_score": 82,
+      "chart_data": {
+        "type": "line",
+        "labels": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+        "datasets": [
+          {
+            "label": "Hot Water Usage (gallons)",
+            "data": [120, 145, 130, 140, 155, 185, 175]
+          }
+        ]
+      }
+    },
+    "maintenance_recommendation": {
+      "action": "schedule",
+      "priority": "medium",
+      "timeframe": "next_60_days",
+      "components": ["heating_element", "pressure_relief_valve"],
+      "reasoning": "Preventative maintenance to address early signs of wear on heating element and regular inspection of pressure relief valve",
+      "estimated_service_time": "2 hours",
+      "next_available_date": "2025-05-15"
+    }
+  }
+}

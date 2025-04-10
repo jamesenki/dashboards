@@ -1,0 +1,40 @@
+{
+  "id": "wh-12347",
+  "name": "Main Building Water Heater - Critical",
+  "model": "IoTSphere Pro 5000",
+  "location": "Basement Utility Room",
+  "status": {
+    "operational": true,
+    "alert_level": "critical",
+    "condition": "critical_temperature"
+  },
+  "metrics": {
+    "current_temperature": 190,
+    "target_temperature": 120,
+    "units": "fahrenheit",
+    "pressure": 75,
+    "flow_rate": 8.5,
+    "energy_usage": 5.2
+  },
+  "telemetry": {
+    "temperature": 190,
+    "target_temperature": 120,
+    "heating_status": "critical",
+    "power_status": "on",
+    "water_flow": 8.5,
+    "timestamp": "2025-04-10T14:15:23Z"
+  },
+  "maintenance": {
+    "last_service": "2025-01-10",
+    "next_service_due": "2025-07-10",
+    "service_history": []
+  },
+  "alerts": [
+    {
+      "type": "temperature",
+      "severity": "critical",
+      "message": "Critical temperature detected - immediate attention required",
+      "timestamp": "2025-04-10T14:15:23Z"
+    }
+  ]
+}

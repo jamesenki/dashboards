@@ -44,6 +44,24 @@ class DashboardPage {
   }
 
   /**
+   * Get the alert indicator for a specific water heater
+   * @param {string} id - The water heater ID
+   * @returns {Cypress.Chainable} - The alert indicator element
+   */
+  getAlertIndicatorForHeater(id) {
+    return this.getWaterHeaterById(id).find('[data-testid="alert-indicator"]');
+  }
+
+  /**
+   * Get the temperature display for a specific water heater
+   * @param {string} id - The water heater ID
+   * @returns {Cypress.Chainable} - The temperature element
+   */
+  getTemperatureForHeater(id) {
+    return this.getWaterHeaterById(id).find('[data-testid="temperature-display"]');
+  }
+
+  /**
    * Select a water heater with an issue (alert status)
    * @param {string} status - The status to look for (e.g., 'warning', 'error')
    */

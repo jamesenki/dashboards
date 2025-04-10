@@ -1,0 +1,65 @@
+{
+  "id": "wh-12346",
+  "name": "Main Building Water Heater",
+  "model": "IoTSphere Pro 5000",
+  "location": "Basement Utility Room",
+  "status": {
+    "operational": true,
+    "alert_level": "normal",
+    "condition": "normal"
+  },
+  "metrics": {
+    "current_temperature": 120,
+    "target_temperature": 120,
+    "units": "fahrenheit",
+    "pressure": 60,
+    "flow_rate": 10.5,
+    "energy_usage": 3.8
+  },
+  "telemetry": {
+    "temperature": 120,
+    "target_temperature": 120,
+    "heating_status": "normal",
+    "power_status": "on",
+    "water_flow": 10.5,
+    "timestamp": "2025-04-10T14:15:23Z"
+  },
+  "predictions": {
+    "lifespan": {
+      "remaining_days": 547,
+      "confidence": 0.87,
+      "components": [
+        {
+          "name": "heating_element",
+          "remaining_days": 821,
+          "confidence": 0.91
+        },
+        {
+          "name": "pressure_valve",
+          "remaining_days": 547,
+          "confidence": 0.87
+        }
+      ]
+    },
+    "maintenance_prediction": {
+      "next_maintenance": "2025-09-22",
+      "reason": "Preventive maintenance based on usage patterns",
+      "confidence": 0.89
+    },
+    "anomaly_detection": {
+      "recent_anomalies": [],
+      "has_anomalies": false,
+      "prediction_confidence": 0.95
+    },
+    "efficiency_trend": {
+      "current_efficiency": 0.88,
+      "trend": "stable",
+      "projected_efficiency_6months": 0.86
+    }
+  },
+  "maintenance": {
+    "last_service": "2025-01-15",
+    "next_service_due": "2025-07-15",
+    "service_history": []
+  }
+}
