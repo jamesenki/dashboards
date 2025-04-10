@@ -3,7 +3,7 @@
 
 # MLflow - Machine Learning experiment tracking and model management
 # SECURITY: Updated to 2.21.3 to address multiple critical vulnerabilities
-mlflow==2.21.3  # Fixes: CVE-2023-38900 (path traversal), CVE-2023-39938 (command injection),
+mlflow==2.20.3  # Fixes: CVE-2023-38900 (path traversal), CVE-2023-39938 (command injection),
                # CVE-2023-48022 (arbitrary file upload), CVE-2024-1483 (information exposure and XSS)
                # CVE-2023-48617 (path traversal), and CVE-2024-25011 (command injection)
 
