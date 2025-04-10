@@ -55,6 +55,7 @@ Thumbs.db
 *.html
 !frontend/templates/**/*.html
 !src/web/templates/**/*.html
+!test-reports/**/*.html
 *.log
 coverage/
 cucumber-report.*

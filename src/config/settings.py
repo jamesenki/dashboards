@@ -17,6 +17,14 @@ logger = logging.getLogger(__name__)
 class Settings(BaseSettings):
     """Application settings."""
 
+    # Environment Settings
+    environment: str = "development"  # Options: development, testing, production
+    logging_level: str = "INFO"  # Options: DEBUG, INFO, WARNING, ERROR, CRITICAL
+    enable_diagnostics: bool = (
+        False  # Enable diagnostic tools in non-production environments
+    )
+    enable_debuggers: bool = False  # Enable debuggers in development environment
+
     # API Settings
     api_version: str = "v1"
     api_prefix: str = "/api"
@@ -43,6 +51,12 @@ class Settings(BaseSettings):
     # Maintenance Settings
     maintenance_check_interval: int = 30  # in days
 
+    # WebSocket Settings
+    websocket_tracing_enabled: bool = False  # Disable WebSocket tracing by default
+    websocket_debug_mode: bool = False  # Disable WebSocket debug mode by default
+    websocket_port: int = 8912  # Default WebSocket port
+    websocket_host: str = "0.0.0.0"  # Default WebSocket host
+
     class Config:
         """Pydantic config."""
 
@@ -54,14 +68,49 @@ class Settings(BaseSettings):
 @lru_cache()
 def get_settings() -> Settings:
     """
-    Get application settings.
+    Get application settings based on the current environment.
 
     Returns:
-        Settings: Application settings
+        Settings: Application settings with environment-specific overrides
     """
+    import os
+
     try:
-        logger.info("Loading application settings")
-        return Settings()
+        # Get environment from environment variable or default to development
+        env = os.environ.get("APP_ENV", "development").lower()
+
+        # Create base settings
+        settings = Settings(environment=env)
+
+        # Apply environment-specific overrides
+        if env == "production":
+            # Production settings - optimize for performance
+            settings.logging_level = "WARNING"
+            settings.debug = False
+            settings.enable_diagnostics = False
+            settings.enable_debuggers = False
+            settings.websocket_tracing_enabled = False
+            settings.websocket_debug_mode = False
+            logger.info("Loaded PRODUCTION settings - optimized for performance")
+        elif env == "testing":
+            # Testing settings - balance between debugging and performance
+            settings.logging_level = "INFO"
+            settings.debug = True
+            settings.enable_diagnostics = False
+            settings.enable_debuggers = False
+            logger.info("Loaded TESTING settings")
+        else:  # development is the default
+            # Development settings - prioritize debugging capabilities
+            settings.logging_level = "INFO"
+            settings.debug = True
+            settings.enable_diagnostics = False  # Disable for better performance
+            settings.enable_debuggers = True
+            logger.info("Loaded DEVELOPMENT settings")
+
+        # Configure logging based on settings
+        logging.basicConfig(level=getattr(logging, settings.logging_level))
+
+        return settings
     except Exception as e:
         logger.error(f"Error loading settings: {e}")
         # In case of error, return default settings

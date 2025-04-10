@@ -1,0 +1,153 @@
+name: End-to-End TDD Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'src/**'
+      - 'tests/**'
+      - '.github/workflows/e2e-tdd-tests.yml'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'src/**'
+      - 'tests/**'
+      - '.github/workflows/e2e-tdd-tests.yml'
+  workflow_dispatch:
+    inputs:
+      tdd_phase:
+        description: 'TDD Phase to run (red, green, refactor)'
+        required: true
+        default: 'green'
+        type: choice
+        options:
+          - red
+          - green
+          - refactor
+
+jobs:
+  # RED phase - ensures tests define expected behavior and fail before implementation
+  red-phase:
+    if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.tdd_phase == 'red' }}
+    name: RED Phase Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Start application in background
+        run: npm run start &
+        env:
+          NODE_ENV: test
+
+      - name: Wait for application to start
+        run: npx wait-on http://localhost:8006
+
+      - name: Run RED Phase Tests
+        run: npm run test:e2e:tdd:red
+        env:
+          TDD_PHASE: red
+          CYPRESS_BASE_URL: http://localhost:8006
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: red-phase-results
+          path: |
+            results/**
+            cypress/screenshots/**
+            cypress/videos/**
+          if-no-files-found: ignore
+
+  # GREEN phase - ensures minimal implementation passes the tests
+  green-phase:
+    # Run on all PRs and pushes to main/develop, and when manually triggered with green phase
+    if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.tdd_phase == 'green' }}
+    name: GREEN Phase Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Start application in background
+        run: npm run start &
+        env:
+          NODE_ENV: test
+
+      - name: Wait for application to start
+        run: npx wait-on http://localhost:8006
+
+      - name: Run GREEN Phase Tests
+        run: npm run test:e2e:tdd:green
+        env:
+          TDD_PHASE: green
+          CYPRESS_BASE_URL: http://localhost:8006
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: green-phase-results
+          path: |
+            results/**
+            cypress/screenshots/**
+            cypress/videos/**
+          if-no-files-found: ignore
+
+  # REFACTOR phase - ensures improved implementation maintains passing tests
+  refactor-phase:
+    if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.tdd_phase == 'refactor' }}
+    name: REFACTOR Phase Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Start application in background
+        run: npm run start &
+        env:
+          NODE_ENV: test
+
+      - name: Wait for application to start
+        run: npx wait-on http://localhost:8006
+
+      - name: Run REFACTOR Phase Tests with coverage
+        run: npm run test:e2e:tdd:refactor
+        env:
+          TDD_PHASE: refactor
+          CYPRESS_BASE_URL: http://localhost:8006
+          CYPRESS_COVERAGE: true
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: refactor-phase-results
+          path: |
+            results/**
+            cypress/screenshots/**
+            cypress/videos/**
+            coverage/**
+          if-no-files-found: ignore

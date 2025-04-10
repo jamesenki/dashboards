@@ -21,9 +21,26 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+# Import standardized environment variable names from websocket_manager
+from src.infrastructure.websocket.websocket_manager import (
+    ENV_ACTIVE_WS_PORT,
+    ENV_WS_DISABLED,
+    ENV_WS_HOST,
+    ENV_WS_INIT_ATTEMPTED,
+    ENV_WS_INITIALIZED,
+    ENV_WS_PORT,
+    ENV_WS_PORT_UNAVAILABLE,
+)
+
 # Default WebSocket server configuration
-DEFAULT_WS_HOST = os.environ.get("WS_HOST", "0.0.0.0")
-DEFAULT_WS_PORT = int(os.environ.get("WS_PORT", 8765))
+DEFAULT_WS_HOST = os.environ.get(ENV_WS_HOST, "0.0.0.0")
+# Using port 8912 to avoid conflicts with other services
+# Previous ports (8765, 9090) have had conflict issues
+DEFAULT_WS_PORT = int(os.environ.get(ENV_WS_PORT, 8912))
+
+# Check early if we're disabled or already initialized
+_ENABLE_WEBSOCKET = os.environ.get(ENV_WS_DISABLED, "false").lower() != "true"
+_ALREADY_INITIALIZED = os.environ.get(ENV_WS_INITIALIZED, "false").lower() == "true"
 
 
 class WebSocketClient:
@@ -243,10 +260,31 @@ class WebSocketService:
                 self.loop.close()
 
     def start(self):
-        """Start the WebSocket service"""
+        """Start the WebSocket service
+
+        Returns:
+            bool: True if started successfully, False otherwise
+        """
         try:
+            # First check if WebSocket service is disabled or already initialized elsewhere
+            if os.environ.get(ENV_WS_DISABLED, "false").lower() == "true":
+                logger.warning("WebSocket service disabled by environment variable")
+                return False
+
+            # Check if we've already attempted to start this instance
+            if hasattr(self, "_start_attempted") and self._start_attempted:
+                logger.warning(
+                    "WebSocket service start already attempted on this instance - skipping"
+                )
+                return False
+
+            # Mark that we've attempted to start this instance
+            self._start_attempted = True
+            logger.info(f"Starting WebSocket service on {self.host}:{self.port}")
+
             # Subscribe to message bus topics
             if self.message_bus:
+                logger.info("Subscribing to message bus topics for real-time updates")
                 self.message_bus.subscribe(
                     "device.telemetry", self.handle_device_telemetry
                 )
@@ -255,26 +293,26 @@ class WebSocketService:
                     "device.command_response", self.handle_command_response
                 )
 
-            # Check if we're already disabled by environment variable
-            if (
-                os.environ.get("DISABLE_INFRASTRUCTURE_WEBSOCKET", "false").lower()
-                == "true"
-            ):
-                logger.warning(
-                    "Infrastructure WebSocket server disabled by environment variable"
-                )
-                return False
-
-            # Get current WebSocket port from environment
-            env_port = os.environ.get("WEBSOCKET_PORT")
+            # Use the active port from environment if available
+            env_port = os.environ.get(ENV_ACTIVE_WS_PORT)
             if env_port and str(self.port) != env_port:
-                logger.warning(
-                    f"WebSocket port mismatch: instance using {self.port}, environment specifies {env_port}"
-                )
-                logger.warning(
-                    f"Adapting to use environment-specified port: {env_port}"
+                logger.info(
+                    f"Using environment-specified WebSocket port: {env_port} (was {self.port})"
                 )
                 self.port = int(env_port)
+
+            # Port selection is now handled by WebSocketServiceManager
+            # We only need to check if the current port is available
+            if not self._is_port_available(self.port):
+                logger.error(
+                    f"WebSocket port {self.port} is not available - cannot start server"
+                )
+                os.environ[ENV_WS_PORT_UNAVAILABLE] = "true"
+                return False
+
+            logger.info(
+                f"WebSocket port {self.port} is available - proceeding with server startup"
+            )
 
             logger.info(f"Starting WebSocket server on ws://{self.host}:{self.port}")
 
@@ -282,12 +320,41 @@ class WebSocketService:
             server_thread = threading.Thread(target=self._run_server, daemon=True)
             server_thread.start()
 
+            # Set environment variables to track WebSocket state
+            os.environ[ENV_ACTIVE_WS_PORT] = str(self.port)
+            os.environ[ENV_WS_INITIALIZED] = "true"
+
             logger.info("WebSocket service started successfully")
             return True
 
         except Exception as e:
             logger.error(f"Error starting WebSocket service: {e}")
             return False
+
+    def _is_port_available(self, port):
+        """Check if the given port is available for binding.
+
+        Args:
+            port (int): Port number to check
+
+        Returns:
+            bool: True if port is available, False otherwise
+        """
+        import socket
+
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        try:
+            # Set socket options to allow immediate reuse
+            sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            # Use a short timeout for quick response
+            sock.settimeout(0.5)
+            # Try to bind to the port
+            sock.bind((self.host, port))
+            return True
+        except socket.error:
+            return False
+        finally:
+            sock.close()
 
     def stop(self):
         """Stop the WebSocket service"""

@@ -1,0 +1,5 @@
+[behave]
+paths = src/tests/bdd/features
+outfiles = src/tests/bdd/reports
+show_timings = true
+junit = true

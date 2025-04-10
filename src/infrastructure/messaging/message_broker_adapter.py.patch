@@ -1,0 +1,44 @@
+--- a/src/infrastructure/messaging/message_broker_adapter.py
++++ b/src/infrastructure/messaging/message_broker_adapter.py
+@@ -48,7 +48,7 @@ class TopicPattern:
+             A regex pattern string
+         """
+         # Escape dots and replace '*' with regex for one segment
+-        return re.sub(r'\*', r'[^.]+', re.escape(self.pattern))
++        return re.sub(r'\\*', r'[^.]+', re.escape(self.pattern))
+
+     def multi_wildcard_pattern(self) -> str:
+         """
+@@ -60,7 +60,7 @@ class TopicPattern:
+             A regex pattern string
+         """
+         # Escape dots and replace '#' with regex for multiple segments
+-        return re.sub(r'#', r'.*', re.escape(self.pattern))
++        return re.sub(r'\\#', r'.*', re.escape(self.pattern))
+
+     def matches_topic(self, topic: str) -> bool:
+         """
+@@ -71,10 +71,17 @@ class TopicPattern:
+         Returns:
+             True if the topic matches the pattern, False otherwise
+         """
+-        # Convert AMQP wildcards to regex patterns
+-        single_pattern = self.single_wildcard_pattern()
+-        multi_pattern = self.multi_wildcard_pattern()
+-
++        # For direct matching without wildcards
++        if '*' not in self.pattern and '#' not in self.pattern:
++            return self.pattern == topic
++
++        # Use proper regex pattern conversion
++        pattern = re.escape(self.pattern)
++        # Convert AMQP-style wildcards to regex
++        pattern = pattern.replace('\\*', '[^.]+')  # Single-level wildcard
++        pattern = pattern.replace('\\#', '.*')    # Multi-level wildcard
++
+         # Create a combined pattern
+-        regex_pattern = f"^{multi_pattern}$"
++        regex_pattern = f"^{pattern}$"
++
+         # Check if the topic matches the pattern
+         return re.match(regex_pattern, topic) is not None
