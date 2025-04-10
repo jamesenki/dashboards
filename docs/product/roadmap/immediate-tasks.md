@@ -58,7 +58,9 @@ This document outlines the immediate tasks required to deliver a compelling wate
 ### 1. Manufacturer-Agnostic API Enhancement
 - **Refine existing API** to work with simulated devices
 - **Implement telemetry storage** via TimescaleDB
-- **Create device shadow service** with Redis
+- **Create device shadow service** with MongoDB Change Streams
+  - Implement Change Data Capture (CDC) pattern for real-time updates
+  - Enable WebSocket notification system for UI updates
 
 ### 2. Real-time Operational Dashboard
 - **Implement real-time status cards** showing:

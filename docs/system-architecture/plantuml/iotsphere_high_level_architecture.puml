@@ -1,0 +1,100 @@
+@startuml IoTSphere High-Level Architecture
+!define ICONURL https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/v2.4.0
+!includeurl ICONURL/common.puml
+!includeurl ICONURL/devicons/angular.puml
+!includeurl ICONURL/devicons/mongodb.puml
+!includeurl ICONURL/devicons/postgresql.puml
+!includeurl ICONURL/devicons/kafka.puml
+!includeurl ICONURL/font-awesome-5/mobile_alt.puml
+!includeurl ICONURL/font-awesome-5/desktop.puml
+!includeurl ICONURL/font-awesome-5/server.puml
+!includeurl ICONURL/font-awesome-5/water.puml
+!includeurl ICONURL/material/cloud.puml
+!includeurl ICONURL/material/memory.puml
+
+skinparam {
+  BackgroundColor white
+  ArrowColor #2c3e50
+  BorderColor #2c3e50
+  NodeBackgroundColor #ecf0f1
+
+  RectangleBackgroundColor #3498db
+  RectangleBorderColor #2c3e50
+  RectangleFontColor white
+  RectangleFontSize 14
+
+  DatabaseBackgroundColor #e74c3c
+  DatabaseBorderColor #c0392b
+  DatabaseFontColor white
+
+  CloudBackgroundColor #f39c12
+  CloudBorderColor #d35400
+  CloudFontColor white
+
+  ActorBackgroundColor #2ecc71
+  ActorBorderColor #27ae60
+  ActorFontColor white
+}
+
+' Define components with icons
+rectangle "IoTSphere Platform" as IoTPlatform {
+  rectangle "<$angular>\nWeb Dashboard" as WebUI #3498db
+  rectangle "<$MA_cloud>\nMobile App" as MobileApp #3498db
+
+  rectangle "Core Services" as CoreServices {
+    rectangle "<$FA5_SERVER>\nDevice Management" as DeviceManagement #2980b9
+    rectangle "<$FA5_SERVER>\nTelemetry Service" as Telemetry #2980b9
+    rectangle "<$FA5_SERVER>\nDevice Shadow Service" as ShadowService #2980b9
+    rectangle "<$FA5_SERVER>\nAnalytics Engine" as Analytics #2980b9
+    rectangle "<$FA5_SERVER>\nAlerts & Notifications" as Alerts #2980b9
+  }
+
+  rectangle "<$FA5_SERVER>\nAPI Gateway" as APIGateway #16a085
+  rectangle "<$FA5_SERVER>\nWebSocket Service" as WebSocketService #16a085
+
+  database "<$mongodb>\nMongoDB\nDevice Shadows" as MongoDB #e74c3c
+  database "<$postgresql>\nPostgreSQL\nDevice Registry" as PostgreSQL #e74c3c
+  database "TimescaleDB\nTelemetry Data" as TimescaleDB #e74c3c
+
+  rectangle "<$kafka>\nEvent Bus\n(Kafka/RabbitMQ)" as EventBus #8e44ad
+
+  ' Internal connections
+  WebUI ..> APIGateway : REST API Calls
+  WebUI ..> WebSocketService : Real-time Updates
+  MobileApp ..> APIGateway : REST API Calls
+  MobileApp ..> WebSocketService : Real-time Updates
+
+  APIGateway --> CoreServices : Routes Requests
+  WebSocketService --> EventBus : Subscribes to Events
+
+  DeviceManagement --> PostgreSQL : Stores Device Metadata
+  ShadowService --> MongoDB : Stores Device State
+  ShadowService --> EventBus : Change Data Capture
+  Telemetry --> TimescaleDB : Stores Time Series Data
+  Analytics --> TimescaleDB : Analyzes Trends
+  Alerts --> EventBus : Publishes Alerts
+
+  EventBus --> WebSocketService : Real-time Events
+}
+
+' External entities
+cloud "Smart Devices" as Devices {
+  rectangle "<$FA5_WATER>\nWater Heaters" as WaterHeaters #f39c12
+  rectangle "Vending Machines" as VendingMachines #f39c12
+  rectangle "Future Devices" as FutureDevices #f39c12
+}
+
+actor "Facility Managers" as Managers #2ecc71
+actor "Technicians" as Technicians #2ecc71
+actor "Business Analysts" as Analysts #2ecc71
+
+' External connections
+Devices --> APIGateway : Device Data
+Devices <-- ShadowService : Desired State
+Managers --> WebUI : Monitor & Control
+Technicians --> MobileApp : Field Service
+Analysts --> WebUI : Analyze Performance
+
+caption IoTSphere Platform Architecture - Device-Agnostic IoT Solution with Real-time Capabilities
+
+@enduml
