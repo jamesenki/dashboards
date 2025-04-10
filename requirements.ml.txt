@@ -1,5 +1,5 @@
 # Machine learning dependencies
-mlflow==2.8.0
+mlflow==2.20.3
 pyarrow==13.0.0
 numpy<2.0.0
 scikit-learn<2.0.0
