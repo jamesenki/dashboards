@@ -21,55 +21,63 @@ def test_mlflow_version_secure():
 
     # 1. Force import of MLflow - don't catch ImportError to ensure proper RED phase
     import mlflow
-    
+
     # 2. Get the version - this should fail if MLflow is not installed correctly
     mlflow_version = mlflow.__version__
-    
+
     # 3. Check for secure version using proper semantic versioning
     parsed_version = version_parser.parse(mlflow_version)
-    
+
     # 4. Verify against all critical vulnerabilities
     # Main security assertion - this will show RED if we don't meet minimum security version
-    assert parsed_version >= version_parser.parse("2.9.2"), \
-        f"SECURITY VULNERABILITY: MLflow v{mlflow_version} has known critical vulnerabilities including path traversal, "  \
+    assert parsed_version >= version_parser.parse("2.9.2"), (
+        f"SECURITY VULNERABILITY: MLflow v{mlflow_version} has known critical vulnerabilities including path traversal, "
         f"command injection, and remote code execution. Update to at least v2.9.2"
+    )
 
     # 5. Comprehensive checks for specific vulnerabilities
     # These tests provide detailed reporting about which specific vulnerabilities exist
-    assert parsed_version >= version_parser.parse("2.5.0"), \
-        f"SECURITY VULNERABILITY: MLflow v{mlflow_version} vulnerable to path traversal attacks (CVE-2023-38900)"
-        
-    assert parsed_version >= version_parser.parse("2.6.0"), \
-        f"SECURITY VULNERABILITY: MLflow v{mlflow_version} vulnerable to OS command injection (CVE-2023-39938)"
-        
-    assert parsed_version >= version_parser.parse("2.8.1"), \
-        f"SECURITY VULNERABILITY: MLflow v{mlflow_version} allows arbitrary files to be PUT onto the server (CVE-2023-48022)"
-        
-    assert parsed_version >= version_parser.parse("2.9.0"), \
-        f"SECURITY VULNERABILITY: MLflow v{mlflow_version} vulnerable to information exposure and XSS (CVE-2024-1483)"
+    assert parsed_version >= version_parser.parse(
+        "2.5.0"
+    ), f"SECURITY VULNERABILITY: MLflow v{mlflow_version} vulnerable to path traversal attacks (CVE-2023-38900)"
+
+    assert parsed_version >= version_parser.parse(
+        "2.6.0"
+    ), f"SECURITY VULNERABILITY: MLflow v{mlflow_version} vulnerable to OS command injection (CVE-2023-39938)"
+
+    assert parsed_version >= version_parser.parse(
+        "2.8.1"
+    ), f"SECURITY VULNERABILITY: MLflow v{mlflow_version} allows arbitrary files to be PUT onto the server (CVE-2023-48022)"
+
+    assert parsed_version >= version_parser.parse(
+        "2.9.0"
+    ), f"SECURITY VULNERABILITY: MLflow v{mlflow_version} vulnerable to information exposure and XSS (CVE-2024-1483)"
 
     # 6. Verify our secure wrapper is in place as an additional protection layer
     # Check both possible locations to ensure it's available somewhere in the codebase
     secure_model_loader_found = False
-    
+
     # Try to import from src structure first
     try:
         sys.path.insert(0, str(Path(__file__).parents[2]))
         from src.security import secure_model_loader
+
         secure_model_loader_found = True
     except ImportError:
         pass
-    
+
     # Try to import from app structure if not found in src
     if not secure_model_loader_found:
         try:
             from app.security import ml_security
+
             secure_model_loader_found = True
         except ImportError:
             pass
-    
-    assert secure_model_loader_found, \
-        "SECURITY CONTROL MISSING: No secure model loader wrapper found to protect against MLflow vulnerabilities"
+
+    assert (
+        secure_model_loader_found
+    ), "SECURITY CONTROL MISSING: No secure model loader wrapper found to protect against MLflow vulnerabilities"
 
 
 def test_pyarrow_deserialization_protection():

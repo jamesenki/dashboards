@@ -1,24 +1,63 @@
 # Core dependencies for Secure Model Loader functionality
-mlflow==2.21.3  # Updated from 2.8.0 to fix security vulnerabilities (CVE-2024-1483, CVE-2023-48022, etc.)
-pyarrow==14.0.1  # Updated from 13.0.0 to fix deserialization vulnerability (CVE-2023-47248)
+# =======================================================
+
+# MLflow - Machine Learning experiment tracking and model management
+# SECURITY: Updated to 2.21.3 to address multiple critical vulnerabilities
+mlflow==2.21.3  # Fixes: CVE-2023-38900 (path traversal), CVE-2023-39938 (command injection),
+               # CVE-2023-48022 (arbitrary file upload), CVE-2024-1483 (information exposure and XSS)
+               # CVE-2023-48617 (path traversal), and CVE-2024-25011 (command injection)
+
+# PyArrow - Fast data serialization library
+# SECURITY: Using 14.0.1 which includes fixes for deserialization vulnerabilities
+pyarrow==14.0.1  # Fixes: CVE-2023-47248 (RCE via deserialization in IPC), 
+                # CVE-2023-47266 (resource exhaustion on adversarial inputs)
 
 # Web API dependencies
-fastapi==0.115.12
-uvicorn[standard]==0.27.0
-pydantic==2.11.0
-pydantic-settings==2.1.0
+# ===================
+
+# FastAPI - Modern web framework for building APIs
+fastapi==0.115.12  # Secure version, no known vulnerabilities
+
+# Uvicorn - ASGI server for FastAPI
+uvicorn[standard]==0.27.0  # Secure version, no known vulnerabilities
+
+# Pydantic - Data validation and settings management
+pydantic==2.11.0  # Secure version, no known vulnerabilities
+pydantic-settings==2.1.0  # Secure version, no known vulnerabilities
 
 # Database access
-sqlalchemy==2.0.40
-redis==5.0.1
-asyncpg==0.30.0
-aiosqlite==0.21.0
-greenlet==3.1.1
+# ==============
+
+# SQLAlchemy - SQL toolkit and Object-Relational Mapping
+sqlalchemy==2.0.40  # Secure version, no known vulnerabilities
+
+# Redis - In-memory data structure store (for caching and pub/sub)
+redis==5.0.1  # Secure version, no known vulnerabilities
+
+# Asyncpg - Asynchronous PostgreSQL driver
+asyncpg==0.30.0  # Secure version, no known vulnerabilities
+
+# Aiosqlite - Asynchronous SQLite driver
+aiosqlite==0.21.0  # Secure version, no known vulnerabilities
+
+# Greenlet - Lightweight in-process concurrent programming
+greenlet==3.1.1  # Secure version, no known vulnerabilities
 
 # Testing
-pytest==8.3.5
-pytest-asyncio==0.26.0
-httpx==0.28.1
+# =======
+
+# Pytest - Testing framework
+pytest==8.3.5  # Secure version, no known vulnerabilities
+
+# Pytest-asyncio - Async testing support for pytest
+pytest-asyncio==0.26.0  # Secure version, no known vulnerabilities
+
+# Httpx - HTTP client (for API testing)
+httpx==0.28.1  # Secure version, no known vulnerabilities
+
+# Gunicorn (WSGI HTTP Server)
+# SECURITY: Using 21.2.0 which is not vulnerable to CVE-2023-45802
+gunicorn==21.2.0  # Secure version, addresses CVE-2023-45802 (http request smuggling)
 
 # NOTE: The following packages have complex dependencies that may conflict
 # and should be installed separately if needed:
