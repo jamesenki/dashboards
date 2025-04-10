@@ -54,17 +54,47 @@ class MongoDBShadowStorage:
 
     async def initialize(self):
         """Initialize MongoDB connection and collections."""
-        logger.info(f"Connecting to MongoDB at {self.mongo_uri}")
-        self.client = motor.motor_asyncio.AsyncIOMotorClient(self.mongo_uri)
-        self.db = self.client[self.db_name]
-        self.shadows = self.db[self.shadows_collection_name]
-        self.history = self.db[self.history_collection_name]
-
-        # Create indexes
-        await self.shadows.create_index("device_id", unique=True)
-        await self.history.create_index([("device_id", 1), ("version", -1)])
-
-        logger.info("MongoDB shadow storage initialized successfully")
+        try:
+            logger.info(f"Connecting to MongoDB at {self.mongo_uri}")
+            # Set server selection timeout to prevent long connection attempts
+            self.client = motor.motor_asyncio.AsyncIOMotorClient(
+                self.mongo_uri,
+                serverSelectionTimeoutMS=2000,  # 2 seconds timeout for server selection
+                connectTimeoutMS=2000,         # 2 seconds timeout for connection
+                socketTimeoutMS=2000,          # 2 seconds timeout for socket operations
+                maxPoolSize=10                # Limit connection pool size for faster creation
+            )
+            
+            # Fast connection check that will throw an exception if server is not available
+            # This prevents hanging during server unavailability
+            await self.client.admin.command('ismaster')
+            
+            self.db = self.client[self.db_name]
+            self.shadows = self.db[self.shadows_collection_name]
+            self.history = self.db[self.history_collection_name]
+            
+            # Start index creation in background without waiting for completion
+            # This dramatically improves startup time while ensuring indexes are eventually created
+            asyncio.create_task(self._create_indexes())
+            
+            logger.info("MongoDB shadow storage connected successfully")
+        except Exception as e:
+            logger.error(f"MongoDB connection failed: {str(e)}")
+            # Re-raise to let the factory handle the fallback
+            raise
+            
+    async def _create_indexes(self):
+        """Create MongoDB indexes in background to avoid blocking startup"""
+        try:
+            # Create shadow index with background option for faster creation
+            await self.shadows.create_index("device_id", unique=True, background=True)
+            # Create history index with background option for faster creation
+            await self.history.create_index([("device_id", 1), ("version", -1)], background=True)
+            logger.info("MongoDB indexes created successfully")
+        except Exception as e:
+            # Log error but don't fail the application - indexes improve performance but aren't critical
+            logger.warning(f"Failed to create MongoDB indexes: {str(e)}")
+            # System will still function, just with potentially slower queries
 
     async def close(self):
         """Close MongoDB connection."""

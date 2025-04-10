@@ -1,13 +1,16 @@
 """
-Fixed shadow storage factory for IoTSphere
+Enhanced shadow storage factory with MQTT compatibility
 
 This implementation:
 1. Prioritizes MongoDB when configured
-2. Provides detailed error information (no silent fallbacks)
-3. Ensures shadow documents have proper history data
+2. Provides detailed error information
+3. Includes retry logic for MQTT compatibility
+4. Performs connection validation before returning storage instance
 """
 import logging
 import os
+import asyncio
+import traceback
 from typing import Any, Optional
 
 from src.services.device_shadow import InMemoryShadowStorage
