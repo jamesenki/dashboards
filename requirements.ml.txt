@@ -1,6 +1,6 @@
 # Machine learning dependencies
 mlflow==2.8.0
-pyarrow==13.0.0
+pyarrow==14.0.1
 numpy<2.0.0
 scikit-learn<2.0.0
 
