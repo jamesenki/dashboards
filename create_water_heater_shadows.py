@@ -134,10 +134,18 @@ async def create_water_heater_shadows():
                 logger.error(f"Error creating shadow for {heater_id}: {create_error}")
                 continue
 
-        # 3. GENERATE HISTORY DATA
-        # Always regenerate history to ensure we have enough data points
-        logger.info(f"Generating history data for {heater_id}")
-        await generate_shadow_history(shadow_service, heater_id, days=7)
+        # 3. GENERATE HISTORY DATA (only if explicitly enabled)
+        if os.environ.get("FORCE_HISTORY_GENERATION", "").lower() in (
+            "true",
+            "1",
+            "yes",
+        ):
+            logger.info(f"Generating history data for {heater_id}")
+            await generate_shadow_history(shadow_service, heater_id, days=7)
+        else:
+            logger.info(
+                f"History generation DISABLED for {heater_id} (set FORCE_HISTORY_GENERATION=true to enable)"
+            )
 
 
 async def generate_shadow_history(shadow_service, heater_id, days=7):

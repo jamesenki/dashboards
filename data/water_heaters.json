@@ -28,7 +28,16 @@
     "features": [],
     "operation_modes": [],
     "readings": [],
-    "diagnostic_codes": [],
+    "diagnostic_codes": [
+      {
+        "code": "TEST-01",
+        "description": "Test diagnostic code",
+        "severity": "Info",
+        "timestamp": "2025-04-09 14:00:31.999167",
+        "active": true,
+        "metadata": null
+      }
+    ],
     "metadata": {}
   }
 }
