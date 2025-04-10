@@ -36,6 +36,23 @@ class WaterHeaterType(str, Enum):
     HYBRID = "Hybrid"
 
 
+class TemperatureReading(BaseModel):
+    """Temperature reading model for water heater timeseries data"""
+
+    heater_id: str = Field(..., description="ID of the water heater")
+    timestamp: str = Field(..., description="Time of the reading in ISO format")
+    temperature: float = Field(..., description="Temperature reading in Celsius")
+
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "heater_id": "wh-123456",
+                "timestamp": "2025-04-09T12:00:00",
+                "temperature": 65.5,
+            }
+        }
+
+
 class WaterHeaterDiagnosticCode(BaseModel):
     """Water heater diagnostic code"""
 
