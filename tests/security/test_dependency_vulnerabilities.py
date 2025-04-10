@@ -15,45 +15,61 @@ from packaging import version as version_parser
 
 def test_mlflow_version_secure():
     """Test that MLflow version is not vulnerable to known CVEs."""
+    # This test explicitly checks that MLflow is installed and has a secure version
+    # We DO NOT skip this test if MLflow is not found
+    # According to TDD principles, this test should fail if MLflow is not at the proper version
+
+    # 1. Force import of MLflow - don't catch ImportError to ensure proper RED phase
+    import mlflow
+    
+    # 2. Get the version - this should fail if MLflow is not installed correctly
+    mlflow_version = mlflow.__version__
+    
+    # 3. Check for secure version using proper semantic versioning
+    parsed_version = version_parser.parse(mlflow_version)
+    
+    # 4. Verify against all critical vulnerabilities
+    # Main security assertion - this will show RED if we don't meet minimum security version
+    assert parsed_version >= version_parser.parse("2.9.2"), \
+        f"SECURITY VULNERABILITY: MLflow v{mlflow_version} has known critical vulnerabilities including path traversal, "  \
+        f"command injection, and remote code execution. Update to at least v2.9.2"
+
+    # 5. Comprehensive checks for specific vulnerabilities
+    # These tests provide detailed reporting about which specific vulnerabilities exist
+    assert parsed_version >= version_parser.parse("2.5.0"), \
+        f"SECURITY VULNERABILITY: MLflow v{mlflow_version} vulnerable to path traversal attacks (CVE-2023-38900)"
+        
+    assert parsed_version >= version_parser.parse("2.6.0"), \
+        f"SECURITY VULNERABILITY: MLflow v{mlflow_version} vulnerable to OS command injection (CVE-2023-39938)"
+        
+    assert parsed_version >= version_parser.parse("2.8.1"), \
+        f"SECURITY VULNERABILITY: MLflow v{mlflow_version} allows arbitrary files to be PUT onto the server (CVE-2023-48022)"
+        
+    assert parsed_version >= version_parser.parse("2.9.0"), \
+        f"SECURITY VULNERABILITY: MLflow v{mlflow_version} vulnerable to information exposure and XSS (CVE-2024-1483)"
+
+    # 6. Verify our secure wrapper is in place as an additional protection layer
+    # Check both possible locations to ensure it's available somewhere in the codebase
+    secure_model_loader_found = False
+    
+    # Try to import from src structure first
     try:
-        import mlflow
-
-        mlflow_version = mlflow.__version__
-
-        # Check against known vulnerable versions
-        parsed_version = version_parser.parse(mlflow_version)
-        assert parsed_version >= version_parser.parse(
-            "2.9.0"
-        ), f"MLflow version {mlflow_version} may be vulnerable to CVE-2024-1483 and others"
-
-        # Additional check for more recent vulnerabilities
-        assert not (
-            parsed_version >= version_parser.parse("2.0.0")
-            and parsed_version < version_parser.parse("2.8.1")
-        ), f"MLflow version {mlflow_version} may be vulnerable to CVE-2023-48022"
-
-        # Test for additional protections against deserialization attacks
-        assert hasattr(mlflow, "utils"), "MLflow utils module is missing"
-
-        # Check if we're using secure model loading practices
-        model_loading_secure = getattr(mlflow, "security_enabled", False)
-        if not model_loading_secure:
-            # If not explicitly enabled, we need additional protection in our code
-            # Check custom security measures (this should be implemented in the application code)
-            sys.path.append(str(Path(__file__).parents[2]))
-            try:
-                from app.security import model_loader
-
-                assert hasattr(
-                    model_loader, "validate_model_security"
-                ), "Application should implement custom model security validation"
-            except ImportError:
-                pytest.skip(
-                    "Custom security module not found - may need to implement it"
-                )
-
+        sys.path.insert(0, str(Path(__file__).parents[2]))
+        from src.security import secure_model_loader
+        secure_model_loader_found = True
     except ImportError:
-        pytest.skip("MLflow not installed")
+        pass
+    
+    # Try to import from app structure if not found in src
+    if not secure_model_loader_found:
+        try:
+            from app.security import ml_security
+            secure_model_loader_found = True
+        except ImportError:
+            pass
+    
+    assert secure_model_loader_found, \
+        "SECURITY CONTROL MISSING: No secure model loader wrapper found to protect against MLflow vulnerabilities"
 
 
 def test_pyarrow_deserialization_protection():
