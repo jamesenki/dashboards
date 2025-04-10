@@ -45,18 +45,28 @@ All development in IoTSphere follows the classic TDD cycle:
 - Tests individual components in isolation
 - Mocks or stubs dependencies
 - Focuses on single responsibility
+- Written using Jest and Jasmine frameworks
 
 ### Integration Testing
 
 - Tests interaction between components
 - Verifies correct communication between services
 - May use test doubles for external systems
+- Implemented with a combination of Jasmine and custom test harnesses
+
+### Behavior-Driven Development (BDD) Testing
+
+- Bridges the gap between business requirements and technical implementation
+- Uses Gherkin syntax (Given-When-Then) for test scenarios
+- Implemented with both JavaScript and Python frameworks
+- Provides executable specifications of system behavior
 
 ### End-to-End Testing
 
 - Tests complete user flows
 - Verifies system behavior from user perspective
 - Runs against a test environment similar to production
+- Follows the 70:20:10 ratio (unit:integration:e2e) guidance
 
 ## Best Practices
 
@@ -71,6 +81,46 @@ All development in IoTSphere follows the classic TDD cycle:
 5. **Behavior Focus**: Test what the code should do, not how it does it.
 
 6. **Continuous Integration**: Run tests automatically on code changes.
+
+7. **TDD Phase Tagging**: Mark tests with appropriate phase tags (@red, @green, @refactor) to track progress.
+
+8. **Test Coverage Reporting**: Generate combined reports to monitor implementation progress across test types.
+
+## Test Reporting Infrastructure
+
+IoTSphere implements a comprehensive test reporting system to track implementation progress across different test types and TDD phases:
+
+### Combined Test Report Generator
+
+The `combined-test-report.js` script integrates results from multiple testing frameworks to provide a unified view of implementation status:
+
+- Aggregates results from JavaScript and Python BDD tests
+- Tracks test counts across RED, GREEN, and REFACTOR phases
+- Generates HTML reports with progress visualizations
+- Calculates overall implementation completion percentages
+
+### Python BDD Reporting
+
+The `python-bdd-report-v3.js` script analyzes Python BDD implementations:
+
+- Parses Python step definitions to identify TDD phases
+- Detects @given, @when, and @then decorators in implementation files
+- Identifies RED, GREEN, or REFACTOR phase markers in implementation
+- Generates focused reports on Python BDD test status
+
+### Report Generation and Usage
+
+Reports can be generated using the following commands:
+
+```bash
+# Generate combined test report
+node scripts/combined-test-report.js
+
+# Generate Python BDD specific report
+node scripts/python-bdd-report-v3.js
+```
+
+Reports are saved to the `test-reports` directory and provide critical feedback for the TDD workflow, helping teams identify which components need implementation (RED), which have been implemented (GREEN), and which are being improved (REFACTOR).
 
 ## Implementation Examples
 
@@ -93,6 +143,34 @@ describe('DeviceStatusComponent', () => {
     expect(statusElement.classList).toContain('critical');
   });
 });
+```
+
+### BDD Testing with Python
+
+```python
+# Feature file (device_shadow_service.feature)
+Feature: Device Shadow Service
+
+  @red  # Initially marked as RED phase
+  Scenario: Retrieve device shadow
+    Given a device with ID "test-device-001" exists in the system
+    When a client requests the shadow state for device "test-device-001"
+    Then the response should be successful
+    And the shadow document should contain "reported" and "desired" sections
+
+# Step implementation (steps/device_shadow_steps.py)
+from behave import given, when, then
+
+@given('a device with ID "{device_id}" exists in the system')
+def step_impl(context, device_id):
+    # Implementation that creates a test device in the system
+    context.device_id = device_id
+    context.device_service.create_test_device(device_id)
+
+@when('a client requests the shadow state for device "{device_id}"')
+def step_impl(context, device_id):
+    # GREEN PHASE - Implementation that retrieves the shadow
+    context.response = context.shadow_service.get_shadow(device_id)
 ```
 
 ### API Service Testing
