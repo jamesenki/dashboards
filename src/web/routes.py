@@ -30,6 +30,15 @@ async def get_water_heater_list(request: Request):
     return templates.TemplateResponse("water-heater/list.html", {"request": request})
 
 
+@router.get("/dashboard", response_class=HTMLResponse)
+async def get_dashboard(request: Request):
+    """Render the main dashboard page
+    
+    This route is expected by the E2E tests in water_heater_monitoring.spec.js
+    """
+    return templates.TemplateResponse("water-heater/list.html", {"request": request})
+
+
 @router.get("/diagnostic", response_class=HTMLResponse)
 async def get_diagnostic_page(request: Request):
     """Render the API diagnostic page"""

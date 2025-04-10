@@ -27,7 +27,7 @@ function formatCurrency(amount) {
 }
 
 function formatTemperature(temp) {
-  return temp ? `${temp.toFixed(1)}°C` : 'N/A';
+  return temp !== null && temp !== undefined ? `${temp.toFixed(1)}°F` : 'N/A';
 }
 
 /**

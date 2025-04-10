@@ -103,8 +103,17 @@ async function generateTestReport() {
 
   // Generate HTML report
   const htmlReport = formatHtmlReport(testStats);
-  fs.writeFileSync(htmlOutputPath, htmlReport);
-  console.log(color.green(`HTML test report generated at: ${htmlOutputPath}`));
+  
+  // Make sure we have a valid HTML report before writing
+  if (htmlReport) {
+    fs.writeFileSync(htmlOutputPath, htmlReport);
+    console.log(color.green(`HTML test report generated at: ${htmlOutputPath}`));
+  } else {
+    // Generate a simple fallback HTML if the template-based generation failed
+    const fallbackHtml = generateFallbackHtml(testStats, mdReport);
+    fs.writeFileSync(htmlOutputPath, fallbackHtml);
+    console.log(color.yellow(`Basic HTML test report generated at: ${htmlOutputPath} (using fallback template)`));
+  }
 
   // Also print summary to console
   console.log('\n' + formatConsoleReport(testStats));
@@ -143,6 +152,16 @@ async function collectTestStats() {
   // Process each test type
   for (const [type, pattern] of Object.entries(config.testPatterns)) {
     const files = glob.sync(pattern, { cwd: config.projectRoot });
+    
+    // Initialize the counter object for this test type
+    result.byType[type] = {
+      total: 0,
+      red: 0,
+      green: 0,
+      refactor: 0,
+      completed: 0,
+      expectedTotal: config.expectedCounts[type] || 0
+    };
 
     // Special handling for BDD - count both JS and Python implementations
     let totalTests = files.length;
@@ -696,6 +715,67 @@ function formatHtmlReport(stats) {
   template = template.replace('{{RECOMMENDATIONS}}', recommendations || '<li>No specific recommendations at this time</li>');
 
   return template;
+}
+
+/**
+ * Generate a simple fallback HTML report when the template is not available
+ */
+function generateFallbackHtml(stats, markdownContent) {
+  // Convert the markdown content to HTML using a very simple approach
+  // In a real implementation, you might want to use a markdown parser
+  const htmlContent = markdownContent
+    .replace(/# (.+)\n/g, '<h1>$1</h1>\n')
+    .replace(/## (.+)\n/g, '<h2>$1</h2>\n')
+    .replace(/### (.+)\n/g, '<h3>$1</h3>\n')
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .replace(/`(.+?)`/g, '<code>$1</code>')
+    .replace(/\n\n/g, '<br><br>\n')
+    .replace(/\| (.+?) \|/g, '<td>$1</td>');
+
+  // Create a simple HTML template
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IoTSphere Test Report</title>
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; padding: 20px; max-width: 1200px; margin: 0 auto; }
+    h1 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+    h2 { color: #3498db; margin-top: 30px; }
+    h3 { color: #2c3e50; }
+    .summary { background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin: 20px 0; }
+    .progress-container { background-color: #ecf0f1; border-radius: 5px; margin: 10px 0; }
+    .progress-bar { background-color: #2ecc71; height: 30px; border-radius: 5px; text-align: center; line-height: 30px; color: white; }
+    .test-type { margin-bottom: 30px; }
+    table { border-collapse: collapse; width: 100%; margin: 20px 0; }
+    th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+    th { background-color: #3498db; color: white; }
+    tr:nth-child(even) { background-color: #f2f2f2; }
+    .red { color: #e74c3c; }
+    .green { color: #2ecc71; }
+    .yellow { color: #f39c12; }
+  </style>
+</head>
+<body>
+  <h1>IoTSphere Test Report</h1>
+  
+  <div class="summary">
+    <h2>Test Summary</h2>
+    <p><strong>Overall Completion:</strong> ${Math.round(stats.summary.completion)}%</p>
+    <div class="progress-container">
+      <div class="progress-bar" style="width: ${Math.round(stats.summary.completion)}%">${Math.round(stats.summary.completion)}%</div>
+    </div>
+    <p><strong>Total Tests:</strong> ${stats.summary.totalTests}</p>
+    <p><strong>TDD Phases:</strong> 🔴 Red: ${stats.summary.redPhase}, 🟢 Green: ${stats.summary.greenPhase}, 🔄 Refactor: ${stats.summary.refactorPhase}</p>
+  </div>
+
+  <div class="content">
+    ${htmlContent}
+  </div>
+</body>
+</html>`;
 }
 
 // If called directly, generate the report

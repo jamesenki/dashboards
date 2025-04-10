@@ -3,6 +3,7 @@ import asyncio
 import logging
 import os
 import random
+from contextlib import suppress
 import socket
 import sys
 from contextlib import asynccontextmanager
@@ -125,6 +126,16 @@ async def lifespan(app: FastAPI):
         yield
     finally:
         # Shutdown logic - add any cleanup needed here
+        # Clean shutdown of Message Broker components
+        if hasattr(app.state, "message_broker") and app.state.message_broker:
+            try:
+                logger.info("Shutting down Message Broker components")
+                await app.state.message_broker.shutdown()
+                logger.info("Message Broker components shut down successfully")
+            except Exception as e:
+                logger.error(f"Error shutting down Message Broker components: {e}")
+        
+        # Clean shutdown of WebSocket service
         if hasattr(app.state, "websocket_service") and app.state.websocket_service:
             try:
                 # If we have a WebSocket service, try to stop it cleanly
@@ -710,6 +721,7 @@ async def startup_logic(app: FastAPI):
     import logging
 
     from src.db.config import db_settings
+    from src.infrastructure.messaging.message_broker_integrator import MessageBrokerIntegrator
 
     # Set up environment configuration
     env = setup_environment_configuration()
@@ -809,26 +821,29 @@ async def startup_logic(app: FastAPI):
         logging.info("✅ Shadow storage provider initialized successfully")
 
         # Check if we should use the new integration or legacy service
-        use_new_integration = config.get("shadow.use_new_integration", False)
+        use_new_integration = config.get("shadow.use_new_integration", True)  # Default to True for new Message Broker Pattern
 
         if use_new_integration:
-            # Use the new Shadow API Adapter implementation (Clean Architecture)
-            logging.info("Using new Shadow Broker Integration with Message Broker")
+            # Use the new Message Broker Pattern implementation (Clean Architecture)
+            logging.info("Using new Message Broker Pattern with MQTT-based real-time updates")
             try:
-                from src.adapters.shadow_api_integration import setup_shadow_api_adapter
-
-                # Initialize adapter with the Shadow Broker Integration
-                # This follows clean architecture principles by providing an adapter
-                # between our new domain logic and the existing API layer
-                setup_shadow_api_adapter(app)
-
-                # For backward compatibility, ensure all expected state objects exist
-                device_update_handler = app.state.shadow_service
-                app.state.device_update_handler = device_update_handler
-
-                logging.info("✅ Shadow API Adapter initialized successfully")
+                # Initialize the Message Broker Integrator
+                # This follows Clean Architecture principles by separating business logic
+                # from delivery mechanisms through the use of the Message Broker Pattern
+                message_broker = MessageBrokerIntegrator(app, shadow_storage=storage_provider)
+                await message_broker.initialize()
+                
+                # Store message broker in app state for lifecycle management
+                app.state.message_broker = message_broker
+                
+                # For backward compatibility, ensure expected state objects exist
+                # This allows existing components to work while we transition to the new architecture
+                app.state.shadow_service = storage_provider
+                app.state.device_update_handler = message_broker.mqtt_publisher
+                
+                logging.info("✅ Message Broker components initialized successfully")
             except Exception as e:
-                logging.error(f"Error initializing Shadow API Adapter: {e}")
+                logging.error(f"Error initializing Message Broker components: {e}")
                 # Fall back to legacy implementation
                 use_new_integration = False
 

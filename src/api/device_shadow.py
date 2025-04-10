@@ -1,6 +1,13 @@
 """
 Device Shadow API endpoints.
 
+DEPRECATED: This module is deprecated in favor of the Message Broker Pattern 
+implementation as described in ADR-0001. Please use the new components:
+- ShadowPublisher 
+- MongoDBShadowListener
+- MQTT-WebSocket Bridge 
+- MessageBrokerIntegrator
+
 This module provides API endpoints for:
 1. Getting device shadow state
 2. Requesting state changes from the frontend
@@ -76,9 +83,11 @@ async def get_ws_manager(websocket: WebSocket = None, request: Request = None):
         raise ValueError("Either websocket or request must be provided")
 
 
-@router.get("/shadows/{device_id}", response_model=Dict[str, Any])
+@router.get("/shadows/{device_id}", response_model=Dict[str, Any], deprecated=True)
 async def get_device_shadow(device_id: str, shadow_service=Depends(get_shadow_service)):
     """
+    DEPRECATED: Use the MQTT-WebSocket Bridge for real-time shadow updates instead.
+    
     Get the current shadow document for a device.
 
     Args:
@@ -102,12 +111,14 @@ async def get_device_shadow(device_id: str, shadow_service=Depends(get_shadow_se
         )
 
 
-@router.patch("/shadows/{device_id}/desired", response_model=ShadowUpdateResponse)
+@router.patch("/shadows/{device_id}/desired", response_model=ShadowUpdateResponse, deprecated=True)
 async def update_desired_state(
     device_id: str,
     request: DeviceStateRequest,
     request_handler=Depends(get_frontend_request_handler),
 ):
+    """DEPRECATED: Use the MessageService instead of this direct endpoint."""
+    # The Message Broker Pattern has superseded this direct update method
     """
     Update the desired state for a device from frontend.
 
@@ -179,6 +190,8 @@ async def update_desired_state(
 async def websocket_shadow_updates(
     websocket: WebSocket, device_id: str, ws_manager=Depends(get_ws_manager)
 ):
+    """DEPRECATED: Use the MQTT-WebSocket Bridge instead for real-time updates."""
+    # This WebSocket implementation is superseded by the MQTT-WebSocket Bridge
     """
     WebSocket endpoint for real-time shadow updates.
 

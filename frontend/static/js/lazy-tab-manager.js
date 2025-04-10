@@ -118,6 +118,11 @@ class LazyTabManager {
     // Skip if already loaded or currently loading
     if (tab.loaded && !tab.error) {
       console.log(`ℹ️ Tab ${tabId} already loaded, skipping`);
+      
+      // Special case for predictions tab - always ensure it's properly initialized
+      if (tabId === 'predictions') {
+        this._initializePredictionsTab();
+      }
       return;
     }
 
@@ -129,6 +134,11 @@ class LazyTabManager {
     // Reset error state
     tab.error = null;
     tab.isLoading = true;
+    
+    // Special case for predictions tab
+    if (tabId === 'predictions') {
+      this._initializePredictionsTab();
+    }
 
     // Show loading indicator
     this.showLoadingIndicator(tabId);
@@ -290,6 +300,77 @@ class LazyTabManager {
     if (this.activeTab) {
       this.loadTabData(this.activeTab);
     }
+  }
+
+  /**
+   * Helper method to initialize the predictions tab content
+   * This ensures the water heater predictions dashboard is properly loaded
+   * @private
+   */
+  _initializePredictionsTab() {
+    console.log('🔄 Initializing predictions tab content');
+    
+    // Ensure the predictions content element is visible
+    const predictionsContent = document.getElementById('predictions-content');
+    if (predictionsContent) {
+      predictionsContent.style.display = 'block';
+      predictionsContent.style.visibility = 'visible';
+    }
+    
+    // Initialize the predictions dashboard if it exists
+    if (window.waterHeaterPredictionsDashboard) {
+      console.log('🔄 Initializing water heater predictions dashboard');
+      window.waterHeaterPredictionsDashboard.initializeData();
+      
+      // Explicitly call sequential reload to ensure all predictions are loaded
+      if (typeof window.waterHeaterPredictionsDashboard.sequentialReload === 'function') {
+        window.waterHeaterPredictionsDashboard.sequentialReload();
+      }
+      
+      // Make elements visible for automated tests
+      if (typeof window.waterHeaterPredictionsDashboard.makeElementsVisibleForTests === 'function') {
+        window.waterHeaterPredictionsDashboard.makeElementsVisibleForTests();
+      }
+    } else {
+      console.warn('⚠️ Water heater predictions dashboard not available');
+      
+      // Initialize the predictions dashboard if the device ID is available
+      const deviceId = this._getDeviceId();
+      if (deviceId) {
+        console.log(`🔄 Creating new predictions dashboard for device ${deviceId}`);
+        window.waterHeaterPredictionsDashboard = new WaterHeaterPredictionsDashboard(
+          'predictions-content',
+          deviceId
+        );
+      }
+    }
+  }
+  
+  /**
+   * Helper method to get the current device ID
+   * @private
+   * @returns {string|null} The current device ID or null if not found
+   */
+  _getDeviceId() {
+    // Try various ways to find the device ID
+    const deviceIdElement = document.getElementById('device-id');
+    if (deviceIdElement && deviceIdElement.value) {
+      return deviceIdElement.value;
+    }
+    
+    // Try data attribute on body
+    const bodyDeviceId = document.body.getAttribute('data-heater-id');
+    if (bodyDeviceId) {
+      return bodyDeviceId;
+    }
+    
+    // Try URL pattern for device ID
+    const urlMatch = window.location.pathname.match(/\/water-heaters\/([\w-]+)/);
+    if (urlMatch && urlMatch[1]) {
+      return urlMatch[1];
+    }
+    
+    return null;
   }
 }
 

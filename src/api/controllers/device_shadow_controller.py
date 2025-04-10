@@ -1,6 +1,13 @@
 """
 Device Shadow Controller for handling HTTP requests.
 
+DEPRECATED: This module is deprecated in favor of the Message Broker Pattern
+implementation as described in ADR-0001. Please use the new components:
+- ShadowPublisher
+- MongoDBShadowListener
+- MQTT-WebSocket Bridge
+- MessageBrokerIntegrator
+
 This module contains the FastAPI route handlers for device shadow operations.
 Following Clean Architecture, controllers depend on use cases.
 """
@@ -27,12 +34,14 @@ router = APIRouter(prefix="/api/devices", tags=["device-shadows"])
 shadow_ws_manager = ShadowWebSocketManager()
 
 
-@router.get("/{device_id}/shadow", response_model=DeviceShadowResponse)
+@router.get("/{device_id}/shadow", response_model=DeviceShadowResponse, deprecated=True)
 async def get_device_shadow(
     device_id: str,
     shadow_service: DeviceShadowService = Depends(get_device_shadow_service),
 ) -> Dict[str, Any]:
-    """Get a device shadow.
+    """DEPRECATED: Use the MQTT-WebSocket Bridge for real-time shadow updates instead.
+    
+    Get a device shadow.
 
     Args:
         device_id: Device ID

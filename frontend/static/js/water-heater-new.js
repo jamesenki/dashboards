@@ -640,9 +640,43 @@ class WaterHeaterList {
         return '<div class="card heater-card error-card">Invalid water heater data</div>';
       }
 
+    // Determine alert level based on conditions
+    let alertLevel = 'normal';
+    if (heater.metrics && heater.metrics.current_temperature) {
+      const temp = heater.metrics.current_temperature;
+      const targetTemp = heater.metrics.target_temperature || 120;
+      
+      // Critical alert for temperatures more than 20% above target or over 180F
+      if (temp > 180 || temp > targetTemp * 1.2) {
+        alertLevel = 'critical';
+      }
+      // Warning alert for temperatures more than 10% above target or over 150F
+      else if (temp > 150 || temp > targetTemp * 1.1) {
+        alertLevel = 'warning';
+      }
+    } else if (heater.current_temperature) {
+      // Legacy format
+      const temp = heater.current_temperature;
+      const targetTemp = heater.target_temperature || 120;
+      
+      // Critical alert for temperatures more than 20% above target or over 180F
+      if (temp > 180 || temp > targetTemp * 1.2) {
+        alertLevel = 'critical';
+      }
+      // Warning alert for temperatures more than 10% above target or over 150F
+      else if (temp > 150 || temp > targetTemp * 1.1) {
+        alertLevel = 'warning';
+      }
+    }
+    
+    // Override alert level from heater status property if present
+    if (heater.status && typeof heater.status === 'object' && heater.status.alert_level) {
+      alertLevel = heater.status.alert_level;
+    }
+
     // Standardize status classes
-    const statusClass = heater.status.toLowerCase() === 'online' ? 'status-online' : 'status-offline';
-    const heaterStatusClass = heater.heater_status.toLowerCase() === 'heating' ? 'status-heating' : 'status-standby';
+    const statusClass = heater.status.toLowerCase ? (heater.status.toLowerCase() === 'online' ? 'status-online' : 'status-offline') : 'status-offline';
+    const heaterStatusClass = heater.heater_status && heater.heater_status.toLowerCase ? (heater.heater_status.toLowerCase() === 'heating' ? 'status-heating' : 'status-standby') : 'status-standby';
 
     // Standardize mode formatting
     const standardizedMode = this.standardizeMode(heater.mode);
@@ -730,7 +764,7 @@ class WaterHeaterList {
     // AND a direct window.location assignment as a backup
     let cardHtml = `
       <a href="${detailLink}" style="text-decoration: none; color: inherit;">
-      <div id="heater-${heater.id}" data-id="${heater.id}" class="${cardClasses}" style="cursor: pointer;">
+      <div id="heater-${heater.id}" data-id="${heater.id}" data-testid="water-heater-${heater.id}" class="${cardClasses}" style="cursor: pointer;">
         <div class="card-header">
           <div>
             <span class="status-indicator ${statusClass}"></span>
@@ -739,6 +773,9 @@ class WaterHeaterList {
           <div class="heater-status">
             <span class="status-indicator ${heaterStatusClass}"></span>
             ${STATUS_LABELS[heater.heater_status] || 'Unknown'}
+          </div>
+          <div class="alert-container">
+            <span data-testid="alert-indicator" class="${alertLevel}">${alertLevel.charAt(0).toUpperCase() + alertLevel.slice(1)}</span>
           </div>
         </div>
         <div class="card-body">

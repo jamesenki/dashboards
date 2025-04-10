@@ -1,6 +1,9 @@
 """
 WebSocket Manager for device shadow real-time updates.
 
+DEPRECATED: This module is deprecated in favor of the Message Broker Pattern
+implementation as described in ADR-0001. Please use the MQTT-WebSocket Bridge instead.
+
 This module manages WebSocket connections for device shadow updates,
 following Clean Architecture by keeping delivery mechanism details separate.
 """
@@ -12,6 +15,9 @@ from fastapi import WebSocket
 class ShadowWebSocketManager:
     """Manages WebSocket connections for device shadow updates.
 
+    DEPRECATED: This class is deprecated in favor of the MQTT-WebSocket Bridge 
+    implementation as described in ADR-0001.
+    
     This class handles the delivery of real-time updates to connected clients,
     maintaining a mapping of device IDs to connected WebSockets.
     """

@@ -400,9 +400,10 @@
   <!-- Tab Navigation -->
   <div class="tab-navigation">
     <button id="details-tab-btn" class="tab-btn active">Details</button>
-    <button id="operations-tab-btn" class="tab-btn">Operations</button>
+    <button id="operations-tab-btn" class="tab-btn" data-testid="operations-tab">Operations</button>
     <button id="predictions-tab-btn" class="tab-btn">Predictions</button>
     <button id="history-tab-btn" class="tab-btn">History</button>
+    <button id="maintenance-tab-btn" class="tab-btn" data-testid="maintenance-tab">Maintenance</button>
   </div>
 
   <!-- Tab Content -->
@@ -854,8 +855,8 @@
         </div>
       </div>
     </div>
-  </div>
-</div>
+  </div> <!-- End of water-heater-container -->
+</div> <!-- End of water-heater-detail -->
 {% endblock %}
 
 {% block scripts %}

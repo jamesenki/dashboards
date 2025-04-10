@@ -56,6 +56,16 @@ class Settings(BaseSettings):
     websocket_debug_mode: bool = False  # Disable WebSocket debug mode by default
     websocket_port: int = 8912  # Default WebSocket port
     websocket_host: str = "0.0.0.0"  # Default WebSocket host
+    
+    # MQTT Settings
+    mqtt_broker_host: str = "localhost"
+    mqtt_broker_port: int = 1883
+    mqtt_username: Optional[str] = None
+    mqtt_password: Optional[str] = None
+    mqtt_use_tls: bool = False
+    mqtt_client_id_prefix: str = "iotsphere"
+    mqtt_shadow_topic_prefix: str = "shadows"
+    mqtt_telemetry_topic_prefix: str = "telemetry"
 
     class Config:
         """Pydantic config."""
