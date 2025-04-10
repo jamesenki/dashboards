@@ -22,7 +22,8 @@ wheels/
 
 # Node.js
 node_modules/
-package-lock.json
+# Only include package-lock in version control for deployment
+# package-lock.json
 
 # Virtual Environment
 venv/
@@ -34,6 +35,15 @@ env/
 htmlcov/
 .pytest_cache/
 .tox/
+coverage/
+test-reports/
+reports/
+
+# Logs
+*.log
+*.log.*
+*.log.bak
+temperature_history.log*
 
 # Editors
 .idea/
@@ -49,6 +59,10 @@ htmlcov/
 .Spotlight-V100
 .Trashes
 ehthumbs.db
+Thumbs.db
+
+# IoTSphere specific
+bundle.js
 Thumbs.db
 
 # Test reports and results
