@@ -470,29 +470,51 @@ window.webSocketDiagnostics = new WebSocketDiagnostics();
 
 // Add a button to run the diagnostics
 function addDiagnosticsButton() {
-    const button = document.createElement('button');
-    button.textContent = 'Run Diagnostics';
-    button.id = 'run-diagnostics-button';
-    button.style.cssText = `
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        padding: 8px 15px;
-        background: #007bff;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        z-index: 10000;
-        font-family: sans-serif;
-        font-size: 14px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    `;
-    button.addEventListener('click', () => {
-        window.webSocketDiagnostics.runAllTests();
-    });
+    try {
+        // Check if document.body exists
+        if (!document.body) {
+            console.warn('document.body not available yet, cannot add diagnostics button');
+            return;
+        }
 
-    document.body.appendChild(button);
+        // Find existing button to avoid duplicates
+        if (document.getElementById('run-diagnostics-button')) {
+            console.log('Diagnostics button already exists');
+            return;
+        }
+
+        const button = document.createElement('button');
+        button.textContent = 'Run Diagnostics';
+        button.id = 'run-diagnostics-button';
+        button.style.cssText = `
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 8px 15px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            z-index: 10000;
+            font-family: sans-serif;
+            font-size: 14px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        `;
+        button.addEventListener('click', () => {
+            window.webSocketDiagnostics.runAllTests();
+        });
+
+        // Try-catch specifically for the appendChild operation
+        try {
+            document.body.appendChild(button);
+            console.log('Diagnostics button added successfully');
+        } catch (appendError) {
+            console.error('Failed to append diagnostics button:', appendError);
+        }
+    } catch (error) {
+        console.error('Error in addDiagnosticsButton:', error);
+    }
 }
 
 // Auto-run diagnostics on page load after 2 seconds

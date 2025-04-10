@@ -25,7 +25,9 @@
 <script src="/static/js/water-heater-details-only.js?v={{now.timestamp()}}"></script>
 <script src="/static/js/realtime-status-formatter.js?v={{now.timestamp()}}"></script>
 <script src="/static/js/dashboard-fixes.js?v={{now.timestamp()}}"></script>
-<script src="/static/js/tab-manager.js?v={{now.timestamp()}}"></script>
+<script src="/static/js/lazy-tab-manager.js?v={{now.timestamp()}}"></script>
+<script src="/static/js/tests/lazy-tab-manager.test.js?v={{now.timestamp()}}"></script>
+<script src="/static/js/tests/lazy-tab-test-e3ae2f6.js?v={{now.timestamp()}}"></script>
 <script src="/static/js/websocket-manager.js?v={{now.timestamp()}}"></script>
 <script src="/static/js/realtime-status-fix.js?v={{now.timestamp()}}"></script>
 <!-- Real-time monitoring integration -->
@@ -43,6 +45,10 @@
 <script src="/static/js/device-shadow-api.js?v={{now.timestamp()}}"></script>
 <script src="/static/js/device-shadow-temperature-chart.js?v={{now.timestamp()}}"></script>
 <script src="/static/js/device-shadow-chart-integration.js?v={{now.timestamp()}}"></script>
+<!-- Temperature Chart Fix: Following TDD principles to fix chart container rendering issue -->
+<script src="/static/js/temperature-chart-fix.js?v={{now.timestamp()}}"></script>
+<!-- Verification script for temperature chart fix -->
+<script src="/static/js/verify_temperature_chart_fix.js?v={{now.timestamp()}}"></script>
 <!-- Device data display configuration -->
 <!-- Archived history box fix no longer needed -->
 <!-- Following TDD principles: removing redundant code after implementing the proper solution -->
@@ -869,8 +875,8 @@
         return;
     }
 
-    // Initialize TabManager first (this is critical)
-    window.tabManager = new TabManager('water-heater-container');
+    // Initialize EnhancedTabManager with lazy loading support
+    window.tabManager = new EnhancedTabManager('water-heater-container');
 
     // Set up data loading state trackers
     window.dataLoadingState = {
@@ -890,12 +896,28 @@
             `<div class="error-message">Error initializing water heater detail view: ${error.message}</div>`;
     }
 
-    // Pre-initialize all dashboards to start data loading
-    // Initialize predictions dashboard immediately on page load
-    if (!window.waterHeaterPredictionsDashboard) {
-      console.log('Pre-initializing predictions dashboard');
-      window.waterHeaterPredictionsDashboard = new WaterHeaterPredictionsDashboard('water-heater-predictions-dashboard', heaterId);
-    }
+    // --------------------------------------------------------------------------
+    // STRICT LAZY LOADING: Only initialize details tab on page load
+    // --------------------------------------------------------------------------
+    console.log('CLEAN LAZY LOADING: Only water heater details loaded');
+
+    // Explicitly ensure other dashboards are NOT loaded until their tabs are clicked
+    window.waterHeaterOperationsDashboard = null;
+    window.waterHeaterHistoryDashboard = null;
+    window.waterHeaterPredictionsDashboard = null;
+
+    // Set explicit flags to verify loading state for each tab
+    window.tabsInitialized = {
+      details: true,  // Only details is initialized on page load
+      operations: false,
+      history: false,
+      predictions: false
+    };
+
+    // Add global function to check initialization state for tests
+    window.isTabInitialized = function(tabName) {
+      return window.tabsInitialized[tabName] === true;
+    };
 
     // Store water heater ID in body data attribute for components to access
     document.body.setAttribute('data-heater-id', heaterId);
@@ -917,6 +939,27 @@
       // Load data for the newly activated tab
       loadTabData(tabId);
     });
+
+    // Register data loaders with the EnhancedTabManager for lazy loading
+    // This allows the tab manager to handle loading and errors for each tab
+    if (window.tabManager) {
+      // Register data loader for operations tab
+      window.tabManager.registerDataLoader('operations', () => {
+        return loadTabData('operations');
+      });
+
+      // Register data loader for history tab
+      window.tabManager.registerDataLoader('history', () => {
+        return loadTabData('history');
+      });
+
+      // Register data loader for predictions tab
+      window.tabManager.registerDataLoader('predictions', () => {
+        return loadTabData('predictions');
+      });
+
+      console.log('Data loaders registered with EnhancedTabManager');
+    }
 
     // If we're in a test environment, we want to default to the predictions tab
     const isTestEnvironment = window.location.href.includes('localhost:8006');
@@ -975,78 +1018,78 @@
       if (tabName === 'operations') {
         // Initialize operations dashboard if not already done
         if (!window.waterHeaterOperationsDashboard) {
-          console.log('Initializing operations dashboard');
-          window.waterHeaterOperationsDashboard = new WaterHeaterOperationsDashboard(heaterId, 'operations-content');
-          window.dataLoadingState.operations = true;
+          console.log('Lazy loading operations dashboard - ONLY this tab');
+          try {
+            window.waterHeaterOperationsDashboard = new WaterHeaterOperationsDashboard(deviceId, 'operations-content');
 
-          // Register the operations dashboard with the tab manager
-          if (window.tabManager && window.waterHeaterOperationsDashboard) {
-            window.tabManager.registerComponent('operations', window.waterHeaterOperationsDashboard, 'operations-dashboard');
-          }
-        }
-      } else if (tabName === 'history') {
-        // Initialize history dashboard if not already done
-        console.log('Activating history tab');
-        if (!window.waterHeaterHistoryDashboard) {
-          console.log('Initializing history dashboard');
-          window.waterHeaterHistoryDashboard = new WaterHeaterHistoryDashboard(heaterId);
-          window.dataLoadingState.history = true;
+            // Update initialization tracking
+            window.tabsInitialized.operations = true;
 
-          // Register the history dashboard with the tab manager
-          if (window.tabManager && window.waterHeaterHistoryDashboard) {
-            window.tabManager.registerComponent('history', window.waterHeaterHistoryDashboard, 'history-dashboard');
-          }
-        }
-
-        // Check if the history dashboard implements the reload method
-        // This is part of the TabManager component interface for reloading data when a tab is activated
-        if (window.waterHeaterHistoryDashboard && typeof window.waterHeaterHistoryDashboard.reload === 'function') {
-          console.log('Reloading history dashboard');
-          window.waterHeaterHistoryDashboard.reload();
-        }
-      } else if (tabName === 'predictions') {
-        // For predictions, always ensure data is loaded - not just initialized
-        if (!window.waterHeaterPredictionsDashboard) {
-          console.log('Initializing predictions dashboard');
-          window.waterHeaterPredictionsDashboard = new WaterHeaterPredictionsDashboard('water-heater-predictions-dashboard', heaterId);
-          window.dataLoadingState.predictions = true;
-
-          // Register the predictions dashboard with the tab manager
-          if (window.tabManager && window.waterHeaterPredictionsDashboard) {
-            window.tabManager.registerComponent('predictions', window.waterHeaterPredictionsDashboard, 'predictions-dashboard');
-          }
-
-          // Wait for dashboard to initialize, then do sequential reload
-          setTimeout(() => {
-            if (window.waterHeaterPredictionsDashboard) {
-              console.log('Running initial sequential reload after dashboard initialization');
-              window.waterHeaterPredictionsDashboard.sequentialReload();
+            // Register the operations dashboard with the tab manager
+            if (window.tabManager && window.waterHeaterOperationsDashboard) {
+              window.tabManager.registerComponent('operations', window.waterHeaterOperationsDashboard);
             }
-          }, 500);
-        } else {
-          // When returning to the predictions tab, run sequential reload
-          // This ensures we always have fresh data for each card, loaded in sequence
-          console.log('Predictions tab activated - starting sequential reload of prediction cards');
-          window.waterHeaterPredictionsDashboard.sequentialReload();
+          } catch (error) {
+            console.error('Error initializing operations dashboard:', error);
+            const errorContainer = document.querySelector('#operations-content .error-message');
+            if (errorContainer) {
+              errorContainer.textContent = `Error loading operations dashboard: ${error.message}`;
+              errorContainer.style.display = 'block';
+            }
+          }
         }
+      }
+      else if (tabName === 'history') {
+        // Initialize history dashboard if not already done
+        if (!window.waterHeaterHistoryDashboard) {
+          console.log('Lazy loading history dashboard - ONLY this tab');
+          try {
+            window.waterHeaterHistoryDashboard = new WaterHeaterHistoryDashboard(deviceId);
 
-        // Add specific logic to ensure test visibility ONLY when on predictions tab
-        setTimeout(() => {
-          if (window.waterHeaterPredictionsDashboard && tabName === 'predictions') {
-            console.log('Making prediction elements visible - we are on predictions tab');
-            window.waterHeaterPredictionsDashboard.makeElementsVisibleForTests();
-          }
-        }, 1000);
+            // Update initialization tracking
+            window.tabsInitialized.history = true;
 
-        // Attempt multiple times to ensure visibility (for robustness) ONLY when on predictions tab
-        setTimeout(() => {
-          if (window.waterHeaterPredictionsDashboard && tabName === 'predictions') {
-            window.waterHeaterPredictionsDashboard.makeElementsVisibleForTests();
+            // Register the history dashboard with the tab manager
+            if (window.tabManager && window.waterHeaterHistoryDashboard) {
+              window.tabManager.registerComponent('history', window.waterHeaterHistoryDashboard);
+            }
+          } catch (error) {
+            console.error('Error initializing history dashboard:', error);
           }
-        }, 2000);
-      } else if (tabName === 'details') {
-        // For the details tab, we don't need to initialize anything special
-        console.log('Details tab activated');
+        }
+      }
+      else if (tabName === 'predictions') {
+        // Initialize predictions dashboard if not already done
+        if (!window.waterHeaterPredictionsDashboard) {
+          console.log('Lazy loading predictions dashboard - ONLY this tab');
+          try {
+            window.waterHeaterPredictionsDashboard = new WaterHeaterPredictionsDashboard('water-heater-predictions-dashboard', deviceId);
+
+            // Update initialization tracking
+            window.tabsInitialized.predictions = true;
+
+            // Register the predictions dashboard with the tab manager
+            if (window.tabManager && window.waterHeaterPredictionsDashboard) {
+              window.tabManager.registerComponent('predictions', window.waterHeaterPredictionsDashboard);
+            }
+          } catch (error) {
+            console.error('Error initializing predictions dashboard:', error);
+
+            // Create and display error indicator in the tab content
+            const predictionsContent = document.getElementById('predictions-content');
+            if (predictionsContent) {
+              let errorIndicator = document.createElement('div');
+              errorIndicator.className = 'tab-error alert alert-danger';
+              errorIndicator.style.display = 'block';
+              errorIndicator.innerHTML = `<strong>Error:</strong> Failed to load predictions dashboard`;
+              predictionsContent.insertBefore(errorIndicator, predictionsContent.firstChild);
+            }
+          }
+        }
+      }
+      else if (tabName === 'details') {
+        // Details tab is already loaded on page initialization
+        console.log('Details tab activated (already loaded on page init)');
       }
     }
 
@@ -1093,12 +1136,9 @@
       }
     }
 
-    // Initialize any components that should be loaded immediately
-    // Predictions dashboard is loaded on page load to start fetching data
-    if (!window.waterHeaterPredictionsDashboard) {
-      console.log('Pre-initializing predictions dashboard');
-      window.waterHeaterPredictionsDashboard = new WaterHeaterPredictionsDashboard('water-heater-predictions-dashboard', heaterId);
-    }
+    // Following TDD principles: Strict lazy loading - dashboards should only be initialized when their tab is activated
+    // No pre-initialization to ensure tests can verify proper lazy loading behavior
+    console.log('Using strict lazy loading - all dashboards will be initialized only when their tab is activated');
   });
 
   // Load the patch script to ensure all water heaters display properly with history data

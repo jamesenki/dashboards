@@ -104,13 +104,55 @@
 
     // If still no container, create a fallback one
     if (!container) {
-      const detailsSection = document.querySelector('#details-content') || document.body;
+      // Try multiple parent options - make this robust
+      let detailsSection = null;
+
+      // Attempt to find a valid parent in order of preference
+      const possibleParents = [
+        '#details-content',
+        '#history-content',
+        '.tab-content.active',
+        '.tab-content',
+        '.card-body',
+        '#water-heater-detail',
+        '.dashboard-content',
+        'main',
+        'body'
+      ];
+
+      // Find the first valid parent
+      for (const selector of possibleParents) {
+        const element = document.querySelector(selector);
+        if (element) {
+          detailsSection = element;
+          console.log(`Found valid parent for temperature chart: ${selector}`);
+          break;
+        }
+      }
+
+      // If we still don't have a parent, use body as last resort
+      if (!detailsSection) {
+        console.warn('Could not find specific parent for temperature chart, using document.body');
+        detailsSection = document.body;
+      }
+
+      // Create the container and append it to our found parent
       const emergencyContainer = document.createElement('div');
       emergencyContainer.id = 'temperature-chart';
       emergencyContainer.className = 'temperature-history-chart';
       emergencyContainer.style.height = '300px';
       emergencyContainer.style.marginTop = '20px';
-      detailsSection.appendChild(emergencyContainer);
+      emergencyContainer.innerHTML = '<div class="loading-indicator">Initializing temperature chart...</div>';
+
+      // Append to parent with error handling
+      try {
+        detailsSection.appendChild(emergencyContainer);
+        console.log('Successfully created fallback temperature chart container');
+      } catch (error) {
+        console.error('Error appending temperature chart container:', error);
+        return null; // Exit early if we can't append
+      }
+
       container = emergencyContainer;
     }
 

@@ -19,6 +19,7 @@ class DeviceShadowApi {
         '/api/manufacturer/water-heaters/{device_id}/shadow'
       ],
       tempHistory: [
+        '/api/manufacturer/water-heaters/{device_id}/history/temperature',
         '/api/device-shadows/{device_id}/temperature-history',
         '/api/shadows/{device_id}/history',
         '/api/manufacturer/water-heaters/{device_id}/temperature-history'

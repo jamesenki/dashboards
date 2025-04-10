@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IoTSphere - Water Heater Details</title>
+    <link rel="stylesheet" href="/static/css/main.min.css">
+    <!-- Critical styles inlined for faster rendering -->
+    <style>
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 200px;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .error-message {
+            display: block;
+            padding: 10px;
+            margin: 10px 0;
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <header class="page-header">
+        <nav class="main-nav">
+            <div class="logo">
+                <a href="/dashboard">IoTSphere</a>
+            </div>
+            <ul class="nav-items">
+                <li><a href="/dashboard">Dashboard</a></li>
+                <li><a href="/water-heaters">Water Heaters</a></li>
+                <li><a href="/vending-machines">Vending Machines</a></li>
+                <li><a href="/settings">Settings</a></li>
+            </ul>
+            <div class="user-menu">
+                <span class="username">Admin</span>
+                <a href="/logout" class="logout-btn">Logout</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="content-container">
+        <div class="device-header">
+            <h1 class="water-heater-name">Water Heater Details</h1>
+            <div class="device-actions">
+                <button class="action-btn" id="refresh-btn">Refresh Data</button>
+                <button class="action-btn" id="reset-btn">Reset Device</button>
+            </div>
+        </div>
+
+        <div class="device-metadata">
+            <!-- Metadata will be populated by JavaScript -->
+            <div class="loading">Loading device metadata...</div>
+        </div>
+
+        <div class="tabs-container">
+            <ul class="tabs">
+                <li id="details" class="tab active" data-tab="details">Details</li>
+                <li id="operations" class="tab" data-tab="operations">Operations</li>
+                <li id="predictions" class="tab" data-tab="predictions">Predictions</li>
+                <li id="history" class="tab" data-tab="history">History</li>
+            </ul>
+        </div>
+
+        <div class="tab-contents">
+            <div id="details-content" class="tab-content active">
+                <div class="current-readings">
+                    <div class="reading-card temperature">
+                        <h3>Current Temperature</h3>
+                        <div class="value">--°F</div>
+                    </div>
+                    <div class="reading-card energy">
+                        <h3>Energy Usage</h3>
+                        <div class="value">-- kWh</div>
+                    </div>
+                    <div class="reading-card status">
+                        <h3>Status</h3>
+                        <div class="value">--</div>
+                    </div>
+                </div>
+                <div class="temperature-chart-container" id="temperature-chart">
+                    <h3>Recent Temperature History</h3>
+                    <div class="chart-container">
+                        <canvas width="600" height="300"></canvas>
+                        <div class="chart-message loading">Loading temperature data...</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="operations-content" class="tab-content">
+                <div class="controls-section">
+                    <h2>Remote Controls</h2>
+                    <div class="control-group">
+                        <label for="temperature-setpoint">Temperature Setpoint</label>
+                        <div class="slider-container">
+                            <input type="range" id="temperature-setpoint" min="100" max="140" value="120">
+                            <div class="value-display">120°F</div>
+                        </div>
+                        <button class="control-btn" id="set-temperature-btn">Set Temperature</button>
+                    </div>
+                    <div class="control-group">
+                        <label>Operating Mode</label>
+                        <div class="mode-selector">
+                            <button class="mode-btn active" data-mode="normal">Normal</button>
+                            <button class="mode-btn" data-mode="vacation">Vacation</button>
+                            <button class="mode-btn" data-mode="eco">Eco</button>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label>Quick Actions</label>
+                        <div class="quick-actions">
+                            <button class="action-btn" id="boost-btn">Boost Heat</button>
+                            <button class="action-btn" id="diagnostic-btn">Run Diagnostic</button>
+                            <button class="action-btn" id="reset-errors-btn">Reset Errors</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="status-section">
+                    <h2>Operation Status</h2>
+                    <div class="status-group">
+                        <div class="status-item">
+                            <span class="label">Heating Element:</span>
+                            <span class="value" id="element-status">Unknown</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="label">Current Mode:</span>
+                            <span class="value" id="current-mode">Unknown</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="label">Last Command:</span>
+                            <span class="value" id="last-command">None</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="label">Last Command Time:</span>
+                            <span class="value" id="last-command-time">Never</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="predictions-content" class="tab-content">
+                <div class="predictions-section">
+                    <h2>Performance Predictions</h2>
+                    <div class="prediction-cards">
+                        <div class="prediction-card">
+                            <h3>Energy Usage Trend</h3>
+                            <div class="chart-container small">
+                                <canvas id="energy-usage-chart" width="300" height="150"></canvas>
+                            </div>
+                            <div class="prediction-detail">
+                                <span class="label">Projected Monthly Usage:</span>
+                                <span class="value">245 kWh</span>
+                            </div>
+                            <div class="prediction-detail">
+                                <span class="label">Month-over-Month Change:</span>
+                                <span class="value trend-down">-3.2%</span>
+                            </div>
+                        </div>
+                        <div class="prediction-card">
+                            <h3>Maintenance Forecast</h3>
+                            <div class="maintenance-status good">No maintenance needed</div>
+                            <div class="prediction-detail">
+                                <span class="label">Next Scheduled Check:</span>
+                                <span class="value">73 days</span>
+                            </div>
+                            <div class="prediction-detail">
+                                <span class="label">Component Health:</span>
+                                <span class="value">98% - Excellent</span>
+                            </div>
+                        </div>
+                        <div class="prediction-card">
+                            <h3>Efficiency Optimization</h3>
+                            <div class="recommendation">
+                                <div class="recommendation-title">Recommendation:</div>
+                                <div class="recommendation-content">Reduce temperature by 5°F to save 8% energy</div>
+                            </div>
+                            <div class="prediction-detail">
+                                <span class="label">Current Efficiency Rating:</span>
+                                <span class="value">B+</span>
+                            </div>
+                            <div class="prediction-detail">
+                                <span class="label">Potential Savings:</span>
+                                <span class="value">$7.40/month</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="analytics-section">
+                    <h2>Usage Analytics</h2>
+                    <div class="analytics-row">
+                        <div class="analytics-card">
+                            <h3>Peak Usage Times</h3>
+                            <div class="chart-container small">
+                                <canvas id="pressure-flow-chart" width="300" height="150"></canvas>
+                            </div>
+                        </div>
+                        <div class="analytics-card">
+                            <h3>Anomaly Detection</h3>
+                            <div class="analytics-content">
+                                <div class="anomaly-status">No anomalies detected in the past 7 days</div>
+                                <div class="detail-item">
+                                    <span class="label">Last Anomaly:</span>
+                                    <span class="value">Temperature spike on Apr 2, 2025</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="label">System Confidence:</span>
+                                    <span class="value">High (95%)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="history-content" class="tab-content">
+                <div class="period-selectors">
+                    <button class="period-selector active" data-days="7">7 Days</button>
+                    <button class="period-selector" data-days="14">14 Days</button>
+                    <button class="period-selector" data-days="30">30 Days</button>
+                </div>
+                <div class="temperature-chart-container">
+                    <h3>Temperature History</h3>
+                    <div class="chart-container">
+                        <canvas width="600" height="300"></canvas>
+                        <div class="chart-message loading">Loading temperature data...</div>
+                    </div>
+                </div>
+                <div class="history-section">
+                    <h2>Event History</h2>
+                    <div class="history-filters">
+                        <select id="event-type-filter">
+                            <option value="all">All Events</option>
+                            <option value="temperature">Temperature Changes</option>
+                            <option value="mode">Mode Changes</option>
+                            <option value="error">Errors</option>
+                            <option value="maintenance">Maintenance</option>
+                        </select>
+                    </div>
+                    <div class="event-list">
+                        <div class="event-item">
+                            <div class="event-time">Apr 9, 2025 - 09:15 AM</div>
+                            <div class="event-type temperature">Temperature Change</div>
+                            <div class="event-description">Setpoint changed to 125°F</div>
+                        </div>
+                        <div class="event-item">
+                            <div class="event-time">Apr 8, 2025 - 07:30 PM</div>
+                            <div class="event-type mode">Mode Change</div>
+                            <div class="event-description">Changed to ECO mode</div>
+                        </div>
+                        <div class="event-item">
+                            <div class="event-time">Apr 7, 2025 - 03:42 PM</div>
+                            <div class="event-type error">Error</div>
+                            <div class="event-description">Communication timeout - Resolved</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="page-footer">
+        <div class="footer-content">
+            <div class="footer-info">
+                <p>&copy; 2025 IoTSphere. All rights reserved.</p>
+            </div>
+            <div class="footer-links">
+                <a href="/privacy">Privacy Policy</a>
+                <a href="/terms">Terms of Service</a>
+                <a href="/contact">Contact Us</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- OPTIMIZED PRODUCTION BUNDLES -->
+    <!-- Core bundle handles all essential functionality -->
+    <script src="/static/js/dist/core-bundle.min.js"></script>
+    <!-- Dashboard bundle for UI components -->
+    <script src="/static/js/dist/dashboard-bundle.min.js"></script>
+    <!-- Compatibility bundle for legacy components -->
+    <script src="/static/js/dist/compat-bundle.min.js"></script>
+    <!-- Debug and performance monitoring -->
+    <script src="/static/js/dist/debug-bundle.min.js"></script>
+</body>
+</html>

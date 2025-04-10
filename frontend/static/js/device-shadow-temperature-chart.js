@@ -15,6 +15,7 @@ class DeviceShadowTemperatureChart {
   constructor(elementId, deviceId, options = {}) {
     this.elementId = elementId;
     this.chartElement = document.getElementById(elementId);
+    this.containerElement = null; // Container element for the chart
     this.deviceId = deviceId;
     this.errorElement = null;
     this.chart = null;
@@ -23,6 +24,12 @@ class DeviceShadowTemperatureChart {
       labels: [],
       temperatures: []
     };
+
+    // Debug initialization
+    console.log(`Initializing temperature chart for element: ${elementId}, device: ${deviceId}`);
+    if (!this.chartElement) {
+      console.warn(`Chart element with ID '${elementId}' not found on initial load, will try again during initialization`);
+    }
 
     this.options = Object.assign({
       title: 'Temperature History',
@@ -45,10 +52,30 @@ class DeviceShadowTemperatureChart {
    * Initialize the chart component
    */
   async initialize() {
+    // Try to find the chart element again if it wasn't found in constructor
     if (!this.chartElement) {
-      console.error(`Chart element with ID '${this.elementId}' not found`);
-      return;
+      console.log(`Attempting to find chart element with ID '${this.elementId}' again`);
+      this.chartElement = document.getElementById(this.elementId);
+
+      if (!this.chartElement) {
+        console.error(`Chart element with ID '${this.elementId}' not found during initialization`);
+
+        // Try to find the container element by class instead
+        const containers = document.querySelectorAll('.temperature-chart-container, .chart-container');
+        if (containers.length > 0) {
+          console.log(`Found ${containers.length} potential chart containers, using the first one`);
+          this.chartElement = containers[0];
+        } else {
+          console.error('No temperature chart containers found');
+          return;
+        }
+      }
     }
+
+    // Find the container element (might be the chart element itself or a parent)
+    this.containerElement = this.chartElement.closest('.chart-container') ||
+                            this.chartElement.closest('.temperature-chart-container') ||
+                            this.chartElement.parentElement;
 
     // Find error element
     this.findErrorElement();
@@ -108,9 +135,29 @@ class DeviceShadowTemperatureChart {
     // Create a canvas element if needed
     let canvas = this.chartElement.querySelector('canvas');
     if (!canvas) {
+      console.log('Creating new canvas element for temperature chart');
       canvas = document.createElement('canvas');
+      canvas.id = `${this.elementId}-canvas`;
+      canvas.classList.add('temperature-chart-canvas');
+
+      // Set explicit dimensions to ensure chart is visible
+      canvas.width = this.chartElement.clientWidth || 400;
+      canvas.height = this.chartElement.clientHeight || 200;
+
+      // Ensure the canvas is visible
+      canvas.style.display = 'block';
+      canvas.style.maxWidth = '100%';
+
       this.chartElement.appendChild(canvas);
+    } else {
+      console.log(`Found existing canvas for temperature chart: ${canvas.id}`);
     }
+
+    // Store reference to canvas
+    this.chartCanvas = canvas;
+
+    // Ensure canvas is visible
+    canvas.style.display = 'block';
 
     const ctx = canvas.getContext('2d');
 
@@ -245,8 +292,12 @@ class DeviceShadowTemperatureChart {
    */
   updateChart() {
     if (!this.chart) {
-      console.warn('Chart not initialized yet');
-      return;
+      console.warn('Chart not initialized yet, attempting to initialize it now');
+      this.initializeChart();
+      if (!this.chart) {
+        console.error('Failed to initialize chart');
+        return;
+      }
     }
 
     // Update chart data
@@ -266,6 +317,11 @@ class DeviceShadowTemperatureChart {
 
     // Extract error message
     let errorMessage = error.message || 'Error loading temperature data';
+
+    // Notify the diagnostics system if available
+    if (window.diagnostics && typeof window.diagnostics.logError === 'function') {
+      window.diagnostics.logError('TemperatureChart', errorMessage);
+    }
 
     // Handle specific error types with more visibility
     if (errorMessage.includes('No shadow document exists')) {

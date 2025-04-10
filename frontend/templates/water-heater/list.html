@@ -3,10 +3,7 @@
 {% block title %}Water Heaters{% endblock %}
 
 {% block head %}
-<!-- Include CSS fixes -->
-<link rel="stylesheet" href="/static/css/aquatherm-fixes.css">
-<link rel="stylesheet" href="/static/css/aquatherm-cards.css">
-<!-- NAVIGATION NOTE: All navigation scripts have been consolidated into fix-navigation.js -->
+<!-- Legacy CSS references removed -->
 {% endblock %}
 
 {% block nav %}
@@ -21,10 +18,7 @@
 {% endblock %}
 
 {% block scripts %}
-<!-- CRITICAL FIX: This script must load first to properly fix navigation issues -->
-<script src="/static/js/fix-navigation.js?v=20250408"></script>
-<!-- Clean up any mock water heaters that might be injected by other scripts -->
-<script src="/static/js/clear-mock-data.js"></script>
+<!-- Legacy fix scripts removed -->
 
 <!-- DISABLED: AquaTherm test helper that injects mock water heaters -->
 <!-- <script src="/static/js/aquatherm-test-helper.js"></script> -->
@@ -43,10 +37,7 @@
 <!-- <script src="/static/js/aquatherm-fix.js"></script> -->
 <!-- <script src="/static/js/aquatherm-card-fix.js"></script> -->
 <!-- ARCHIVED: All navigation scripts have been consolidated into fix-navigation.js -->
-<!-- Add water heater patch to ensure all water heaters display correctly (Fixed version) -->
-<script src="/static/js/water-heater-patch-fixed.js?v=20250408"></script>
-<!-- TDD approach: Add deduplication test script to verify our fix works -->
-<script src="/static/js/tests/water-heater-deduplication.test.js?v=20250408"></script>
+<!-- Legacy patch and test scripts removed -->
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         new WaterHeaterList('water-heater-list');

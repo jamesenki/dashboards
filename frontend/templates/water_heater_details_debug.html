@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Water Heater Details (DEBUG) | IoTSphere</title>
+    <link rel="stylesheet" href="/static/css/main.css">
+    <!-- DEBUG MODE: Removed temperature history scripts -->
+    <script src="/static/js/device-metadata-handler.js" defer></script>
+    <script src="/static/js/shadow-document-handler.js" defer></script>
+    <style>
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-gap: 20px;
+        }
+
+        .dashboard-card {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .dashboard-card h3 {
+            margin-top: 0;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .data-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding: 8px;
+            border-bottom: 1px solid #f5f5f5;
+        }
+
+        .data-item:last-child {
+            border-bottom: none;
+        }
+
+        .data-label {
+            font-weight: bold;
+            color: #555;
+        }
+
+        .data-value {
+            font-weight: 500;
+        }
+
+        .temperature-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #e85600;
+            text-align: center;
+            margin: 15px 0;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .status-indicator.online {
+            background-color: #32b643;
+        }
+
+        .status-indicator.offline {
+            background-color: #e85600;
+        }
+
+        .status-indicator.warning {
+            background-color: #ffb700;
+        }
+
+        .connection-status {
+            display: flex;
+            align-items: center;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        #realtime-connection-status {
+            margin-right: 15px;
+        }
+
+        .connection-status.connected::before {
+            content: '';
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #32b643;
+            margin-right: 5px;
+        }
+
+        .connection-status.disconnected::before {
+            content: '';
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #e85600;
+            margin-right: 5px;
+        }
+
+        .heating-element-status {
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-weight: 500;
+            text-transform: capitalize;
+        }
+
+        .heating-element-status.active {
+            background-color: #ffb700;
+            color: #333;
+        }
+
+        .heating-element-status.standby {
+            background-color: #acb;
+            color: #333;
+        }
+
+        .heating-element-status.off {
+            background-color: #eee;
+            color: #777;
+        }
+
+        .tabs {
+            margin-top: 20px;
+        }
+
+        .tab-nav {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .tab-btn {
+            padding: 10px 15px;
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            margin-right: 10px;
+        }
+
+        .tab-btn.active {
+            border-bottom: 3px solid #5755d9;
+            font-weight: bold;
+        }
+
+        .tab-content {
+            padding: 20px 0;
+        }
+
+        .tab-panel {
+            display: none;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
+
+        .shadow-document-error, .metadata-error {
+            background-color: #ffecea;
+            color: #e85600;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+            display: none;
+        }
+
+        .reconnection-message {
+            background-color: #fffaeb;
+            color: #9e7d27;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+            display: none;
+        }
+
+        /* Debug info */
+        .debug-info {
+            background-color: #f0f8ff;
+            border: 1px solid #add8e6;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="container">
+                <div class="logo">
+                    <a href="/">IoTSphere</a>
+                    <span class="debug-badge">DEBUG MODE</span>
+                </div>
+                <ul class="nav-links">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/water-heaters">Water Heaters</a></li>
+                    <li><a href="/model-monitoring">Model Monitoring</a></li>
+                    <li><a href="/settings">Settings</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container">
+        <div class="debug-info">
+            <h3>Debug Information</h3>
+            <p>This is a debug version with the temperature history scripts removed.</p>
+            <div id="debug-console"></div>
+        </div>
+
+        <div class="breadcrumb">
+            <a href="/">Home</a> &gt;
+            <a href="/water-heaters">Water Heaters</a> &gt;
+            <span class="current">Details</span>
+        </div>
+
+        <div class="device-header">
+            <h1 class="device-name">Loading...</h1>
+            <div class="device-status">
+                <span class="status-indicator"></span>
+                <span class="status-text">Unknown</span>
+            </div>
+        </div>
+
+        <div class="metadata-error">
+            Could not load device metadata. Please try again later.
+        </div>
+
+        <div class="dashboard-container">
+            <div class="dashboard-card">
+                <h3>Current Status</h3>
+                <div class="shadow-document-error">
+                    The shadow document is missing for this device
+                </div>
+                <div class="reconnection-message">
+                    Connection lost. Attempting to reconnect...
+                </div>
+                <div class="current-temperature">
+                    <div class="data-label">Temperature</div>
+                    <div class="temperature-value">--°F</div>
+                </div>
+                <div class="data-item">
+                    <div class="data-label">Pressure</div>
+                    <div class="pressure-value data-value">-- PSI</div>
+                </div>
+                <div class="data-item">
+                    <div class="data-label">Water Level</div>
+                    <div class="water-level-value data-value">--%</div>
+                </div>
+                <div class="data-item">
+                    <div class="data-label">Heating Element</div>
+                    <div class="heating-element-status">--</div>
+                </div>
+                <div id="realtime-connection-status" class="connection-status disconnected">
+                    Disconnected
+                </div>
+            </div>
+
+            <div class="dashboard-card">
+                <h3>Device Information</h3>
+                <div class="data-item">
+                    <div class="data-label">Manufacturer</div>
+                    <div class="manufacturer data-value">--</div>
+                </div>
+                <div class="data-item">
+                    <div class="data-label">Model</div>
+                    <div class="model data-value">--</div>
+                </div>
+                <div class="data-item">
+                    <div class="data-label">Serial Number</div>
+                    <div class="serial-number data-value">--</div>
+                </div>
+                <div class="data-item">
+                    <div class="data-label">Capacity</div>
+                    <div class="capacity data-value">-- gallons</div>
+                </div>
+                <div class="data-item">
+                    <div class="data-label">Efficiency Rating</div>
+                    <div class="efficiency-rating data-value">--</div>
+                </div>
+                <div class="data-item">
+                    <div class="data-label">Installation Date</div>
+                    <div class="installation-date data-value">--</div>
+                </div>
+                <div class="data-item">
+                    <div class="data-label">Warranty Expiry</div>
+                    <div class="warranty-expiry data-value">--</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <div class="tab-nav">
+                <button class="tab-btn" data-tab="history">Temperature History</button>
+                <button class="tab-btn active" data-tab="maintenance">Maintenance</button>
+                <button class="tab-btn" data-tab="settings">Settings</button>
+            </div>
+
+            <div class="tab-content">
+                <div id="history" class="tab-panel">
+                    <h2>Temperature History</h2>
+                    <div class="chart-controls">
+                        <button class="chart-range-btn active" data-range="7">7 Days</button>
+                        <button class="chart-range-btn" data-range="14">14 Days</button>
+                        <button class="chart-range-btn" data-range="30">30 Days</button>
+                    </div>
+                    <div id="temperature-chart"></div>
+                </div>
+
+                <div id="maintenance" class="tab-panel active">
+                    <h2>Maintenance</h2>
+                    <div class="maintenance-predictions">
+                        <div class="prediction-card">
+                            <h3>Component Health</h3>
+                            <div class="health-status">
+                                <div class="health-indicator good"></div>
+                                <div class="health-text">Good Condition</div>
+                            </div>
+                            <div class="component-health-breakdown">
+                                <div class="component-item">
+                                    <div class="component-name">Heating Element</div>
+                                    <div class="component-health">
+                                        <div class="health-bar">
+                                            <div class="health-level" style="width: 85%;"></div>
+                                        </div>
+                                        <div class="health-percentage">85%</div>
+                                    </div>
+                                </div>
+                                <div class="component-item">
+                                    <div class="component-name">Thermostat</div>
+                                    <div class="component-health">
+                                        <div class="health-bar">
+                                            <div class="health-level" style="width: 92%;"></div>
+                                        </div>
+                                        <div class="health-percentage">92%</div>
+                                    </div>
+                                </div>
+                                <div class="component-item">
+                                    <div class="component-name">Pressure Relief Valve</div>
+                                    <div class="component-health">
+                                        <div class="health-bar">
+                                            <div class="health-level" style="width: 78%;"></div>
+                                        </div>
+                                        <div class="health-percentage">78%</div>
+                                    </div>
+                                </div>
+                                <div class="component-item">
+                                    <div class="component-name">Anode Rod</div>
+                                    <div class="component-health">
+                                        <div class="health-bar">
+                                            <div class="health-level warning" style="width: 45%;"></div>
+                                        </div>
+                                        <div class="health-percentage">45%</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="prediction-details">
+                                <div class="estimated-replacement">
+                                    <div class="label">Next Service:</div>
+                                    <div class="value">Approximately 14 months</div>
+                                </div>
+                                <div class="recommendation">
+                                    <div class="label">Recommendation:</div>
+                                    <div class="value">Consider anode rod inspection within 3 months</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="prediction-card">
+                            <h3>Scale Buildup</h3>
+                            <div class="scale-indicator">
+                                <div class="scale-level" style="height: 25%;">
+                                    <div class="scale-measurement">0.4mm</div>
+                                </div>
+                            </div>
+                            <div class="scale-details">
+                                <div class="water-hardness">
+                                    <div class="label">Water Hardness:</div>
+                                    <div class="value">Moderate (7.2 gpg)</div>
+                                </div>
+                                <div class="descaling-recommendation">
+                                    <div class="label">Recommendation:</div>
+                                    <div class="value">Descaling recommended in approximately 8 months</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="settings" class="tab-panel">
+                    <h2>Settings</h2>
+                    <div class="settings-form">
+                        <div class="form-group">
+                            <label for="target-temp">Target Temperature</label>
+                            <div class="temp-slider-container">
+                                <input type="range" id="target-temp" min="110" max="140" value="120" class="temp-slider">
+                                <div class="temp-value"><span id="temp-display">120</span>°F</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="mode-select">Operation Mode</label>
+                            <select id="mode-select" class="mode-select">
+                                <option value="standard">Standard</option>
+                                <option value="vacation">Vacation</option>
+                                <option value="eco">Eco-Friendly</option>
+                                <option value="boost">Boost</option>
+                            </select>
+                        </div>
+                        <button id="save-settings" class="primary-btn">Save Settings</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 IoTSphere. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Add just core scripts, avoid problematic ones -->
+    <script src="/static/js/optimized-tab-manager.js"></script>
+    <script src="/static/js/device-data-service.js"></script>
+
+    <!-- Debug script -->
+    <script>
+    // Simple debug console
+    const debugConsole = document.getElementById('debug-console');
+
+    function logDebug(message) {
+        const logItem = document.createElement('div');
+        logItem.classList.add('log-item');
+        logItem.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+        debugConsole.prepend(logItem);
+        console.log(message);
+    }
+
+    // Override console.log to also display in our debug console
+    const originalConsoleLog = console.log;
+    console.log = function() {
+        originalConsoleLog.apply(console, arguments);
+        const message = Array.from(arguments).map(arg =>
+            typeof arg === 'object' ? JSON.stringify(arg) : arg
+        ).join(' ');
+        logDebug(message);
+    };
+
+    // Override console.error to also display in our debug console
+    const originalConsoleError = console.error;
+    console.error = function() {
+        originalConsoleError.apply(console, arguments);
+        const message = Array.from(arguments).map(arg =>
+            typeof arg === 'object' ? JSON.stringify(arg) : arg
+        ).join(' ');
+        logDebug(`ERROR: ${message}`);
+    };
+
+    // Log page load
+    logDebug('Debug page loaded');
+
+    // Check which scripts are loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        logDebug('DOMContentLoaded event fired');
+
+        // Get all script tags
+        const scripts = document.querySelectorAll('script');
+        scripts.forEach(script => {
+            if (script.src) {
+                logDebug(`Script loaded: ${script.src.split('/').pop()}`);
+            }
+        });
+    });
+    </script>
+</body>
+</html>
