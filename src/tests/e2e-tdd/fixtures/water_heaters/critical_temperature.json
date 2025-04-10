@@ -1,0 +1,68 @@
+{
+  "id": "wh-001",
+  "name": "Main Building Water Heater",
+  "manufacturer": "AquaTech",
+  "model": "AT-5000",
+  "serial_number": "AT5K-12345",
+  "location": "Building A, Basement",
+  "installation_date": "2023-01-15",
+  "last_maintenance": "2024-12-01",
+  "status": "ONLINE",
+  "is_simulated": false,
+  "alert_status": "critical",
+  "telemetry": {
+    "temperature": 190,
+    "target_temperature": 125,
+    "pressure": 68,
+    "flow_rate": 2.1,
+    "power_consumption": 5200,
+    "heating_status": "OVERHEATING",
+    "timestamp": "2025-04-09T20:15:00Z"
+  },
+  "thresholds": {
+    "temperature": {
+      "min": 100,
+      "normal_min": 110,
+      "normal_max": 140,
+      "max": 180,
+      "critical": 185
+    },
+    "pressure": {
+      "min": 40,
+      "normal_min": 45,
+      "normal_max": 60,
+      "max": 70,
+      "critical": 65
+    }
+  },
+  "alerts": [
+    {
+      "id": "alert-001",
+      "type": "CRITICAL_TEMPERATURE",
+      "message": "Temperature exceeds critical threshold",
+      "timestamp": "2025-04-09T20:15:00Z",
+      "value": 190,
+      "threshold": 185,
+      "requires_immediate_action": true,
+      "recommended_actions": [
+        "Shut down system",
+        "Inspect pressure relief valve",
+        "Check thermostat"
+      ]
+    },
+    {
+      "id": "alert-002",
+      "type": "HIGH_PRESSURE",
+      "message": "Pressure approaching critical levels",
+      "timestamp": "2025-04-09T20:14:30Z",
+      "value": 68,
+      "threshold": 65,
+      "requires_immediate_action": true,
+      "recommended_actions": [
+        "Reduce input water pressure",
+        "Check expansion tank",
+        "Inspect pressure relief valve"
+      ]
+    }
+  ]
+}

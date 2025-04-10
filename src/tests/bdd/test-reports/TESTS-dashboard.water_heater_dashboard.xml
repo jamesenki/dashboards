@@ -1,0 +1,156 @@
+<testsuite name="dashboard.water_heater_dashboard.Water Heater Operations Dashboard" tests="5" errors="0" failures="5" skipped="0" time="0.041802" timestamp="2025-04-09T19:57:48.702839" hostname="Lisas-Mac-mini.local"><testcase classname="dashboard.water_heater_dashboard.Water Heater Operations Dashboard" name="View list of all water heaters with status indicators" status="failed" time="0.005386"><failure type="AssertionError" message="No dashboard data available">
+<![CDATA[
+Failing step: Then I should see a list of all water heaters in the system ... failed in 0.000s
+Location: features/dashboard/water_heater_dashboard.feature:16
+Assertion Failed: No dashboard data available
+Captured logging:
+INFO:builtins:Setting up user session with role: facility_manager
+INFO:builtins:User authenticated as facility_manager
+INFO:builtins:Navigating to water heater dashboard
+INFO:httpx:HTTP Request: GET http://testserver/api/dashboard/water-heaters "HTTP/1.1 404 Not Found"
+INFO:builtins:Dashboard API response status: 404
+INFO:builtins:Verifying water heater list is displayed]]>
+</failure><system-out>
+<![CDATA[
+@scenario.begin
+
+  @current @device-management @device-operation @red
+  Scenario: View list of all water heaters with status indicators
+    Given I am logged in as a "facility_manager" ... passed in 0.000s
+    When I navigate to the water heater dashboard ... passed in 0.005s
+    Then I should see a list of all water heaters in the system ... failed in 0.000s
+    And each water heater should display its connection status ... skipped in 0.000s
+    And each water heater should indicate if it is simulated ... skipped in 0.000s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase><testcase classname="dashboard.water_heater_dashboard.Water Heater Operations Dashboard" name="Filter water heaters by manufacturer" status="failed" time="0.012899"><failure type="AssertionError" message="No filtered dashboard data available">
+<![CDATA[
+Failing step: Then I should only see water heaters from "AquaTech" ... failed in 0.000s
+Location: features/dashboard/water_heater_dashboard.feature:27
+Assertion Failed: No filtered dashboard data available
+Captured logging:
+INFO:builtins:Setting up user session with role: facility_manager
+INFO:builtins:User authenticated as facility_manager
+INFO:builtins:Setting up water heaters from multiple manufacturers
+INFO:builtins:Test data includes manufacturers: HydroHeat, AquaTech
+INFO:builtins:Navigating to water heater dashboard
+INFO:httpx:HTTP Request: GET http://testserver/api/dashboard/water-heaters "HTTP/1.1 404 Not Found"
+INFO:builtins:Dashboard API response status: 404
+INFO:builtins:Filtering water heaters by manufacturer: AquaTech
+INFO:httpx:HTTP Request: GET http://testserver/api/dashboard/water-heaters?manufacturer=AquaTech "HTTP/1.1 404 Not Found"
+INFO:builtins:Filtered dashboard API response status: 404
+INFO:builtins:Verifying only AquaTech water heaters are displayed]]>
+</failure><system-out>
+<![CDATA[
+@scenario.begin
+
+  @current @device-operation @red
+  Scenario: Filter water heaters by manufacturer
+    Given I am logged in as a "facility_manager" ... passed in 0.000s
+    And the system has water heaters from multiple manufacturers ... passed in 0.000s
+    When I navigate to the water heater dashboard ... passed in 0.009s
+    And I filter by manufacturer "AquaTech" ... passed in 0.003s
+    Then I should only see water heaters from "AquaTech" ... failed in 0.000s
+    And I should be able to clear the filter to see all water heaters ... skipped in 0.000s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase><testcase classname="dashboard.water_heater_dashboard.Water Heater Operations Dashboard" name="Filter water heaters by connection status" status="failed" time="0.009887"><failure type="AssertionError" message="No filtered dashboard data available">
+<![CDATA[
+Failing step: Then I should only see water heaters with "connected" status ... failed in 0.000s
+Location: features/dashboard/water_heater_dashboard.feature:37
+Assertion Failed: No filtered dashboard data available
+Captured logging:
+INFO:builtins:Setting up user session with role: facility_manager
+INFO:builtins:User authenticated as facility_manager
+INFO:builtins:Setting up water heaters with different connection statuses
+INFO:builtins:Test data includes connection statuses: OFFLINE, ONLINE
+INFO:builtins:Navigating to water heater dashboard
+INFO:httpx:HTTP Request: GET http://testserver/api/dashboard/water-heaters "HTTP/1.1 404 Not Found"
+INFO:builtins:Dashboard API response status: 404
+INFO:builtins:Filtering water heaters by connection status: connected
+INFO:httpx:HTTP Request: GET http://testserver/api/dashboard/water-heaters?status=connected "HTTP/1.1 404 Not Found"
+INFO:builtins:Filtered dashboard API response status: 404
+INFO:builtins:Verifying only connected water heaters are displayed]]>
+</failure><system-out>
+<![CDATA[
+@scenario.begin
+
+  @current @device-operation @red
+  Scenario: Filter water heaters by connection status
+    Given I am logged in as a "facility_manager" ... passed in 0.000s
+    And the system has both connected and disconnected water heaters ... passed in 0.000s
+    When I navigate to the water heater dashboard ... passed in 0.005s
+    And I filter by connection status "connected" ... passed in 0.005s
+    Then I should only see water heaters with "connected" status ... failed in 0.000s
+    And I should be able to clear the filter to see all water heaters ... skipped in 0.000s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase><testcase classname="dashboard.water_heater_dashboard.Water Heater Operations Dashboard" name="Navigate to water heater details page" status="failed" time="0.00944"><failure type="AssertionError" message="No device details available">
+<![CDATA[
+Failing step: Then I should be redirected to the details page for water heater "wh-001" ... failed in 0.000s
+Location: features/dashboard/water_heater_dashboard.feature:46
+Assertion Failed: No device details available
+Captured logging:
+INFO:builtins:Setting up user session with role: facility_manager
+INFO:builtins:User authenticated as facility_manager
+INFO:builtins:Navigating to water heater dashboard
+INFO:httpx:HTTP Request: GET http://testserver/api/dashboard/water-heaters "HTTP/1.1 404 Not Found"
+INFO:builtins:Dashboard API response status: 404
+INFO:builtins:Clicking on water heater: wh-001
+INFO:httpx:HTTP Request: GET http://testserver/api/water-heaters/wh-001 "HTTP/1.1 404 Not Found"
+INFO:builtins:Device details API response status: 404
+INFO:builtins:Verifying redirection to details page for device: wh-001]]>
+</failure><system-out>
+<![CDATA[
+@scenario.begin
+
+  @current @device-operation @red
+  Scenario: Navigate to water heater details page
+    Given I am logged in as a "facility_manager" ... passed in 0.000s
+    When I navigate to the water heater dashboard ... passed in 0.004s
+    And I click on the water heater with ID "wh-001" ... passed in 0.005s
+    Then I should be redirected to the details page for water heater "wh-001" ... failed in 0.000s
+    And I should see the current operating status ... skipped in 0.000s
+    And I should see the reported temperature ... skipped in 0.000s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase><testcase classname="dashboard.water_heater_dashboard.Water Heater Operations Dashboard" name="Real-time updates of water heater status" status="failed" time="0.004189"><failure type="AssertionError" message="Status change event doesn't include highlighting information">
+<![CDATA[
+Failing step: And the status change should be visually highlighted ... failed in 0.000s
+Location: features/dashboard/water_heater_dashboard.feature:57
+Assertion Failed: Status change event doesn't include highlighting information
+Captured logging:
+INFO:builtins:Setting up user session with role: facility_manager
+INFO:builtins:User authenticated as facility_manager
+INFO:builtins:Navigating to water heater dashboard
+INFO:httpx:HTTP Request: GET http://testserver/api/dashboard/water-heaters "HTTP/1.1 404 Not Found"
+INFO:builtins:Dashboard API response status: 404
+INFO:builtins:WebSocket connection established for dashboard
+INFO:builtins:Simulating water heater status change: ONLINE -> OFFLINE
+INFO:builtins:WebSocket message received for device wh-001
+INFO:builtins:Verifying real-time status updates
+INFO:builtins:Verifying visual highlighting of status changes]]>
+</failure><system-out>
+<![CDATA[
+@scenario.begin
+
+  @current @device-operation @websocket @red
+  Scenario: Real-time updates of water heater status
+    Given I am logged in as a "facility_manager" ... passed in 0.000s
+    And I am viewing the water heater dashboard ... passed in 0.004s
+    When a water heater changes status from "ONLINE" to "OFFLINE" ... passed in 0.000s
+    Then I should see the status indicator update without refreshing the page ... passed in 0.000s
+    And the status change should be visually highlighted ... failed in 0.000s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase></testsuite>

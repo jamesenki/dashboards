@@ -1,0 +1,313 @@
+Feature: Device Shadow Service API # src/tests/bdd/features/device_shadow_service.feature:6
+  As an IoTSphere backend service
+  I want to provide shadow state management capabilities
+  So that device state can be monitored and controlled remotely
+  @api @current @device-operation @red
+  Scenario: Get device shadow state                                          # src/tests/bdd/features/device_shadow_service.feature:13
+    Given a device with ID "test-device-001" exists in the system            # src/tests/bdd/steps/device_shadow_steps.py:67
+    When a client requests the shadow state for device "test-device-001"     # src/tests/bdd/steps/device_shadow_steps.py:195
+    Then the response should be successful                                   # src/tests/bdd/steps/device_shadow_steps.py:295
+    And the shadow document should contain "reported" and "desired" sections # src/tests/bdd/steps/device_shadow_steps.py:321
+    And the response should include the device ID "test-device-001"          # src/tests/bdd/steps/device_shadow_steps.py:367
+
+  @api @current @device-operation @red
+  Scenario: Update device shadow desired state                                                           # src/tests/bdd/features/device_shadow_service.feature:22
+    Given a device with ID "test-device-001" exists in the system                                        # src/tests/bdd/steps/device_shadow_steps.py:67
+    When a client updates the desired state with                                                         # src/tests/bdd/steps/device_shadow_steps.py:400
+      | property           | value |
+      | target_temperature | 125   |
+    Then the response should be successful                                                               # src/tests/bdd/steps/device_shadow_steps.py:295
+    And the updated shadow should contain the new desired property "target_temperature" with value "125" # src/tests/bdd/steps/device_shadow_steps.py:510
+
+  @api @current @device-operation @red
+  Scenario: Device shadow does not exist                                      # src/tests/bdd/features/device_shadow_service.feature:32
+    Given a device with ID "non-existent-device" does not exist in the system # src/tests/bdd/steps/device_shadow_steps.py:142
+    When a client requests the shadow state for device "non-existent-device"  # src/tests/bdd/steps/device_shadow_steps.py:195
+    Then the response should indicate the resource was not found              # src/tests/bdd/steps/device_shadow_steps.py:604
+
+  @api @current @device-operation @websocket @red
+  Scenario: Receive real-time shadow updates via WebSocket                 # src/tests/bdd/features/device_shadow_service.feature:39
+    Given a device with ID "test-device-001" exists in the system          # src/tests/bdd/steps/device_shadow_steps.py:67
+    And a WebSocket connection is established for device "test-device-001" # src/tests/bdd/steps/device_shadow_steps.py:661
+    When the device reports a state change to                              # src/tests/bdd/steps/device_shadow_steps.py:723
+      | property    | value  |
+      | temperature | 130    |
+      | status      | ONLINE |
+    Then the WebSocket client should receive a shadow update               # src/tests/bdd/steps/device_shadow_steps.py:831
+    And the update should contain the new reported values                  # src/tests/bdd/steps/device_shadow_steps.py:912
+
+Feature: Water Heater Operations Dashboard # src/tests/bdd/features/dashboard/water_heater_dashboard.feature:6
+  As a facility manager
+  I want to monitor water heater operations in real-time
+  So that I can ensure optimal performance and respond to issues quickly
+  @current @device-management @device-operation @green
+  Scenario: View list of all water heaters with status indicators  # src/tests/bdd/features/dashboard/water_heater_dashboard.feature:13
+    Given I am logged in as a "facility_manager"                   # src/tests/bdd/steps/dashboard_steps.py:115
+    When I navigate to the water heater dashboard                  # src/tests/bdd/steps/dashboard_steps.py:191
+    Then I should see a list of all water heaters in the system    # src/tests/bdd/steps/dashboard_steps.py:241
+    And each water heater should display its connection status     # src/tests/bdd/steps/dashboard_steps.py:266
+    And each water heater should indicate if it is simulated       # src/tests/bdd/steps/dashboard_steps.py:288
+
+  @current @device-operation @green
+  Scenario: Filter water heaters by manufacturer                      # src/tests/bdd/features/dashboard/water_heater_dashboard.feature:22
+    Given I am logged in as a "facility_manager"                      # src/tests/bdd/steps/dashboard_steps.py:115
+    And the system has water heaters from multiple manufacturers      # src/tests/bdd/steps/dashboard_steps.py:314
+    When I navigate to the water heater dashboard                     # src/tests/bdd/steps/dashboard_steps.py:191
+    And I filter by manufacturer "AquaTech"                           # src/tests/bdd/steps/dashboard_steps.py:368
+    Then I should only see water heaters from "AquaTech"              # src/tests/bdd/steps/dashboard_steps.py:444
+    And I should be able to clear the filter to see all water heaters # src/tests/bdd/steps/dashboard_steps.py:478
+
+  @current @device-operation @green
+  Scenario: Filter water heaters by connection status                 # src/tests/bdd/features/dashboard/water_heater_dashboard.feature:32
+    Given I am logged in as a "facility_manager"                      # src/tests/bdd/steps/dashboard_steps.py:115
+    And the system has both connected and disconnected water heaters  # src/tests/bdd/steps/dashboard_steps.py:545
+    When I navigate to the water heater dashboard                     # src/tests/bdd/steps/dashboard_steps.py:191
+    And I filter by connection status "connected"                     # src/tests/bdd/steps/dashboard_steps.py:627
+    Then I should only see water heaters with "connected" status      # src/tests/bdd/steps/dashboard_steps.py:705
+    And I should be able to clear the filter to see all water heaters # src/tests/bdd/steps/dashboard_steps.py:478
+
+  @current @device-operation @green
+  Scenario: Navigate to water heater details page                             # src/tests/bdd/features/dashboard/water_heater_dashboard.feature:42
+    Given I am logged in as a "facility_manager"                              # src/tests/bdd/steps/dashboard_steps.py:115
+    When I navigate to the water heater dashboard                             # src/tests/bdd/steps/dashboard_steps.py:191
+    And I click on the water heater with ID "wh-001"                          # src/tests/bdd/steps/dashboard_steps.py:743
+    Then I should be redirected to the details page for water heater "wh-001" # src/tests/bdd/steps/dashboard_steps.py:819
+    And I should see the current operating status                             # src/tests/bdd/steps/dashboard_steps.py:921
+    And I should see the reported temperature                                 # src/tests/bdd/steps/dashboard_steps.py:982
+
+  @current @device-operation @websocket @green
+  Scenario: Real-time updates of water heater status                          # src/tests/bdd/features/dashboard/water_heater_dashboard.feature:52
+    Given I am logged in as a "facility_manager"                              # src/tests/bdd/steps/dashboard_steps.py:115
+    And I am viewing the water heater dashboard                               # src/tests/bdd/steps/dashboard_steps.py:1055
+    When a water heater changes status from "ONLINE" to "OFFLINE"             # src/tests/bdd/steps/dashboard_steps.py:1083
+    Then I should see the status indicator update without refreshing the page # src/tests/bdd/steps/dashboard_steps.py:1210
+    And the status change should be visually highlighted                      # src/tests/bdd/steps/dashboard_steps.py:1312
+
+Feature: IoT Device Registration and Management # src/tests/bdd/features/device_management/device_registration.feature:6
+  As a system administrator
+  I want to register and manage IoT devices in the platform
+  So that I can monitor and control them centrally
+  @current @device-management @red
+  Scenario: Register a new water heater device                      # src/tests/bdd/features/device_management/device_registration.feature:13
+    Given I am logged in as a "system_administrator"                # src/tests/bdd/steps/dashboard_steps.py:115
+    When I navigate to the device management page                   # src/tests/bdd/steps/device_management_steps.py:50
+    And I select "Add New Device"                                   # src/tests/bdd/steps/device_management_steps.py:77
+    And I enter the following device information                    # src/tests/bdd/steps/device_management_steps.py:88
+      | field         | value                |
+      | name          | Test Water Heater    |
+      | manufacturer  | AquaTech             |
+      | model         | AT-5000              |
+      | serial_number | AT5K-12345           |
+      | location      | Building A, Basement |
+      | device_type   | water_heater         |
+    And I submit the device registration form                       # src/tests/bdd/steps/device_management_steps.py:108
+    Then the device should be successfully registered in the system # src/tests/bdd/steps/device_management_steps.py:137
+      Assertion Failed: Device registration failed with status: 404
+      Captured logging:
+      INFO:builtins:DEBUG: Starting user authentication setup with role: system_administrator
+      INFO:builtins:DEBUG: User role and authentication flag set: system_administrator, True
+      INFO:builtins:DEBUG: Mock user data set up: {'id': 'user-001', 'username': 'test_system_administrator', 'role': 'system_administrator', 'permissions': ['read:devices']}
+      INFO:builtins:DEBUG: Authentication mock setup successful
+      INFO:builtins:DEBUG: Token verification mock setup successful
+      INFO:builtins:DEBUG: Successfully authenticated as system_administrator
+      INFO:builtins:Navigating to device management page
+      INFO:httpx:HTTP Request: GET http://testserver/api/devices "HTTP/1.1 404 Not Found"
+      INFO:builtins:Device management API response status: 404
+      INFO:builtins:Selecting 'Add New Device' option
+      INFO:builtins:Entering device information
+      INFO:builtins:Device information entered: {'name': 'Test Water Heater', 'manufacturer': 'AquaTech', 'model': 'AT-5000', 'serial_number': 'AT5K-12345', 'location': 'Building A, Basement', 'device_type': 'water_heater'}
+      INFO:builtins:Submitting device registration form
+      INFO:httpx:HTTP Request: POST http://testserver/api/devices "HTTP/1.1 404 Not Found"
+      INFO:builtins:Device creation API response status: 404
+      WARNING:builtins:Device creation failed with status: 404
+      INFO:builtins:Verifying device registration
+
+    And I should see the new device in the device list              # None
+    And the device should have status "PENDING_ACTIVATION"          # None
+
+  @current @device-management @red
+  Scenario: Activate a newly registered device                                         # src/tests/bdd/features/device_management/device_registration.feature:32
+    Given I am logged in as a "system_administrator"                                   # src/tests/bdd/steps/dashboard_steps.py:115
+    And a device with name "Test Water Heater" exists with status "PENDING_ACTIVATION" # src/tests/bdd/steps/device_management_steps.py:225
+    When I navigate to the device management page                                      # src/tests/bdd/steps/device_management_steps.py:50
+    And I select the device with name "Test Water Heater"                              # src/tests/bdd/steps/device_management_steps.py:290
+    And I select "Activate Device"                                                     # src/tests/bdd/steps/device_management_steps.py:306
+    And I enter the following activation information                                   # src/tests/bdd/steps/device_management_steps.py:333
+      | field          | value                          |
+      | activation_key | AT5K-12345-ACT-KEY             |
+      | connection_url | mqtts://iot.iotsphere.com:8883 |
+    And I submit the activation form                                                   # src/tests/bdd/steps/device_management_steps.py:352
+    Then the device should have status "ACTIVE"                                        # src/tests/bdd/steps/device_management_steps.py:193
+      Traceback (most recent call last):
+        File "/Users/lisasimon/.pyenv/versions/3.11.7/lib/python3.11/site-packages/behave/model.py", line 1329, in run
+          match.run(runner.context)
+        File "/Users/lisasimon/.pyenv/versions/3.11.7/lib/python3.11/site-packages/behave/matchers.py", line 98, in run
+          self.func(context, *args, **kwargs)
+        File "src/tests/bdd/steps/device_management_steps.py", line 221, in step_verify_device_status
+          assert "status" in context.device_details, "Device details missing 'status' field"
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      TypeError: argument of type 'NoneType' is not iterable
+
+      Captured logging:
+      INFO:builtins:DEBUG: Starting user authentication setup with role: system_administrator
+      INFO:builtins:DEBUG: User role and authentication flag set: system_administrator, True
+      INFO:builtins:DEBUG: Mock user data set up: {'id': 'user-001', 'username': 'test_system_administrator', 'role': 'system_administrator', 'permissions': ['read:devices']}
+      INFO:builtins:DEBUG: Authentication mock setup successful
+      INFO:builtins:DEBUG: Token verification mock setup successful
+      INFO:builtins:DEBUG: Successfully authenticated as system_administrator
+      INFO:builtins:Setting up device 'Test Water Heater' with status 'PENDING_ACTIVATION'
+      INFO:builtins:Using mock device: Test Water Heater
+      INFO:httpx:HTTP Request: GET http://testserver/api/devices?name=Test%20Water%20Heater "HTTP/1.1 404 Not Found"
+      INFO:builtins:Device lookup failed, will use mock for RED phase
+      INFO:builtins:Navigating to device management page
+      INFO:httpx:HTTP Request: GET http://testserver/api/devices "HTTP/1.1 404 Not Found"
+      INFO:builtins:Device management API response status: 404
+      INFO:builtins:Selecting device: Test Water Heater
+      INFO:builtins:Selected device: {'id': 'dev-wh-001', 'name': 'Test Water Heater', 'manufacturer': 'AquaTech', 'model': 'AT-5000', 'serial_number': 'AT5K-12345', 'location': 'Building A, Basement', 'device_type': 'water_heater', 'status': 'PENDING_ACTIVATION', 'created_at': '2025-04-09T10:00:00Z', 'updated_at': '2025-04-09T10:00:00Z'}
+      INFO:builtins:Selecting action: Activate Device
+      INFO:builtins:Navigated to: device_activation_form
+      INFO:builtins:Entering activation information
+      INFO:builtins:Activation information entered: {'activation_key': 'AT5K-12345-ACT-KEY', 'connection_url': 'mqtts://iot.iotsphere.com:8883'}
+      INFO:builtins:Submitting activation form
+      INFO:httpx:HTTP Request: POST http://testserver/api/devices/dev-wh-001/activate "HTTP/1.1 404 Not Found"
+      INFO:builtins:Device activation API response status: 404
+      WARNING:builtins:Device activation failed with status: 404
+      INFO:builtins:Verifying device has status: ACTIVE
+      INFO:httpx:HTTP Request: GET http://testserver/api/devices/dev-wh-001 "HTTP/1.1 404 Not Found"
+      WARNING:builtins:Failed to get device details: 404
+
+    And the system should generate device credentials                                  # None
+    And I should see the device connection information                                 # None
+
+  @current @device-management @red
+  Scenario: Update device information                                      # src/tests/bdd/features/device_management/device_registration.feature:49
+    Given I am logged in as a "system_administrator"                       # src/tests/bdd/steps/dashboard_steps.py:115
+    And a device with name "Test Water Heater" exists with status "ACTIVE" # src/tests/bdd/steps/device_management_steps.py:225
+    When I navigate to the device management page                          # src/tests/bdd/steps/device_management_steps.py:50
+    And I select the device with name "Test Water Heater"                  # src/tests/bdd/steps/device_management_steps.py:290
+    And I select "Edit Device"                                             # src/tests/bdd/steps/device_management_steps.py:306
+    And I update the following information                                 # None
+      | field    | value                      |
+      | name     | Main Building Water Heater |
+      | location | Building A, Utility Room   |
+    And I save the changes                                                 # None
+    Then the device details should be updated in the system                # None
+    And I should see the updated information in the device list            # None
+
+  @current @device-management @red
+  Scenario: Deactivate a device                                            # src/tests/bdd/features/device_management/device_registration.feature:65
+    Given I am logged in as a "system_administrator"                       # src/tests/bdd/steps/dashboard_steps.py:115
+    And a device with name "Test Water Heater" exists with status "ACTIVE" # src/tests/bdd/steps/device_management_steps.py:225
+    When I navigate to the device management page                          # src/tests/bdd/steps/device_management_steps.py:50
+    And I select the device with name "Test Water Heater"                  # src/tests/bdd/steps/device_management_steps.py:290
+    And I select "Deactivate Device"                                       # src/tests/bdd/steps/device_management_steps.py:306
+    And I confirm the deactivation                                         # None
+    Then the device should have status "INACTIVE"                          # None
+    And the device should no longer receive commands                       # None
+    And the device should no longer report telemetry                       # None
+
+  @current @device-management @red
+  Scenario: Remove a device from the system                                  # src/tests/bdd/features/device_management/device_registration.feature:78
+    Given I am logged in as a "system_administrator"                         # src/tests/bdd/steps/dashboard_steps.py:115
+    And a device with name "Test Water Heater" exists with status "INACTIVE" # src/tests/bdd/steps/device_management_steps.py:225
+    When I navigate to the device management page                            # src/tests/bdd/steps/device_management_steps.py:50
+    And I select the device with name "Test Water Heater"                    # src/tests/bdd/steps/device_management_steps.py:290
+    And I select "Remove Device"                                             # src/tests/bdd/steps/device_management_steps.py:306
+    And I enter "DELETE" in the confirmation field                           # None
+    And I confirm the removal                                                # None
+    Then the device should be permanently removed from the system            # None
+    And I should not see the device in the device list                       # None
+    And I should see a confirmation message                                  # None
+
+  @future @device-management @cross-device @red
+  Scenario: Register a device using manufacturer-agnostic template   # src/tests/bdd/features/device_management/device_registration.feature:92
+    Given I am logged in as a "system_administrator"                 # src/tests/bdd/steps/dashboard_steps.py:115
+    When I navigate to the device management page                    # src/tests/bdd/steps/device_management_steps.py:50
+    And I select "Add New Device"                                    # src/tests/bdd/steps/device_management_steps.py:77
+    And I select device type "Generic Water Heater"                  # None
+    And I enter the following device information                     # None
+      | field         | value                |
+      | name          | Generic Water Heater |
+      | manufacturer  | NewVendor            |
+      | model         | NV-100               |
+      | serial_number | NV100-9876           |
+      | location      | Building B, Basement |
+    And I map the following capabilities                             # None
+      | standard_capability | manufacturer_capability |
+      | temperature         | water_temp              |
+      | heating_status      | heater_state            |
+      | set_temperature     | temp_setpoint           |
+    And I submit the device registration form                        # None
+    Then the device should be successfully registered in the system  # None
+    And the system should create a capability mapping for the device # None
+    And I should see the standard capabilities in the device details # None
+
+Feature: Predictive Maintenance for Water Heaters # src/tests/bdd/features/maintenance/predictive_maintenance.feature:6
+  As a maintenance manager
+  I want to receive predictive maintenance alerts
+  So that I can proactively service water heaters before they fail
+  @current @maintenance @ai-capability @predictive @red
+  Scenario: Detect anomaly in water heater performance         # src/tests/bdd/features/maintenance/predictive_maintenance.feature:13
+    Given a water heater with ID "wh-001" is being monitored   # src/tests/bdd/steps/maintenance_steps.py:80
+    When the water heater reports the following telemetry data # src/tests/bdd/steps/maintenance_steps.py:117
+      | temperature | pressure | flow_rate | power_consumption |
+      | 155         | 62       | 3.2       | 4500              |
+    Then the system should detect an anomaly                   # src/tests/bdd/steps/maintenance_steps.py:167
+    And an alert should be generated with severity "WARNING"   # src/tests/bdd/steps/maintenance_steps.py:200
+    And the alert should include the detected anomaly type     # src/tests/bdd/steps/maintenance_steps.py:243
+
+  @current @maintenance @ai-capability @predictive @red
+  Scenario: Predict component failure based on historical patterns        # src/tests/bdd/features/maintenance/predictive_maintenance.feature:24
+    Given a water heater with ID "wh-001" has historical performance data # src/tests/bdd/steps/maintenance_steps.py:263
+    When the predictive maintenance model analyzes the telemetry trends   # src/tests/bdd/steps/maintenance_steps.py:322
+    And the failure probability exceeds 70%                               # src/tests/bdd/steps/maintenance_steps.py:380
+    Then a maintenance recommendation should be generated                 # src/tests/bdd/steps/maintenance_steps.py:411
+    And the recommendation should identify the specific component at risk # src/tests/bdd/steps/maintenance_steps.py:435
+      Assertion Failed: Recommendation doesn't mention specific component at risk
+      Captured logging:
+      INFO:builtins:Setting up device with historical data: wh-001
+      INFO:builtins:Setting up monitored device: wh-001
+      INFO:builtins:Using mock data for device: wh-001
+      INFO:httpx:HTTP Request: GET http://testserver/api/maintenance/monitoring-status/wh-001 "HTTP/1.1 404 Not Found"
+      INFO:builtins:Device wh-001 is being monitored
+      INFO:httpx:HTTP Request: GET http://testserver/api/telemetry/wh-001/history?days=30 "HTTP/1.1 404 Not Found"
+      WARNING:builtins:History API returned status: 404
+      INFO:builtins:Created mock historical data: 120 records
+      INFO:builtins:Simulating predictive model analysis
+      INFO:httpx:HTTP Request: POST http://testserver/api/maintenance/predict/wh-001 "HTTP/1.1 404 Not Found"
+      WARNING:builtins:Prediction API returned status: 404
+      INFO:builtins:Created mock prediction results
+      INFO:builtins:Checking for failure probability > 70%
+      INFO:builtins:Found 1 high-risk components
+      INFO:builtins:Verifying maintenance recommendation generation
+      INFO:builtins:Maintenance recommendation: Schedule maintenance for heating element within 3 weeks
+      INFO:builtins:Verifying component identification in recommendation
+
+    And the recommendation should include estimated time to failure       # None
+
+  @current @maintenance @business-intelligence @red
+  Scenario: Schedule maintenance based on predictions                              # src/tests/bdd/features/maintenance/predictive_maintenance.feature:34
+    Given a water heater with ID "wh-001" has a pending maintenance recommendation # None
+    And the system has access to technician availability                           # None
+    When I request an optimal maintenance schedule                                 # None
+    Then the system should propose maintenance time slots                          # None
+    And the proposed schedule should be before the predicted failure date          # None
+    And the schedule should include estimated parts and labor requirements         # None
+
+  @current @maintenance @business-intelligence @red
+  Scenario: Calculate ROI for predictive vs. reactive maintenance                  # src/tests/bdd/features/maintenance/predictive_maintenance.feature:44
+    Given a water heater with ID "wh-001" has a pending maintenance recommendation # None
+    When I view the business impact analysis                                       # None
+    Then I should see the cost of predictive maintenance                           # None
+    And I should see the estimated cost of reactive repair after failure           # None
+    And I should see the calculated ROI percentage                                 # None
+    And I should see the estimated downtime comparison                             # None
+
+  @future @maintenance @ai-capability @learning @cross-device @red
+  Scenario: Identify maintenance patterns across multiple devices           # src/tests/bdd/features/maintenance/predictive_maintenance.feature:54
+    Given the system has performance data for multiple water heaters        # None
+    When the AI analytics process runs                                      # None
+    Then the system should identify common failure patterns                 # None
+    And the system should generate a fleet health report                    # None
+    And the report should include recommendations for systemic improvements # None
+    And the report should prioritize devices by maintenance urgency         # None

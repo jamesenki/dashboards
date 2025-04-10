@@ -1,0 +1,36 @@
+{
+  "id": "wh-001",
+  "name": "Main Building Water Heater",
+  "manufacturer": "AquaTech",
+  "model": "AT-5000",
+  "serial_number": "AT5K-12345",
+  "location": "Building A, Basement",
+  "installation_date": "2023-01-15",
+  "last_maintenance": "2024-12-01",
+  "status": "ONLINE",
+  "is_simulated": false,
+  "alert_status": "warning",
+  "telemetry": {
+    "temperature": 155,
+    "target_temperature": 125,
+    "pressure": 55,
+    "flow_rate": 3.2,
+    "power_consumption": 4500,
+    "heating_status": "ACTIVE",
+    "timestamp": "2025-04-09T19:45:00Z"
+  },
+  "thresholds": {
+    "temperature": {
+      "min": 100,
+      "normal_min": 110,
+      "normal_max": 140,
+      "max": 180
+    },
+    "pressure": {
+      "min": 40,
+      "normal_min": 45,
+      "normal_max": 60,
+      "max": 70
+    }
+  }
+}

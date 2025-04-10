@@ -1,0 +1,71 @@
+Feature: Water Heater Operations Dashboard # features/dashboard/water_heater_dashboard.feature:6
+  As a facility manager
+  I want to monitor water heater operations in real-time
+  So that I can ensure optimal performance and respond to issues quickly
+  @current @device-management @device-operation @red
+  Scenario: View list of all water heaters with status indicators  # features/dashboard/water_heater_dashboard.feature:13
+    Given I am logged in as a "facility_manager"                   # steps/dashboard_steps.py:71
+      Assertion Failed: Authentication failed with status 404
+      Captured logging:
+      INFO:builtins:Setting up user session with role: facility_manager
+      INFO:httpx:HTTP Request: POST http://testserver/api/auth/login "HTTP/1.1 404 Not Found"
+
+    When I navigate to the water heater dashboard                  # None
+    Then I should see a list of all water heaters in the system    # None
+    And each water heater should display its connection status     # None
+    And each water heater should indicate if it is simulated       # None
+
+  @current @device-operation @red
+  Scenario: Filter water heaters by manufacturer                      # features/dashboard/water_heater_dashboard.feature:22
+    Given I am logged in as a "facility_manager"                      # steps/dashboard_steps.py:71
+      Assertion Failed: Authentication failed with status 404
+      Captured logging:
+      INFO:builtins:Setting up user session with role: facility_manager
+      INFO:httpx:HTTP Request: POST http://testserver/api/auth/login "HTTP/1.1 404 Not Found"
+
+    And the system has water heaters from multiple manufacturers      # None
+    When I navigate to the water heater dashboard                     # None
+    And I filter by manufacturer "AquaTech"                           # None
+    Then I should only see water heaters from "AquaTech"              # None
+    And I should be able to clear the filter to see all water heaters # None
+
+  @current @device-operation @red
+  Scenario: Filter water heaters by connection status                 # features/dashboard/water_heater_dashboard.feature:32
+    Given I am logged in as a "facility_manager"                      # steps/dashboard_steps.py:71
+      Assertion Failed: Authentication failed with status 404
+      Captured logging:
+      INFO:builtins:Setting up user session with role: facility_manager
+      INFO:httpx:HTTP Request: POST http://testserver/api/auth/login "HTTP/1.1 404 Not Found"
+
+    And the system has both connected and disconnected water heaters  # None
+    When I navigate to the water heater dashboard                     # None
+    And I filter by connection status "connected"                     # None
+    Then I should only see water heaters with "connected" status      # None
+    And I should be able to clear the filter to see all water heaters # None
+
+  @current @device-operation @red
+  Scenario: Navigate to water heater details page                             # features/dashboard/water_heater_dashboard.feature:42
+    Given I am logged in as a "facility_manager"                              # steps/dashboard_steps.py:71
+      Assertion Failed: Authentication failed with status 404
+      Captured logging:
+      INFO:builtins:Setting up user session with role: facility_manager
+      INFO:httpx:HTTP Request: POST http://testserver/api/auth/login "HTTP/1.1 404 Not Found"
+
+    When I navigate to the water heater dashboard                             # None
+    And I click on the water heater with ID "wh-001"                          # None
+    Then I should be redirected to the details page for water heater "wh-001" # None
+    And I should see the current operating status                             # None
+    And I should see the reported temperature                                 # None
+
+  @current @device-operation @websocket @red
+  Scenario: Real-time updates of water heater status                          # features/dashboard/water_heater_dashboard.feature:52
+    Given I am logged in as a "facility_manager"                              # steps/dashboard_steps.py:71
+      Assertion Failed: Authentication failed with status 404
+      Captured logging:
+      INFO:builtins:Setting up user session with role: facility_manager
+      INFO:httpx:HTTP Request: POST http://testserver/api/auth/login "HTTP/1.1 404 Not Found"
+
+    And I am viewing the water heater dashboard                               # None
+    When a water heater changes status from "ONLINE" to "OFFLINE"             # None
+    Then I should see the status indicator update without refreshing the page # None
+    And the status change should be visually highlighted                      # None

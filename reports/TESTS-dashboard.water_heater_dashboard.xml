@@ -1,0 +1,167 @@
+<testsuite name="dashboard.water_heater_dashboard.Water Heater Operations Dashboard" tests="5" errors="0" failures="0" skipped="0" time="0.022023" timestamp="2025-04-10T10:12:11.705915" hostname="Lisas-Mac-mini.local"><testcase classname="dashboard.water_heater_dashboard.Water Heater Operations Dashboard" name="View list of all water heaters with status indicators" status="passed" time="0.008223"><system-out>
+<![CDATA[
+@scenario.begin
+
+  @current @device-management @device-operation @green
+  Scenario: View list of all water heaters with status indicators
+    Given I am logged in as a "facility_manager" ... passed in 0.002s
+    When I navigate to the water heater dashboard ... passed in 0.006s
+    Then I should see a list of all water heaters in the system ... passed in 0.000s
+    And each water heater should display its connection status ... passed in 0.000s
+    And each water heater should indicate if it is simulated ... passed in 0.000s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase><testcase classname="dashboard.water_heater_dashboard.Water Heater Operations Dashboard" name="Filter water heaters by manufacturer" status="passed" time="0.003747"><system-out>
+<![CDATA[
+@scenario.begin
+
+  @current @device-operation @green
+  Scenario: Filter water heaters by manufacturer
+    Given I am logged in as a "facility_manager" ... passed in 0.001s
+    And the system has water heaters from multiple manufacturers ... passed in 0.001s
+    When I navigate to the water heater dashboard ... passed in 0.001s
+    And I filter by manufacturer "AquaTech" ... passed in 0.001s
+    Then I should only see water heaters from "AquaTech" ... passed in 0.000s
+    And I should be able to clear the filter to see all water heaters ... passed in 0.001s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out><system-err>
+<![CDATA[
+Captured stderr:
+src/tests/bdd/steps/dashboard_steps.py:351: ContextMaskWarning: user code is masking context attribute 'client'; see the tutorial for what this means
+  context.client = MagicMock()
+
+]]>
+</system-err></testcase><testcase classname="dashboard.water_heater_dashboard.Water Heater Operations Dashboard" name="Filter water heaters by connection status" status="passed" time="0.003299"><system-out>
+<![CDATA[
+@scenario.begin
+
+  @current @device-operation @green
+  Scenario: Filter water heaters by connection status
+    Given I am logged in as a "facility_manager" ... passed in 0.001s
+    And the system has both connected and disconnected water heaters ... passed in 0.001s
+    When I navigate to the water heater dashboard ... passed in 0.001s
+    And I filter by connection status "connected" ... passed in 0.001s
+    Then I should only see water heaters with "connected" status ... passed in 0.000s
+    And I should be able to clear the filter to see all water heaters ... passed in 0.001s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out><system-err>
+<![CDATA[
+Captured stderr:
+src/tests/bdd/steps/dashboard_steps.py:609: ContextMaskWarning: user code is masking context attribute 'client'; see the tutorial for what this means
+  context.client = MagicMock()
+
+]]>
+</system-err></testcase><testcase classname="dashboard.water_heater_dashboard.Water Heater Operations Dashboard" name="Navigate to water heater details page" status="passed" time="0.00377"><system-out>
+<![CDATA[
+@scenario.begin
+
+  @current @device-operation @green
+  Scenario: Navigate to water heater details page
+    Given I am logged in as a "facility_manager" ... passed in 0.001s
+    When I navigate to the water heater dashboard ... passed in 0.002s
+    And I click on the water heater with ID "wh-001" ... passed in 0.001s
+    Then I should be redirected to the details page for water heater "wh-001" ... passed in 0.000s
+    And I should see the current operating status ... passed in 0.000s
+    And I should see the reported temperature ... passed in 0.000s
+
+@scenario.end
+--------------------------------------------------------------------------------
+
+Captured stdout:
+
+==== DEBUG START: click_on_water_heater for wh-001 ====
+
+DEBUG: Set selected_device_id to wh-001
+DEBUG: Set device_details with id wh-001
+DEBUG: Created response with status code 200
+DEBUG: Set current_page to 'water_heater_details'
+
+==== DEBUG END: click_on_water_heater ====
+
+
+==== DEBUG START: step_verify_details_page_redirect ====
+
+DEBUG: Verifying redirection for device: wh-001
+DEBUG: Context attributes: ['BEHAVE', 'FAIL_ON_CLEANUP_ERRORS', 'USER', 'add_cleanup', 'execute_steps', 'ignore_cleanup_error', 'print_cleanup_error', 'use_with_user_mode', 'user_mode']
+DEBUG: current_page = 'water_heater_details'
+DEBUG: response status code = 200
+DEBUG: device_details id = 'wh-001', keys = ['id', 'name', 'manufacturer', 'model', 'connection_status', 'is_simulated', 'current_temperature', 'target_temperature', 'heating_status', 'installation_date', 'last_maintenance', 'warranty_expiration', 'firmware_version', 'heating_efficiency', 'tank_size_gallons', 'max_temperature', 'min_temperature']
+
+==== DEBUG END: step_verify_details_page_redirect ====
+
+
+==== DEBUG START: step_verify_operating_status_shown ====
+
+DEBUG: Device heating status: ACTIVE
+
+==== DEBUG END: step_verify_operating_status_shown ====
+
+
+==== DEBUG START: step_verify_temperature_shown ====
+
+DEBUG: Device temperature: 120°F
+DEBUG: Connection status: ONLINE
+
+==== DEBUG END: step_verify_temperature_shown ====
+
+
+]]>
+</system-out></testcase><testcase classname="dashboard.water_heater_dashboard.Water Heater Operations Dashboard" name="Real-time updates of water heater status" status="passed" time="0.002984"><system-out>
+<![CDATA[
+@scenario.begin
+
+  @current @device-operation @websocket @green
+  Scenario: Real-time updates of water heater status
+    Given I am logged in as a "facility_manager" ... passed in 0.001s
+    And I am viewing the water heater dashboard ... passed in 0.002s
+    When a water heater changes status from "ONLINE" to "OFFLINE" ... passed in 0.000s
+    Then I should see the status indicator update without refreshing the page ... passed in 0.000s
+    And the status change should be visually highlighted ... passed in 0.000s
+
+@scenario.end
+--------------------------------------------------------------------------------
+
+Captured stdout:
+
+==== DEBUG START: Water heater status change ====
+
+DEBUG: Mapped statuses - old: ONLINE, new: OFFLINE
+DEBUG: Created new test_water_heaters with 1 heater
+DEBUG: Created status change event: {'event_type': 'status_change', 'device_id': 'wh-001', 'old_status': 'ONLINE', 'new_status': 'OFFLINE', 'timestamp': '2025-04-10T10:12:11Z', 'highlight': True, 'duration_ms': 3000}
+DEBUG: Updated heater status to OFFLINE
+DEBUG: EXCEPTION in step_water_heater_status_changes: 'bool' object has no attribute 'messages'
+
+==== DEBUG START: Verifying real-time status updates ====
+
+DEBUG: Event data - device: wh-001, old: ONLINE, new: OFFLINE
+DEBUG: Found matching status change event
+
+==== DEBUG END: Verifying real-time status updates ====
+
+
+==== DEBUG START: Verifying visual highlighting ====
+
+
+==== DEBUG END: Verifying visual highlighting ====
+
+
+]]>
+</system-out><system-err>
+<![CDATA[
+Captured stderr:
+Traceback (most recent call last):
+  File "src/tests/bdd/steps/dashboard_steps.py", line 1163, in step_water_heater_status_changes
+    context.ws_client.messages = []
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'bool' object has no attribute 'messages'
+
+]]>
+</system-err></testcase></testsuite>

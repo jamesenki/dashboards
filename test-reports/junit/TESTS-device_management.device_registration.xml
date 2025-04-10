@@ -1,0 +1,188 @@
+<testsuite name="device_management.device_registration.IoT Device Registration and Management" tests="6" errors="0" failures="6" skipped="0" time="0.010699" timestamp="2025-04-10T08:41:54.704748" hostname="Lisas-Mac-mini.local"><testcase classname="device_management.device_registration.IoT Device Registration and Management" name="Register a new water heater device" status="failed" time="0.001728"><failure type="AssertionError" message="Authentication failed with status 404">
+<![CDATA[
+Failing step: Given I am logged in as a "system_administrator" ... failed in 0.002s
+Location: features/device_management/device_registration.feature:14
+Assertion Failed: Authentication failed with status 404
+Captured logging:
+INFO:builtins:Setting up user session with role: system_administrator
+INFO:httpx:HTTP Request: POST http://testserver/api/auth/login "HTTP/1.1 404 Not Found"]]>
+</failure><system-out>
+<![CDATA[
+@scenario.begin
+
+  @current @device-management @red
+  Scenario: Register a new water heater device
+    Given I am logged in as a "system_administrator" ... failed in 0.002s
+    When I navigate to the device management page ... skipped in 0.000s
+    And I select "Add New Device" ... skipped in 0.000s
+    And I enter the following device information ... skipped in 0.000s
+      | field         | value                |
+      | name          | Test Water Heater    |
+      | manufacturer  | AquaTech             |
+      | model         | AT-5000              |
+      | serial_number | AT5K-12345           |
+      | location      | Building A, Basement |
+      | device_type   | water_heater         |
+    And I submit the device registration form ... skipped in 0.000s
+    Then the device should be successfully registered in the system ... skipped in 0.000s
+    And I should see the new device in the device list ... skipped in 0.000s
+    And the device should have status "PENDING_ACTIVATION" ... skipped in 0.000s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase><testcase classname="device_management.device_registration.IoT Device Registration and Management" name="Activate a newly registered device" status="failed" time="0.001546"><failure type="AssertionError" message="Authentication failed with status 404">
+<![CDATA[
+Failing step: Given I am logged in as a "system_administrator" ... failed in 0.002s
+Location: features/device_management/device_registration.feature:33
+Assertion Failed: Authentication failed with status 404
+Captured logging:
+INFO:builtins:Setting up user session with role: system_administrator
+INFO:httpx:HTTP Request: POST http://testserver/api/auth/login "HTTP/1.1 404 Not Found"]]>
+</failure><system-out>
+<![CDATA[
+@scenario.begin
+
+  @current @device-management @red
+  Scenario: Activate a newly registered device
+    Given I am logged in as a "system_administrator" ... failed in 0.002s
+    And a device with name "Test Water Heater" exists with status "PENDING_ACTIVATION" ... skipped in 0.000s
+    When I navigate to the device management page ... skipped in 0.000s
+    And I select the device with name "Test Water Heater" ... skipped in 0.000s
+    And I select "Activate Device" ... skipped in 0.000s
+    And I enter the following activation information ... skipped in 0.000s
+      | field          | value                          |
+      | activation_key | AT5K-12345-ACT-KEY             |
+      | connection_url | mqtts://iot.iotsphere.com:8883 |
+    And I submit the activation form ... skipped in 0.000s
+    Then the device should have status "ACTIVE" ... skipped in 0.000s
+    And the system should generate device credentials ... skipped in 0.000s
+    And I should see the device connection information ... skipped in 0.000s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase><testcase classname="device_management.device_registration.IoT Device Registration and Management" name="Update device information" status="failed" time="0.002542"><failure type="AssertionError" message="Authentication failed with status 404">
+<![CDATA[
+Failing step: Given I am logged in as a "system_administrator" ... failed in 0.003s
+Location: features/device_management/device_registration.feature:50
+Assertion Failed: Authentication failed with status 404
+Captured logging:
+INFO:builtins:Setting up user session with role: system_administrator
+INFO:httpx:HTTP Request: POST http://testserver/api/auth/login "HTTP/1.1 404 Not Found"]]>
+</failure><system-out>
+<![CDATA[
+@scenario.begin
+
+  @current @device-management @red
+  Scenario: Update device information
+    Given I am logged in as a "system_administrator" ... failed in 0.003s
+    And a device with name "Test Water Heater" exists with status "ACTIVE" ... skipped in 0.000s
+    When I navigate to the device management page ... skipped in 0.000s
+    And I select the device with name "Test Water Heater" ... skipped in 0.000s
+    And I select "Edit Device" ... skipped in 0.000s
+    And I update the following information ... undefined in 0.000s
+      | field    | value                      |
+      | name     | Main Building Water Heater |
+      | location | Building A, Utility Room   |
+    And I save the changes ... undefined in 0.000s
+    Then the device details should be updated in the system ... undefined in 0.000s
+    And I should see the updated information in the device list ... undefined in 0.000s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase><testcase classname="device_management.device_registration.IoT Device Registration and Management" name="Deactivate a device" status="failed" time="0.001705"><failure type="AssertionError" message="Authentication failed with status 404">
+<![CDATA[
+Failing step: Given I am logged in as a "system_administrator" ... failed in 0.002s
+Location: features/device_management/device_registration.feature:66
+Assertion Failed: Authentication failed with status 404
+Captured logging:
+INFO:builtins:Setting up user session with role: system_administrator
+INFO:httpx:HTTP Request: POST http://testserver/api/auth/login "HTTP/1.1 404 Not Found"]]>
+</failure><system-out>
+<![CDATA[
+@scenario.begin
+
+  @current @device-management @red
+  Scenario: Deactivate a device
+    Given I am logged in as a "system_administrator" ... failed in 0.002s
+    And a device with name "Test Water Heater" exists with status "ACTIVE" ... skipped in 0.000s
+    When I navigate to the device management page ... skipped in 0.000s
+    And I select the device with name "Test Water Heater" ... skipped in 0.000s
+    And I select "Deactivate Device" ... skipped in 0.000s
+    And I confirm the deactivation ... undefined in 0.000s
+    Then the device should have status "INACTIVE" ... skipped in 0.000s
+    And the device should no longer receive commands ... undefined in 0.000s
+    And the device should no longer report telemetry ... undefined in 0.000s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase><testcase classname="device_management.device_registration.IoT Device Registration and Management" name="Remove a device from the system" status="failed" time="0.001621"><failure type="AssertionError" message="Authentication failed with status 404">
+<![CDATA[
+Failing step: Given I am logged in as a "system_administrator" ... failed in 0.002s
+Location: features/device_management/device_registration.feature:79
+Assertion Failed: Authentication failed with status 404
+Captured logging:
+INFO:builtins:Setting up user session with role: system_administrator
+INFO:httpx:HTTP Request: POST http://testserver/api/auth/login "HTTP/1.1 404 Not Found"]]>
+</failure><system-out>
+<![CDATA[
+@scenario.begin
+
+  @current @device-management @red
+  Scenario: Remove a device from the system
+    Given I am logged in as a "system_administrator" ... failed in 0.002s
+    And a device with name "Test Water Heater" exists with status "INACTIVE" ... skipped in 0.000s
+    When I navigate to the device management page ... skipped in 0.000s
+    And I select the device with name "Test Water Heater" ... skipped in 0.000s
+    And I select "Remove Device" ... skipped in 0.000s
+    And I enter "DELETE" in the confirmation field ... undefined in 0.000s
+    And I confirm the removal ... undefined in 0.000s
+    Then the device should be permanently removed from the system ... undefined in 0.000s
+    And I should not see the device in the device list ... undefined in 0.000s
+    And I should see a confirmation message ... undefined in 0.000s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase><testcase classname="device_management.device_registration.IoT Device Registration and Management" name="Register a device using manufacturer-agnostic template" status="failed" time="0.001557"><failure type="AssertionError" message="Authentication failed with status 404">
+<![CDATA[
+Failing step: Given I am logged in as a "system_administrator" ... failed in 0.002s
+Location: features/device_management/device_registration.feature:93
+Assertion Failed: Authentication failed with status 404
+Captured logging:
+INFO:builtins:Setting up user session with role: system_administrator
+INFO:httpx:HTTP Request: POST http://testserver/api/auth/login "HTTP/1.1 404 Not Found"]]>
+</failure><system-out>
+<![CDATA[
+@scenario.begin
+
+  @future @device-management @cross-device @red
+  Scenario: Register a device using manufacturer-agnostic template
+    Given I am logged in as a "system_administrator" ... failed in 0.002s
+    When I navigate to the device management page ... skipped in 0.000s
+    And I select "Add New Device" ... skipped in 0.000s
+    And I select device type "Generic Water Heater" ... undefined in 0.000s
+    And I enter the following device information ... skipped in 0.000s
+      | field         | value                |
+      | name          | Generic Water Heater |
+      | manufacturer  | NewVendor            |
+      | model         | NV-100               |
+      | serial_number | NV100-9876           |
+      | location      | Building B, Basement |
+    And I map the following capabilities ... undefined in 0.000s
+      | standard_capability | manufacturer_capability |
+      | temperature         | water_temp              |
+      | heating_status      | heater_state            |
+      | set_temperature     | temp_setpoint           |
+    And I submit the device registration form ... skipped in 0.000s
+    Then the device should be successfully registered in the system ... skipped in 0.000s
+    And the system should create a capability mapping for the device ... undefined in 0.000s
+    And I should see the standard capabilities in the device details ... undefined in 0.000s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase></testsuite>

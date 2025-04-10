@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite name="pytest" errors="0" failures="2" skipped="5" tests="10" time="0.068" timestamp="2025-04-09T20:56:28.939232-04:00" hostname="Lisas-Mac-mini.local"><testcase classname="usecase_to_entity.test_water_heater_service_to_entity.TestWaterHeaterServiceToEntity" name="test_update_temperature_within_safe_range" time="0.003"><skipped type="pytest.skip" message="RED phase test unexpectedly passed - implementation may be ahead of tests!">/Users/lisasimon/repos/IoTSphereAngular/IoTSphere-Refactor/src/tests/integration-tdd/conftest.py:64: RED phase test unexpectedly passed - implementation may be ahead of tests!</skipped></testcase><testcase classname="usecase_to_entity.test_water_heater_service_to_entity.TestWaterHeaterServiceToEntity" name="test_update_temperature_beyond_safe_range" time="0.001"><failure message="AssertionError: assert 'range' in 'target temperature (90.0°c) must be between 40.0°c and 85.0°c'&#10; +  where 'target temperature (90.0°c) must be between 40.0°c and 85.0°c' = &lt;built-in method lower of str object at 0x111710390&gt;()&#10; +    where &lt;built-in method lower of str object at 0x111710390&gt; = 'Target temperature (90.0°C) must be between 40.0°C and 85.0°C'.lower&#10; +      where 'Target temperature (90.0°C) must be between 40.0°C and 85.0°C' = str(ValueError('Target temperature (90.0°C) must be between 40.0°C and 85.0°C'))&#10; +        where ValueError('Target temperature (90.0°C) must be between 40.0°C and 85.0°C') = &lt;ExceptionInfo ValueError('Target temperature (90.0°C) must be between 40.0°C and 85.0°C') tblen=3&gt;.value">self = &lt;test_water_heater_service_to_entity.TestWaterHeaterServiceToEntity object at 0x11173f7d0&gt;
+mock_water_heater_repository = &lt;MagicMock spec='WaterHeaterRepository' id='4587390928'&gt;
+sample_water_heater = WaterHeater(id='wh-test-123', name='Test Water Heater', manufacturer='TestCorp', model='WH-1000', current_temperature=... Floor 2', heater_status='HEATING', is_simulated=False, last_updated=datetime.datetime(2025, 4, 9, 20, 56, 28, 973038))
+
+    @pytest.mark.red
+    def test_update_temperature_beyond_safe_range(self, mock_water_heater_repository, sample_water_heater):
+        """Test updating water heater temperature beyond the safe temperature range.
+
+        RED phase: This test defines the expected behavior when a temperature update
+        violates the safety limits defined by the entity.
+
+        Business value: Prevents dangerous temperature settings that could damage
+        equipment or cause safety hazards.
+        """
+        # Setup - Create service with mocked repository
+        service = WaterHeaterService(repository=mock_water_heater_repository)
+
+        # Configure mock to return our sample entity
+        heater_id = sample_water_heater.id
+        mock_water_heater_repository.get_by_id.return_value = sample_water_heater
+
+        # Execute &amp; Verify - Update temperature to an invalid value (beyond max)
+        unsafe_temp = 90.0  # Beyond max_temperature of 85.0
+        with pytest.raises(ValueError) as excinfo:
+            service.update_target_temperature(
+                heater_id=heater_id,
+                temperature=Temperature(value=unsafe_temp, unit="C")
+            )
+
+        # Verify exception message mentions temperature limits
+        assert "temperature" in str(excinfo.value).lower()
+&gt;       assert "range" in str(excinfo.value).lower()
+E       AssertionError: assert 'range' in 'target temperature (90.0°c) must be between 40.0°c and 85.0°c'
+E        +  where 'target temperature (90.0°c) must be between 40.0°c and 85.0°c' = &lt;built-in method lower of str object at 0x111710390&gt;()
+E        +    where &lt;built-in method lower of str object at 0x111710390&gt; = 'Target temperature (90.0°C) must be between 40.0°C and 85.0°C'.lower
+E        +      where 'Target temperature (90.0°C) must be between 40.0°C and 85.0°C' = str(ValueError('Target temperature (90.0°C) must be between 40.0°C and 85.0°C'))
+E        +        where ValueError('Target temperature (90.0°C) must be between 40.0°C and 85.0°C') = &lt;ExceptionInfo ValueError('Target temperature (90.0°C) must be between 40.0°C and 85.0°C') tblen=3&gt;.value
+
+src/tests/integration-tdd/usecase_to_entity/test_water_heater_service_to_entity.py:119: AssertionError</failure><skipped type="pytest.skip" message="RED phase test unexpectedly passed - implementation may be ahead of tests!">/Users/lisasimon/repos/IoTSphereAngular/IoTSphere-Refactor/src/tests/integration-tdd/conftest.py:64: RED phase test unexpectedly passed - implementation may be ahead of tests!</skipped></testcase><testcase classname="usecase_to_entity.test_water_heater_service_to_entity.TestWaterHeaterServiceToEntity" name="test_change_operating_mode" time="0.001"><skipped type="pytest.skip" message="RED phase test unexpectedly passed - implementation may be ahead of tests!">/Users/lisasimon/repos/IoTSphereAngular/IoTSphere-Refactor/src/tests/integration-tdd/conftest.py:64: RED phase test unexpectedly passed - implementation may be ahead of tests!</skipped></testcase><testcase classname="usecase_to_entity.test_water_heater_service_to_entity.TestWaterHeaterServiceToEntity" name="test_water_heater_not_found" time="0.001"><skipped type="pytest.skip" message="RED phase test unexpectedly passed - implementation may be ahead of tests!">/Users/lisasimon/repos/IoTSphereAngular/IoTSphere-Refactor/src/tests/integration-tdd/conftest.py:64: RED phase test unexpectedly passed - implementation may be ahead of tests!</skipped></testcase><testcase classname="usecase_to_entity.test_water_heater_service_to_entity.TestWaterHeaterServiceToEntity" name="test_handle_temperature_state_transition" time="0.001"><failure message="AttributeError: 'str' object has no attribute 'value'">self = &lt;test_water_heater_service_to_entity.TestWaterHeaterServiceToEntity object at 0x11171fdd0&gt;
+mock_water_heater_repository = &lt;MagicMock spec='WaterHeaterRepository' id='4587477584'&gt;
+sample_water_heater = WaterHeater(id='wh-test-123', name='Test Water Heater', manufacturer='TestCorp', model='WH-1000', current_temperature=...A, Floor 2', heater_status='HEATING', is_simulated=False, last_updated=datetime.datetime(2025, 4, 9, 20, 56, 29, 4430))
+
+    @pytest.mark.red
+    def test_handle_temperature_state_transition(self, mock_water_heater_repository, sample_water_heater):
+        """Test handling of temperature state transitions in the water heater.
+
+        RED phase: This test defines the expected behavior when temperature changes
+        trigger internal state changes in the entity.
+
+        Business value: Ensures the system correctly models physical behavior of
+        water heaters and provides accurate status information.
+        """
+        # Setup - Create service with mocked repository
+        service = WaterHeaterService(repository=mock_water_heater_repository)
+
+        # Clone sample heater but with current temp below target
+        cold_heater = WaterHeater(
+            id=sample_water_heater.id,
+            name=sample_water_heater.name,
+            manufacturer=sample_water_heater.manufacturer,
+            model=sample_water_heater.model,
+            current_temperature=Temperature(value=45.0, unit="C"),  # Below target
+            target_temperature=Temperature(value=55.0, unit="C"),
+            min_temperature=sample_water_heater.min_temperature,
+            max_temperature=sample_water_heater.max_temperature,
+            status=sample_water_heater.status,
+            mode=sample_water_heater.mode,
+            health_status=sample_water_heater.health_status,
+            location=sample_water_heater.location,
+            is_simulated=sample_water_heater.is_simulated
+        )
+
+        # Configure mock to return our cold heater
+        heater_id = cold_heater.id
+        mock_water_heater_repository.get_by_id.return_value = cold_heater
+        mock_water_heater_repository.update.return_value = True
+
+        # Execute - Process temperature update
+        updated_heater = service.process_temperature_update(
+            heater_id=heater_id,
+            current_temperature=cold_heater.current_temperature
+        )
+
+        # Verify - Entity state should reflect heating activity
+        assert updated_heater.id == heater_id
+&gt;       assert updated_heater.heater_status.value == "HEATING"  # Should be heating
+E       AttributeError: 'str' object has no attribute 'value'
+
+src/tests/integration-tdd/usecase_to_entity/test_water_heater_service_to_entity.py:229: AttributeError</failure><skipped type="pytest.skip" message="RED phase test unexpectedly passed - implementation may be ahead of tests!">/Users/lisasimon/repos/IoTSphereAngular/IoTSphere-Refactor/src/tests/integration-tdd/conftest.py:64: RED phase test unexpectedly passed - implementation may be ahead of tests!</skipped></testcase></testsuite></testsuites>

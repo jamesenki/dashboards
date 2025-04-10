@@ -1,0 +1,219 @@
+<testsuite name="device_management.device_registration.IoT Device Registration and Management" tests="6" errors="1" failures="5" skipped="0" time="0.061574" timestamp="2025-04-09T19:57:48.781432" hostname="Lisas-Mac-mini.local"><testcase classname="device_management.device_registration.IoT Device Registration and Management" name="Register a new water heater device" status="failed" time="0.008151"><failure type="AssertionError" message="Device registration failed with status: 404">
+<![CDATA[
+Failing step: Then the device should be successfully registered in the system ... failed in 0.000s
+Location: features/device_management/device_registration.feature:26
+Assertion Failed: Device registration failed with status: 404
+Captured logging:
+INFO:builtins:Setting up user session with role: system_administrator
+INFO:builtins:User authenticated as system_administrator
+INFO:builtins:Navigating to device management page
+INFO:httpx:HTTP Request: GET http://testserver/api/devices "HTTP/1.1 404 Not Found"
+INFO:builtins:Device management API response status: 404
+INFO:builtins:Selecting 'Add New Device' option
+INFO:builtins:Entering device information
+INFO:builtins:Device information entered: {'name': 'Test Water Heater', 'manufacturer': 'AquaTech', 'model': 'AT-5000', 'serial_number': 'AT5K-12345', 'location': 'Building A, Basement', 'device_type': 'water_heater'}
+INFO:builtins:Submitting device registration form
+INFO:httpx:HTTP Request: POST http://testserver/api/devices "HTTP/1.1 404 Not Found"
+INFO:builtins:Device creation API response status: 404
+WARNING:builtins:Device creation failed with status: 404
+INFO:builtins:Verifying device registration]]>
+</failure><system-out>
+<![CDATA[
+@scenario.begin
+
+  @current @device-management @red
+  Scenario: Register a new water heater device
+    Given I am logged in as a "system_administrator" ... passed in 0.000s
+    When I navigate to the device management page ... passed in 0.004s
+    And I select "Add New Device" ... passed in 0.000s
+    And I enter the following device information ... passed in 0.000s
+      | field         | value                |
+      | name          | Test Water Heater    |
+      | manufacturer  | AquaTech             |
+      | model         | AT-5000              |
+      | serial_number | AT5K-12345           |
+      | location      | Building A, Basement |
+      | device_type   | water_heater         |
+    And I submit the device registration form ... passed in 0.004s
+    Then the device should be successfully registered in the system ... failed in 0.000s
+    And I should see the new device in the device list ... skipped in 0.000s
+    And the device should have status "PENDING_ACTIVATION" ... skipped in 0.000s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase><testcase classname="device_management.device_registration.IoT Device Registration and Management" name="Activate a newly registered device" status="failed" time="0.01837"><error type="TypeError" message="argument of type 'NoneType' is not iterable">
+<![CDATA[
+Failing step: Then the device should have status "ACTIVE" ... failed in 0.004s
+Location: features/device_management/device_registration.feature:43
+Traceback (most recent call last):
+  File "/Users/lisasimon/.pyenv/versions/3.11.7/lib/python3.11/site-packages/behave/model.py", line 1329, in run
+    match.run(runner.context)
+  File "/Users/lisasimon/.pyenv/versions/3.11.7/lib/python3.11/site-packages/behave/matchers.py", line 98, in run
+    self.func(context, *args, **kwargs)
+  File "steps/device_management_steps.py", line 221, in step_verify_device_status
+    assert "status" in context.device_details, "Device details missing 'status' field"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: argument of type 'NoneType' is not iterable
+
+Captured logging:
+INFO:builtins:Setting up user session with role: system_administrator
+INFO:builtins:User authenticated as system_administrator
+INFO:builtins:Setting up device 'Test Water Heater' with status 'PENDING_ACTIVATION'
+INFO:builtins:Using mock device: Test Water Heater
+INFO:httpx:HTTP Request: GET http://testserver/api/devices?name=Test%20Water%20Heater "HTTP/1.1 404 Not Found"
+INFO:builtins:Device lookup failed, will use mock for RED phase
+INFO:builtins:Navigating to device management page
+INFO:httpx:HTTP Request: GET http://testserver/api/devices "HTTP/1.1 404 Not Found"
+INFO:builtins:Device management API response status: 404
+INFO:builtins:Selecting device: Test Water Heater
+INFO:builtins:Selected device: {'id': 'dev-wh-001', 'name': 'Test Water Heater', 'manufacturer': 'AquaTech', 'model': 'AT-5000', 'serial_number': 'AT5K-12345', 'location': 'Building A, Basement', 'device_type': 'water_heater', 'status': 'PENDING_ACTIVATION', 'created_at': '2025-04-09T10:00:00Z', 'updated_at': '2025-04-09T10:00:00Z'}
+INFO:builtins:Selecting action: Activate Device
+INFO:builtins:Navigated to: device_activation_form
+INFO:builtins:Entering activation information
+INFO:builtins:Activation information entered: {'activation_key': 'AT5K-12345-ACT-KEY', 'connection_url': 'mqtts://iot.iotsphere.com:8883'}
+INFO:builtins:Submitting activation form
+INFO:httpx:HTTP Request: POST http://testserver/api/devices/dev-wh-001/activate "HTTP/1.1 404 Not Found"
+INFO:builtins:Device activation API response status: 404
+WARNING:builtins:Device activation failed with status: 404
+INFO:builtins:Verifying device has status: ACTIVE
+INFO:httpx:HTTP Request: GET http://testserver/api/devices/dev-wh-001 "HTTP/1.1 404 Not Found"
+WARNING:builtins:Failed to get device details: 404]]>
+</error><system-out>
+<![CDATA[
+@scenario.begin
+
+  @current @device-management @red
+  Scenario: Activate a newly registered device
+    Given I am logged in as a "system_administrator" ... passed in 0.000s
+    And a device with name "Test Water Heater" exists with status "PENDING_ACTIVATION" ... passed in 0.003s
+    When I navigate to the device management page ... passed in 0.004s
+    And I select the device with name "Test Water Heater" ... passed in 0.000s
+    And I select "Activate Device" ... passed in 0.000s
+    And I enter the following activation information ... passed in 0.001s
+      | field          | value                          |
+      | activation_key | AT5K-12345-ACT-KEY             |
+      | connection_url | mqtts://iot.iotsphere.com:8883 |
+    And I submit the activation form ... passed in 0.005s
+    Then the device should have status "ACTIVE" ... failed in 0.004s
+    And the system should generate device credentials ... skipped in 0.000s
+    And I should see the device connection information ... skipped in 0.000s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase><testcase classname="device_management.device_registration.IoT Device Registration and Management" name="Update device information" status="failed" time="0.010431"><failure type="NoneType" message="None">
+<![CDATA[
+Failing step: And I update the following information ... undefined in 0.000s
+  | field    | value                      |
+  | name     | Main Building Water Heater |
+  | location | Building A, Utility Room   |
+Location: features/device_management/device_registration.feature:55
+None]]>
+</failure><system-out>
+<![CDATA[
+@scenario.begin
+
+  @current @device-management @red
+  Scenario: Update device information
+    Given I am logged in as a "system_administrator" ... passed in 0.000s
+    And a device with name "Test Water Heater" exists with status "ACTIVE" ... passed in 0.005s
+    When I navigate to the device management page ... passed in 0.004s
+    And I select the device with name "Test Water Heater" ... passed in 0.000s
+    And I select "Edit Device" ... passed in 0.000s
+    And I update the following information ... undefined in 0.000s
+      | field    | value                      |
+      | name     | Main Building Water Heater |
+      | location | Building A, Utility Room   |
+    And I save the changes ... undefined in 0.000s
+    Then the device details should be updated in the system ... undefined in 0.000s
+    And I should see the updated information in the device list ... undefined in 0.000s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase><testcase classname="device_management.device_registration.IoT Device Registration and Management" name="Deactivate a device" status="failed" time="0.010185"><failure type="NoneType" message="None">
+<![CDATA[
+Failing step: And I confirm the deactivation ... undefined in 0.000s
+Location: features/device_management/device_registration.feature:71
+None]]>
+</failure><system-out>
+<![CDATA[
+@scenario.begin
+
+  @current @device-management @red
+  Scenario: Deactivate a device
+    Given I am logged in as a "system_administrator" ... passed in 0.000s
+    And a device with name "Test Water Heater" exists with status "ACTIVE" ... passed in 0.005s
+    When I navigate to the device management page ... passed in 0.005s
+    And I select the device with name "Test Water Heater" ... passed in 0.000s
+    And I select "Deactivate Device" ... passed in 0.000s
+    And I confirm the deactivation ... undefined in 0.000s
+    Then the device should have status "INACTIVE" ... skipped in 0.000s
+    And the device should no longer receive commands ... undefined in 0.000s
+    And the device should no longer report telemetry ... undefined in 0.000s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase><testcase classname="device_management.device_registration.IoT Device Registration and Management" name="Remove a device from the system" status="failed" time="0.009807"><failure type="NoneType" message="None">
+<![CDATA[
+Failing step: And I enter "DELETE" in the confirmation field ... undefined in 0.000s
+Location: features/device_management/device_registration.feature:84
+None]]>
+</failure><system-out>
+<![CDATA[
+@scenario.begin
+
+  @current @device-management @red
+  Scenario: Remove a device from the system
+    Given I am logged in as a "system_administrator" ... passed in 0.000s
+    And a device with name "Test Water Heater" exists with status "INACTIVE" ... passed in 0.005s
+    When I navigate to the device management page ... passed in 0.004s
+    And I select the device with name "Test Water Heater" ... passed in 0.000s
+    And I select "Remove Device" ... passed in 0.000s
+    And I enter "DELETE" in the confirmation field ... undefined in 0.000s
+    And I confirm the removal ... undefined in 0.000s
+    Then the device should be permanently removed from the system ... undefined in 0.000s
+    And I should not see the device in the device list ... undefined in 0.000s
+    And I should see a confirmation message ... undefined in 0.000s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase><testcase classname="device_management.device_registration.IoT Device Registration and Management" name="Register a device using manufacturer-agnostic template" status="failed" time="0.004629"><failure type="NoneType" message="None">
+<![CDATA[
+Failing step: And I select device type "Generic Water Heater" ... undefined in 0.000s
+Location: features/device_management/device_registration.feature:96
+None]]>
+</failure><system-out>
+<![CDATA[
+@scenario.begin
+
+  @future @device-management @cross-device @red
+  Scenario: Register a device using manufacturer-agnostic template
+    Given I am logged in as a "system_administrator" ... passed in 0.000s
+    When I navigate to the device management page ... passed in 0.004s
+    And I select "Add New Device" ... passed in 0.000s
+    And I select device type "Generic Water Heater" ... undefined in 0.000s
+    And I enter the following device information ... skipped in 0.000s
+      | field         | value                |
+      | name          | Generic Water Heater |
+      | manufacturer  | NewVendor            |
+      | model         | NV-100               |
+      | serial_number | NV100-9876           |
+      | location      | Building B, Basement |
+    And I map the following capabilities ... undefined in 0.000s
+      | standard_capability | manufacturer_capability |
+      | temperature         | water_temp              |
+      | heating_status      | heater_state            |
+      | set_temperature     | temp_setpoint           |
+    And I submit the device registration form ... skipped in 0.000s
+    Then the device should be successfully registered in the system ... skipped in 0.000s
+    And the system should create a capability mapping for the device ... undefined in 0.000s
+    And I should see the standard capabilities in the device details ... undefined in 0.000s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase></testsuite>

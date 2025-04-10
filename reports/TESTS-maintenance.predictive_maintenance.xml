@@ -1,0 +1,120 @@
+<testsuite name="maintenance.predictive_maintenance.Predictive Maintenance for Water Heaters" tests="5" errors="0" failures="4" skipped="0" time="0.011132" timestamp="2025-04-10T10:12:11.749273" hostname="Lisas-Mac-mini.local"><testcase classname="maintenance.predictive_maintenance.Predictive Maintenance for Water Heaters" name="Detect anomaly in water heater performance" status="passed" time="0.006305"><system-out>
+<![CDATA[
+@scenario.begin
+
+  @current @maintenance @ai-capability @predictive @red
+  Scenario: Detect anomaly in water heater performance
+    Given a water heater with ID "wh-001" is being monitored ... passed in 0.003s
+    When the water heater reports the following telemetry data ... passed in 0.002s
+      | temperature | pressure | flow_rate | power_consumption |
+      | 155         | 62       | 3.2       | 4500              |
+    Then the system should detect an anomaly ... passed in 0.000s
+    And an alert should be generated with severity "WARNING" ... passed in 0.002s
+    And the alert should include the detected anomaly type ... passed in 0.000s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase><testcase classname="maintenance.predictive_maintenance.Predictive Maintenance for Water Heaters" name="Predict component failure based on historical patterns" status="failed" time="0.004827"><failure type="AssertionError" message="Recommendation doesn't mention specific component at risk">
+<![CDATA[
+Failing step: And the recommendation should identify the specific component at risk ... failed in 0.000s
+Location: src/tests/bdd/features/maintenance/predictive_maintenance.feature:29
+Assertion Failed: Recommendation doesn't mention specific component at risk
+Captured logging:
+INFO:builtins:Setting up device with historical data: wh-001
+INFO:builtins:Setting up monitored device: wh-001
+INFO:builtins:Using mock data for device: wh-001
+INFO:httpx:HTTP Request: GET http://testserver/api/maintenance/monitoring-status/wh-001 "HTTP/1.1 404 Not Found"
+INFO:builtins:Device wh-001 is being monitored
+INFO:httpx:HTTP Request: GET http://testserver/api/telemetry/wh-001/history?days=30 "HTTP/1.1 404 Not Found"
+WARNING:builtins:History API returned status: 404
+INFO:builtins:Created mock historical data: 120 records
+INFO:builtins:Simulating predictive model analysis
+INFO:httpx:HTTP Request: POST http://testserver/api/maintenance/predict/wh-001 "HTTP/1.1 404 Not Found"
+WARNING:builtins:Prediction API returned status: 404
+INFO:builtins:Created mock prediction results
+INFO:builtins:Checking for failure probability > 70%
+INFO:builtins:Found 1 high-risk components
+INFO:builtins:Verifying maintenance recommendation generation
+INFO:builtins:Maintenance recommendation: Schedule maintenance for heating element within 3 weeks
+INFO:builtins:Verifying component identification in recommendation]]>
+</failure><system-out>
+<![CDATA[
+@scenario.begin
+
+  @current @maintenance @ai-capability @predictive @red
+  Scenario: Predict component failure based on historical patterns
+    Given a water heater with ID "wh-001" has historical performance data ... passed in 0.003s
+    When the predictive maintenance model analyzes the telemetry trends ... passed in 0.001s
+    And the failure probability exceeds 70% ... passed in 0.000s
+    Then a maintenance recommendation should be generated ... passed in 0.000s
+    And the recommendation should identify the specific component at risk ... failed in 0.000s
+    And the recommendation should include estimated time to failure ... skipped in 0.000s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase><testcase classname="maintenance.predictive_maintenance.Predictive Maintenance for Water Heaters" name="Schedule maintenance based on predictions" status="failed" time="0"><failure type="NoneType" message="None">
+<![CDATA[
+Failing step: Given a water heater with ID "wh-001" has a pending maintenance recommendation ... undefined in 0.000s
+Location: src/tests/bdd/features/maintenance/predictive_maintenance.feature:35
+None]]>
+</failure><system-out>
+<![CDATA[
+@scenario.begin
+
+  @current @maintenance @business-intelligence @red
+  Scenario: Schedule maintenance based on predictions
+    Given a water heater with ID "wh-001" has a pending maintenance recommendation ... undefined in 0.000s
+    And the system has access to technician availability ... undefined in 0.000s
+    When I request an optimal maintenance schedule ... undefined in 0.000s
+    Then the system should propose maintenance time slots ... undefined in 0.000s
+    And the proposed schedule should be before the predicted failure date ... undefined in 0.000s
+    And the schedule should include estimated parts and labor requirements ... undefined in 0.000s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase><testcase classname="maintenance.predictive_maintenance.Predictive Maintenance for Water Heaters" name="Calculate ROI for predictive vs. reactive maintenance" status="failed" time="0"><failure type="NoneType" message="None">
+<![CDATA[
+Failing step: Given a water heater with ID "wh-001" has a pending maintenance recommendation ... undefined in 0.000s
+Location: src/tests/bdd/features/maintenance/predictive_maintenance.feature:45
+None]]>
+</failure><system-out>
+<![CDATA[
+@scenario.begin
+
+  @current @maintenance @business-intelligence @red
+  Scenario: Calculate ROI for predictive vs. reactive maintenance
+    Given a water heater with ID "wh-001" has a pending maintenance recommendation ... undefined in 0.000s
+    When I view the business impact analysis ... undefined in 0.000s
+    Then I should see the cost of predictive maintenance ... undefined in 0.000s
+    And I should see the estimated cost of reactive repair after failure ... undefined in 0.000s
+    And I should see the calculated ROI percentage ... undefined in 0.000s
+    And I should see the estimated downtime comparison ... undefined in 0.000s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase><testcase classname="maintenance.predictive_maintenance.Predictive Maintenance for Water Heaters" name="Identify maintenance patterns across multiple devices" status="failed" time="0"><failure type="NoneType" message="None">
+<![CDATA[
+Failing step: Given the system has performance data for multiple water heaters ... undefined in 0.000s
+Location: src/tests/bdd/features/maintenance/predictive_maintenance.feature:55
+None]]>
+</failure><system-out>
+<![CDATA[
+@scenario.begin
+
+  @future @maintenance @ai-capability @learning @cross-device @red
+  Scenario: Identify maintenance patterns across multiple devices
+    Given the system has performance data for multiple water heaters ... undefined in 0.000s
+    When the AI analytics process runs ... undefined in 0.000s
+    Then the system should identify common failure patterns ... undefined in 0.000s
+    And the system should generate a fleet health report ... undefined in 0.000s
+    And the report should include recommendations for systemic improvements ... undefined in 0.000s
+    And the report should prioritize devices by maintenance urgency ... undefined in 0.000s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase></testsuite>

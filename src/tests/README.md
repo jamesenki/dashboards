@@ -1,15 +1,41 @@
 # IoTSphere Testing Guide
 
-This document provides guidelines for writing and running tests for the IoTSphere application.
+This document provides guidelines for writing and running tests for the IoTSphere application following Test-Driven Development (TDD) principles.
 
-## Setting Up the Test Environment
+## Test-Driven Development (TDD) Principles
 
-The IoTSphere application uses pytest for both the UI and backend tests. The tests are organized in the following directory structure:
+All development in IoTSphere follows these TDD principles:
+
+1. **RED Phase**: Write failing tests first that define expected functionality
+   - Tests should be atomic, focused on a single behavior
+   - Tests should be independent and repeatable
+   - Run tests to verify they fail (proving they're valid tests)
+
+2. **GREEN Phase**: Write minimal code to make tests pass
+   - Implement just enough functionality to pass the test
+   - Don't optimize or refactor yet
+   - Run tests to verify they pass
+
+3. **REFACTOR Phase**: Improve code quality while ensuring tests still pass
+   - Clean up code for readability and maintainability
+   - Apply design patterns and best practices
+   - Run tests again to ensure they still pass
+
+## Testing Structure
+
+The IoTSphere application uses a comprehensive testing strategy with multiple levels of tests:
 
 ```
 src/tests/
+├── bdd/               # Behavior-Driven Development tests
+│   ├── features/      # Feature specifications in Gherkin syntax
+│   ├── steps/         # Step implementations for BDD tests
+│   └── environment.py # BDD test environment configuration
 ├── e2e/               # End-to-end tests with Playwright
 │   └── tests/         # Test files for UI testing
+├── integration/       # Integration tests
+│   ├── api/           # API integration tests
+│   └── database/      # Database integration tests
 ├── unit/              # Unit tests
 │   ├── api/           # API tests
 │   ├── models/        # Model tests
@@ -18,7 +44,53 @@ src/tests/
 └── README.md          # This file
 ```
 
+In addition, frontend BDD tests are located in:
+
+```
+features/
+├── *.feature          # Feature specifications in Gherkin syntax
+└── step_definitions/  # JavaScript step implementations for frontend BDD tests
+```
+
 ## Running Tests
+
+### BDD Tests
+
+BDD tests use behave and can be run with:
+
+```bash
+cd src/tests/bdd
+behave
+```
+
+You can run specific features or scenarios using tags:
+
+```bash
+# Run all API tests
+behave --tags=@api
+
+# Run all WebSocket tests
+behave --tags=@websocket
+
+# Run specific feature file
+behave features/device_shadow_service.feature
+```
+
+### Python Unit and Integration Tests
+
+Python tests use pytest and can be run with:
+
+```bash
+# Run all tests
+python -m pytest
+
+# Run specific test category
+python -m pytest src/tests/unit/
+python -m pytest src/tests/integration/
+
+# Run with coverage report
+python -m pytest --cov=src
+```
 
 ### UI Tests with Playwright
 
@@ -28,7 +100,15 @@ UI tests use Playwright and can be run with:
 npm test
 ```
 
-These tests interact with a running instance of the application, so make sure the backend server is running on port 8006 before executing the tests.
+These tests interact with a running instance of the application, so make sure the backend server is running on port 8000 before executing the tests.
+
+### JavaScript BDD Tests
+
+Frontend BDD tests use Cucumber.js and can be run with:
+
+```bash
+npx cucumber-js
+```
 
 ### Backend Tests with pytest
 

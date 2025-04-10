@@ -1,0 +1,20 @@
+{
+  "id": "user-001",
+  "username": "facility_manager",
+  "email": "facility@example.com",
+  "firstName": "Alex",
+  "lastName": "Facility",
+  "role": "facility_manager",
+  "permissions": [
+    "read:devices",
+    "write:devices",
+    "read:alerts",
+    "write:commands",
+    "read:analytics"
+  ],
+  "preferences": {
+    "dashboardView": "tile",
+    "temperatureUnit": "fahrenheit",
+    "alertNotifications": true
+  }
+}

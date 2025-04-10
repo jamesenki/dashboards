@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IoTSphere Python BDD Test Report</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    h1, h2, h3 {
+      color: #2c3e50;
+    }
+    .summary {
+      background-color: #f8f9fa;
+      border-radius: 5px;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+    .progress-container {
+      margin-top: 10px;
+      margin-bottom: 30px;
+    }
+    .progress-bar {
+      height: 25px;
+      background-color: #e9ecef;
+      border-radius: 5px;
+      overflow: hidden;
+      margin-bottom: 5px;
+    }
+    .progress {
+      height: 100%;
+      background-color: #007bff;
+      color: white;
+      text-align: center;
+      line-height: 25px;
+    }
+    .green { background-color: #28a745; }
+    .red { background-color: #dc3545; }
+    .yellow { background-color: #ffc107; color: #333; }
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+    .table th, .table td {
+      padding: 12px 15px;
+      border: 1px solid #ddd;
+      text-align: left;
+    }
+    .table th {
+      background-color: #f8f9fa;
+    }
+    .table tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+    .phase-indicator {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 3px;
+      color: white;
+      font-weight: bold;
+      margin-right: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h1>IoTSphere Python BDD Test Report</h1>
+
+  <div class="summary">
+    <h2>Overall Summary</h2>
+    <p>Total Step Definitions: <strong>58</strong> of <strong>130</strong> needed steps</p>
+    <p>Implementation Progress: <strong>45%</strong></p>
+
+    <div class="progress-container">
+      <div class="progress-bar">
+        <div class="progress" style="width: 45%">45%</div>
+      </div>
+    </div>
+
+    <h3>TDD Phase Breakdown</h3>
+    <p>
+      <span class="phase-indicator red">RED: 26</span>
+      <span class="phase-indicator green">GREEN: 32</span>
+      <span class="phase-indicator yellow">REFACTOR: 0</span>
+    </p>
+  </div>
+
+  <h2>Category Implementation Progress</h2>
+
+  <div class="progress-container">
+
+          <h3>Water Heater Monitoring</h3>
+          <p>Steps: 0 / 84 (0% complete)</p>
+          <div class="progress-bar">
+            <div class="progress" style="width: 0%">0%</div>
+          </div>
+          <p>GREEN Phase: 0 / 84 (0%)</p>
+          <div class="progress-bar">
+            <div class="progress green" style="width: 0%">0%</div>
+          </div>
+          <p>Phase Breakdown:
+            <span class="phase-indicator red">RED: 0</span>
+            <span class="phase-indicator green">GREEN: 0</span>
+            <span class="phase-indicator yellow">REFACTOR: 0</span>
+          </p>
+
+          <h3>Device Shadow Service</h3>
+          <p>Steps: 13 / 17 (76% complete)</p>
+          <div class="progress-bar">
+            <div class="progress" style="width: 76%">76%</div>
+          </div>
+          <p>GREEN Phase: 13 / 17 (76%)</p>
+          <div class="progress-bar">
+            <div class="progress green" style="width: 76%">76%</div>
+          </div>
+          <p>Phase Breakdown:
+            <span class="phase-indicator red">RED: 0</span>
+            <span class="phase-indicator green">GREEN: 13</span>
+            <span class="phase-indicator yellow">REFACTOR: 0</span>
+          </p>
+
+          <h3>Device Management</h3>
+          <p>Steps: 14 / 0 (0% complete)</p>
+          <div class="progress-bar">
+            <div class="progress" style="width: 0%">0%</div>
+          </div>
+          <p>GREEN Phase: 0 / 0 (0%)</p>
+          <div class="progress-bar">
+            <div class="progress green" style="width: 0%">0%</div>
+          </div>
+          <p>Phase Breakdown:
+            <span class="phase-indicator red">RED: 14</span>
+            <span class="phase-indicator green">GREEN: 0</span>
+            <span class="phase-indicator yellow">REFACTOR: 0</span>
+          </p>
+
+          <h3>Predictive Maintenance</h3>
+          <p>Steps: 11 / 29 (38% complete)</p>
+          <div class="progress-bar">
+            <div class="progress" style="width: 38%">38%</div>
+          </div>
+          <p>GREEN Phase: 0 / 29 (0%)</p>
+          <div class="progress-bar">
+            <div class="progress green" style="width: 0%">0%</div>
+          </div>
+          <p>Phase Breakdown:
+            <span class="phase-indicator red">RED: 11</span>
+            <span class="phase-indicator green">GREEN: 0</span>
+            <span class="phase-indicator yellow">REFACTOR: 0</span>
+          </p>
+
+          <h3>Dashboard & Visualization</h3>
+          <p>Steps: 20 / 0 (0% complete)</p>
+          <div class="progress-bar">
+            <div class="progress" style="width: 0%">0%</div>
+          </div>
+          <p>GREEN Phase: 19 / 0 (0%)</p>
+          <div class="progress-bar">
+            <div class="progress green" style="width: 0%">0%</div>
+          </div>
+          <p>Phase Breakdown:
+            <span class="phase-indicator red">RED: 1</span>
+            <span class="phase-indicator green">GREEN: 19</span>
+            <span class="phase-indicator yellow">REFACTOR: 0</span>
+          </p>
+
+  </div>
+
+  <h2>Step Definition Details</h2>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Step Text</th>
+        <th>File</th>
+        <th>Phase</th>
+      </tr>
+    </thead>
+    <tbody>
+
+          <tr>
+            <td>given</td>
+            <td>I am logged in as a </td>
+            <td>dashboard_steps.py</td>
+            <td><span class="phase-indicator green">GREEN</span></td>
+          </tr>
+
+          <tr>
+            <td>when</td>
+            <td>I navigate to the water heater dashboard</td>
+            <td>dashboard_steps.py</td>
+            <td><span class="phase-indicator green">GREEN</span></td>
+          </tr>
+
+          <tr>
+            <td>then</td>
+            <td>I should see a list of all water heaters in the system</td>
+            <td>dashboard_steps.py</td>
+            <td><span class="phase-indicator green">GREEN</span></td>
+          </tr>
+
+          <tr>
+            <td>then</td>
+            <td>each water heater should display its connection status</td>
+            <td>dashboard_steps.py</td>
+            <td><span class="phase-indicator green">GREEN</span></td>
+          </tr>
+
+          <tr>
+            <td>then</td>
+            <td>each water heater should indicate if it is simulated</td>
+            <td>dashboard_steps.py</td>
+            <td><span class="phase-indicator green">GREEN</span></td>
+          </tr>
+
+          <tr>
+            <td>given</td>
+            <td>the system has water heaters from multiple manufacturers</td>
+            <td>dashboard_steps.py</td>
+            <td><span class="phase-indicator green">GREEN</span></td>
+          </tr>
+
+          <tr>
+            <td>when</td>
+            <td>I filter by manufacturer </td>
+            <td>dashboard_steps.py</td>
+            <td><span class="phase-indicator green">GREEN</span></td>
+          </tr>
+
+          <tr>
+            <td>then</td>
+            <td>I should only see water heaters from </td>
+            <td>dashboard_steps.py</td>
+            <td><span class="phase-indicator green">GREEN</span></td>
+          </tr>
+
+          <tr>
+            <td>then</td>
+            <td>I should be able to clear the filter to see all water heaters</td>
+            <td>dashboard_steps.py</td>
+            <td><span class="phase-indicator green">GREEN</span></td>
+          </tr>
+
+          <tr>
+            <td>given</td>
+            <td>the system has both connected and disconnected water heaters</td>
+            <td>dashboard_steps.py</td>
+            <td><span class="phase-indicator green">GREEN</span></td>
+          </tr>
+
+          <tr>
+            <td>when</td>
+            <td>I filter by connection status </td>
+            <td>dashboard_steps.py</td>
+            <td><span class="phase-indicator green">GREEN</span></td>
+          </tr>
+
+          <tr>
+            <td>then</td>
+            <td>I should only see water heaters with </td>
+            <td>dashboard_steps.py</td>
+            <td><span class="phase-indicator green">GREEN</span></td>
+          </tr>
+
+          <tr>
+            <td>when</td>
+            <td>I click on the water heater with ID </td>
+            <td>dashboard_steps.py</td>
+            <td><span class="phase-indicator green">GREEN</span></td>
+          </tr>
+
+          <tr>
+            <td>then</td>
+            <td>I should be redirected to the details page for water heater </td>
+            <td>dashboard_steps.py</td>
+            <td><span class="phase-indicator green">GREEN</span></td>
+          </tr>
+
+          <tr>
+            <td>then</td>
+            <td>I should see the current operating status</td>
+            <td>dashboard_steps.py</td>
+            <td><span class="phase-indicator green">GREEN</span></td>
+          </tr>
+
+          <tr>
+            <td>then</td>
+            <td>I should see the reported temperature</td>
+            <td>dashboard_steps.py</td>
+            <td><span class="phase-indicator green">GREEN</span></td>
+          </tr>
+
+          <tr>
+            <td>given</td>
+            <td>I am viewing the water heater dashboard</td>
+            <td>dashboard_steps.py</td>
+            <td><span class="phase-indicator red">RED</span></td>
+          </tr>
+
+          <tr>
+            <td>when</td>
+            <td>a water heater changes status from </td>
+            <td>dashboard_steps.py</td>
+            <td><span class="phase-indicator green">GREEN</span></td>
+          </tr>
+
+          <tr>
+            <td>then</td>
+            <td>I should see the status indicator update without refreshing the page</td>
+            <td>dashboard_steps.py</td>
+            <td><span class="phase-indicator green">GREEN</span></td>
+          </tr>
+
+          <tr>
+            <td>then</td>
+            <td>the status change should be visually highlighted</td>
+            <td>dashboard_steps.py</td>
+            <td><span class="phase-indicator green">GREEN</span></td>
+          </tr>
+
+          <tr>
+            <td>when</td>
+            <td>I navigate to the device management page</td>
+            <td>device_management_steps.py</td>
+            <td><span class="phase-indicator red">RED</span></td>
+          </tr>
+
+          <tr>
+            <td>when</td>
+            <td>I select </td>
+            <td>device_management_steps.py</td>
+            <td><span class="phase-indicator red">RED</span></td>
+          </tr>
+
+          <tr>
+            <td>when</td>
+            <td>I enter the following device information</td>
+            <td>device_management_steps.py</td>
+            <td><span class="phase-indicator red">RED</span></td>
+          </tr>
+
+          <tr>
+            <td>when</td>
+            <td>I submit the device registration form</td>
+            <td>device_management_steps.py</td>
+            <td><span class="phase-indicator red">RED</span></td>
+          </tr>
+
+          <tr>
+            <td>then</td>
+            <td>the device should be successfully registered in the system</td>
+            <td>device_management_steps.py</td>
+            <td><span class="phase-indicator red">RED</span></td>
+          </tr>
+
+          <tr>
+            <td>then</td>
+            <td>I should see the new device in the device list</td>
+            <td>device_management_steps.py</td>
+            <td><span class="phase-indicator red">RED</span></td>
+          </tr>
+
+          <tr>
+            <td>then</td>
+            <td>the device should have status </td>
+            <td>device_management_steps.py</td>
+            <td><span class="phase-indicator red">RED</span></td>
+          </tr>
+
+          <tr>
+            <td>given</td>
+            <td>a device with name </td>
+            <td>device_management_steps.py</td>
+            <td><span class="phase-indicator red">RED</span></td>
+          </tr>
+
+          <tr>
+            <td>when</td>
+            <td>I select the device with name </td>
+            <td>device_management_steps.py</td>
+            <td><span class="phase-indicator red">RED</span></td>
+          </tr>
+
+          <tr>
+            <td>when</td>
+            <td>I select </td>
+            <td>device_management_steps.py</td>
+            <td><span class="phase-indicator red">RED</span></td>
+          </tr>
+
+          <tr>
+            <td>when</td>
+            <td>I enter the following activation information</td>
+            <td>device_management_steps.py</td>
+            <td><span class="phase-indicator red">RED</span></td>
+          </tr>
+
+          <tr>
+            <td>when</td>
+            <td>I submit the activation form</td>
+            <td>device_management_steps.py</td>
+            <td><span class="phase-indicator red">RED</span></td>
+          </tr>
+
+          <tr>
+            <td>then</td>
+            <td>the system should generate device credentials</td>
+            <td>device_management_steps.py</td>
+            <td><span class="phase-indicator red">RED</span></td>
+          </tr>
+
+          <tr>
+            <td>then</td>
+            <td>I should see the device connection information</td>
+            <td>device_management_steps.py</td>
+            <td><span class="phase-indicator red">RED</span></td>
+          </tr>
+
+          <tr>
+            <td>given</td>
+            <td>a device with ID </td>
+            <td>device_shadow_steps.py</td>
+            <td><span class="phase-indicator green">GREEN</span></td>
+          </tr>
+
+          <tr>
+            <td>given</td>
+            <td>a device with ID </td>
+            <td>device_shadow_steps.py</td>
+            <td><span class="phase-indicator green">GREEN</span></td>
+          </tr>
+
+          <tr>
+            <td>when</td>
+            <td>a client requests the shadow state for device </td>
+            <td>device_shadow_steps.py</td>
+            <td><span class="phase-indicator green">GREEN</span></td>
+          </tr>
+
+          <tr>
+            <td>then</td>
+            <td>the response should be successful</td>
+            <td>device_shadow_steps.py</td>
+            <td><span class="phase-indicator green">GREEN</span></td>
+          </tr>
+
+          <tr>
+            <td>then</td>
+            <td>the shadow document should contain </td>
+            <td>device_shadow_steps.py</td>
+            <td><span class="phase-indicator green">GREEN</span></td>
+          </tr>
+
+          <tr>
+            <td>then</td>
+            <td>the response should include the device ID </td>
+            <td>device_shadow_steps.py</td>
+            <td><span class="phase-indicator green">GREEN</span></td>
+          </tr>
+
+          <tr>
+            <td>when</td>
+            <td>a client updates the desired state with</td>
+            <td>device_shadow_steps.py</td>
+            <td><span class="phase-indicator green">GREEN</span></td>
+          </tr>
+
+          <tr>
+            <td>then</td>
+            <td>the updated shadow should contain the new desired property </td>
+            <td>device_shadow_steps.py</td>
+            <td><span class="phase-indicator green">GREEN</span></td>
+          </tr>
+
+          <tr>
+            <td>then</td>
+            <td>the response should indicate the resource was not found</td>
+            <td>device_shadow_steps.py</td>
+            <td><span class="phase-indicator green">GREEN</span></td>
+          </tr>
+
+          <tr>
+            <td>given</td>
+            <td>a WebSocket connection is established for device </td>
+            <td>device_shadow_steps.py</td>
+            <td><span class="phase-indicator green">GREEN</span></td>
+          </tr>
+
+          <tr>
+            <td>when</td>
+            <td>the device reports a state change to</td>
+            <td>device_shadow_steps.py</td>
+            <td><span class="phase-indicator green">GREEN</span></td>
+          </tr>
+
+          <tr>
+            <td>then</td>
+            <td>the WebSocket client should receive a shadow update</td>
+            <td>device_shadow_steps.py</td>
+            <td><span class="phase-indicator green">GREEN</span></td>
+          </tr>
+
+          <tr>
+            <td>then</td>
+            <td>the update should contain the new reported values</td>
+            <td>device_shadow_steps.py</td>
+            <td><span class="phase-indicator green">GREEN</span></td>
+          </tr>
+
+          <tr>
+            <td>given</td>
+            <td>a water heater with ID </td>
+            <td>maintenance_steps.py</td>
+            <td><span class="phase-indicator red">RED</span></td>
+          </tr>
+
+          <tr>
+            <td>when</td>
+            <td>the water heater reports the following telemetry data</td>
+            <td>maintenance_steps.py</td>
+            <td><span class="phase-indicator red">RED</span></td>
+          </tr>
+
+          <tr>
+            <td>then</td>
+            <td>the system should detect an anomaly</td>
+            <td>maintenance_steps.py</td>
+            <td><span class="phase-indicator red">RED</span></td>
+          </tr>
+
+          <tr>
+            <td>then</td>
+            <td>an alert should be generated with severity </td>
+            <td>maintenance_steps.py</td>
+            <td><span class="phase-indicator red">RED</span></td>
+          </tr>
+
+          <tr>
+            <td>then</td>
+            <td>the alert should include the detected anomaly type</td>
+            <td>maintenance_steps.py</td>
+            <td><span class="phase-indicator red">RED</span></td>
+          </tr>
+
+          <tr>
+            <td>given</td>
+            <td>a water heater with ID </td>
+            <td>maintenance_steps.py</td>
+            <td><span class="phase-indicator red">RED</span></td>
+          </tr>
+
+          <tr>
+            <td>when</td>
+            <td>the predictive maintenance model analyzes the telemetry trends</td>
+            <td>maintenance_steps.py</td>
+            <td><span class="phase-indicator red">RED</span></td>
+          </tr>
+
+          <tr>
+            <td>when</td>
+            <td>the failure probability exceeds {threshold:d}%</td>
+            <td>maintenance_steps.py</td>
+            <td><span class="phase-indicator red">RED</span></td>
+          </tr>
+
+          <tr>
+            <td>then</td>
+            <td>a maintenance recommendation should be generated</td>
+            <td>maintenance_steps.py</td>
+            <td><span class="phase-indicator red">RED</span></td>
+          </tr>
+
+          <tr>
+            <td>then</td>
+            <td>the recommendation should identify the specific component at risk</td>
+            <td>maintenance_steps.py</td>
+            <td><span class="phase-indicator red">RED</span></td>
+          </tr>
+
+          <tr>
+            <td>then</td>
+            <td>the recommendation should include estimated time to failure</td>
+            <td>maintenance_steps.py</td>
+            <td><span class="phase-indicator red">RED</span></td>
+          </tr>
+
+    </tbody>
+  </table>
+
+  <p><em>Report generated on 4/10/2025, 10:34:14 AM</em></p>
+</body>
+</html>

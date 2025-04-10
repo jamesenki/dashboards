@@ -1,0 +1,119 @@
+<testsuite name="features.dashboard.water_heater_dashboard.Water Heater Operations Dashboard" tests="5" errors="0" failures="5" skipped="0" time="0.068183" timestamp="2025-04-10T08:42:15.912833" hostname="Lisas-Mac-mini.local"><testcase classname="features.dashboard.water_heater_dashboard.Water Heater Operations Dashboard" name="View list of all water heaters with status indicators" status="failed" time="0.060386"><failure type="AssertionError" message="Authentication failed with status 404">
+<![CDATA[
+Failing step: Given I am logged in as a "facility_manager" ... failed in 0.060s
+Location: features/dashboard/water_heater_dashboard.feature:14
+Assertion Failed: Authentication failed with status 404
+Captured logging:
+INFO:builtins:Setting up user session with role: facility_manager
+INFO:httpx:HTTP Request: POST http://testserver/api/auth/login "HTTP/1.1 404 Not Found"]]>
+</failure><system-out>
+<![CDATA[
+@scenario.begin
+
+  @current @device-management @device-operation @red
+  Scenario: View list of all water heaters with status indicators
+    Given I am logged in as a "facility_manager" ... failed in 0.060s
+    When I navigate to the water heater dashboard ... skipped in 0.000s
+    Then I should see a list of all water heaters in the system ... skipped in 0.000s
+    And each water heater should display its connection status ... skipped in 0.000s
+    And each water heater should indicate if it is simulated ... skipped in 0.000s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase><testcase classname="features.dashboard.water_heater_dashboard.Water Heater Operations Dashboard" name="Filter water heaters by manufacturer" status="failed" time="0.001787"><failure type="AssertionError" message="Authentication failed with status 404">
+<![CDATA[
+Failing step: Given I am logged in as a "facility_manager" ... failed in 0.002s
+Location: features/dashboard/water_heater_dashboard.feature:23
+Assertion Failed: Authentication failed with status 404
+Captured logging:
+INFO:builtins:Setting up user session with role: facility_manager
+INFO:httpx:HTTP Request: POST http://testserver/api/auth/login "HTTP/1.1 404 Not Found"]]>
+</failure><system-out>
+<![CDATA[
+@scenario.begin
+
+  @current @device-operation @red
+  Scenario: Filter water heaters by manufacturer
+    Given I am logged in as a "facility_manager" ... failed in 0.002s
+    And the system has water heaters from multiple manufacturers ... skipped in 0.000s
+    When I navigate to the water heater dashboard ... skipped in 0.000s
+    And I filter by manufacturer "AquaTech" ... skipped in 0.000s
+    Then I should only see water heaters from "AquaTech" ... skipped in 0.000s
+    And I should be able to clear the filter to see all water heaters ... skipped in 0.000s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase><testcase classname="features.dashboard.water_heater_dashboard.Water Heater Operations Dashboard" name="Filter water heaters by connection status" status="failed" time="0.001942"><failure type="AssertionError" message="Authentication failed with status 404">
+<![CDATA[
+Failing step: Given I am logged in as a "facility_manager" ... failed in 0.002s
+Location: features/dashboard/water_heater_dashboard.feature:33
+Assertion Failed: Authentication failed with status 404
+Captured logging:
+INFO:builtins:Setting up user session with role: facility_manager
+INFO:httpx:HTTP Request: POST http://testserver/api/auth/login "HTTP/1.1 404 Not Found"]]>
+</failure><system-out>
+<![CDATA[
+@scenario.begin
+
+  @current @device-operation @red
+  Scenario: Filter water heaters by connection status
+    Given I am logged in as a "facility_manager" ... failed in 0.002s
+    And the system has both connected and disconnected water heaters ... skipped in 0.000s
+    When I navigate to the water heater dashboard ... skipped in 0.000s
+    And I filter by connection status "connected" ... skipped in 0.000s
+    Then I should only see water heaters with "connected" status ... skipped in 0.000s
+    And I should be able to clear the filter to see all water heaters ... skipped in 0.000s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase><testcase classname="features.dashboard.water_heater_dashboard.Water Heater Operations Dashboard" name="Navigate to water heater details page" status="failed" time="0.001955"><failure type="AssertionError" message="Authentication failed with status 404">
+<![CDATA[
+Failing step: Given I am logged in as a "facility_manager" ... failed in 0.002s
+Location: features/dashboard/water_heater_dashboard.feature:43
+Assertion Failed: Authentication failed with status 404
+Captured logging:
+INFO:builtins:Setting up user session with role: facility_manager
+INFO:httpx:HTTP Request: POST http://testserver/api/auth/login "HTTP/1.1 404 Not Found"]]>
+</failure><system-out>
+<![CDATA[
+@scenario.begin
+
+  @current @device-operation @red
+  Scenario: Navigate to water heater details page
+    Given I am logged in as a "facility_manager" ... failed in 0.002s
+    When I navigate to the water heater dashboard ... skipped in 0.000s
+    And I click on the water heater with ID "wh-001" ... skipped in 0.000s
+    Then I should be redirected to the details page for water heater "wh-001" ... skipped in 0.000s
+    And I should see the current operating status ... skipped in 0.000s
+    And I should see the reported temperature ... skipped in 0.000s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase><testcase classname="features.dashboard.water_heater_dashboard.Water Heater Operations Dashboard" name="Real-time updates of water heater status" status="failed" time="0.002113"><failure type="AssertionError" message="Authentication failed with status 404">
+<![CDATA[
+Failing step: Given I am logged in as a "facility_manager" ... failed in 0.002s
+Location: features/dashboard/water_heater_dashboard.feature:53
+Assertion Failed: Authentication failed with status 404
+Captured logging:
+INFO:builtins:Setting up user session with role: facility_manager
+INFO:httpx:HTTP Request: POST http://testserver/api/auth/login "HTTP/1.1 404 Not Found"]]>
+</failure><system-out>
+<![CDATA[
+@scenario.begin
+
+  @current @device-operation @websocket @red
+  Scenario: Real-time updates of water heater status
+    Given I am logged in as a "facility_manager" ... failed in 0.002s
+    And I am viewing the water heater dashboard ... skipped in 0.000s
+    When a water heater changes status from "ONLINE" to "OFFLINE" ... skipped in 0.000s
+    Then I should see the status indicator update without refreshing the page ... skipped in 0.000s
+    And the status change should be visually highlighted ... skipped in 0.000s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase></testsuite>
