@@ -49,7 +49,7 @@ global.fetch = jest.fn(() =>
 );
 
 // Mock helper functions for testing
-const formatTemperature = (temp) => temp ? `${temp.toFixed(1)}°C` : 'N/A';
+const formatTemperature = (temp) => temp !== null && temp !== undefined ? `${temp.toFixed(1)}°C` : 'N/A';
 const formatPressure = (pressure) => pressure ? `${pressure.toFixed(1)} bar` : 'N/A';
 const formatPower = (watts) => watts ? `${watts} W` : 'N/A';
 const formatFlowRate = (rate) => rate ? `${rate.toFixed(1)} L/min` : 'N/A';

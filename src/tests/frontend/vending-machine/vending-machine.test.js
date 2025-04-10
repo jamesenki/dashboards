@@ -25,7 +25,7 @@ global.fetch = jest.fn(() =>
 // Manual import of functions for testing - in real tests, you'd use proper imports
 // We'll mock the functions for testing purposes
 const formatCurrency = (amount) => amount ? `$${parseFloat(amount).toFixed(2)}` : '$0.00';
-const formatTemperature = (temp) => temp ? `${temp.toFixed(1)}°F` : 'N/A';
+const formatTemperature = (temp) => temp !== null && temp !== undefined ? `${temp.toFixed(1)}°F` : 'N/A';
 
 describe('Vending Machine Helper Functions', () => {
   test('formatCurrency formats amount correctly', () => {
