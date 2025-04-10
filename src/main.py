@@ -5,6 +5,7 @@ import os
 import random
 import socket
 import sys
+from contextlib import asynccontextmanager
 from datetime import datetime, timedelta
 from pathlib import Path
 
@@ -15,13 +16,19 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette.middleware.base import BaseHTTPMiddleware
 
+# Debug and alternate routers disabled for performance improvement
+# from src.api.routes.websocket_debug import router as websocket_debug_router
+# from src.api.routes.websocket_fix import router as websocket_fix_router
+# from src.api.routes.websocket_noauth import router as websocket_noauth_router
+from src.api.routes.system_config import router as system_config_router
 from src.api.routes.test_websocket import router as test_websocket_router
 
-# Real-time services
+# Real-time services - using only the primary websocket router for better performance
 from src.api.routes.websocket import router as websocket_router
-from src.api.routes.websocket_debug import router as websocket_debug_router
-from src.api.routes.websocket_fix import router as websocket_fix_router
-from src.api.routes.websocket_noauth import router as websocket_noauth_router
+
+# WebSocket tracer disabled to improve performance
+# import src.tools.websocket_tracer
+
 
 # Add the parent directory to sys.path when running from src/
 parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
@@ -61,6 +68,9 @@ from src.api.routes.manufacturer_water_heaters import (
 # Shadow Document API
 from src.api.shadow_document_api import router as shadow_document_api_router
 
+# Temperature history optimized API
+from src.api.temperature_history import router as temperature_history_router
+
 # Basic vending machine management API
 from src.api.vending_machine import router as vending_machine_api_router
 
@@ -87,6 +97,10 @@ from src.api.water_heater_history import router as water_heater_history_api_rout
 # Water heater operations API
 from src.api.water_heater_operations import router as water_heater_operations_api_router
 
+# Water heater timeseries data management API
+from src.api.water_heater_timeseries import admin_router as timeseries_admin_router
+from src.api.water_heater_timeseries import router as water_heater_timeseries_router
+
 # Database initialization
 from src.db.migration import initialize_db
 
@@ -96,7 +110,33 @@ from src.routes.debug_routes import router as debug_router
 # Web UI routes
 from src.web.routes import router as web_router
 
-# Create FastAPI app
+
+# Define lifespan context manager before creating the app
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Handle application startup and shutdown events.
+
+    This modern approach replaces the deprecated @app.on_event("startup") pattern.
+    """
+    # Startup logic
+    try:
+        # Call our startup logic function
+        await startup_logic(app)
+        yield
+    finally:
+        # Shutdown logic - add any cleanup needed here
+        if hasattr(app.state, "websocket_service") and app.state.websocket_service:
+            try:
+                # If we have a WebSocket service, try to stop it cleanly
+                logger.info("Stopping WebSocket service during shutdown")
+                if hasattr(app.state.websocket_service, "stop"):
+                    await app.state.websocket_service.stop()
+                    logger.info("WebSocket service stopped successfully")
+            except Exception as e:
+                logger.error(f"Error stopping WebSocket service: {e}")
+
+
+# Create FastAPI app with our lifespan manager
 app = FastAPI(
     title="IoTSphere API",
     description="API for IoT device management and real-time operational monitoring",
@@ -104,6 +144,7 @@ app = FastAPI(
     docs_url="/api/docs",
     redoc_url="/api/redoc",
     openapi_url="/api/openapi.json",
+    lifespan=lifespan,
     openapi_tags=[
         {
             "name": "Water Heaters",
@@ -202,28 +243,17 @@ templates = Jinja2Templates(directory=templates_dir)
 env = os.environ.get("APP_ENV", "development").lower()
 is_debug = os.environ.get("DEBUG_WEBSOCKET", "false").lower() == "true"
 
-# In production, only include the primary WebSocket router
-if env == "production" and not is_debug:
-    app.include_router(websocket_fix_router)  # Only use the fixed router in production
-    logging.info("Using production WebSocket routes (websocket_fix_router only)")
-else:
-    # In development/debug, include required routers in order of precedence
-    app.include_router(
-        websocket_fix_router
-    )  # Fixed WebSocket routes - highest precedence
+# Include only the primary WebSocket router for all environments
+# This is a performance optimization to avoid redundant WebSocket implementations
+logging.info("Using optimized WebSocket configuration with minimal routes")
 
-    if is_debug:
-        app.include_router(websocket_debug_router)  # Debug WebSocket routes
-        app.include_router(test_websocket_router)  # Test WebSocket routes
-        app.include_router(websocket_noauth_router)  # No-auth WebSocket routes
-        logging.info("Using extended WebSocket routes for development/testing")
+# Debug routes have been disabled for performance
+logging.info("WebSocket debug routers disabled for better performance")
 
-    # Original router always has lowest precedence (only used as fallback)
-    # This should eventually be removed when all clients use the fix router
-    app.include_router(websocket_router)
-    logging.info(
-        "Including legacy WebSocket routes (websocket_router) for compatibility"
-    )
+# Original router always has lowest precedence (only used as fallback)
+# This should eventually be removed when all clients use the fix router
+app.include_router(websocket_router)
+logging.info("Including legacy WebSocket routes (websocket_router) for compatibility")
 
 # Create API router with prefix
 api_router = APIRouter(prefix="/api")
@@ -249,6 +279,8 @@ api_router.include_router(operations_db_router)
 api_router.include_router(shadow_document_api_router)
 # Include debug routes
 api_router.include_router(debug_router)
+# Include system configuration routes
+api_router.include_router(system_config_router)
 
 
 # Direct test endpoint - add before including routers to ensure proper routing precedence
@@ -354,10 +386,19 @@ app.include_router(db_water_heater_router)  # Database-backed API
 # app.include_router(mock_water_heater_router)  # Mock data API
 app.include_router(manufacturer_water_heater_router)  # New manufacturer-agnostic API
 app.include_router(water_heater_history_api_router)  # Water heater history endpoints
+app.include_router(
+    temperature_history_router
+)  # Optimized temperature history API with server-side processing
 app.include_router(water_heater_health_router)  # Water heater health endpoints
 app.include_router(health_api_router)  # Application health API
 app.include_router(device_shadows_router)  # Device shadows API
 app.include_router(web_router)  # Web routes
+app.include_router(
+    water_heater_timeseries_router
+)  # Water heater timeseries data management API
+app.include_router(
+    timeseries_admin_router
+)  # Admin endpoints for timeseries data archiving
 # Note: device_shadow_router is included by setup_shadow_api
 
 # Set up logging for this module if not already configured
@@ -365,84 +406,81 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+# Import the WebSocketServiceManager early to ensure it's available
+# This also helps prevent duplicate initialization
+try:
+    # Import constants and manager
+    from src.infrastructure.websocket.websocket_manager import (
+        ENV_ACTIVE_WS_PORT,
+        ENV_WS_DISABLED,
+        ENV_WS_HOST,
+        ENV_WS_INIT_ATTEMPTED,
+        ENV_WS_INITIALIZED,
+        ENV_WS_PORT,
+        ENV_WS_PORT_UNAVAILABLE,
+        WebSocketServiceManager,
+        get_websocket_service,
+    )
+
+    logger.info("WebSocketServiceManager imported successfully during startup")
+
+    # Set environment flag early to prevent multiple initialization attempts
+    os.environ[ENV_WS_INIT_ATTEMPTED] = "true"
+
+except ImportError as e:
+    logger.warning(f"Failed to import WebSocketServiceManager: {e}")
+    logger.warning("WebSocket functionality may be limited")
+
 # Initialize message bus for internal communication
 try:
     # Try to load the messaging infrastructure
-    try:
-        from src.infrastructure.messaging.message_bus import create_message_bus
+    from src.infrastructure.messaging.message_bus import create_message_bus
 
-        # Create a local message bus for in-memory communication regardless
-        # This is needed for various services even if we don't use the infrastructure WebSocket
-        message_bus = create_message_bus(bus_type="local")
-        app.state.message_bus = message_bus
+    # Create a local message bus for in-memory communication regardless
+    # This is needed for various services even if we don't use the infrastructure WebSocket
+    message_bus = create_message_bus(bus_type="local")
+    app.state.message_bus = message_bus
 
-        # CRITICAL: Add hard defense against duplicate WebSocket servers
-        # Always check if the port is already in use before attempting to start
-        import socket
+    # Check environment flag for explicit disabling
+    disable_infrastructure_websocket = (
+        os.environ.get(ENV_WS_DISABLED, "false").lower() == "true"
+    )
 
-        # Get configured WebSocket port
-        websocket_port = int(os.environ.get("WEBSOCKET_PORT", "7777"))
-
-        # Test if port is available by attempting to bind to it
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        try:
-            # Set socket options to allow immediate reuse
-            sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-            # Use a short timeout for quick response
-            sock.settimeout(0.5)
-            # Try to bind to the port
-            sock.bind(("0.0.0.0", websocket_port))
-            port_available = True
-            # If bind succeeds, immediately close the socket to free it
-            sock.close()
-        except socket.error:
-            port_available = False
-            sock.close()
-
-        # Check environment flag for explicit disabling
-        disable_infrastructure_websocket = (
-            os.environ.get("DISABLE_INFRASTRUCTURE_WEBSOCKET", "false").lower()
-            == "true"
-        )
-
-        # Disable if explicitly requested OR if port is already taken
-        if disable_infrastructure_websocket or not port_available:
-            if disable_infrastructure_websocket:
-                logger.warning(
-                    "Infrastructure WebSocket server disabled by configuration"
-                )
-            if not port_available:
-                logger.warning(
-                    f"WebSocket port {websocket_port} already in use - disabling infrastructure WebSocket server"
-                )
-            app.state.websocket_service = None
-        else:
-            # Import and initialize the infrastructure WebSocket service
-            from src.infrastructure.websocket.websocket_service import WebSocketService
-
-            # Initialize WebSocket service for real-time updates
-            ws_host = os.environ.get("WS_HOST", "0.0.0.0")
-            ws_port = int(
-                os.environ.get("WS_PORT", 9999)
-            )  # Changed to use a distinct port not likely to be in use
-            websocket_service = WebSocketService(
-                message_bus=message_bus, host=ws_host, port=ws_port
-            )
-
-            # Start WebSocket service
-            websocket_service.start()
-
-            # Store service in app state
-            app.state.websocket_service = websocket_service
-            logger.info(f"Infrastructure WebSocket service started on port {ws_port}")
-    except ImportError as import_err:
-        logger.warning(f"Real-time telemetry services not available: {import_err}")
-        logger.warning(
-            "To enable real-time updates, install required packages with: pip install pika websockets"
-        )
-        # Create placeholders to prevent errors in dependent components
-        app.state.message_bus = None
+    # Initialize WebSocket service using the manager with detailed logging
+    if disable_infrastructure_websocket:
+        logger.warning("WebSocket server disabled by configuration")
         app.state.websocket_service = None
+    else:
+        # Log each step of the process
+        logger.info("WEBSOCKET INIT STEP 1: Checking for existing service")
+        if os.environ.get(ENV_WS_INITIALIZED, "false").lower() == "true":
+            logger.info("WEBSOCKET INIT STEP 1A: Service already initialized elsewhere")
+
+        logger.info(
+            "WEBSOCKET INIT STEP 2: Using WebSocketServiceManager to get/create service"
+        )
+        websocket_service = get_websocket_service(message_bus)
+        app.state.websocket_service = websocket_service
+
+        if websocket_service:
+            logger.info(
+                f"WEBSOCKET INIT STEP 3: Service successfully initialized on port {os.environ.get(ENV_ACTIVE_WS_PORT, 'unknown')}"
+            )
+        else:
+            logger.warning(
+                "WEBSOCKET INIT STEP 3: Service initialization failed - real-time updates will not be available"
+            )
+            logger.warning(
+                "Check logs for details on why WebSocket service failed to initialize"
+            )
+except ImportError as import_err:
+    logger.warning(f"Real-time telemetry services not available: {import_err}")
+    logger.warning(
+        "To enable real-time updates, install required packages with: pip install pika websockets"
+    )
+    # Create placeholders to prevent errors in dependent components
+    app.state.message_bus = None
+    app.state.websocket_service = None
 except Exception as e:
     logger.error(f"Failed to initialize real-time telemetry services: {e}")
     # Create placeholders to prevent errors in dependent components
@@ -534,11 +572,14 @@ def setup_environment_configuration():
     else:
         os.environ["DEBUG_WEBSOCKET"] = "false"
 
-    # FORCED DEBUG MODE (remove in production) - this makes testing easier
-    os.environ["DEBUG_WEBSOCKET"] = "true"
-    logging.info(
-        "FORCED WebSocket debugging mode enabled for testing - remove in production"
-    )
+    # Disable forced debug mode to improve performance
+    if os.environ.get("APP_ENV") == "production":
+        os.environ["DEBUG_WEBSOCKET"] = "false"
+        # Set logging level to WARNING in production for better performance
+        logging.getLogger().setLevel(logging.WARNING)
+    else:
+        # Set logging level to INFO in development - not DEBUG to avoid excessive logging
+        logging.getLogger().setLevel(logging.INFO)
 
     # SET UP MONGODB CONFIGURATION BY DEFAULT
     if not args.in_memory:
@@ -591,6 +632,9 @@ async def generate_shadow_history(
     """
     Generate shadow history entries for a water heater for the past week.
 
+    DISABLED FOR PERFORMANCE TESTING: This function is now disabled by default
+    to speed up application startup. Set force=True to override.
+
     Args:
         shadow_service: Instance of DeviceShadowService
         device_id: ID of the device
@@ -598,6 +642,17 @@ async def generate_shadow_history(
         target_temp: Target temperature value
         days: Number of days of history to generate (default: 7)
     """
+    # Early return unless explicitly forced
+    if not os.environ.get("FORCE_HISTORY_GENERATION", "").lower() in (
+        "true",
+        "1",
+        "yes",
+    ):
+        logging.info(
+            f"Shadow history generation DISABLED for {device_id} (set FORCE_HISTORY_GENERATION=true to override)"
+        )
+        return
+
     logging.info(f"Generating shadow history for {device_id} for the past {days} days")
 
     current_time = datetime.now()
@@ -649,8 +704,8 @@ async def generate_shadow_history(
     logging.info(f"Completed generating {days} days of history for {device_id}")
 
 
-@app.on_event("startup")
-async def startup_event():
+# Separate function for startup logic to make it more maintainable
+async def startup_logic(app: FastAPI):
     """Initialize database and connections on startup."""
     import logging
 
@@ -688,28 +743,50 @@ async def startup_event():
         except Exception as e:
             logging.warning(f"Error loading sample data: {e}")
 
-    # Initialize the standalone WebSocket server - this doesn't depend on other modules
-    try:
-        # First check if websockets module is available
-        import websockets
+    # DISABLED: Standalone WebSocket server is permanently disabled
+    # We only use the infrastructure WebSocket service to avoid port conflicts
+    logging.info(
+        "Standalone WebSocket server is permanently disabled to avoid port conflicts"
+    )
 
-        from src.services.standalone_websocket_server import get_websocket_server
+    # The infrastructure WebSocket service is managed by the WebSocketServiceManager
+    # which was already initialized during app startup
+    logging.info("Using centralized WebSocket management to prevent conflicts")
 
-        # Initialize the WebSocket server
-        websocket_server = get_websocket_server(app)
-        asyncio.create_task(websocket_server.start())
-
-        # Store instance in app state for access in routes
-        app.state.websocket_server = websocket_server
-
-        logging.info("Standalone WebSocket server initialized successfully")
-    except ImportError as e:
-        logging.error(f"Failed to initialize standalone WebSocket server: {e}")
-        logging.warning(
-            "To enable WebSocket functionality, install required packages with: pip install websockets"
+    # Use this opportunity to assign the service to app.state if it wasn't done yet
+    # (this is defensive coding in case the startup event hasn't completed yet)
+    if (
+        not hasattr(app.state, "websocket_service")
+        or app.state.websocket_service is None
+    ):
+        logging.info(
+            "No WebSocket service found in app.state, getting service from manager"
         )
-    except Exception as e:
-        logging.error(f"Error initializing standalone WebSocket server: {e}")
+        try:
+            # Import function to get WebSocket service
+            from src.infrastructure.websocket.websocket_manager import (
+                get_websocket_service,
+            )
+
+            app.state.websocket_service = get_websocket_service()
+        except ImportError:
+            logging.error(
+                "Failed to import WebSocket manager - WebSocket functionality unavailable"
+            )
+            app.state.websocket_service = None
+
+    # Log and report the WebSocket service status
+    if app.state.websocket_service:
+        logging.info(
+            f"WebSocket service is running on port {os.environ.get(ENV_ACTIVE_WS_PORT, 'unknown')}"
+        )
+    else:
+        logging.warning(
+            "No WebSocket service is running - real-time updates will not be available"
+        )
+
+    # Always set the standalone server to None to avoid using it
+    app.state.websocket_server = None
 
     # Try to initialize the rest of the real-time services if available
     try:
@@ -722,81 +799,62 @@ async def startup_event():
         from src.services.shadow_notification_service import ShadowNotificationService
         from src.services.websocket_manager import WebSocketManager
 
-        # FORCE MongoDB shadow storage regardless of environment for temperature history debugging
-        os.environ["SHADOW_STORAGE_TYPE"] = "mongodb"
-        logging.info(
-            "⚠️ FORCING MongoDB for shadow storage (debugging temperature history)"
-        )
+        # Use in-memory storage for development to prevent loading delays
+        logging.info("Using in-memory shadow storage for faster loading")
 
-        try:
-            # Import MongoDB storage class directly to bypass factory fallback logic
-            from src.infrastructure.device_shadow.mongodb_shadow_storage import (
-                MongoDBShadowStorage,
-            )
+        # Create the appropriate storage provider through factory
+        # This will use in-memory storage which is faster and doesn't have connection delays
+        storage_provider = await create_shadow_storage_provider()
 
-            # Create MongoDB storage directly with explicit configuration
-            mongo_uri = "mongodb://localhost:27017/"
-            db_name = "iotsphere"
-            logging.info(
-                f"⚠️ Creating MongoDB storage with URI: {mongo_uri}, DB: {db_name}"
-            )
+        logging.info("✅ Shadow storage provider initialized successfully")
 
-            # Create storage and initialize it
-            mongo_storage = MongoDBShadowStorage(mongo_uri=mongo_uri, db_name=db_name)
+        # Check if we should use the new integration or legacy service
+        use_new_integration = config.get("shadow.use_new_integration", False)
 
-            logging.info("⚠️ Initializing MongoDB connection directly...")
-            await mongo_storage.initialize()
-            logging.info("✅ MongoDB connection successful!")
-
-            # Set as storage provider
-            storage_provider = mongo_storage
-
-            # Verify shadow exists for wh-001
+        if use_new_integration:
+            # Use the new Shadow API Adapter implementation (Clean Architecture)
+            logging.info("Using new Shadow Broker Integration with Message Broker")
             try:
-                device_id = "wh-001"
-                exists = await mongo_storage.shadow_exists(device_id)
-                logging.info(f"✅ Shadow exists for {device_id}: {exists}")
+                from src.adapters.shadow_api_integration import setup_shadow_api_adapter
 
-                if exists:
-                    shadow = await mongo_storage.get_shadow(device_id)
-                    logging.info(
-                        f"✅ Retrieved shadow for {device_id}, version: {shadow.get('version')}"
-                    )
-                    history = shadow.get("history", [])
-                    logging.info(f"✅ Shadow has {len(history)} history entries")
+                # Initialize adapter with the Shadow Broker Integration
+                # This follows clean architecture principles by providing an adapter
+                # between our new domain logic and the existing API layer
+                setup_shadow_api_adapter(app)
+
+                # For backward compatibility, ensure all expected state objects exist
+                device_update_handler = app.state.shadow_service
+                app.state.device_update_handler = device_update_handler
+
+                logging.info("✅ Shadow API Adapter initialized successfully")
             except Exception as e:
-                logging.error(f"❌ Error checking shadow: {str(e)}")
+                logging.error(f"Error initializing Shadow API Adapter: {e}")
+                # Fall back to legacy implementation
+                use_new_integration = False
 
-        except Exception as e:
-            logging.error(f"❌ MongoDB initialization failed: {str(e)}")
-            import traceback
-
-            logging.error(f"❌ Stack trace: {traceback.format_exc()}")
-            logging.warning(
-                "⚠️ Using fallback storage. Temperature history will not work correctly."
+        # Use legacy implementation if new integration is disabled or failed
+        if not use_new_integration:
+            logging.info("Using legacy Shadow Service implementation")
+            # Initialize core services with legacy implementation
+            shadow_service = DeviceShadowService(storage_provider=storage_provider)
+            ws_manager = WebSocketManager()
+            frontend_request_handler = FrontendRequestHandler(
+                shadow_service=shadow_service
             )
+            device_update_handler = DeviceUpdateHandler(shadow_service=shadow_service)
 
-            # Create the appropriate storage provider through factory (will use in-memory)
-            storage_provider = await create_shadow_storage_provider()
+            # Initialize notification service
+            notification_service = ShadowNotificationService(
+                shadow_service=shadow_service, ws_manager=ws_manager
+            )
+            await notification_service.start()
 
-        # Initialize core services
-        shadow_service = DeviceShadowService(storage_provider=storage_provider)
-        ws_manager = WebSocketManager()
-        frontend_request_handler = FrontendRequestHandler(shadow_service=shadow_service)
-        device_update_handler = DeviceUpdateHandler(shadow_service=shadow_service)
-
-        # Initialize notification service
-        notification_service = ShadowNotificationService(
-            shadow_service=shadow_service, ws_manager=ws_manager
-        )
-        await notification_service.start()
-
-        # Store instances in app state for access in routes
-        app.state.shadow_service = shadow_service
-        app.state.ws_manager = ws_manager
-        app.state.frontend_request_handler = frontend_request_handler
-        app.state.device_update_handler = device_update_handler
-        app.state.shadow_notification_service = notification_service
+            # Store instances in app state for access in routes
+            app.state.shadow_service = shadow_service
+            app.state.ws_manager = ws_manager
+            app.state.frontend_request_handler = frontend_request_handler
+            app.state.device_update_handler = device_update_handler
+            app.state.shadow_notification_service = notification_service
 
         # Set up device shadow API
         from src.api.setup_shadow_api import setup_shadow_api
@@ -1073,15 +1131,19 @@ async def startup_event():
                                 )
                                 logging.info(f"Created shadow document for {device_id}")
 
-                                # Generate history for this device
-                                if device_id in ["wh-e0ae2f58", "wh-001"]:
-                                    # Add history entries for the past week for this specific device
-                                    await generate_shadow_history(
-                                        shadow_service, device_id, 120.5, 125.0
-                                    )
-                                    logging.info(
-                                        f"Generated history data for {device_id}"
-                                    )
+                                # Generate history for this device - DISABLED FOR PERFORMANCE TESTING
+                                # Uncomment if you need to regenerate history data
+                                # if device_id in ["wh-e0ae2f58", "wh-001"]:
+                                #     # Add history entries for the past week for this specific device
+                                #     await generate_shadow_history(
+                                #         shadow_service, device_id, 120.5, 125.0
+                                #     )
+                                #     logging.info(
+                                #         f"Generated history data for {device_id}"
+                                #     )
+                                logging.info(
+                                    "History generation disabled for faster startup"
+                                )
                             else:
                                 logging.info(
                                     f"Shadow document already exists for {device_id}"
@@ -1099,24 +1161,32 @@ async def startup_event():
                 logging.warning(f"Error creating test device shadow: {e}")
 
         # Create comprehensive shadow documents with history for all water heaters
-        try:
-            # Dynamically import to avoid circular imports
-            sys.path.insert(
-                0, os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-            )
-            from create_water_heater_shadows import create_water_heater_shadows
+        # DISABLED FOR PERFORMANCE TESTING
+        # Uncomment if you need to regenerate comprehensive history data
+        if os.environ.get("FORCE_HISTORY_GENERATION", "").lower() in (
+            "true",
+            "1",
+            "yes",
+        ):
+            try:
+                # Dynamically import to avoid circular imports
+                sys.path.insert(
+                    0, os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+                )
+                from create_water_heater_shadows import create_water_heater_shadows
 
-            logging.info(
-                "Creating comprehensive water heater shadow documents with history data..."
-            )
-            await create_water_heater_shadows()
-            logging.info(
-                "Shadow documents with history created successfully for all water heaters"
-            )
-        except Exception as shadow_error:
-            logging.error(
-                f"Error creating comprehensive shadow documents: {shadow_error}"
-            )
+                logging.info(
+                    "Creating comprehensive water heater shadow documents with history data..."
+                )
+                await create_water_heater_shadows()
+                logging.info(
+                    "Shadow documents with history created successfully for all water heaters"
+                )
+            except Exception as shadow_error:
+                logging.error(f"Error creating water heater shadows: {shadow_error}")
+        else:
+            logging.info("Comprehensive history generation DISABLED for faster startup")
+            logging.info("Set FORCE_HISTORY_GENERATION=true to enable if needed")
 
         logging.info("Device Shadow and WebSocket services initialized")
     except ImportError:
@@ -1172,4 +1242,43 @@ if __name__ == "__main__":
         # Running as module (python -m src.main)
         module_path = "src.main:app"
 
-    uvicorn.run(module_path, host=args.host, port=args.port, reload=reload_enabled)
+    # Try to start the server with proper port conflict handling
+    try:
+        # First try the requested port (8006 is critical as per project memory)
+        port = args.port
+        logging.info(f"Starting server on {args.host}:{port}")
+        uvicorn.run(module_path, host=args.host, port=port, reload=reload_enabled)
+    except OSError as e:
+        if "Address already in use" in str(e):
+            # Port conflict - attempt alternate ports
+            alternate_ports = [8007, 8008, 8009, 8010]
+            logging.warning(f"Port {port} is already in use. Trying alternate ports...")
+
+            # Note potential limitations when not using the standard port
+            if port == 8006:
+                logging.warning(
+                    "NOTE: Some functionality may be limited when not using port 8006"
+                )
+
+            for alt_port in alternate_ports:
+                try:
+                    logging.info(f"Trying alternate port: {alt_port}")
+                    uvicorn.run(
+                        module_path,
+                        host=args.host,
+                        port=alt_port,
+                        reload=reload_enabled,
+                    )
+                    break
+                except OSError:
+                    logging.warning(f"Port {alt_port} is also in use")
+            else:
+                # If we get here, all alternate ports failed
+                logging.error(
+                    "All ports are in use. Please free up one of these ports:"
+                )
+                logging.error(f"  {', '.join(map(str, [port] + alternate_ports))}")
+                logging.error("You can use: kill $(lsof -t -i:8006) to free port 8006")
+        else:
+            # Different error - just report it
+            logging.error(f"Error starting server: {e}")

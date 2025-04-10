@@ -58,6 +58,36 @@ async def get_new_water_heater_form(request: Request):
     )
 
 
+@router.get("/water-heaters/debug/{heater_id}", response_class=HTMLResponse)
+async def get_water_heater_detail_debug(request: Request, heater_id: str = Path(...)):
+    """Render the water heater detail debug page"""
+    from datetime import datetime
+
+    from fastapi.responses import RedirectResponse
+
+    from src.services.configurable_water_heater_service import (
+        ConfigurableWaterHeaterService,
+    )
+
+    # Use the ConfigurableWaterHeaterService to check if the water heater exists
+    service = ConfigurableWaterHeaterService()
+    water_heater = await service.get_water_heater(heater_id)
+
+    # If water heater doesn't exist, redirect to the list page
+    if not water_heater and not heater_id.startswith("aqua-wh-"):
+        return RedirectResponse(url="/water-heaters")
+
+    # Pass the water heater data and request to the template
+    return templates.TemplateResponse(
+        "water_heater_details_debug.html",
+        {
+            "request": request,
+            "heater_id": heater_id,
+            "timestamp": datetime.now().timestamp(),
+        },
+    )
+
+
 @router.get("/water-heaters/{heater_id}", response_class=HTMLResponse)
 async def get_water_heater_detail(request: Request, heater_id: str = Path(...)):
     """Render the water heater detail page"""
