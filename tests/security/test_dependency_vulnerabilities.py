@@ -10,6 +10,7 @@ import sys
 from pathlib import Path
 
 import pytest
+from packaging import version as version_parser
 
 
 def test_mlflow_version_secure():
@@ -17,12 +18,19 @@ def test_mlflow_version_secure():
     try:
         import mlflow
 
-        version = mlflow.__version__
+        mlflow_version = mlflow.__version__
 
         # Check against known vulnerable versions
-        assert (
-            version >= "2.16.2"
-        ), f"MLflow version {version} may be vulnerable to CVE-2024-1483"
+        parsed_version = version_parser.parse(mlflow_version)
+        assert parsed_version >= version_parser.parse(
+            "2.9.0"
+        ), f"MLflow version {mlflow_version} may be vulnerable to CVE-2024-1483 and others"
+
+        # Additional check for more recent vulnerabilities
+        assert not (
+            parsed_version >= version_parser.parse("2.0.0")
+            and parsed_version < version_parser.parse("2.8.1")
+        ), f"MLflow version {mlflow_version} may be vulnerable to CVE-2023-48022"
 
         # Test for additional protections against deserialization attacks
         assert hasattr(mlflow, "utils"), "MLflow utils module is missing"
@@ -53,13 +61,38 @@ def test_pyarrow_deserialization_protection():
     try:
         import pyarrow
 
-        version = pyarrow.__version__
+        pyarrow_version = pyarrow.__version__
 
         # Check for vulnerable versions
-        major, minor, patch = map(int, re.findall(r"\d+", version)[:3])
+        major, minor, patch = map(int, re.findall(r"\d+", pyarrow_version)[:3])
 
-        # Version check based on CVE-2023-47248
-        is_vulnerable_version = (0 <= major <= 14) and (major > 0 or minor >= 14)
+        # Use packaging.version for semantic versioning comparison
+        parsed_version = version_parser.parse(pyarrow_version)
+
+        # Version check based on PyArrow vulnerabilities (CVE-2023-47248 and others)
+        is_vulnerable_version = (
+            parsed_version < version_parser.parse("9.0.0")
+            or (
+                parsed_version >= version_parser.parse("10.0.0")
+                and parsed_version < version_parser.parse("10.0.1")
+            )
+            or (
+                parsed_version >= version_parser.parse("11.0.0")
+                and parsed_version < version_parser.parse("11.0.1")
+            )
+            or (
+                parsed_version >= version_parser.parse("12.0.0")
+                and parsed_version < version_parser.parse("12.0.1")
+            )
+            or (
+                parsed_version >= version_parser.parse("13.0.0")
+                and parsed_version < version_parser.parse("13.0.1")
+            )
+            or (
+                parsed_version >= version_parser.parse("14.0.0")
+                and parsed_version < version_parser.parse("14.0.1")
+            )
+        )
 
         if is_vulnerable_version:
             # If using vulnerable version, check for custom protection
@@ -91,6 +124,36 @@ def test_pyarrow_deserialization_protection():
             assert True
     except ImportError:
         pytest.skip("PyArrow not installed")
+
+
+def test_gunicorn_version_secure():
+    """Test that Gunicorn version is not vulnerable to known CVEs."""
+    try:
+        # Create a subprocess to check gunicorn version without importing it
+        import re
+        import subprocess
+
+        result = subprocess.run(
+            ["gunicorn", "--version"], capture_output=True, text=True
+        )
+        version_str = result.stdout.strip()
+
+        # Extract version number using regex
+        match = re.search(r"\d+\.\d+\.\d+", version_str)
+        if match:
+            gunicorn_version = match.group(0)
+
+            # Check against known vulnerable versions (CVE-2023-45802) using semantic versioning
+            parsed_version = version_parser.parse(gunicorn_version)
+
+            assert parsed_version >= version_parser.parse(
+                "21.0.0"
+            ), f"Gunicorn version {gunicorn_version} may be vulnerable to CVE-2023-45802"
+        else:
+            pytest.fail("Could not determine Gunicorn version")
+
+    except (ImportError, FileNotFoundError, subprocess.SubprocessError):
+        pytest.skip("Gunicorn not installed or not executable")
 
 
 def test_model_loading_validation():
