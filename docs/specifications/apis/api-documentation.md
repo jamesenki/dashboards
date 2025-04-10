@@ -319,6 +319,151 @@ When the rate limit is exceeded, a 429 (Too Many Requests) status code is return
 
 The API version is included in the URL path (e.g., `/v1/devices`). When breaking changes are introduced, the version number will be incremented.
 
+## Real-time Device Shadow Service (WebSocket API)
+
+The Device Shadow Service provides real-time state synchronization for IoT devices using WebSockets and Change Data Capture (CDC) with MongoDB Change Streams. This enables efficient push-based updates instead of polling.
+
+### WebSocket Base URL
+
+```
+wss://api.iotsphere.example.com/ws/v1
+```
+
+### Authentication
+
+WebSocket connections use the same JWT authentication as REST APIs. Send the token in the connection handshake:
+
+```javascript
+// Example WebSocket connection with authentication
+const ws = new WebSocket('wss://api.iotsphere.example.com/ws/v1/shadows?token=YOUR_JWT_TOKEN');
+```
+
+### Shadow Service WebSocket Endpoints
+
+#### Subscribe to Device Shadows
+
+Endpoint: `wss://api.iotsphere.example.com/ws/v1/shadows`
+
+After establishing a WebSocket connection, subscribe to device shadow updates:
+
+```json
+{
+  "type": "subscribe",
+  "target": "shadow",
+  "deviceIds": ["device-001", "device-002"],
+  "operations": ["reported", "desired", "delta"]
+}
+```
+
+Parameters:
+- `deviceIds`: Array of device IDs to subscribe to (required)
+- `operations`: Array of shadow operations to subscribe to (optional, defaults to all)
+  - `reported`: Device-reported state changes
+  - `desired`: Application-desired state changes
+  - `delta`: Difference between reported and desired states
+
+#### Shadow Update Messages
+
+Shadow updates are pushed to clients in the following format:
+
+```json
+{
+  "type": "shadow_update",
+  "deviceId": "device-001",
+  "timestamp": "2025-04-10T12:34:56Z",
+  "operation": "reported",
+  "version": 423,
+  "data": {
+    "temperature": 68.5,
+    "humidity": 42,
+    "status": "normal"
+  }
+}
+```
+
+#### Update Device Shadow
+
+To update a device shadow's desired state:
+
+```json
+{
+  "type": "update_shadow",
+  "deviceId": "device-001",
+  "operation": "desired",
+  "data": {
+    "targetTemperature": 72
+  }
+}
+```
+
+#### Shadow Error Messages
+
+```json
+{
+  "type": "error",
+  "code": "SHADOW_NOT_FOUND",
+  "message": "Device shadow not found",
+  "deviceId": "device-001"
+}
+```
+
+### Telemetry WebSocket Streaming
+
+For real-time telemetry data, use the telemetry WebSocket endpoint:
+
+```
+wss://api.iotsphere.example.com/ws/v1/telemetry
+```
+
+#### Subscribe to Telemetry Stream
+
+```json
+{
+  "type": "subscribe",
+  "metrics": ["temperature", "pressure"],
+  "deviceIds": ["device-001", "device-002"],
+  "aggregation": "raw"
+}
+```
+
+Parameters:
+- `metrics`: Array of metrics to subscribe to (required)
+- `deviceIds`: Array of device IDs to subscribe to (required)
+- `aggregation`: Data aggregation level (optional, defaults to "raw")
+  - Options: "raw", "1m", "5m", "1h"
+
+#### Telemetry Stream Messages
+
+```json
+{
+  "type": "telemetry",
+  "deviceId": "device-001",
+  "timestamp": "2025-04-10T12:34:56.789Z",
+  "metric": "temperature",
+  "value": 68.5,
+  "unit": "F"
+}
+```
+
+#### WebSocket Error Handling
+
+WebSocket errors follow a similar pattern to REST API errors:
+
+```json
+{
+  "type": "error",
+  "code": "SUBSCRIPTION_FAILED",
+  "message": "Failed to subscribe to device updates",
+  "details": "Maximum subscription limit reached"
+}
+```
+
 ## Testing
 
-Following Test-Driven Development principles, every API endpoint has corresponding automated tests to verify functionality, security, and performance. Test cases are available in the IoTSphere repository and can be used as additional reference for API behavior.
+Following Test-Driven Development principles, every API endpoint (both REST and WebSocket) has corresponding automated tests to verify functionality, security, and performance. Tests are organized according to the TDD phases:
+
+- **RED Phase**: Tests that define expected behavior
+- **GREEN Phase**: Tests that verify implementation meets requirements
+- **REFACTOR Phase**: Tests that ensure quality improvements maintain functionality
+
+API test cases are available in the IoTSphere repository and can be used as additional reference for API behavior.
