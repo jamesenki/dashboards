@@ -5,7 +5,7 @@ import logging
 import math
 import os
 import random
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, List, Optional
 
 from src.services.water_heater import WaterHeaterService
@@ -42,24 +42,30 @@ class WaterHeaterHistoryService:
                 )
 
                 # Filter history to the specified time period
-                cutoff_date = datetime.now() - timedelta(days=days)
+                # Use timezone-aware datetime to avoid comparison issues
+                cutoff_date = datetime.now(timezone.utc) - timedelta(days=days)
                 filtered_history = []
 
                 for entry in shadow_history:
-                    entry_time = datetime.fromisoformat(
-                        entry["timestamp"].replace("Z", "+00:00")
-                    )
-                    if (
-                        entry_time >= cutoff_date
-                        and "reported" in entry
-                        and "temperature" in entry["reported"]
-                    ):
-                        filtered_history.append(
-                            {
-                                "temperature": entry["reported"]["temperature"],
-                                "timestamp": entry_time,
-                            }
+                    try:
+                        # Parse the timestamp and ensure it's timezone-aware
+                        entry_time = datetime.fromisoformat(
+                            entry["timestamp"].replace("Z", "+00:00")
                         )
+                        # Ensure both datetimes are timezone-aware for comparison
+                        if (
+                            entry_time >= cutoff_date
+                            and "reported" in entry
+                            and "temperature" in entry["reported"]
+                        ):
+                            filtered_history.append(
+                                {
+                                    "temperature": entry["reported"]["temperature"],
+                                    "timestamp": entry_time,
+                                }
+                            )
+                    except Exception as e:
+                        logging.error(f"Error parsing timestamp: {e}")
 
                 # Sort by timestamp (oldest first)
                 filtered_history.sort(key=lambda x: x["timestamp"])
